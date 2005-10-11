@@ -9,8 +9,6 @@ test-suite "parameter"
   :  [ run basics.cpp ]
      [ run sfinae.cpp ]
      [ run macros.cpp ]
-     [ run unnamed.cpp ]       
      [ run tutorial.cpp ]
-     [ run efficiency.cpp : : : : : release ]
      [ compile unwrap_cv_reference.cpp ]
   ;
