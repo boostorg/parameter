@@ -45,8 +45,8 @@ __ ../../../../index.htm
 .. role:: concept
    :class: concept
 
-.. role:: vellipsis
-   :class: vellipsis
+.. role:: large
+   :class: doublesize
 
 .. section-numbering::
 
@@ -629,11 +629,8 @@ to its ``operator()`` and forwarding the result on to
     void depth_first_search(A0 const& a0, A1 const& a1)
     {
        core::depth_first_search(dfs_params()(a0,a1));
-    } :vellipsis:`\ 
-    .
-    .
-    .
-   `
+    }
+       :large:`⋮`
     template <class A0, class A1, …class A4>
     void depth_first_search(A0 const& a0, A1 const& a1, …A4 const& a4)
     {
@@ -834,11 +831,8 @@ Now we add a special defaulted argument to each of our
       , typename dfs_params::match<A0,A1>::type p = dfs_params())
     {
        core::depth_first_search(**p**\ (a0,a1));
-    } :vellipsis:`\ 
-    .
-    .
-    .
-   `
+    }
+       :large:`⋮`
     template <class A0, class A1, …class A4>
     void depth_first_search(
         A0 const& a0, A1 const& a1, …A4 const& A4
@@ -892,11 +886,8 @@ __ http://boost-consulting.com/mplbook/preprocessor.html#sequences
       , **BOOST_PARAMETER_MATCH(dfs_params, (A0)(A1), p)**)
     {
        core::depth_first_search(p(a0,a1));
-    } :vellipsis:`\ 
-    .
-    .
-    .
-   `
+    }
+       :large:`⋮`
     template <class A0, class A1, …class A4>
     void depth_first_search(
         A0 const& a0, A1 const& a1, …A4 const& A4
@@ -994,7 +985,7 @@ Boost.Lambda_: [#bind]_
     **|| boost::lambda::construct<default_color_map>(num_vertices(g),i)**
   ];
 
-.. sidebar:: Mnemonics
+.. sidebar:: Memnonics
 
    To remember the difference between ``|`` and ``||``, recall that
    ``||`` normally uses short-circuit evaluation: its second
@@ -1235,12 +1226,12 @@ __ ../../../graph/doc/bgl_named_params.html
           typedef T result_type;
 
           template <class A1, class A2>
-          T operator()(A1 a1, A2 a2) { return T(a1,a2); }
+          T operator() { return T(a1,a2); }
       };
 
-    and use `Boost.Bind`_ to generate the function object::
+    and use Boost.Bind_ to generate the function object::
 
-      boost::bind(construct2<default_color_map>(),num_vertices(g),i)
+      boost::bind(construct2<default_color_map>,num_vertices(g),i)
 
 __ http://www.boost.org/regression/release/user/lambda.html
 .. _Boost.Bind: ../../../libs/bind/index.html
