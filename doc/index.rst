@@ -698,7 +698,7 @@ generate the overloads you need.
 
 __ http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2004/n1690.html
 
-.. _`Boost.Preprocessor`: ../../../preprocessor
+.. _`Boost.Preprocessor`: ../../../preprocessor/index.html
 
 If it is impractical for you to generate or write the overloads
 that would be required for positional “out” arguments to be passed
