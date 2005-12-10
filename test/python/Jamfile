@@ -8,3 +8,8 @@ extension parameter
     <dll>../../../python/build/boost_python
   ;
 
+extension general
+  : general.cpp
+    <dll>../../../python/build/boost_python
+  ;
+
