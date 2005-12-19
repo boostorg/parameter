@@ -1,4 +1,4 @@
-+++++++++++++++++++++++++++++++++++++++++++++++++
+﻿+++++++++++++++++++++++++++++++++++++++++++++++++
  The Boost Parameter Library 
 +++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -985,7 +985,7 @@ Boost.Lambda_: [#bind]_
     **|| boost::lambda::construct<default_color_map>(num_vertices(g),i)**
   ];
 
-.. sidebar:: Memnonics
+.. sidebar:: Mnemonics
 
    To remember the difference between ``|`` and ``||``, recall that
    ``||`` normally uses short-circuit evaluation: its second
