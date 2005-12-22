@@ -13,3 +13,9 @@ extension general
     <dll>../../../python/build/boost_python
   ;
 
+extension accumulator_set
+  : accumulator.cpp
+    <dll>../../../python/build/boost_python
+  : <include>.
+  ;
+  
