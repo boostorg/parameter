@@ -11,6 +11,7 @@
 #include <boost/parameter/aux_/default.hpp>
 #include <boost/parameter/aux_/parameter_requirements.hpp>
 #include <boost/parameter/aux_/yesno.hpp>
+#include <boost/parameter/aux_/maybe_fwd.hpp>
 #include <boost/parameter/config.hpp>
 
 #include <boost/mpl/apply.hpp>
@@ -21,6 +22,8 @@
 
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
+
+#include <boost/optional.hpp>
 
 namespace boost { namespace parameter { 
 
@@ -294,15 +297,33 @@ struct arg_list : Next
     
 #else
 
+    typedef typename mpl::eval_if<
+        is_maybe<value_type>
+      , get_reference<value_type>
+      , mpl::identity<reference>
+    >::type default_reference;
+    
     reference operator[](keyword<key_type> const&) const
     {
         return arg.value;
     }
 
-    template <class Default>
-    reference operator[](default_<key_type, Default>) const
+    template <class T, class D>
+    default_reference get_value(T&, D&) const
     {
         return arg.value;
+    }
+
+    template <class T, class D>
+    default_reference get_value(maybe<T>&, D& x) const
+    {
+        return arg.value ? arg.value.get() : x;
+    }
+
+    template <class Default>
+    default_reference operator[](default_<key_type, Default> const& x) const
+    {
+        return get_value(arg.value, x.value);
     }
 
     template <class Default>
