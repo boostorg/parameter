@@ -22,7 +22,7 @@ namespace detail
   struct no_keywords
   {
       template <class T>
-      T const& operator,(T const& x)
+      T const& operator,(T const& x) const
       {
           return x;
       }

@@ -89,8 +89,6 @@
 // Iteration through n-ary tuples seqs
 //
 
-#pragma wave trace(enable)
-
 # define ZKB_for_each_head_aux2(x,y) (x,y), ~
 # define ZKB_for_each_head_aux3(x,y,z) (x,y,z), ~
 # define ZKB_for_each_head_aux4(x,y,z,u) (x,y,z,u), ~
@@ -383,7 +381,7 @@
       , ~ \
       , BOOST_PP_CAT(ZKB_flatten_arg_spec_aux_, ZKB_sublist_qualifier(elem)) \
     )
-                                   
+
 # define ZKB_flatten_arg_spec(args) \
     BOOST_PP_SEQ_FOR_EACH(ZKB_flatten_arg_spec_aux0, _, args)
                                   

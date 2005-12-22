@@ -16,6 +16,48 @@ namespace boost { namespace parameter { namespace python { namespace aux {
 template <long Arity, class M, class R, class Args>
 struct invoker;
 
+template <class M, class R>
+struct make_invoker
+{
+    template <class Args>
+    struct apply
+    {
+        typedef invoker<
+            mpl::size<Args>::value, M, R, Args
+        > type;
+    };
+};
+
+template <long Arity, class T, class R, class Args>
+struct call_invoker;
+
+template <class T, class R>
+struct make_call_invoker
+{
+    template <class Args>
+    struct apply
+    {
+        typedef call_invoker<
+            mpl::size<Args>::value, T, R, Args
+        > type;
+    };
+};
+
+template <long Arity, class T, class Args>
+struct init_invoker;
+
+template <class T>
+struct make_init_invoker
+{
+    template <class Args>
+    struct apply
+    {
+        typedef init_invoker<
+            mpl::size<Args>::value, T, Args
+        > type;
+    };
+};
+
 template <class M, class R, class Args>
 struct invoker<0, M, R, Args>
 {
@@ -25,8 +67,34 @@ struct invoker<0, M, R, Args>
     }
 };
 
-# define BOOST_PP_ITERATION_PARAMS_1 (3, \
-    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/python/aux_/invoker_iterate.hpp>))
+template <class T, class R, class Args>
+struct call_invoker<0, T, R, Args>
+{
+    static R execute(T& self)
+    {
+        return self();
+    }
+};
+
+template <class T, class Args>
+struct init_invoker<0, T, Args>
+{
+    static T* execute(T& self)
+    {
+        return new T;
+    }
+};
+
+# define BOOST_PP_ITERATION_PARAMS_1 (4, \
+    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/python/aux_/invoker_iterate.hpp>, 1))
+# include BOOST_PP_ITERATE()
+
+# define BOOST_PP_ITERATION_PARAMS_1 (4, \
+    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/python/aux_/invoker_iterate.hpp>, 2))
+# include BOOST_PP_ITERATE()
+
+# define BOOST_PP_ITERATION_PARAMS_1 (4, \
+    (1, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/python/aux_/invoker_iterate.hpp>, 3))
 # include BOOST_PP_ITERATE()
 
 }}}} // namespace boost::parameter::python::aux
