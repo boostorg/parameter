@@ -196,7 +196,7 @@
     template <class Args> \
     result BOOST_PP_CAT(name,_dispatch)(Args const& args) \
     { \
-        name( \
+        return name( \
             BOOST_PP_SEQ_FOR_EACH_I(ZKB_actual_args, _, args_) \
         ); \
     }
@@ -219,7 +219,7 @@
 # define ZKB_build_forwarding_functions_arity_nullary(n,data) \
     inline BOOST_PP_TUPLE_ELEM(2,0,data) BOOST_PP_TUPLE_ELEM(2,1,data)() \
     { \
-        BOOST_PP_CAT( \
+        return BOOST_PP_CAT( \
             BOOST_PP_TUPLE_ELEM(2,1,data) \
           , _dispatch \
         )( \
@@ -233,7 +233,7 @@
         BOOST_PP_ENUM_BINARY_PARAMS(n, A, const& a) \
     ) \
     { \
-        BOOST_PP_CAT( \
+        return BOOST_PP_CAT( \
             BOOST_PP_TUPLE_ELEM(2,1,data) \
           , _dispatch \
         )( \
