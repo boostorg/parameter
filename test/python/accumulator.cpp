@@ -3,51 +3,51 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <boost/mpl/for_each.hpp>
+#include <boost/python.hpp>
+#include <boost/parameter/python/general.hpp>
 
-#include "stats/accumulators.hpp"
-#include "stats/statistics/stats.hpp"
-#include "stats/statistics/count.hpp"
-#include "stats/statistics/min.hpp"
-#include "stats/statistics/mean.hpp"
-#include "stats/statistics/sum.hpp"
-#include "stats/statistics/weighted_mean.hpp"
-#include "stats/statistics/moment.hpp"
-#include "stats/statistics/order.hpp"
-#include "stats/statistics/order_variate.hpp"
-#include "stats/statistics/with_error.hpp"
-#include "stats/statistics/variates/weights.hpp"
-#include "stats/statistics/variates/covariate.hpp"
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#include <boost/accumulators/statistics/count.hpp>
+#include <boost/accumulators/statistics/min.hpp>
+#include <boost/accumulators/statistics/mean.hpp>
+#include <boost/accumulators/statistics/sum.hpp>
+#include <boost/accumulators/statistics/weighted_mean.hpp>
+#include <boost/accumulators/statistics/moment.hpp>
+#include <boost/accumulators/statistics/order.hpp>
+#include <boost/accumulators/statistics/order_variate.hpp>
+#include <boost/accumulators/statistics/with_error.hpp>
+#include <boost/accumulators/framework/parameters/weights.hpp>
+#include <boost/accumulators/statistics/variates/covariate.hpp>
 
 using namespace boost;
 using namespace boost::accumulators;
 
 typedef accumulator_set<
     double
-  , stats<tag::order_variate<double, tag::covariate1> > 
+  , stats<tag::order_variate<int, tag::covariate1> >
 > accumulator_type;
 
 template<typename Range>
-void output_range(Range const &range)
+python::list listify_range(Range const &range)
 {
-    typedef typename boost::remove_reference<
-        typename boost::iterator_reference<
-            typename boost::range_result_iterator<Range>::type
-        >::type
-    >::type output_type;
-    std::copy(range.begin(), range.end(), std::ostream_iterator<output_type>(std::cout, " "));
-    std::cout.put('\n');
+    python::list l;
+    typedef typename boost::range_result_iterator<Range>::type iterator;
+    iterator begin = range.begin();
+    iterator end = range.end();
+
+    for(; begin != end; ++begin)
+        l.append(*begin);
+
+    return l;
 }
 
-void output(accumulator_type const& acc)
+python::list listify_covariate1(accumulator_type const& acc)
 {
-    output_range(order_variate<double, tag::covariate1>(acc));
+    return listify_range(order_variate<int, tag::covariate1>(acc));
 }
 
-#include <boost/python.hpp>
-#include <boost/parameter/python/general.hpp>
-
-namespace boost { namespace accumulators { namespace tag 
+namespace boost { namespace accumulators { namespace tag
 {
   char const* keyword_name(sample*)
   {
@@ -60,20 +60,20 @@ namespace boost { namespace accumulators { namespace tag
   }
 }}} // namespace boost::accumulators::tag
 
-namespace boost { namespace accumulators { namespace detail 
+namespace boost { namespace accumulators { namespace detail
 {
   char const* keyword_name(cache_size_tag*)
   {
       return "cache_size";
   }
 }}} // namespace boost::accumulators::detail
-  
+
 BOOST_PYTHON_MODULE(accumulator_set)
-{ 
+{
     using namespace boost::python;
     namespace py = boost::parameter::python;
 
-    class_<accumulator_type>("accumulator_set")
+    class_<accumulator_type>("accumulator_set", no_init)
         .def(
             py::init<
                 mpl::vector1<
@@ -88,10 +88,10 @@ BOOST_PYTHON_MODULE(accumulator_set)
                     tag::sample
                   , tag::covariate1
                 >
-              , mpl::vector3<void, double, double>
+              , mpl::vector3<void, double, int>
             >()
         );
 
-    def("output", output);
+    def("covariate1", listify_covariate1);
 }
 

@@ -3,19 +3,31 @@ subproject libs/parameter/test/python ;
 SEARCH on python.jam = $(BOOST_BUILD_PATH) ;
 include python.jam ;
 
+STATS_ROOT ?= $(BOOST_ROOT) ;
+
 extension parameter
   : simple.cpp
-    <dll>../../../python/build/boost_python
+    <template>@boost/libs/python/build/extension
+  ;
+
+boost-python-runtest test1
+  : test_simple.py
+    <pyd>parameter
   ;
 
 extension general
   : general.cpp
-    <dll>../../../python/build/boost_python
+    <template>@boost/libs/python/build/extension
   ;
 
 extension accumulator_set
   : accumulator.cpp
-    <dll>../../../python/build/boost_python
-  : <include>.
+    <template>@boost/libs/python/build/extension
+  : <include>$(STATS_ROOT)
   ;
-  
+
+boost-python-runtest test3
+  : test_accumulator.py
+    <pyd>accumulator_set
+  ;
+
