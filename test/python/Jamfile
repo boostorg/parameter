@@ -20,6 +20,11 @@ extension general
     <template>@boost/libs/python/build/extension
   ;
 
+boost-python-runtest test2
+  : test_general.py
+    <pyd>general
+  ;
+
 extension accumulator_set
   : accumulator.cpp
     <template>@boost/libs/python/build/extension
