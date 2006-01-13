@@ -150,12 +150,26 @@ namespace aux
       typedef Optimized optimized_default;
   };
   
+  template <class K, class T, class Optimized = mpl::false_>
+  struct make_arg_spec_impl
+  {
+      typedef arg_spec<
+          typename K::first, typename K::second, Optimized, T
+      > type;
+  };
+
   template <class K, class T>
-  struct make_arg_spec
+  struct make_arg_spec_impl<K, T, typename K::third>
   {
       typedef arg_spec<
           typename K::first, typename K::second, typename K::third, T
       > type;
+  };
+
+  template <class K, class T>
+  struct make_arg_spec
+    : make_arg_spec_impl<K, T>
+  {
   };
 
   template <class Spec, class State>
