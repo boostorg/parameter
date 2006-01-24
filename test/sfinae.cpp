@@ -5,7 +5,7 @@
 
 #include <boost/parameter.hpp>
 #include <boost/parameter/match.hpp>
-#include <cassert>
+#include <boost/assert.hpp>
 #include <string>
 #include <boost/type_traits/is_convertible.hpp>
 #include <iostream>
@@ -36,15 +36,26 @@ namespace test
   {};
 
   template <class T> struct not_implemented;
+
+  // The use of assert_equal_string is just a nasty workaround for a
+  // vc++ 6 ICE.
+  template <class T, class U>
+  void assert_equal_string(T const& x, U const& y)
+  {
+      BOOST_ASSERT(x == y);
+  }
+
+  void assert_equal_string(char const* x, char const* y)
+  {
+        BOOST_ASSERT(std::string(x) == std::string(y));
+  }
   
   template<class P>
   void f_impl(P const& p)
   {
-      std::string s = p[name | "bar"];
       float v = p[value | 3.f];
-
-      assert(s == "foo");
-      assert(v == 3.f);
+      BOOST_ASSERT(v == 3.f);
+      assert_equal_string(p[name | "bar"], "foo");
   }
 
   void f()
