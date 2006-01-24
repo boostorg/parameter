@@ -8,7 +8,6 @@
 #include <boost/assert.hpp>
 #include <string>
 #include <boost/type_traits/is_convertible.hpp>
-#include <iostream>
 
 #ifndef BOOST_NO_SFINAE
 # include <boost/utility/enable_if.hpp>
@@ -35,19 +34,11 @@ namespace test
       >
   {};
 
-  template <class T> struct not_implemented;
-
   // The use of assert_equal_string is just a nasty workaround for a
   // vc++ 6 ICE.
-  template <class T, class U>
-  void assert_equal_string(T const& x, U const& y)
+  void assert_equal_string(std::string x, std::string y)
   {
-      BOOST_ASSERT(x == y);
-  }
-
-  void assert_equal_string(char const* x, char const* y)
-  {
-        BOOST_ASSERT(std::string(x) == std::string(y));
+        BOOST_ASSERT(x == y);
   }
   
   template<class P>
