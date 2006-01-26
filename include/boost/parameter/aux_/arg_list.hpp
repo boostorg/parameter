@@ -199,24 +199,26 @@ struct arg_list : Next
         };
     };
 
-#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && !BOOST_WORKAROUND(__GNUC__, == 2)
+# if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
     friend yes_tag operator*(arg_list, key_type*);
-# define BOOST_PARAMETER_CALL_HAS_KEY(next, key) (*(next*)0 * (key*)0)
-#else
+#  define BOOST_PARAMETER_CALL_HAS_KEY(next, key) (*(next*)0 * (key*)0)
+# else
     // Overload for key_type, so the assert below will fire if the
     // same keyword is used again
     static yes_tag has_key(key_type*);
     using Next::has_key;
-# define BOOST_PARAMETER_CALL_HAS_KEY(next, key) next::has_key((key*)0)  
-#endif
+    
+#  define BOOST_PARAMETER_CALL_HAS_KEY(next, key) next::has_key((key*)0)  
+# endif
 
     BOOST_MPL_ASSERT_MSG(
         sizeof(BOOST_PARAMETER_CALL_HAS_KEY(Next,key_type)) == sizeof(no_tag)
       , duplicate_keyword, (key_type)
     );
 
-#undef BOOST_PARAMETER_CALL_HAS_KEY
-    
+# undef BOOST_PARAMETER_CALL_HAS_KEY
+#endif
     //
     // Begin implementation of indexing operators for looking up
     // specific arguments by name
