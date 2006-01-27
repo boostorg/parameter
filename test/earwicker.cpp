@@ -25,12 +25,19 @@ struct f_parameters // vc6 is happier with inheritance than with a typedef
     >
 {};
 
+#ifdef BOOST_NO_VOID_RETURNS
+BOOST_PARAMETER_FUN(int, f, 0, 3, f_parameters)
+#else 
 BOOST_PARAMETER_FUN(void, f, 0, 3, f_parameters)
+#endif 
 {
     std::cout << "x = " << p[x | -1] << std::endl;
     std::cout << "y = " << p[y | -2] << std::endl;
     std::cout << "z = " << p[z | -3] << std::endl;
     std::cout <<  "================" << std::endl;
+#ifdef BOOST_NO_VOID_RETURNS
+    return 0;
+#endif 
 }
 
 }

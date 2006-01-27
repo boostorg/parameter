@@ -45,7 +45,7 @@ namespace test
   struct plain_weight_running_total
   {
       plain_weight_running_total()
-        : sum()
+        : sum(0)
       {}
       
       void operator()(T w)
@@ -64,7 +64,7 @@ namespace test
   struct named_param_weight_running_total
   {
       named_param_weight_running_total()
-        : sum()
+        : sum(0)
       {}
 
       template <class ArgumentPack>
