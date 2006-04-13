@@ -9,7 +9,6 @@
 #include <boost/parameter/aux_/unwrap_cv_reference.hpp>
 #include <boost/parameter/aux_/tag.hpp>
 #include <boost/parameter/aux_/default.hpp>
-#include <boost/noncopyable.hpp>
 
 namespace boost { namespace parameter {
 
@@ -29,7 +28,7 @@ namespace boost { namespace parameter {
 //    f(rate = 1, skew = 2.4);
 //
 template <class Tag>
-struct keyword : noncopyable
+struct keyword
 {
     template <class T>
     typename aux::tag<Tag, T>::type const
@@ -98,9 +97,6 @@ struct keyword : noncopyable
         static keyword<Tag> result;
         return result;
     }
-    
- private:
-    keyword() {}
 };
 
 // Reduces boilerplate required to declare and initialize keywords
