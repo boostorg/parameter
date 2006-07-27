@@ -36,11 +36,15 @@ inline double value_default()
     return 666.222;
 }
 
-template <class T>
+/*template <class T>
 inline bool equal(T const& x, T const& y)
 {
     return x == y;
-}
+}*/
+
+template <class T>
+inline bool equal(T x, T y) { return x == y; }
+
 
 inline bool equal(char const* s1, char const* s2)
 {

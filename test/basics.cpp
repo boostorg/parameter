@@ -20,7 +20,7 @@ namespace test
   typename boost::parameter::lazy_binding<Params,tag::value,F>::type
   extract_value(Params const& p, F const& f)
   {
-      typename boost::parameter::lazy_binding<
+      typename ::boost::parameter::lazy_binding<
         Params, tag::value, F
       >::type v = p[value || f ];
       return v;
