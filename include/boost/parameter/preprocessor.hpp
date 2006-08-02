@@ -98,6 +98,42 @@ struct unwrap_type
 
 #  define BOOST_PARAMETER_FUNCTION_WRAP_TYPE(x) void(*) x
 
+# elif BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+
+template <class T, class Dummy>
+struct unwrap_predicate;
+
+// Wildcard case
+template <>
+struct unwrap_predicate<void*,int>
+{
+    typedef mpl::always<mpl::true_> type;
+};
+
+// Convertible to
+template <class T>
+struct unwrap_predicate<void*(*)(T),int>
+{
+    typedef T type;
+};
+
+template <class T>
+struct unwrap_predicate<void (*)(T),int>
+{
+    typedef is_convertible<mpl::_, T> type;
+};
+
+template <class T>
+struct unwrap_type;
+
+template <class T>
+struct unwrap_type<void (*)(T)>
+{
+    typedef T type;
+};
+
+#  define BOOST_PARAMETER_FUNCTION_WRAP_TYPE(x) void(*) x
+
 # else
 
 template <class T, class Dummy>
@@ -338,7 +374,19 @@ struct argument_pack
 /**/
 
 // Builds boost::parameter::parameters<> specialization
-# if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+# if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#  define BOOST_PARAMETER_FUNCTION_PARAMETERS_M(r,tag_namespace,i,elem) \
+    BOOST_PP_COMMA_IF(i) \
+    boost::parameter::BOOST_PARAMETER_FN_ARG_QUALIFIER(elem)< \
+        tag_namespace::BOOST_PARAMETER_FUNCTION_KEYWORD( \
+            BOOST_PARAMETER_FN_ARG_NAME(elem) \
+        ) \
+      , typename boost::parameter::aux::unwrap_predicate< \
+                                                          void (*)BOOST_PARAMETER_FN_ARG_PRED(elem) \
+          , BoostParameterDummyTemplateArg \
+        >::type \
+    >
+# elif !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 #  define BOOST_PARAMETER_FUNCTION_PARAMETERS_M(r,tag_namespace,i,elem) \
     BOOST_PP_COMMA_IF(i) \
     boost::parameter::BOOST_PARAMETER_FN_ARG_QUALIFIER(elem)< \
@@ -386,7 +434,7 @@ struct argument_pack
         template <class Args> \
         struct apply \
         { \
-            template <class K, class Default = boost::parameter::void_> \
+            template <class K, class Default /*= boost::parameter::void_*/> \
             struct binding \
               : boost::parameter::binding<Args, K, Default> \
             {}; \
