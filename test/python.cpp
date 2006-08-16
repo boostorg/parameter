@@ -6,6 +6,7 @@
 #include <boost/parameter/keyword.hpp>
 #include <boost/parameter/python.hpp>
 #include <boost/python.hpp>
+#include <boost/utility/enable_if.hpp>
 
 namespace test {
 
@@ -13,9 +14,32 @@ BOOST_PARAMETER_KEYWORD(tag, x)
 BOOST_PARAMETER_KEYWORD(tag, y)
 BOOST_PARAMETER_KEYWORD(tag, z)
 
-struct X
+struct Xbase
 {
-    BOOST_PARAMETER_MEMBER_FUNCTION((int), f, tag,
+    // We need the disable_if part for VC7.1/8.0.
+    template <class Args>
+    Xbase(
+        Args const& args
+      , typename boost::disable_if<
+            boost::is_base_and_derived<Xbase, Args>
+        >::type* = 0
+    )
+      : value(std::string(args[x | "foo"]) + args[y | "bar"])
+    {}
+
+    std::string value;
+};
+
+struct X : Xbase
+{
+    BOOST_PARAMETER_CONSTRUCTOR(X, (Xbase), tag,
+        (optional
+         (x, *)
+         (y, *)
+        )
+    )
+
+    BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((int), f, tag,
         (required
          (x, *)
          (y, *)
@@ -28,7 +52,7 @@ struct X
         return args[x] + args[y] + args[z | 0];
     }
 
-    BOOST_PARAMETER_MEMBER_FUNCTION((std::string), g, tag,
+    BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((std::string), g, tag,
         (optional
          (x, *)
          (y, *)
@@ -36,6 +60,19 @@ struct X
     )
     {
         return std::string(args[x | "foo"]) + args[y | "bar"];
+    }
+
+    BOOST_PARAMETER_MEMBER_FUNCTION((X&), h, tag,
+        (optional (x, *, "") (y, *, ""))
+    )
+    {
+        return *this;
+    }
+
+    template <class A0>
+    X& operator()(A0 const& a0)
+    {
+        return *this;
     }
 };
 
@@ -59,6 +96,15 @@ struct g_fwd
     }
 };
 
+struct h_fwd
+{
+    template <class R, class T, class A0, class A1>
+    R operator()(boost::type<R>, T& self, A0 const& a0, A1 const& a1)
+    {
+        return self.h(a0,a1);
+    }
+};
+
 BOOST_PYTHON_MODULE(python_parameter)
 {
     namespace mpl = boost::mpl;
@@ -67,20 +113,47 @@ BOOST_PYTHON_MODULE(python_parameter)
 
     class_<X>("X")
         .def(
+            boost::parameter::python::init<
+                mpl::vector<
+                    tag::x*(std::string), tag::y*(std::string)
+                >
+            >()
+        )
+        .def(
             "f"
           , boost::parameter::python::function<
                 f_fwd
-              , mpl::vector3<tag::x, tag::y, tag::z*>
-              , mpl::vector4<int, int, int, int>
+              , mpl::vector<
+                    int, tag::x(int), tag::y(int), tag::z*(int)
+                >
             >()
         )
         .def(
             "g"
           , boost::parameter::python::function<
                 g_fwd
-              , mpl::vector2<tag::x*, tag::y*>
-              , mpl::vector3<std::string, std::string, std::string>
+              , mpl::vector<
+                    std::string, tag::x*(std::string), tag::y*(std::string)
+                >
             >()
-        );
+        )
+        .def(
+            "h"
+          , boost::parameter::python::function<
+                h_fwd
+              , mpl::vector<
+                    X&, tag::x*(std::string), tag::y*(std::string)
+                >
+            >()
+          , return_arg<>()
+        )
+        .def(
+            boost::parameter::python::call<
+                mpl::vector<
+                    X&, tag::x(int)
+                >
+            >() [ return_arg<>() ]
+        )
+        .def_readonly("value", &X::value);
 }
 

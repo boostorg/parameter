@@ -14,7 +14,7 @@
 
 namespace test {
 
-BOOST_PARAMETER_FUNCTION((int), f, tag,
+BOOST_PARAMETER_BASIC_FUNCTION((int), f, tag,
     (required
       (tester, *)
       (name, *)
@@ -40,7 +40,7 @@ BOOST_PARAMETER_FUNCTION((int), f, tag,
     return 1;
 }
 
-BOOST_PARAMETER_FUNCTION((int), g, tag,
+BOOST_PARAMETER_BASIC_FUNCTION((int), g, tag,
     (required
       (tester, *)
       (name, *)
@@ -61,6 +61,52 @@ BOOST_PARAMETER_FUNCTION((int), g, tag,
         args[name]
       , args[value | 1.f]
       , args[index | 2]
+    );
+
+    return 1;
+}
+
+BOOST_PARAMETER_FUNCTION((int), h, tag,
+    (required
+      (tester, *)
+      (name, *)
+    )
+    (optional
+      (value, *, 1.f)
+      (out(index), (int), 2)
+    )
+)
+{
+    BOOST_MPL_ASSERT((boost::is_same<index_type, int const>));
+
+    tester(
+        name
+      , value
+      , index
+    );
+
+    return 1;
+}
+
+BOOST_PARAMETER_FUNCTION((int), h2, tag,
+    (required
+      (tester, *)
+      (name, *)
+    )
+    (optional
+      (value, *, 1.f)
+      (out(index), (int), (int)value * 2)
+    )
+)
+{
+# if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+    BOOST_MPL_ASSERT((boost::is_same<index_type, int const>));
+# endif
+
+    tester(
+        name
+      , value
+      , index
     );
 
     return 1;
@@ -92,7 +138,7 @@ struct class_ : base
         )
     )
 
-    BOOST_PARAMETER_MEMBER_FUNCTION((int), f, tag,
+    BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((int), f, tag,
         (required
           (tester, *)
           (name, *)
@@ -112,7 +158,7 @@ struct class_ : base
         return 1;
     }
 
-    BOOST_PARAMETER_CONST_MEMBER_FUNCTION((int), f, tag,
+    BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION((int), f, tag,
         (required
           (tester, *)
           (name, *)
@@ -129,6 +175,52 @@ struct class_ : base
           , args[index | 2]
         );
 
+        return 1;
+    }
+
+    BOOST_PARAMETER_MEMBER_FUNCTION((int), f2, tag,
+        (required
+          (tester, *)
+          (name, *)
+        )
+        (optional
+          (value, *, 1.f)
+          (index, *, 2)
+        )
+    )
+    {
+        tester(name, value, index);
+        return 1;
+    }
+
+    BOOST_PARAMETER_CONST_MEMBER_FUNCTION((int), f2, tag,
+        (required
+          (tester, *)
+          (name, *)
+        )
+        (optional
+          (value, *, 1.f)
+          (index, *, 2)
+        )
+    )
+    {
+        tester(name, value, index);
+        return 1;
+    }
+
+
+    BOOST_PARAMETER_MEMBER_FUNCTION((int), static f_static, tag,
+        (required
+          (tester, *)
+          (name, *)
+        )
+        (optional
+          (value, *, 1.f)
+          (index, *, 2)
+        )
+    )
+    {
+        tester(name, value, index);
         return 1;
     }
 };
@@ -153,6 +245,31 @@ BOOST_PARAMETER_FUNCTION(
 template<class A0>
 typename boost::enable_if<boost::is_same<int,A0>, int>::type
 sfinae(A0 const& a0)
+{
+    return 0;
+}
+#endif
+
+BOOST_PARAMETER_FUNCTION(
+    (int), sfinae1, tag,
+    (required
+       (name, *(boost::is_convertible<boost::mpl::_, std::string>))
+    )
+)
+{
+    return 1;
+}
+
+#ifndef BOOST_NO_SFINAE
+// On compilers that actually support SFINAE, add another overload
+// that is an equally good match and can only be in the overload set
+// when the others are not.  This tests that the SFINAE is actually
+// working.  On all other compilers we're just checking that
+// everything about SFINAE-enabled code will work, except of course
+// the SFINAE.
+template<class A0>
+typename boost::enable_if<boost::is_same<int,A0>, int>::type
+sfinae1(A0 const& a0)
 {
     return 0;
 }
@@ -190,6 +307,19 @@ int main()
       , 2
     );
 
+    h(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+      , 1.f
+      , 2
+    );
+
+    h2(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+      , 1.f
+    );
+    
     class_ x(
         tester = values(S("foo"), 1.f, 2)
       , S("foo"), test::index = 2
@@ -205,6 +335,16 @@ int main()
       , name = S("foo")
     );
 
+    x.f2(
+        tester = values(S("foo"), 1.f, 2)
+      , S("foo")
+    );
+
+    x.f2(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+    );
+
     class_ const& x_const = x;
 
     x_const.f(
@@ -216,10 +356,39 @@ int main()
         tester = values(S("foo"), 1.f, 2)
       , name = S("foo")
     );
-   
+
+    x_const.f2(
+        tester = values(S("foo"), 1.f, 2)
+      , S("foo")
+    );
+
+    x_const.f2(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+    );
+
+    x_const.f2(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+    );
+
+    class_::f_static(
+        tester = values(S("foo"), 1.f, 2)
+      , S("foo")
+    );
+
+    class_::f_static(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+    );
+
 #ifndef BOOST_NO_SFINAE
     assert(sfinae("foo") == 1);
     assert(sfinae(1) == 0);
+
+    assert(sfinae1("foo") == 1);
+    assert(sfinae1(1) == 0);
 #endif
+    return 0;
 }
 

@@ -1,6 +1,8 @@
 '''
 >>> from python_parameter import X
->>> x = X()
+>>> x = X(y = 'baz')
+>>> x.value
+'foobaz'
 >>> x.f(1,2)
 3
 >>> x.f(1,2,3)
@@ -17,6 +19,10 @@
 'bazbar'
 >>> x.g(y = "foo", x = "bar")
 'barfoo'
+>>> y = x.h(x = "bar", y = "foo")
+>>> assert x == y
+>>> y = x(0)
+>>> assert x == y
 '''
 
 def run(args = None):
