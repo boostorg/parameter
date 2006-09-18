@@ -9,7 +9,6 @@
 # include <boost/mpl/identity.hpp>
 # include <boost/type_traits/is_reference.hpp>
 # include <boost/type_traits/add_reference.hpp>
-# include <boost/type_traits/add_const.hpp>
 # include <boost/optional.hpp>
 # include <boost/python/detail/referent_storage.hpp>
 # include <boost/type_traits/remove_cv.hpp>
@@ -23,12 +22,12 @@ struct maybe : maybe_base
 {
     typedef typename add_reference<
 # if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-            T const
+        T const
 # else 
-            typename add_const<T>::type
+        typename add_const<T>::type
 # endif 
     >::type reference;
-
+    
     typedef typename remove_cv<
         BOOST_DEDUCED_TYPENAME remove_reference<reference>::type
     >::type non_cv_value;

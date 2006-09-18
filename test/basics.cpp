@@ -20,10 +20,7 @@ namespace test
   typename boost::parameter::lazy_binding<Params,tag::value,F>::type
   extract_value(Params const& p, F const& f)
   {
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-      typename
-#endif 
-          ::boost::parameter::lazy_binding<
+      typename boost::parameter::lazy_binding<
         Params, tag::value, F
       >::type v = p[value || f ];
       return v;
