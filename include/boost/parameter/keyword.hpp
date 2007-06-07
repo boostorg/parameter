@@ -91,17 +91,13 @@ struct keyword
     // every instantiation of a function template is the same object.
     // We provide a reference to a common instance of each keyword
     // object and prevent construction by users.
-    static keyword<Tag> const instance;
-
-    // This interface is deprecated
+    
     static keyword<Tag>& get()
     {
-        return const_cast<keyword<Tag>&>(instance);
+        static keyword<Tag> result;
+        return result;
     }
 };
-
-template <class Tag>
-keyword<Tag> const keyword<Tag>::instance = {};
 
 // Reduces boilerplate required to declare and initialize keywords
 // without violating ODR.  Declares a keyword tag type with the given
@@ -111,19 +107,19 @@ keyword<Tag> const keyword<Tag>::instance = {};
 
 #if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
 
-# define BOOST_PARAMETER_KEYWORD(tag_namespace,name)                    \
-    namespace tag_namespace                                             \
-    {                                                                   \
-      struct name                                                       \
-      {                                                                 \
-          static char const* keyword_name()                             \
-          {                                                             \
-              return #name;                                             \
-          }                                                             \
-      };                                                                \
-    }                                                                   \
-    static ::boost::parameter::keyword<tag_namespace::name> const& name \
-       = ::boost::parameter::keyword<tag_namespace::name>::instance;
+# define BOOST_PARAMETER_KEYWORD(tag_namespace,name)                \
+    namespace tag_namespace                                         \
+    {                                                               \
+      struct name                                                   \
+      {                                                             \
+          static char const* keyword_name()                         \
+          {                                                         \
+              return #name;                                         \
+          }                                                         \
+      };                                                            \
+    }                                                               \
+    static ::boost::parameter::keyword<tag_namespace::name>& name   \
+       = ::boost::parameter::keyword<tag_namespace::name>::get();
 
 #else
 
@@ -140,8 +136,8 @@ keyword<Tag> const keyword<Tag>::instance = {};
     }                                                               \
     namespace                                                       \
     {                                                               \
-       ::boost::parameter::keyword<tag_namespace::name> const& name \
-       = ::boost::parameter::keyword<tag_namespace::name>::instance;\
+       ::boost::parameter::keyword<tag_namespace::name>& name       \
+       = ::boost::parameter::keyword<tag_namespace::name>::get();   \
     }
 
 #endif
