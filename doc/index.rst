@@ -82,7 +82,7 @@ __ ../../../../index.htm
 
 .. _`Boost Consulting`: http://www.boost-consulting.com
 
-.. _concepts: http://beta.boost.org/community/generic_programming.html#concept
+.. _concepts: ../../../more/generic_programming.html#concept
 
 -------------------------------------
 

@@ -174,7 +174,7 @@ Concepts
 
 This section describes the generic type concepts_ used by the Parameter library. 
 
-.. _concepts: http://beta.boost.org/community/generic_programming.html#concept
+.. _concepts: ../../../../more/generic_programming.html#concept
 
 |ArgumentPack|
 --------------
