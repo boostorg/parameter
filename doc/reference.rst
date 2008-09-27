@@ -174,7 +174,7 @@ Concepts
 
 This section describes the generic type concepts_ used by the Parameter library. 
 
-.. _concepts: ../../../../more/generic_programming.html#concept
+.. _concepts: http://www.boost.org/more/generic_programming.html#concept
 
 |ArgumentPack|
 --------------
@@ -803,8 +803,8 @@ Expands to:
             return ##\ *tag-name*;
         }
 
-        typedef *implementation defined* _;
-        typedef *implementation defined* _1;
+        typedef *unspecified* _;
+        typedef *unspecified* _1;
     };
   }
 
@@ -824,8 +824,8 @@ Expands to:
             return ##\ *name*;
         }
 
-        typedef *implementation defined* _;
-        typedef *implementation defined* _1;
+        typedef *unspecified* _;
+        typedef *unspecified* _1;
     };
   }
 

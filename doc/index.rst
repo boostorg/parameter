@@ -82,11 +82,16 @@ __ ../../../../index.htm
 
 .. _`Boost Consulting`: http://www.boost-consulting.com
 
-.. _concepts: ../../../more/generic_programming.html#concept
+.. _concepts: http://www.boost.org/more/generic_programming.html#concept
 
 -------------------------------------
 
+[Note: this tutorial does not cover all details of the library.  Please see also the `reference documentation`__\ ]
+
+__ reference.html
+
 .. contents:: **Table of Contents**
+   :depth: 2
 
 .. role:: concept
    :class: concept
