@@ -24,7 +24,6 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 
 namespace boost { namespace parameter { 
