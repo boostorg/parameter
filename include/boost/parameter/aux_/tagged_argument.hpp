@@ -122,12 +122,14 @@ struct tagged_argument : tagged_argument_base
     template <class Default>
     reference operator[](default_<key_type,Default> const& x) const
     {
+        (void)x;
         return value;
     }
 
     template <class F>
     reference operator[](lazy_default<key_type,F> const& x) const
     {
+        (void)x;
         return value;
     }
 
