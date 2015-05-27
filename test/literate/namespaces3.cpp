@@ -1,8 +1,6 @@
 
-#line 2161 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
 #include <iostream>
-#line 2143 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 namespace lib
 {
   namespace keywords
@@ -21,9 +19,7 @@ namespace lib
   }
 }
 
-#line 2170 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 using namespace lib::keywords;
 int y = lib::f(_name = "bob", _index = 2);
-#line 2172 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 int main() {}
 

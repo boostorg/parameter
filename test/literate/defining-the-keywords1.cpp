@@ -1,7 +1,5 @@
 
-#line 424 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter/keyword.hpp>
-#line 413 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 namespace graphs
 {
   namespace tag { struct graph; } // keyword tag type

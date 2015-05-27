@@ -1,5 +1,4 @@
 
-#line 730 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
 #include <iostream>
 
@@ -8,7 +7,6 @@ BOOST_PARAMETER_NAME(visitor)
 BOOST_PARAMETER_NAME(root_vertex)
 BOOST_PARAMETER_NAME(index_map)
 BOOST_PARAMETER_NAME(color_map)
-#line 702 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/graph/depth_first_search.hpp> // for dfs_visitor
 
 BOOST_PARAMETER_FUNCTION(
