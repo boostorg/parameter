@@ -1,5 +1,4 @@
 
-#line 35 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
 
 namespace test
@@ -31,7 +30,6 @@ namespace test
 }
 using namespace test;
 int x = 
-#line 19
 new_window("alert", _width=10, _titlebar=false);
 
 smart_ptr<

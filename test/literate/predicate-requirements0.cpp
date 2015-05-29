@@ -1,5 +1,4 @@
 
-#line 935 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
@@ -11,7 +10,6 @@ BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
 BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
 
 using boost::mpl::_;
-#line 859 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 // We first need to define a few metafunction that we use in the
 // predicates below.
 
@@ -87,7 +85,6 @@ BOOST_PARAMETER_FUNCTION(
        , default_color_map(num_vertices(graph), index_map) )
     )
 )
-#line 949 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 {}
 
 int main()

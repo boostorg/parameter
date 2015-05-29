@@ -1,7 +1,5 @@
 
-#line 1387 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
-#line 1373 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 namespace boost { namespace python {
 
 template <

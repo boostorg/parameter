@@ -1,8 +1,6 @@
 
-#line 1248 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
 #include <iostream>
-#line 1234 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 BOOST_PARAMETER_NAME(name)
 BOOST_PARAMETER_NAME(index)
 
@@ -17,7 +15,6 @@ struct myclass_impl
     }
 };
 
-#line 1261 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 struct myclass : myclass_impl
 {
     BOOST_PARAMETER_CONSTRUCTOR(
@@ -26,12 +23,9 @@ struct myclass : myclass_impl
 };
 
 
-#line 1275 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 int main() {
-#line 1272 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 myclass x("bob", 3);                     // positional
 myclass y(_index = 12, _name = "sally"); // named
 myclass z("june");                       // positional/defaulted
-#line 1275 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 }
 

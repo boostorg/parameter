@@ -1,5 +1,4 @@
 
-#line 1062 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
 
 BOOST_PARAMETER_NAME(name)
@@ -31,7 +30,6 @@ default_call_policies some_policies;
 
 void f()
 {}
-#line 1029 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 namespace mpl = boost::mpl;
 
 BOOST_PARAMETER_FUNCTION(
@@ -64,17 +62,13 @@ BOOST_PARAMETER_FUNCTION(
  }
 
 
-#line 1111 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 int main()
 {
-#line 1108 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 def("f", &f, some_policies, "Documentation for f");
 def("f", &f, "Documentation for f", some_policies);
 
-#line 1121 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 def(
     "f", &f
    , _policies = some_policies, "Documentation for f");
-#line 1124 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 }
 

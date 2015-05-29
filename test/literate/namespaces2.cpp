@@ -1,9 +1,6 @@
 
-#line 2114 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
-#line 2085 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 #include <boost/parameter.hpp>
 #include <iostream>
-#line 2071 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 namespace lib
 {
   BOOST_PARAMETER_NAME(name)
@@ -18,9 +15,7 @@ namespace lib
       return index;
   }
 }
-#line 2128 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 using namespace lib;
 int x = f(_name = "jill", _index = 3);
-#line 2134 "/home/daniel/dev/boost/trunk/libs/parameter/doc/index.rst"
 int main() {}
 
