@@ -97,7 +97,7 @@ int main()
                  E(w,z), E(z, z)};
     G g(edges, edges + sizeof(edges) / sizeof(E), N);
 
-    depth_first_search(g);
-    depth_first_search(g, _root_vertex = (int)x);
+    ::depth_first_search(g);
+    ::depth_first_search(g, _root_vertex = (int)x);
 }
 
