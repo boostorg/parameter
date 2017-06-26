@@ -353,10 +353,9 @@ struct funptr_predicate<void**>
       , BOOST_PARAMETER_FUNCTION_FWD_FUNCTION_TEMPLATE_Z, BOOST_PP_TUPLE_EAT(2) \
     )(z,n) \
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(7,3,data)) \
-    inline \
-    BOOST_PP_EXPR_IF(n, typename) \
+    inline typename \
         BOOST_PARAMETER_FUNCTION_RESULT_NAME(BOOST_PP_TUPLE_ELEM(7,3,data))<   \
-        BOOST_PP_EXPR_IF(n, typename) \
+        typename \
         boost::parameter::aux::argument_pack< \
             BOOST_PARAMETER_FUNCTION_PARAMETERS_NAME(BOOST_PP_TUPLE_ELEM(7,3,data)) \
             BOOST_PP_COMMA_IF(n) \
