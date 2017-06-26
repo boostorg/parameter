@@ -345,7 +345,10 @@ struct funptr_predicate<void**>
 // daniel: what? how is that relevant? the reason for using CAT() is to make sure
 // base is expanded. i'm not sure we need to here, but it's more stable to do it.
 # define BOOST_PARAMETER_IMPL(base) \
-    BOOST_PP_CAT(boost_param_impl,BOOST_PARAMETER_MEMBER_FUNCTION_NAME(base))
+    BOOST_PP_CAT( \
+        boost_param_impl_ \
+        , BOOST_PP_CAT(__LINE__,BOOST_PARAMETER_MEMBER_FUNCTION_NAME(base)) \
+    )
 
 # define BOOST_PARAMETER_FUNCTION_FWD_FUNCTION00(z, n, r, data, elem) \
     BOOST_PP_IF( \
