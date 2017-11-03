@@ -1,16 +1,16 @@
-// Copyright David Abrahams, Daniel Wallin 2003. Use, modification and 
-// distribution is subject to the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Copyright David Abrahams, Daniel Wallin 2003.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 // This file generates overloads in this format:
 //
-//     template<class A0, class A1>
+//     template <class A0, class A1>
 //     typename mpl::apply_wrap1<
 //         aux::make_arg_list<
-//             PS0,A0
+//             PS0,A0 const&
 //           , aux::make_arg_list<
-//                 PS1,A1
+//                 PS1,A1 const&
 //               , mpl::identity<aux::empty_arg_list>
 //             >
 //         >
@@ -20,9 +20,9 @@
 //     {
 //         typedef typename mpl::apply_wrap1<
 //             aux::make_arg_list<
-//                 PS0,A0
+//                 PS0,A0 const&
 //               , aux::make_arg_list<
-//                     PS1,A1
+//                     PS1,A1 const&
 //                   , mpl::identity<aux::empty_arg_list>
 //                 >
 //             >
@@ -44,8 +44,7 @@
 #define N BOOST_PP_ITERATION()
 
 #define BOOST_PARAMETER_open_list(z, n, text) \
-    aux::item< \
-        BOOST_PP_CAT(PS, n), BOOST_PP_CAT(A, n)
+    aux::item<BOOST_PP_CAT(PS, n), BOOST_PP_CAT(A, n) const&
 
 #define BOOST_PARAMETER_close_list(z, n, text) > 
 
@@ -65,7 +64,7 @@ template<BOOST_PP_ENUM_PARAMS(N, class A)>
 typename mpl::first<
     typename BOOST_PARAMETER_arg_list(N)::type
 >::type
-operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, A, & a)) const
+operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, A, const& a)) const
 {
     typedef typename BOOST_PARAMETER_arg_list(N)::type result;
 

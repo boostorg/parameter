@@ -1,14 +1,16 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <boost/detail/lightweight_test.hpp>
 #include <string>
 #include "basics.hpp"
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 
 namespace test {
 
@@ -30,9 +32,9 @@ BOOST_PARAMETER_NAME(x)
 typedef is_convertible<_,char const*> predicate;
 
 BOOST_PARAMETER_FUNCTION((int), sfinae, tag,
-  (deduced
-     (optional (x, *(predicate), 0))
-  )
+    (deduced
+        (optional (x, *(predicate), 0))
+    )
 )
 {
     return 1;
@@ -41,9 +43,9 @@ BOOST_PARAMETER_FUNCTION((int), sfinae, tag,
 #else
 
 BOOST_PARAMETER_FUNCTION((int), sfinae, tag,
-  (deduced
-     (optional (x, *(is_convertible<_,char const*>), 0))
-  )
+    (deduced
+        (optional (x, *(is_convertible<_,char const*>), 0))
+    )
 )
 {
     return 1;
@@ -64,10 +66,10 @@ int main()
 {
     using namespace test;
 
-    assert(sfinae() == 1);
-    assert(sfinae("foo") == 1);
-    assert(sfinae(1) == 0);
+    BOOST_TEST(sfinae() == 1);
+    BOOST_TEST(sfinae("foo") == 1);
+    BOOST_TEST(sfinae(1) == 0);
 
-    return 0;
+    return boost::report_errors();
 }
 

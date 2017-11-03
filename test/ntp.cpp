@@ -1,11 +1,13 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter.hpp>
-#include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/mpl/aux_/test.hpp>
 
 namespace mpl = boost::mpl;
 namespace parameter = boost::parameter;
@@ -49,9 +51,9 @@ struct with_ntp
         >
     >::bind<A0,A1,A2,A3
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-          , parameter::void_
-#endif 
-            >::type args;
+      , parameter::void_
+#endif
+    >::type args;
 
     typedef typename parameter::binding<
         args, a0_is<>, void*
@@ -72,39 +74,61 @@ struct with_ntp
     typedef void(*type)(a0,a1,a2,a3);
 };
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<>::type, void(*)(void*,void*,void*,void*)
->));
+MPL_TEST_CASE()
+{
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<>::type, void(*)(void*,void*,void*,void*)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<a2_is<int> >::type, void(*)(void*,void*,int,void*)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<a2_is<int> >::type, void(*)(void*,void*,int,void*)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<a1_is<int> >::type, void(*)(void*,int,void*,void*)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<a1_is<int> >::type, void(*)(void*,int,void*,void*)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<a2_is<int const>, a1_is<float> >::type, void(*)(void*,float,int const,void*)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<a2_is<int const>, a1_is<float> >::type
+          , void(*)(void*,float,int const,void*)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<int const>::type, void(*)(int const, void*, void*,void*)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<int const>::type, void(*)(int const, void*, void*,void*)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<int, float>::type, void(*)(int, float, void*,void*)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<int, float>::type, void(*)(int, float, void*,void*)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<int, float, char>::type, void(*)(int, float, char,void*)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<int, float, char>::type, void(*)(int, float, char,void*)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<a0_is<int>, Y>::type, void(*)(int,void*,void*, Y)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<a0_is<int>, Y>::type, void(*)(int,void*,void*, Y)
+        >
+    ));
 
-BOOST_MPL_ASSERT((boost::is_same<
-    with_ntp<int&, a2_is<char>, Y>::type, void(*)(int&,void*,char, Y)
->));
+    BOOST_MPL_ASSERT((
+        boost::is_same<
+            with_ntp<int&, a2_is<char>, Y>::type, void(*)(int&,void*,char, Y)
+        >
+    ));
+}
 

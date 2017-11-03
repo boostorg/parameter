@@ -1,11 +1,13 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter.hpp>
-#include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/detail/lightweight_test.hpp>
 
 struct count_instances
 {
@@ -40,8 +42,8 @@ BOOST_PARAMETER_NAME(y)
 
 BOOST_PARAMETER_FUNCTION((int), f, tag,
     (required
-       (x, (int))
-       (y, (int))
+        (x, (int))
+        (y, (int))
     )
 )
 {
@@ -52,23 +54,23 @@ BOOST_PARAMETER_FUNCTION((int), f, tag,
 
 BOOST_PARAMETER_FUNCTION((int), g, tag,
     (required
-       (x, (count_instances))
+        (x, (count_instances))
     )
 )
 {
     BOOST_MPL_ASSERT((boost::is_same<x_type,count_instances>));
-    assert(count_instances::count > 0);
+    BOOST_TEST(count_instances::count > 0);
     return 0;
 }
 
 BOOST_PARAMETER_FUNCTION((int), h, tag,
     (required
-       (x, (count_instances const&))
+        (x, (count_instances const&))
     )
 )
 {
-    BOOST_MPL_ASSERT((boost::is_same<x_type,count_instances const>));
-    assert(count_instances::count == 1);
+    BOOST_MPL_ASSERT((boost::is_convertible<x_type,count_instances const>));
+    BOOST_TEST(count_instances::count == 1);
     return 0;
 }
 
@@ -76,10 +78,9 @@ int main()
 {
     f(1, 2);
     f(1., 2.f);
-    f(1U, 2L);
-
+    f(1U, 2I);
     g(0);
-
     h(0);
+    return boost::report_errors();
 }
 

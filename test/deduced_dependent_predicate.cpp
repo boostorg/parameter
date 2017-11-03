@@ -1,6 +1,7 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/parameters.hpp>
 #include <boost/parameter/name.hpp>
@@ -19,8 +20,9 @@ int main()
 {
     using namespace parameter;
     using boost::is_same;
+    using boost::is_convertible;
     using boost::remove_reference;
-    using boost::add_reference;
+    using boost::add_lvalue_reference;
 
     check<
         parameters<
@@ -34,7 +36,7 @@ int main()
                 > 
 #else
               , is_same<
-                    add_reference<mpl::_1>
+                    add_lvalue_reference<mpl::_1>
                   , binding<mpl::_2,tag::x>
                 > 
 #endif
@@ -58,7 +60,7 @@ int main()
                 > 
 #else
               , is_same<
-                    add_reference<mpl::_1>
+                    add_lvalue_reference<mpl::_1>
                   , binding<mpl::_2,tag::x>
                 > 
 #endif
@@ -75,7 +77,7 @@ int main()
             tag::x
           , optional<
                 deduced<tag::y>
-              , is_same<
+              , is_convertible<
                     mpl::_1
                   , tag::x::_
                 > 
@@ -92,7 +94,7 @@ int main()
             tag::x
           , optional<
                 deduced<tag::y>
-              , is_same<
+              , is_convertible<
                     mpl::_1
                   , tag::x::_1
                 > 
@@ -104,6 +106,6 @@ int main()
       , 1U
     );
 
-    return 0;
+    return boost::report_errors();
 }
 

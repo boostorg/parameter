@@ -1,12 +1,13 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_DEDUCED_060920_HPP
-# define BOOST_DEDUCED_060920_HPP
+#define BOOST_DEDUCED_060920_HPP
 
-# include <boost/mpl/for_each.hpp>
-# include "basics.hpp"
+#include <boost/mpl/for_each.hpp>
+#include "basics.hpp"
 
 struct not_present_tag {};
 not_present_tag not_present;
@@ -14,10 +15,10 @@ not_present_tag not_present;
 template <class E, class ArgPack>
 struct assert_expected
 {
-    assert_expected(E const& e, ArgPack const& args)
-      : expected(e)
-      , args(args)
-    {}
+    assert_expected(E const& e, ArgPack const& args_)
+      : expected(e), args(args_)
+    {
+    }
 
     template <class T>
     bool check_not_present(T const&) const
@@ -41,8 +42,9 @@ struct assert_expected
     template <class K>
     void operator()(K) const
     {
-        boost::parameter::keyword<K> const& k = boost::parameter::keyword<K>::get();
-        assert(check1(k, expected[k], 0L));
+        boost::parameter::keyword<K> const&
+            k = boost::parameter::keyword<K>::instance;
+        BOOST_TEST(check1(k, expected[k], 0L));
     }
 
     E const& expected;
@@ -55,6 +57,13 @@ void check0(E const& e, ArgPack const& args)
     boost::mpl::for_each<E>(assert_expected<E,ArgPack>(e, args));
 }
 
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+template <class P, class E, class ...Args>
+void check(E const& e, Args const&... args)
+{
+    check0(e, P()(args...));
+}
+#else
 template <class P, class E, class A0>
 void check(E const& e, A0 const& a0)
 {
@@ -64,14 +73,14 @@ void check(E const& e, A0 const& a0)
 template <class P, class E, class A0, class A1>
 void check(E const& e, A0 const& a0, A1 const& a1)
 {
-    check0(e, P()(a0,a1));
+    check0(e, P()(a0, a1));
 }
 
 template <class P, class E, class A0, class A1, class A2>
 void check(E const& e, A0 const& a0, A1 const& a1, A2 const& a2)
 {
-    check0(e, P()(a0,a1,a2));
+    check0(e, P()(a0, a1, a2));
 }
-
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif // BOOST_DEDUCED_060920_HPP
 

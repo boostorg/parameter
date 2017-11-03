@@ -1,12 +1,13 @@
-// Copyright Daniel Wallin 2005. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2005.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/keyword.hpp>
+#include <boost/parameter/name.hpp>
 #include <boost/detail/lightweight_test.hpp>
 
-BOOST_PARAMETER_KEYWORD(tag, x)
-BOOST_PARAMETER_KEYWORD(tag, y)
+BOOST_PARAMETER_NAME(x)
+BOOST_PARAMETER_NAME(y)
     
 struct default_src
 {
@@ -26,17 +27,17 @@ void check(ArgumentPack const& p, K const& kw, T const& value)
 
 int main()
 {
-    check(x = 20, x, 20);
-    check(y = 20, y, 20);
+    check(_x = 20, _x, 20);
+    check(_y = 20, _y, 20);
 
-    check(x = 20, x | 0, 20);
-    check(y = 20, y | 0, 20);
+    check(_x = 20, _x | 0, 20);
+    check(_y = 20, _y | 0, 20);
 
-    check(x = 20, x | default_src(), 20);
-    check(y = 20, y | default_src(), 20);
+    check(_x = 20, _x | default_src(), 20);
+    check(_y = 20, _y | default_src(), 20);
     
-    check(y = 20, x | 0, 0);
-    check(y = 20, x || default_src(), 0);
+    check(_y = 20, _x | 0, 0);
+    check(_y = 20, _x || default_src(), 0);
     return boost::report_errors();
 }
 

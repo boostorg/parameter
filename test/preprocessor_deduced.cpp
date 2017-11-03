@@ -1,6 +1,7 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
@@ -9,8 +10,8 @@
 #include <string>
 #include "basics.hpp"
 
-#ifndef BOOST_NO_SFINAE
-# include <boost/utility/enable_if.hpp>
+#if !defined BOOST_NO_SFINAE
+#include <boost/core/enable_if.hpp>
 #endif
 
 namespace test {
@@ -25,6 +26,7 @@ BOOST_PARAMETER_NAME(x)
 BOOST_PARAMETER_NAME(y)
 BOOST_PARAMETER_NAME(z)
 
+#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
 // Sun has problems with this syntax:
 //
 //   template1< r* ( template2<x> ) >
@@ -33,43 +35,41 @@ BOOST_PARAMETER_NAME(z)
 typedef is_convertible<_, int> predicate1;
 typedef is_convertible<_, std::string> predicate2;
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-
 BOOST_PARAMETER_FUNCTION((int), f, tag,
     (required
-       (expected, *)
+        (expected, *)
     )
     (deduced
-       (required
-          (x, *(predicate1))
-          (y, *(predicate2))
-       )
+        (required
+            (x, *(predicate1))
+            (y, *(predicate2))
+        )
     )
 )
-#else
+#else // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
 BOOST_PARAMETER_FUNCTION((int), f, tag,
     (required
-       (expected, *)
+        (expected, *)
     )
     (deduced
-       (required
-          (x, *(is_convertible<_, int>))
-          (y, *(is_convertible<_, std::string>))
-       )
+        (required
+            (x, *(is_convertible<_, int>))
+            (y, *(is_convertible<_, std::string>))
+        )
     )
 )
-#endif 
+#endif // SunPro CC workarounds needed.
 {
-    assert(equal(x, boost::tuples::get<0>(expected)));
-    assert(equal(y, boost::tuples::get<1>(expected)));
+    BOOST_TEST(equal(x, boost::tuples::get<0>(expected)));
+    BOOST_TEST(equal(y, boost::tuples::get<1>(expected)));
     return 1;
 }
 
 struct X 
 {
-    X(int x = -1)
-      : x(x)
-    {}
+    X(int x_ = -1) : x(x_)
+    {
+    }
     
     bool operator==(X const& other) const
     {
@@ -79,50 +79,77 @@ struct X
     int x;
 };
 
+#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
 typedef is_convertible<_, X> predicate3;  // SunPro workaround; see above
 
 BOOST_PARAMETER_FUNCTION((int), g, tag,
     (required
-      (expected, *)
+        (expected, *)
     )
     (deduced
-       (required
-          (x, *(is_convertible<_, int>))
-          (y, *(is_convertible<_, std::string>))
-       )
-       (optional
-          (z, *(predicate3), X())
-       )
+        (required
+            (x, *(predicate1))
+            (y, *(predicate2))
+        )
+        (optional
+            (z, *(predicate3), X())
+        )
     )
 )
+#else // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+BOOST_PARAMETER_FUNCTION((int), g, tag,
+    (required
+        (expected, *)
+    )
+    (deduced
+        (required
+            (x, *(is_convertible<_, int>))
+            (y, *(is_convertible<_, std::string>))
+        )
+        (optional
+            (z, *(is_convertible<_, X>), X())
+        )
+    )
+)
+#endif // SunPro CC workarounds needed.
 {
-    assert(equal(x, boost::tuples::get<0>(expected)));
-    assert(equal(y, boost::tuples::get<1>(expected)));
-    assert(equal(z, boost::tuples::get<2>(expected)));
+    BOOST_TEST(equal(x, boost::tuples::get<0>(expected)));
+    BOOST_TEST(equal(y, boost::tuples::get<1>(expected)));
+    BOOST_TEST(equal(z, boost::tuples::get<2>(expected)));
     return 1;
 }
 
+#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
 BOOST_PARAMETER_FUNCTION(
     (int), sfinae, tag,
     (deduced
-      (required
-        (x, *(predicate2))
-      )
+        (required
+            (x, *(predicate2))
+        )
     )
 )
+#else
+BOOST_PARAMETER_FUNCTION(
+    (int), sfinae, tag,
+    (deduced
+        (required
+            (x, *(is_convertible<_, std::string>))
+        )
+    )
+)
+#endif
 {
     return 1;
 }
 
-#ifndef BOOST_NO_SFINAE
+#if !defined BOOST_NO_SFINAE
 // On compilers that actually support SFINAE, add another overload
 // that is an equally good match and can only be in the overload set
 // when the others are not.  This tests that the SFINAE is actually
-// working.  On all other compilers we're just checking that
-// everything about SFINAE-enabled code will work, except of course
-// the SFINAE.
-template<class A0>
-typename boost::enable_if<boost::is_same<int,A0>, int>::type
+// working.  On all other compilers we're just checking that everything
+// about SFINAE-enabled code will work, except of course the SFINAE.
+template <class A0>
+typename boost::enable_if<boost::is_same<int, A0>, int>::type
 sfinae(A0 const& a0)
 {
     return 0;
@@ -161,11 +188,11 @@ int main()
     g(make_tuple(0, str("foo"), X(1)), 0, _y = "foo", X(1));
     g(make_tuple(0, str("foo"), X(1)), X(1), 0, _y = "foo");
 
-#ifndef BOOST_NO_SFINAE
-    assert(sfinae("foo") == 1);
-    assert(sfinae(0) == 0);
+#if !defined BOOST_NO_SFINAE
+    BOOST_TEST(sfinae("foo") == 1);
+    BOOST_TEST(sfinae(0) == 0);
 #endif
 
-    return 0;
+    return boost::report_errors();
 }
 
