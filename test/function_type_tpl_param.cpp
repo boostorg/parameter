@@ -38,8 +38,8 @@ namespace test {
     struct Y
       : boost::is_same<
             typename X<
-                keywords::tag::function_type
-              , keywords::function_type<T>
+                test::keywords::tag::function_type
+              , test::keywords::function_type<T>
             >::type
 #if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
           , boost::function<T>

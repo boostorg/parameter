@@ -88,6 +88,81 @@ namespace test {
     }
 } // namespace test
 
+#include <bitset>
+
+namespace test {
+
+    template <std::size_t N>
+    std::bitset<N + 1> rvalue_bitset()
+    {
+        return std::bitset<N + 1>();
+    }
+
+    template <std::size_t N>
+    std::bitset<N + 1> const rvalue_const_bitset()
+    {
+        return std::bitset<N + 1>();
+    }
+
+    template <std::size_t N>
+    std::bitset<N + 1>& lvalue_bitset()
+    {
+        static std::bitset<N + 1> lset = std::bitset<N + 1>();
+        return lset;
+    }
+
+    template <std::size_t N>
+    std::bitset<N + 1> const& lvalue_const_bitset()
+    {
+        static std::bitset<N + 1> const clset = std::bitset<N + 1>();
+        return clset;
+    }
+
+    template <std::size_t N>
+    struct lvalue_bitset_function
+    {
+        typedef std::bitset<N + 1>& result_type;
+
+        result_type operator()() const
+        {
+            return test::lvalue_bitset<N>();
+        }
+    };
+
+    template <std::size_t N>
+    struct lvalue_const_bitset_function
+    {
+        typedef std::bitset<N + 1> const& result_type;
+
+        result_type operator()() const
+        {
+            return test::lvalue_const_bitset<N>();
+        }
+    };
+
+    template <std::size_t N>
+    struct rvalue_bitset_function
+    {
+        typedef std::bitset<N + 1> result_type;
+
+        result_type operator()() const
+        {
+            return test::rvalue_bitset<N>();
+        }
+    };
+
+    template <std::size_t N>
+    struct rvalue_const_bitset_function
+    {
+        typedef std::bitset<N + 1> const result_type;
+
+        result_type operator()() const
+        {
+            return test::rvalue_const_bitset<N>();
+        }
+    };
+} // namespace test
+
 #include <boost/parameter/config.hpp>
 
 namespace test {
@@ -95,25 +170,54 @@ namespace test {
     template <typename T>
     struct A
     {
-        static invoked evaluate_category(T const&)
+        static test::invoked evaluate_category(T const&)
         {
-            return passed_by_lvalue_reference_to_const;
+            return test::passed_by_lvalue_reference_to_const;
         }
 
-        static invoked evaluate_category(T&)
+        static test::invoked evaluate_category(T&)
         {
-            return passed_by_lvalue_reference;
+            return test::passed_by_lvalue_reference;
         }
 
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-        static invoked evaluate_category(T const&&)
+        static test::invoked evaluate_category(T const&&)
         {
-            return passed_by_rvalue_reference_to_const;
+            return test::passed_by_rvalue_reference_to_const;
         }
 
-        static invoked evaluate_category(T&&)
+        static test::invoked evaluate_category(T&&)
         {
-            return passed_by_rvalue_reference;
+            return test::passed_by_rvalue_reference;
+        }
+#endif
+    };
+
+    struct U
+    {
+        template <std::size_t N>
+        static test::invoked evaluate_category(std::bitset<N + 1> const&)
+        {
+            return test::passed_by_lvalue_reference_to_const;
+        }
+
+        template <std::size_t N>
+        static test::invoked evaluate_category(std::bitset<N + 1>&)
+        {
+            return test::passed_by_lvalue_reference;
+        }
+
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+        template <std::size_t N>
+        static test::invoked evaluate_category(std::bitset<N + 1> const&&)
+        {
+            return test::passed_by_rvalue_reference_to_const;
+        }
+
+        template <std::size_t N>
+        static test::invoked evaluate_category(std::bitset<N + 1>&&)
+        {
+            return test::passed_by_rvalue_reference;
         }
 #endif
     };

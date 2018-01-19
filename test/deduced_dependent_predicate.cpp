@@ -9,102 +9,78 @@
 #include <boost/type_traits.hpp>
 #include "deduced.hpp"
 
-namespace parameter = boost::parameter;
-namespace mpl = boost::mpl;
+namespace test {
 
-BOOST_PARAMETER_NAME(x)
-BOOST_PARAMETER_NAME(y)
-BOOST_PARAMETER_NAME(z)
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
+} // namespace test
 
 int main()
 {
-    using namespace parameter;
-    using boost::is_same;
-    using boost::is_convertible;
-    using boost::remove_reference;
-    using boost::add_lvalue_reference;
-
-    check<
-        parameters<
-            tag::x
-          , optional<
-                deduced<tag::y>
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::y>
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))    
-              , is_same<
-                    mpl::_1
-                  , remove_reference<binding<mpl::_2,tag::x> >
-                > 
+              , boost::is_same<
+                    boost::mpl::_1
+                  , boost::remove_reference<
+                        boost::parameter::binding<boost::mpl::_2,test::tag::x>
+                    >
+                >
 #else
-              , is_same<
-                    add_lvalue_reference<mpl::_1>
-                  , binding<mpl::_2,tag::x>
-                > 
+              , boost::is_same<
+                    boost::add_lvalue_reference<boost::mpl::_1>
+                  , boost::parameter::binding<boost::mpl::_2,test::tag::x>
+                >
 #endif
             >
         >
-    >(
-        (_x = 0, _y = 1)
-      , 0
-      , 1
-    );
+    >((test::_x = 0, test::_y = 1), 0, 1);
 
-    check<
-        parameters<
-            tag::x
-          , optional<
-                deduced<tag::y>
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::y>
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))    
-              , is_same<
-                    mpl::_1
-                  , remove_reference<binding<mpl::_2,tag::x> >
-                > 
+              , boost::is_same<
+                    boost::mpl::_1
+                  , boost::remove_reference<
+                        boost::parameter::binding<boost::mpl::_2,test::tag::x>
+                    >
+                >
 #else
-              , is_same<
-                    add_lvalue_reference<mpl::_1>
-                  , binding<mpl::_2,tag::x>
-                > 
+              , boost::is_same<
+                    boost::add_lvalue_reference<boost::mpl::_1>
+                  , boost::parameter::binding<boost::mpl::_2,test::tag::x>
+                >
 #endif
             >
         >
-    >(
-        (_x = 0U, _y = 1U)
-      , 0U
-      , 1U
-    );
+    >((test::_x = 0U, test::_y = 1U), 0U, 1U);
 
-    check<
-        parameters<
-            tag::x
-          , optional<
-                deduced<tag::y>
-              , is_convertible<
-                    mpl::_1
-                  , tag::x::_
-                > 
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_1,test::tag::x::_>
             >
         >
-    >(
-        (_x = 0U, _y = 1U)
-      , 0U
-      , 1U
-    );
+    >((test::_x = 0U, test::_y = 1U), 0U, 1U);
 
-    check<
-        parameters<
-            tag::x
-          , optional<
-                deduced<tag::y>
-              , is_convertible<
-                    mpl::_1
-                  , tag::x::_1
-                > 
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_1,test::tag::x::_1>
             >
         >
-    >(
-        (_x = 0U, _y = 1U)
-      , 0U
-      , 1U
-    );
+    >((test::_x = 0U, test::_y = 1U), 0U, 1U);
 
     return boost::report_errors();
 }

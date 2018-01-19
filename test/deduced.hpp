@@ -9,78 +9,84 @@
 #include <boost/mpl/for_each.hpp>
 #include "basics.hpp"
 
-struct not_present_tag {};
-not_present_tag not_present;
+namespace test {
 
-template <class E, class ArgPack>
-struct assert_expected
-{
-    assert_expected(E const& e, ArgPack const& args_)
-      : expected(e), args(args_)
+    struct not_present_tag
     {
-    }
+    };
 
-    template <class T>
-    bool check_not_present(T const&) const
+    not_present_tag not_present;
+
+    template <class E, class ArgPack>
+    struct assert_expected
     {
-        BOOST_MPL_ASSERT((boost::is_same<T,not_present_tag>));
-        return true;
-    }
+        assert_expected(E const& e, ArgPack const& args_)
+          : expected(e), args(args_)
+        {
+        }
 
-    template <class K>
-    bool check1(K const& k, not_present_tag const&, long) const
+        template <class T>
+        bool check_not_present(T const&) const
+        {
+            BOOST_MPL_ASSERT((boost::is_same<T,test::not_present_tag>));
+            return true;
+        }
+
+        template <class K>
+        bool check1(K const& k, test::not_present_tag const& t, long) const
+        {
+            return check_not_present(args[k | t]);
+        }
+
+        template <class K, class Expected>
+        bool check1(K const& k, Expected const& expected, int) const
+        {
+            return test::equal(args[k], expected);
+        }
+
+        template <class K>
+        void operator()(K) const
+        {
+            boost::parameter::keyword<K> const&
+                k = boost::parameter::keyword<K>::instance;
+            BOOST_TEST(check1(k, expected[k], 0L));
+        }
+
+        E const& expected;
+        ArgPack const& args;
+    };
+
+    template <class E, class ArgPack>
+    void check0(E const& e, ArgPack const& args)
     {
-        return check_not_present(args[k | not_present]);
+        boost::mpl::for_each<E>(test::assert_expected<E,ArgPack>(e, args));
     }
-
-    template <class K, class Expected>
-    bool check1(K const& k, Expected const& expected, int) const
-    {
-        return test::equal(args[k], expected);
-    }
-
-    template <class K>
-    void operator()(K) const
-    {
-        boost::parameter::keyword<K> const&
-            k = boost::parameter::keyword<K>::instance;
-        BOOST_TEST(check1(k, expected[k], 0L));
-    }
-
-    E const& expected;
-    ArgPack const& args;
-};
-
-template <class E, class ArgPack>
-void check0(E const& e, ArgPack const& args)
-{
-    boost::mpl::for_each<E>(assert_expected<E,ArgPack>(e, args));
-}
 
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-template <class P, class E, class ...Args>
-void check(E const& e, Args const&... args)
-{
-    check0(e, P()(args...));
-}
+    template <class P, class E, class ...Args>
+    void check(E const& e, Args const&... args)
+    {
+        test::check0(e, P()(args...));
+    }
 #else
-template <class P, class E, class A0>
-void check(E const& e, A0 const& a0)
-{
-    check0(e, P()(a0));
-}
+    template <class P, class E, class A0>
+    void check(E const& e, A0 const& a0)
+    {
+        test::check0(e, P()(a0));
+    }
 
-template <class P, class E, class A0, class A1>
-void check(E const& e, A0 const& a0, A1 const& a1)
-{
-    check0(e, P()(a0, a1));
-}
+    template <class P, class E, class A0, class A1>
+    void check(E const& e, A0 const& a0, A1 const& a1)
+    {
+        test::check0(e, P()(a0, a1));
+    }
 
-template <class P, class E, class A0, class A1, class A2>
-void check(E const& e, A0 const& a0, A1 const& a1, A2 const& a2)
-{
-    check0(e, P()(a0, a1, a2));
-}
+    template <class P, class E, class A0, class A1, class A2>
+    void check(E const& e, A0 const& a0, A1 const& a1, A2 const& a2)
+    {
+        test::check0(e, P()(a0, a1, a2));
+    }
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+} // namespace test
 #endif // BOOST_DEDUCED_060920_HPP
 

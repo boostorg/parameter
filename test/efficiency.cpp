@@ -4,6 +4,12 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter.hpp>
+
+#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING && \
+    BOOST_PARAMETER_MAX_ARITY < 1
+#error Define BOOST_PARAMETER_MAX_ARITY as 1 or greater.
+#endif
+
 #include <boost/timer.hpp>
 #include <iostream>
 
@@ -49,7 +55,8 @@ namespace test {
 #else
           : sum()
 #endif
-        {}
+        {
+        }
 
         void operator()(T w)
         {
@@ -72,25 +79,25 @@ namespace test {
 #else
           : sum()
 #endif
-        {}
+        {
+        }
 
         template <class ArgumentPack>
         void operator()(ArgumentPack const& variates)
         {
-            this->sum += variates[_weight];
+            this->sum += variates[test::_weight];
         }
 
         T sum;
     };
 
-    // This value is required to ensure that a smart compiler's dead
-    // code elimination doesn't optimize away anything we're testing.
-    // We'll use it to compute the return code of the executable to make
-    // sure it's needed.
+    // This value is required to ensure that a smart compiler's dead code
+    // elimination doesn't optimize away anything we're testing.  We'll use it
+    // to compute the return code of the executable to make sure it's needed.
     double live_code;
 
-    // Call objects of the given Accumulator type repeatedly with x as
-    // an argument.
+    // Call objects of the given Accumulator type repeatedly
+    // with x an argument.
     template <class Accumulator, class Arg>
     void hammer(Arg const& x, long const repeats)
     {
@@ -101,20 +108,18 @@ namespace test {
         // and update them in sequence, so that there's no dependency
         // between adjacent addition operations.
         //
-        // Additionally, if there were only one accumulator, the
-        // compiler or CPU might decide to update the value in a
-        // register rather that writing it back to memory.  we want each
-        // operation to at least update the L1 cache.  *** Note: This
-        // concern is specific to the particular application at which
-        // we're targeting the test. ***
+        // Additionally, if there were only one accumulator, the compiler or
+        // CPU might decide to update the value in a register rather than
+        // writing it back to memory.  We want each operation to at least
+        // update the L1 cache.  *** Note: This concern is specific to the
+        // particular application at which we're targeting the test. ***
 
-        // This has to be at least as large as the number of
-        // simultaneous accumulations that can be executing in the
-        // compiler pipeline.  A safe number here is larger than the
-        // machine's maximum pipeline depth. If you want to test the L2
-        // or L3 cache, or main memory, you can increase the size of
-        // this array.  1024 is an upper limit on the pipeline depth of
-        // current vector machines.
+        // This has to be at least as large as the number of simultaneous
+        // accumulations that can be executing in the compiler pipeline.  A
+        // safe number here is larger than the machine's maximum pipeline
+        // depth.  If you want to test the L2 or L3 cache, or main memory,
+        // you can increase the size of this array.  1024 is an upper limit
+        // on the pipeline depth of current vector machines.
         std::size_t const number_of_accumulators = 1024;
 
         Accumulator a[number_of_accumulators];
@@ -130,7 +135,7 @@ namespace test {
         // Accumulate all the partial sums to avoid dead code elimination.
         for (Accumulator* ap = a; ap < a + number_of_accumulators; ++ap)
         {
-            live_code += ap->sum;
+            test::live_code += ap->sum;
         }
     }
 
@@ -139,37 +144,35 @@ namespace test {
     template <class Accumulator, class T>
     double measure(T const& x, long const repeats)
     {
-        // Hammer accumulators a couple of times to ensure the
-        // instruction cache is full of our test code, and that we don't
-        // measure the cost of a page fault for accessing the data page
-        // containing the memory where the accumulators will be
-        // allocated
-        hammer<Accumulator>(x, repeats);
-        hammer<Accumulator>(x, repeats);
+        // Hammer accumulators a couple of times to ensure the instruction
+        // cache is full of our test code, and that we don't measure the cost
+        // of a page fault for accessing the data page containing the memory
+        // where the accumulators will be allocated.
+        test::hammer<Accumulator>(x, repeats);
+        test::hammer<Accumulator>(x, repeats);
 
-        // Now start a timer
+        // Now start a timer.
         boost::timer time;
-        hammer<Accumulator>(x, repeats);  // This time, we'll measure
+        test::hammer<Accumulator>(x, repeats);  // This time, we'll measure.
         return time.elapsed();
     }
 }
 
 int main()
 {
-    using namespace test;
-
-    // first decide how many repetitions to measure
+    // First decide how many repetitions to measure.
     long repeats = 100;
     double measured = 0;
+
     while (measured < 1.0 && repeats <= 10000000)
     {
         repeats *= 10;
 
         boost::timer time;
 
-        hammer<plain_weight_running_total<double> >(.1, repeats);
-        hammer<named_param_weight_running_total<double> >(
-            (_weight = .1, _value = .2), repeats
+        test::hammer<test::plain_weight_running_total<double> >(.1, repeats);
+        test::hammer<test::named_param_weight_running_total<double> >(
+            (test::_weight = .1, test::_value = .2), repeats
         );
 
         measured = time.elapsed();
@@ -177,19 +180,21 @@ int main()
     
     std::cout
         << "plain time:           "
-        << measure<plain_weight_running_total<double> >(.1, repeats)
+        << test::measure<test::plain_weight_running_total<double> >(
+            .1, repeats
+        )
         << std::endl;
 
     std::cout
         << "named parameter time: "
-        << measure<named_param_weight_running_total<double> >(
-            (_weight = .1, _value = .2), repeats
+        << test::measure<test::named_param_weight_running_total<double> >(
+            (test::_weight = .1, test::_value = .2), repeats
         )
         << std::endl;
 
     // This is ultimately responsible for preventing all the test code
     // from being optimized away.  Change this to return 0 and you
     // unplug the whole test's life support system.
-    return live_code < 0.;
+    return test::live_code < 0.;
 }
 

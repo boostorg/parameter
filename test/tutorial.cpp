@@ -12,23 +12,22 @@ namespace graphs {
     BOOST_PARAMETER_NAME(root_vertex)
     BOOST_PARAMETER_NAME(index_map)
     BOOST_PARAMETER_NAME(color_map)
-}
+} // namespace graphs
 
-#include <boost/detail/lightweight_test.hpp>
-#include <cstring>
+#include <boost/core/lightweight_test.hpp>
 
 namespace graphs { namespace core {
 
     template <class ArgumentPack>
     void depth_first_search(ArgumentPack const& args)
     {
-        BOOST_TEST(false == args[_color_map]);
-        BOOST_TEST('G' == args[_graph]);
-        BOOST_TEST(!strcmp("hello, world", args[_index_map]));
-        BOOST_TEST(3.5 == args[_root_vertex]);
-        BOOST_TEST(2 == args[_visitor]);
+        BOOST_TEST_EQ(false, args[_color_map]);
+        BOOST_TEST_EQ('G', args[_graph]);
+        BOOST_TEST_CSTR_EQ("hello, world", args[_index_map]);
+        BOOST_TEST_EQ(3.5, args[_root_vertex]);
+        BOOST_TEST_EQ(2, args[_visitor]);
     }
-}} // graphs::core
+}} // namespace graphs::core
 
 int main()
 {

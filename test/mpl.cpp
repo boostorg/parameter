@@ -11,9 +11,7 @@
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/assert.hpp>
 
-namespace test
-{
-    namespace mpl = boost::mpl;
+namespace test {
 
     template <class Set>
     struct assert_in_set
@@ -21,7 +19,7 @@ namespace test
         template <class T>
         void operator()(T*)
         {
-            BOOST_MPL_ASSERT((mpl::contains<Set,T>));
+            BOOST_MPL_ASSERT((boost::mpl::contains<Set,T>));
         }
     };
 
@@ -29,13 +27,13 @@ namespace test
     void f_impl(Params const& p BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected))
     {
         BOOST_MPL_ASSERT_RELATION(
-            mpl::size<Expected>::value
+            boost::mpl::size<Expected>::value
           , ==
-          , mpl::size<Params>::value
+          , boost::mpl::size<Params>::value
         );
 
-        mpl::for_each<Params, boost::add_pointer<mpl::_1> >(
-            assert_in_set<Expected>()
+        boost::mpl::for_each<Params, boost::add_pointer<boost::mpl::_1> >(
+            test::assert_in_set<Expected>()
         );
     }
 
@@ -47,7 +45,9 @@ namespace test
       , const Index& index_ BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)
     )
     {
-        f_impl<Expected>(f_parameters()(t, name_, value_, index_));
+        test::f_impl<Expected>(
+            test::f_parameters()(t, name_, value_, index_)
+        );
     }
 
     template <class Expected, class Tester, class Name, class Value>
@@ -56,7 +56,7 @@ namespace test
       , Value const& value_ BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)
     )
     {
-        f_impl<Expected>(f_parameters()(t, name_, value_));
+        test::f_impl<Expected>(test::f_parameters()(t, name_, value_));
     }
 
     template <class Expected, class Tester, class Name>
@@ -65,7 +65,7 @@ namespace test
       , Name const& name_ BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)
     )
     {
-        f_impl<Expected>(f_parameters()(t, name_));
+        test::f_impl<Expected>(test::f_parameters()(t, name_));
     }
 
     void run()
@@ -75,11 +75,17 @@ namespace test
         typedef test::tag::value value_;
         typedef test::tag::index index_;
 
-        f<mpl::list4<tester_,name_,value_,index_> >(1, 2, 3, 4);
-        f<mpl::list3<tester_,name_,index_> >(1, 2, _index = 3);
-        f<mpl::list3<tester_,name_,index_> >(1, _index = 2, _name = 3);
-        f<mpl::list2<name_,value_> >(_name = 3, _value = 4);
-        f_impl<mpl::list1<value_> >(_value = 4);
+        test::f<boost::mpl::list4<tester_,name_,value_,index_> >(1, 2, 3, 4);
+        test::f<boost::mpl::list3<tester_,name_,index_> >(
+            1, 2, test::_index = 3
+        );
+        test::f<boost::mpl::list3<tester_,name_,index_> >(
+            1, test::_index = 2, test::_name = 3
+        );
+        test::f<boost::mpl::list2<name_,value_> >(
+            test::_name = 3, test::_value = 4
+        );
+        test::f_impl<boost::mpl::list1<value_> >(test::_value = 4);
     }
 }
 

@@ -8,35 +8,162 @@
 import python ;
 
 project boost/parameter
-  : default-build <warnings>off
-  ;
+    :
+    default-build <warnings>off
+    ;
 
 build-project literate ;
   
 test-suite "parameter"
-  : [ run basics.cpp ]
+    :
+    [ run basics.cpp ]
+    [ run basics.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run sfinae.cpp ]
+    [ run sfinae.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run compose.cpp ]
+    [ run compose.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run macros.cpp ]
+    [ run macros.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+    ]
     [ run earwicker.cpp ]
+    [ run earwicker.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run tutorial.cpp ]
+    [ run tutorial.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run singular.cpp ]
+    [ run singular.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run mpl.cpp ]
+    [ run mpl.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run evaluate_category.cpp ]
+    [ run evaluate_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=16
+    ]
     [ run preprocessor.cpp ]
+    [ run preprocessor.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run preprocessor_deduced.cpp ]
+    [ run preprocessor_deduced.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run preprocessor_eval_category.cpp ]
+    [ run preprocessor_eval_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run efficiency.cpp : : : : : <variant>release ]
+    [ run efficiency.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        :
+        :
+        <variant>release
+    ]
     [ run maybe.cpp ]
     [ run deduced.cpp ]
+    [ run deduced.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run optional_deduced_sfinae.cpp ]
+    [ run optional_deduced_sfinae.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run deduced_dependent_predicate.cpp ]
+    [ run deduced_dependent_predicate.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ run normalized_argument_types.cpp ]
+    [ run normalized_argument_types.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ compile ntp.cpp ]
+    [ compile ntp.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+    ]
     [ compile unwrap_cv_reference.cpp ]
     [ compile function_type_tpl_param.cpp ]
     [ compile-fail duplicates.cpp ]
     [ compile-fail deduced_unmatched_arg.cpp ]
+    [ compile-fail basics.cpp
+        :
+        :
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+    ]
+    [ compile-fail deduced.cpp
+        :
+        :
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+    ]
     [ bpl-test python_test ]
-  ;
+    ;
 

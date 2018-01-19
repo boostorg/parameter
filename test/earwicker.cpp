@@ -4,64 +4,75 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter.hpp>
+
+#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING && \
+    BOOST_PARAMETER_MAX_ARITY < 4
+#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
+#endif
+
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/mpl/placeholders.hpp>
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 namespace test {
 
-BOOST_PARAMETER_NAME(w)
-BOOST_PARAMETER_NAME(x)
-BOOST_PARAMETER_NAME(y)
-BOOST_PARAMETER_NAME(z)
+    BOOST_PARAMETER_NAME(w)
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
 
-using namespace boost::parameter;
-using namespace boost::mpl::placeholders;
-
-struct f_parameters // vc6 is happier with inheritance than with a typedef
-  : parameters<
-        required<tag::w>
-      , optional<tag::x,boost::is_convertible<_,int> >
-      , optional<tag::y,boost::is_convertible<_,int> >
-      , optional<tag::z,boost::is_convertible<_,int> >
-    >
-{};
+    struct f_parameters // vc6 is happier with inheritance than with a typedef
+      : boost::parameter::parameters<
+            boost::parameter::required<test::tag::w>
+          , boost::parameter::optional<
+                test::tag::x
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                test::tag::y
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                test::tag::z
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+        >
+    {
+    };
 
 #ifdef BOOST_NO_VOID_RETURNS
-BOOST_PARAMETER_FUN(int, f, 1, 4, f_parameters)
-#else 
-BOOST_PARAMETER_FUN(void, f, 1, 4, f_parameters)
+    BOOST_PARAMETER_FUN(int, f, 1, 4, f_parameters)
+#else
+    BOOST_PARAMETER_FUN(void, f, 1, 4, f_parameters)
 #endif 
-{
-    BOOST_TEST(p[_w][0] == p[_x | -1]);
-    BOOST_TEST(p[_w][1] == p[_y | -2]);
-    BOOST_TEST(p[_w][2] == p[_z | -3]);
+    {
+        BOOST_TEST_EQ(p[test::_w][0], p[test::_x | -1]);
+        BOOST_TEST_EQ(p[test::_w][1], p[test::_y | -2]);
+        BOOST_TEST_EQ(p[test::_w][2], p[test::_z | -3]);
 #ifdef BOOST_NO_VOID_RETURNS
-    return 0;
+        return 0;
 #endif 
-}
-
-}
+    }
+} // namespace test
 
 int main()
 {
-    using namespace test;
     int a[3];
     a[0] = 1;
     a[1] = 2;
     a[2] = 3;
-    f(_x = 1, _y = 2, _z = 3, _w = a);
+    test::f(test::_x = 1, test::_y = 2, test::_z = 3, test::_w = a);
     a[1] = -2;
     a[2] = -3;
-    f(_x = 1, _w = a);
+    test::f(test::_x = 1, test::_w = a);
     a[0] = -1;
     a[1] = 2;
-    f(_y = 2, _w = a);
+    test::f(test::_y = 2, test::_w = a);
     a[1] = -2;
     a[2] = 3;
-    f(_z = 3, _w = a);
+    test::f(test::_z = 3, test::_w = a);
     a[0] = 1;
-    f(_z = 3, _x = 1, _w = a);
+    test::f(test::_z = 3, test::_x = 1, test::_w = a);
     return boost::report_errors();
 }
 

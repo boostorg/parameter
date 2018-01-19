@@ -5,26 +5,114 @@
 
 #include <boost/parameter.hpp>
 
+#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if BOOST_PARAMETER_MAX_ARITY < 4
+#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
+#endif
+#if BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY < 5
+#error Define BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY as 5 or greater.
+#endif
+#endif
+
 namespace test {
 
-    BOOST_PARAMETER_NAME(a0)
-    BOOST_PARAMETER_NAME(a1)
-    BOOST_PARAMETER_NAME(a2)
-    BOOST_PARAMETER_NAME(a3)
+    BOOST_PARAMETER_NAME(in(lrc0))
+    BOOST_PARAMETER_NAME(in_out(lr0))
+    BOOST_PARAMETER_NAME(in(rrc0))
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+    BOOST_PARAMETER_NAME(consume(rr0))
+#else
+    BOOST_PARAMETER_NAME(rr0)
+#endif
 
     struct f_parameters
       : boost::parameter::parameters<
-            tag::a0
-          , tag::a1
-          , tag::a2
-          , tag::a3
+            boost::parameter::required<test::tag::lrc0>
+          , boost::parameter::required<test::tag::lr0>
+          , boost::parameter::required<test::tag::rrc0>
+          , boost::parameter::required<test::tag::rr0>
         >
     {
     };
 } // namespace test
 
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+        (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
+        (9 < BOOST_PARAMETER_MAX_ARITY) \
+    )
+
+namespace test {
+
+    BOOST_PARAMETER_NAME(in(lrc1))
+    BOOST_PARAMETER_NAME(out(lr1))
+    BOOST_PARAMETER_NAME(in(rrc1))
+    BOOST_PARAMETER_NAME(in(lrc2))
+    BOOST_PARAMETER_NAME(out(lr2))
+    BOOST_PARAMETER_NAME(rr2)
+
+    struct g_parameters
+      : boost::parameter::parameters<
+            boost::parameter::required<test::tag::lrc0>
+          , boost::parameter::required<test::tag::lr0>
+          , boost::parameter::required<test::tag::rrc0>
+          , boost::parameter::required<test::tag::rr0>
+          , boost::parameter::required<test::tag::lrc1>
+          , boost::parameter::required<test::tag::lr1>
+          , boost::parameter::required<test::tag::rrc1>
+          , boost::parameter::optional<test::tag::lrc2>
+          , boost::parameter::optional<test::tag::lr2>
+          , boost::parameter::optional<test::tag::rr2>
+        >
+    {
+    };
+} // namespace test
+
+#endif // Test with many arguments.
+
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || \
+    15 < BOOST_PARAMETER_MAX_ARITY
+
+namespace test {
+
+    BOOST_PARAMETER_NAME(in(lrc3))
+    BOOST_PARAMETER_NAME(in(lrc4))
+    BOOST_PARAMETER_NAME(in(lrc5))
+    BOOST_PARAMETER_NAME(in(lrc6))
+    BOOST_PARAMETER_NAME(in(lrc7))
+    BOOST_PARAMETER_NAME(in(rrc2))
+    BOOST_PARAMETER_NAME(in(rrc3))
+    BOOST_PARAMETER_NAME(in(rrc4))
+    BOOST_PARAMETER_NAME(in(rrc5))
+    BOOST_PARAMETER_NAME(in(rrc6))
+    BOOST_PARAMETER_NAME(in(rrc7))
+
+    struct h_parameters
+      : boost::parameter::parameters<
+            boost::parameter::required<test::tag::lrc0>
+          , boost::parameter::required<test::tag::rrc0>
+          , boost::parameter::required<test::tag::lrc1>
+          , boost::parameter::required<test::tag::rrc1>
+          , boost::parameter::required<test::tag::lrc2>
+          , boost::parameter::required<test::tag::rrc2>
+          , boost::parameter::required<test::tag::lrc3>
+          , boost::parameter::required<test::tag::rrc3>
+          , boost::parameter::optional<test::tag::lrc4>
+          , boost::parameter::optional<test::tag::rrc4>
+          , boost::parameter::optional<test::tag::lrc5>
+          , boost::parameter::optional<test::tag::rrc5>
+          , boost::parameter::optional<test::tag::lrc6>
+          , boost::parameter::optional<test::tag::rrc6>
+          , boost::parameter::optional<test::tag::lrc7>
+          , boost::parameter::optional<test::tag::rrc7>
+        >
+    {
+    };
+} // namespace test
+
+#endif // Test with more arguments.
+
 #include <boost/type_traits/is_scalar.hpp>
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
 namespace test {
@@ -35,55 +123,284 @@ namespace test {
         template <typename Args>
         static void evaluate(Args const& args)
         {
-            BOOST_TEST(
-                passed_by_lvalue_reference_to_const == A<
-                    T
-                >::evaluate_category(args[_a0])
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , A<T>::evaluate_category(args[test::_lrc0])
             );
-            BOOST_TEST(
-                passed_by_lvalue_reference == A<
-                    T
-                >::evaluate_category(args[_a1])
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , A<T>::evaluate_category(args[test::_lr0])
             );
-
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
             if (boost::is_scalar<T>::value)
             {
-                BOOST_TEST(
-                    passed_by_rvalue_reference == A<
-                        T
-                    >::evaluate_category(args[_a2])
+                BOOST_TEST_EQ(
+                    test::passed_by_rvalue_reference
+                  , A<T>::evaluate_category(args[test::_rrc0])
                 );
             }
             else
             {
-                BOOST_TEST(
-                    passed_by_rvalue_reference_to_const == A<
-                        T
-                    >::evaluate_category(args[_a2])
+                BOOST_TEST_EQ(
+                    test::passed_by_rvalue_reference_to_const
+                  , A<T>::evaluate_category(args[test::_rrc0])
                 );
             }
 
-            BOOST_TEST(
-                passed_by_rvalue_reference == A<
-                    T
-                >::evaluate_category(args[_a3])
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , A<T>::evaluate_category(args[test::_rr0])
             );
 #else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-            BOOST_TEST(
-                passed_by_lvalue_reference_to_const == A<
-                    T
-                >::evaluate_category(args[_a2])
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , A<T>::evaluate_category(args[test::_rrc0])
             );
-            BOOST_TEST(
-                passed_by_lvalue_reference_to_const == A<
-                    T
-                >::evaluate_category(args[_a3])
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , A<T>::evaluate_category(args[test::_rr0])
             );
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         }
     };
 } // namespace test
+
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+        (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
+        (9 < BOOST_PARAMETER_MAX_ARITY) \
+    )
+
+namespace test {
+
+    struct C
+    {
+        template <typename Args>
+        static void evaluate(Args const& args)
+        {
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_lrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , U::evaluate_category<0>(args[test::_lr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<1>(args[test::_lrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , U::evaluate_category<1>(args[test::_lr1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<2>(
+                    args[test::_lrc2 | test::lvalue_const_bitset<2>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , U::evaluate_category<2>(
+                    args[test::_lr2 || test::lvalue_bitset_function<2>()]
+                )
+            );
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , U::evaluate_category<0>(args[test::_rr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<1>(args[test::_rrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , U::evaluate_category<2>(
+                    args[test::_rr2 || test::rvalue_bitset_function<2>()]
+                )
+            );
+#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_rr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<1>(args[test::_rrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<2>(
+                    args[test::_rr2 || test::rvalue_bitset_function<2>()]
+                )
+            );
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+        }
+    };
+} // namespace test
+
+#endif // Test with many arguments.
+
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || \
+    15 < BOOST_PARAMETER_MAX_ARITY
+
+namespace test {
+
+    struct D
+    {
+        template <typename Args>
+        static void evaluate(Args const& args)
+        {
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_lrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<1>(args[test::_lrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<2>(args[test::_lrc2])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<3>(args[test::_lrc3])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<4>(
+                    args[test::_lrc4 | test::lvalue_const_bitset<4>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<5>(
+                    args[
+                        test::_lrc5 || test::lvalue_const_bitset_function<5>()
+                    ]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<6>(
+                    args[test::_lrc6 | test::lvalue_const_bitset<6>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<7>(
+                    args[
+                        test::_lrc7 || test::lvalue_const_bitset_function<7>()
+                    ]
+                )
+            );
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<1>(args[test::_rrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<2>(args[test::_rrc2])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<3>(args[test::_rrc3])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<4>(
+                    args[test::_rrc4 | test::rvalue_const_bitset<4>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<5>(
+                    args[
+                        test::_rrc5 || test::rvalue_const_bitset_function<5>()
+                    ]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<6>(
+                    args[test::_rrc6 | test::rvalue_const_bitset<6>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , U::evaluate_category<7>(
+                    args[
+                        test::_rrc7 || test::rvalue_const_bitset_function<7>()
+                    ]
+                )
+            );
+#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<1>(args[test::_rrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<2>(args[test::_rrc2])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<3>(args[test::_rrc3])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<4>(
+                    args[test::_rrc4 | test::rvalue_const_bitset<4>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<5>(
+                    args[
+                        test::_rrc5 || test::rvalue_const_bitset_function<5>()
+                    ]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<6>(
+                    args[test::_rrc6 | test::rvalue_const_bitset<6>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<7>(
+                    args[
+                        test::_rrc7 || test::rvalue_const_bitset_function<7>()
+                    ]
+                )
+            );
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+        }
+    };
+} // namespace test
+
+#endif // Test with more arguments.
 
 int main()
 {
@@ -112,22 +429,22 @@ int main()
         )
     );
     test::B<float>::evaluate((
-        test::_a1 = test::lvalue_float()
-      , test::_a2 = test::rvalue_const_float()
-      , test::_a3 = test::rvalue_float()
-      , test::_a0 = test::lvalue_const_float()
+        test::_lr0 = test::lvalue_float()
+      , test::_rrc0 = test::rvalue_const_float()
+      , test::_rr0 = test::rvalue_float()
+      , test::_lrc0 = test::lvalue_const_float()
     ));
     test::B<char const*>::evaluate((
-        test::_a1 = test::lvalue_char_ptr()
-      , test::_a2 = test::rvalue_const_char_ptr()
-      , test::_a3 = test::rvalue_char_ptr()
-      , test::_a0 = test::lvalue_const_char_ptr()
+        test::_lr0 = test::lvalue_char_ptr()
+      , test::_rrc0 = test::rvalue_const_char_ptr()
+      , test::_rr0 = test::rvalue_char_ptr()
+      , test::_lrc0 = test::lvalue_const_char_ptr()
     ));
     test::B<std::string>::evaluate((
-        test::_a1 = test::lvalue_str()
-      , test::_a2 = test::rvalue_const_str()
-      , test::_a3 = test::rvalue_str()
-      , test::_a0 = test::lvalue_const_str()
+        test::_lr0 = test::lvalue_str()
+      , test::_rrc0 = test::rvalue_const_str()
+      , test::_rr0 = test::rvalue_str()
+      , test::_lrc0 = test::lvalue_const_str()
     ));
 
     char baz_arr[4] = "baz";
@@ -147,16 +464,84 @@ int main()
         )
     );
     test::B<char_arr>::evaluate((
-        test::_a1 = baz_arr
+        test::_lr0 = baz_arr
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-      , test::_a2 = static_cast<char_arr const&&>("baz")
-      , test::_a3 = static_cast<char_arr&&>(baz_arr)
+      , test::_rrc0 = static_cast<char_arr const&&>("baz")
+      , test::_rr0 = static_cast<char_arr&&>(baz_arr)
 #else
-      , test::_a2 = "baz"
-      , test::_a3 = "baz"
+      , test::_rrc0 = "baz"
+      , test::_rr0 = "baz"
 #endif
-      , test::_a0 = "baz"
+      , test::_lrc0 = "baz"
     ));
+
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+        (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
+        (9 < BOOST_PARAMETER_MAX_ARITY) \
+    )
+    test::C::evaluate(
+        test::g_parameters()(
+            test::lvalue_const_bitset<0>()
+          , test::lvalue_bitset<0>()
+          , test::rvalue_const_bitset<0>()
+          , test::rvalue_bitset<0>()
+          , test::lvalue_const_bitset<1>()
+          , test::lvalue_bitset<1>()
+          , test::rvalue_const_bitset<1>()
+        )
+    );
+    test::C::evaluate(
+        test::g_parameters()(
+            test::lvalue_const_bitset<0>()
+          , test::lvalue_bitset<0>()
+          , test::rvalue_const_bitset<0>()
+          , test::rvalue_bitset<0>()
+          , test::lvalue_const_bitset<1>()
+          , test::lvalue_bitset<1>()
+          , test::rvalue_const_bitset<1>()
+          , test::lvalue_const_bitset<2>()
+          , test::lvalue_bitset<2>()
+          , test::rvalue_bitset<2>()
+        )
+    );
+#endif // Test with many arguments.
+
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || \
+    15 < BOOST_PARAMETER_MAX_ARITY
+    test::D::evaluate(
+        test::h_parameters()(
+            test::lvalue_const_bitset<0>()
+          , test::rvalue_const_bitset<0>()
+          , test::lvalue_const_bitset<1>()
+          , test::rvalue_const_bitset<1>()
+          , test::lvalue_const_bitset<2>()
+          , test::rvalue_const_bitset<2>()
+          , test::lvalue_const_bitset<3>()
+          , test::rvalue_const_bitset<3>()
+        )
+    );
+    test::D::evaluate(
+        test::h_parameters()(
+            test::lvalue_const_bitset<0>()
+          , test::rvalue_const_bitset<0>()
+          , test::lvalue_const_bitset<1>()
+          , test::rvalue_const_bitset<1>()
+          , test::lvalue_const_bitset<2>()
+          , test::rvalue_const_bitset<2>()
+          , test::lvalue_const_bitset<3>()
+          , test::rvalue_const_bitset<3>()
+          , test::lvalue_const_bitset<4>()
+          , test::rvalue_const_bitset<4>()
+          , test::lvalue_const_bitset<5>()
+          , test::rvalue_const_bitset<5>()
+          , test::lvalue_const_bitset<6>()
+          , test::rvalue_const_bitset<6>()
+          , test::lvalue_const_bitset<7>()
+          , test::rvalue_const_bitset<7>()
+        )
+    );
+#endif // Test with more arguments.
+
     return boost::report_errors();
 }
 

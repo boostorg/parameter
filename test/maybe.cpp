@@ -4,8 +4,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/name.hpp>
-#include <boost/parameter/aux_/maybe.hpp>
-#include <boost/detail/lightweight_test.hpp>
 
 namespace test {
 
@@ -15,21 +13,31 @@ namespace test {
     template <class Args>
     int f(Args const& args)
     {
-        return args[_kw | 1.f];
+        return args[test::_kw | 1.f];
     }
 } // namespace test
 
+#include <boost/parameter/aux_/maybe.hpp>
+#include <boost/core/lightweight_test.hpp>
+
 int main()
 {
-    using test::_kw;
-    using test::_unused;
-    using test::f;
-    using boost::parameter::aux::maybe;
-
-    BOOST_TEST(f((_kw = 0, _unused = 0)) == 0);
-    BOOST_TEST(f(_unused = 0) == 1);
-    BOOST_TEST(f((_kw = maybe<int>(), _unused = 0)) == 1);
-    BOOST_TEST(f((_kw = maybe<int>(2), _unused = 0)) == 2);
+    BOOST_TEST_EQ(0, test::f((test::_kw = 0, test::_unused = 0)));
+    BOOST_TEST_EQ(1, test::f(test::_unused = 0));
+    BOOST_TEST_EQ(
+        1
+      , test::f((
+            test::_kw = boost::parameter::aux::maybe<int>()
+          , test::_unused = 0
+        ))
+    );
+    BOOST_TEST_EQ(
+        2
+      , test::f((
+            test::_kw = boost::parameter::aux::maybe<int>(2)
+          , test::_unused = 0
+        ))
+    );
     return boost::report_errors();
 }
 

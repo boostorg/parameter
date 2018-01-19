@@ -4,7 +4,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/name.hpp>
 
 namespace param {
 
@@ -86,23 +86,23 @@ namespace test {
     };
 } // namespace test
 
-#include <boost/detail/lightweight_test.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 int main()
 {
     test::A a((param::_a0 = 1, param::_a1 = 13, param::_a2 = test::D));
-    BOOST_TEST(1 == a.i);
-    BOOST_TEST(13 == a.j);
+    BOOST_TEST_EQ(1, a.i);
+    BOOST_TEST_EQ(13, a.j);
     test::B b0((param::_a1 = 13, param::_a2 = test::F));
-    BOOST_TEST(1 == b0.i);
-    BOOST_TEST(13 == b0.j);
-    BOOST_TEST(4.0f == b0.k());
-    BOOST_TEST(2.5 == b0.l());
+    BOOST_TEST_EQ(1, b0.i);
+    BOOST_TEST_EQ(13, b0.j);
+    BOOST_TEST_EQ(4.0f, b0.k());
+    BOOST_TEST_EQ(2.5, b0.l());
     test::B b1((param::_a3 = test::D, param::_a1 = 13));
-    BOOST_TEST(1 == b1.i);
-    BOOST_TEST(13 == b1.j);
-    BOOST_TEST(4.625f == b1.k());
-    BOOST_TEST(198.9 == b1.l());
+    BOOST_TEST_EQ(1, b1.i);
+    BOOST_TEST_EQ(13, b1.j);
+    BOOST_TEST_EQ(4.625f, b1.k());
+    BOOST_TEST_EQ(198.9, b1.l());
     return boost::report_errors();
 }
 
