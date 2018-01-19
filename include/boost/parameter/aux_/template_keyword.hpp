@@ -28,7 +28,10 @@ namespace boost { namespace parameter { namespace aux {
 #if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
     template <class T>
     struct is_template_keyword_aux
-      : is_convertible<T*,template_keyword_base const*>
+      : boost::is_convertible<
+            T*
+          , boost::parameter::aux::template_keyword_base const*
+        >
     {
     };
 #endif
@@ -38,22 +41,22 @@ namespace boost { namespace parameter { namespace aux {
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         // Cannot use is_convertible<> to check if T is derived from
         // template_keyword_base. -- Cromwell D. Enage
-      : is_base_of<
-            template_keyword_base
-          , typename remove_const<typename remove_reference<T>::type>::type
+      : boost::is_base_of<
+            boost::parameter::aux::template_keyword_base
+          , typename boost::remove_const<
+                typename boost::remove_reference<T>::type
+            >::type
         >
 #else
-      : mpl::if_<
-            is_reference<T>
-          , mpl::false_
-          , is_template_keyword_aux<T>
+      : boost::mpl::if_<
+            boost::is_reference<T>
+          , boost::mpl::false_
+          , boost::parameter::aux::is_template_keyword_aux<T>
         >::type
 #endif
     {
     };
 }}} // namespace boost::parameter::aux
-
-#include <boost/config.hpp>
 
 #if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
 #include <boost/function.hpp>
@@ -64,7 +67,7 @@ namespace boost { namespace parameter { namespace aux {
 namespace boost { namespace parameter { 
 
     template <class Tag, class T>
-    struct template_keyword : aux::template_keyword_base
+    struct template_keyword : boost::parameter::aux::template_keyword_base
     {
         typedef Tag key_type;
 

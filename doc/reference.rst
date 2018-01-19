@@ -299,19 +299,112 @@ __ ../../../../boost/parameter/keyword.hpp
     struct keyword
     {
         template <class T>
-        |ArgumentPack|_ `operator=`_\(T& value) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::out_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , |ArgumentPack|_
+        >::type constexpr
+        `operator=`_\(T& value) const;
 
         template <class T>
-        |ArgumentPack|_ `operator=`_\(T const& value) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::in_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , |ArgumentPack|_
+        >::type constexpr
+        `operator=`_\(T const& value) const;
 
         template <class T>
-        |ArgumentPack|_ `operator=`_\(T&& value) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::mpl::`or_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::consume_reference
+                    >
+                  , boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    >
+                >
+              , boost::mpl::`and_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::in_reference
+                    >
+                  , boost::`is_scalar`_<T>
+                >
+            >
+          , |ArgumentPack|_
+        >::type constexpr
+        `operator=`_\(T&& value) const;
 
         template <class T>
-        *tagged default* `operator|`_\(T& x) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::in_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , |ArgumentPack|_
+        >::type constexpr
+        `operator=`_\(T const&& value) const;
 
         template <class T>
-        *tagged default* `operator|`_\(T const& x) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::out_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , *tagged default*
+        >::type
+        `operator|`_\(T& x) const;
+
+        template <class T>
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::in_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , *tagged default*
+        >::type
+        `operator|`_\(T const& x) const;
+
+        template <class F>
+        *tagged lazy default* `operator||`_\(F&) const;
 
         template <class F>
         *tagged lazy default* `operator||`_\(F const&) const;
@@ -329,16 +422,71 @@ __ ../../../../boost/parameter/keyword.hpp
     struct keyword
     {
         template <class T>
-        |ArgumentPack|_ `operator=`_\(T& value) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::out_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , |ArgumentPack|_
+        >::type constexpr
+        `operator=`_\(T& value) const;
 
         template <class T>
-        |ArgumentPack|_ `operator=`_\(T const& value) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::in_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , |ArgumentPack|_
+        >::type constexpr
+        `operator=`_\(T const& value) const;
 
         template <class T>
-        *tagged default* `operator|`_\(T& x) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::out_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , *tagged default*
+        >::type
+        `operator|`_\(T& x) const;
 
         template <class T>
-        *tagged default* `operator|`_\(T const& x) const;
+        typename boost::`enable_if`_<
+            boost::mpl::`or_`_<
+                boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::in_reference
+                >
+              , boost::`is_same`_<
+                    typename Tag::qualifier
+                  , boost::parameter::forward_reference
+                >
+            >
+          , *tagged default*
+        >::type
+        `operator|`_\(T const& x) const;
+
+        template <class F>
+        *tagged lazy default* `operator||`_\(F&) const;
 
         template <class F>
         *tagged lazy default* `operator||`_\(F const&) const;
@@ -347,6 +495,12 @@ __ ../../../../boost/parameter/keyword.hpp
 
         static keyword<Tag>& get_\();
     };
+
+.. _and_: ../../../mpl/doc/refmanual/and.html
+.. _enable_if: ../../../core/doc/html/core/enable_if.html
+.. _is_same: ../../../type_traits/doc/html/boost_typetraits/reference/is_same.html
+.. _is_scalar: ../../../type_traits/doc/html/boost_typetraits/reference/is_scalar.html
+.. _or_: ../../../mpl/doc/refmanual/or.html
 
 .. |operator=| replace:: ``operator=``
 .. _operator=:
@@ -361,8 +515,25 @@ __ ../../../../boost/parameter/keyword.hpp
 .. parsed-literal::
 
     template <class T> |ArgumentPack|_ operator=(T&& value) const;
+    template <class T> |ArgumentPack|_ operator=(T const&& value) const;
 
-:Requires: nothing
+:Requires: one of the following:
+
+\*. The nested ``qualifier`` type of ``Tag`` must be ``forward_reference``.
+
+\*. To use the mutable lvalue reference overload, the nested ``qualifier``
+type of ``Tag`` must be ``out_reference`` or ``in_out_reference``.
+
+\*. To use the mutable rvalue reference overload for non-scalar ``T``, the
+nested ``qualifier`` type of ``Tag`` must be ``consume_reference`` or
+``move_from_reference``.
+
+\*. To use the mutable rvalue reference overload for scalar ``T``, the nested
+``qualifier`` type of ``Tag`` must be ``in_reference``, ``consume_reference``,
+or ``move_from_reference``.
+
+\*. To use either ``const`` reference overload, the nested ``qualifier`` type
+of ``Tag`` must be ``in_reference``.
 
 :Returns: an |ArgumentPack|_  containing a single |tagged reference| to
 ``value`` with |kw|_ ``Tag`` 
@@ -375,6 +546,16 @@ __ ../../../../boost/parameter/keyword.hpp
     template <class T> *tagged default* operator|(T& x) const;
     template <class T> *tagged default* operator|(T const& x) const;
 
+:Requires: one of the following:
+
+\*. The nested ``qualifier`` type of ``Tag`` must be ``forward_reference``.
+
+\*. To use the mutable lvalue reference overload, the nested ``qualifier``
+type of ``Tag`` must be ``out_reference`` or ``in_out_reference``.
+
+\*. To use the ``const`` lvalue reference overload, the nested ``qualifier``
+type of ``Tag`` must be ``in_reference``.
+
 :Returns: a |tagged default| with *value* ``x`` and |kw|_ ``Tag``.
 
 .. _operator||:
@@ -384,9 +565,8 @@ __ ../../../../boost/parameter/keyword.hpp
 
     template <class F> *tagged lazy default* operator||(F const& g) const;
 
-:Requires: ``g()`` is valid, with type ``boost::``\ |result_of|_\
+:Requires: ``g()`` must be valid, with type ``boost::``\ |result_of|_\
 ``<F()>::type``.  [#no_result_of]_
-
 
 :Returns: a |tagged lazy default| with *value* ``g`` and |kw|_ ``Tag``.
 
@@ -448,33 +628,33 @@ __ ../../../../boost/parameter/parameters.hpp
         |ArgumentPack|_ `operator()`_\(Args&&... args) const;
     };
 
-:Requires: Each element in the ``PSpec`` parameter pack is a model of
+:Requires: Each element in the ``PSpec`` parameter pack must be a model of
 |ParameterSpec|_.
 
 .. Note::
 
-    In this section, ``R``\ *i* and ``K``\ *i* are defined as
-    follows, for any argument type ``A``\ *i*:
+    In this section, ``R`` ## *i* and ``K`` ## *i* are defined as
+    follows, for any argument type ``A`` ## *i*:
 
-    | let ``D0`` the set [d0, …, d\ *j*] of all **deduced**
+    | let ``D0`` the set [d0, …, d ## *j*] of all **deduced**
     | *parameter specs* in the ``PSpec`` parameter pack
-    | ``R``\ *i* is ``A``\ *i*\ 's |intended argument type|
+    | ``R`` ## *i* is the |intended argument type| of ``A`` ## *i*
     |
-    | if ``A``\ *i* is a result type of ``keyword<T>::``\ |operator=|_
+    | if ``A`` ## *i* is a result type of ``keyword<T>::`` |operator=|_
     | then 
-    |     ``K``\ *i* is ``T``
+    |     ``K`` ## *i* is ``T``
     | else
-    |     if some ``A``\ *j* where *j*\ ≤\ *i* is a result type of
-    |     ``keyword<T>::``\ |operator=|_
-    |     *or* some ``P``\ *j* in *j*\ ≤\ *i* is **deduced**
+    |     if some ``A`` ## *j* where *j* ≤ *i* is a result type of
+    |     ``keyword<T>::`` |operator=|_
+    |     *or* some ``P`` ## *j* in *j* ≤ *i* is **deduced**
     |     then
-    |         if some *parameter spec* ``d``\ *j* in ``D``\ *i*
-    |         matches ``A``\ *i*
+    |         if some *parameter spec* ``d`` ## *j* in ``D`` ## *i*
+    |         matches ``A`` ## *i*
     |         then
-    |             ``K``\ *i* is ``d``\ *j*\ 's |keyword tag type|.
-    |             ``D``\ :sub:`i+1` is ``D``\ *i* - [``d``\ *j*]
+    |             ``K`` ## *i* is the |keyword tag type| of ``d`` ## *j*.
+    |             ``D`` ## :sub:`i+1` is ``D`` ## *i* - [ ``d`` ## *j*]
     |     else
-    |         ``K``\ *i* is ``P``\ *i*\ 's |keyword tag type|.
+    |         ``K`` ## *i* is the |keyword tag type| of ``P`` ## *i*.
 
 **If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
 
@@ -484,12 +664,13 @@ __ ../../../../boost/parameter/parameters.hpp
         class P0 = *unspecified*
       , class P1 = *unspecified*
         :vellipsis:`⋮`
-      , class P\ β = *unspecified*
+      , class P ## β = *unspecified*
     >
     struct parameters
     {
         template <
-            class A0, class A1 = *unspecified*, …class A\ β = *unspecified*
+            class A0, class A1 = *unspecified*, …
+          , class A ## β = *unspecified*
         >
         struct `match`_
         {
@@ -504,36 +685,37 @@ __ ../../../../boost/parameter/parameters.hpp
 
         :vellipsis:`⋮`
 
-        template <class A0, class A1, …class A\ β>
-        |ArgumentPack|_ `operator()`_\(A0& a0, A1& a1, …A\ β& a\ β) const;
+        template <class A0, class A1, …, class A ## β>
+        |ArgumentPack|_
+        `operator()`_\(A0& a0, A1& a1, …, A ## β & a ## β) const;
     };
 
-:Requires: ``P0``, ``P1``, … ``P``\ β are models of |ParameterSpec|_.
+:Requires: ``P0``, ``P1``, …, ``P`` ## β must be models of |ParameterSpec|_.
 
 .. Note::
 
-    In this section, ``R``\ *i* and ``K``\ *i* are defined as
-    follows, for any argument type ``A``\ *i*:
+    In this section, ``R`` ## *i* and ``K`` ## *i* are defined as follows, for
+    any argument type ``A`` ## *i*:
 
-    | let ``D0`` the set [d0, …, d\ *j*] of all **deduced**
-    | *parameter specs* in [``P0``, …, ``P``\ β]
-    | ``R``\ *i* is ``A``\ *i*\ 's |intended argument type|
+    | let ``D0`` the set [ d0, …, d ## *j*] of all **deduced**
+    | *parameter specs* in [ ``P0``, …, ``P`` ## β]
+    | ``R`` ## *i* is the |intended argument type| of ``A`` ## *i*
     |
-    | if ``A``\ *i* is a result type of ``keyword<T>::``\ |operator=|_
+    | if ``A`` ## *i* is a result type of ``keyword<T>::`` |operator=|_
     | then 
-    |     ``K``\ *i* is ``T``
+    |     ``K`` ## *i* is ``T``
     | else
-    |     if some ``A``\ *j* where *j*\ ≤\ *i* is a result type of
-    |     ``keyword<T>::``\ |operator=|_
-    |     *or* some ``P``\ *j* in *j*\ ≤\ *i* is **deduced**
+    |     if some ``A`` ## *j* where *j* ≤ *i* is a result type of
+    |     ``keyword<T>::`` |operator=|_
+    |     *or* some ``P`` ## *j* in *j* ≤ *i* is **deduced**
     |     then
-    |         if some *parameter spec* ``d``\ *j* in ``D``\ *i*
-    |         matches ``A``\ *i*
+    |         if some *parameter spec* ``d`` ## *j* in ``D`` ## *i*
+    |         matches ``A`` ## *i*
     |         then
-    |             ``K``\ *i* is ``d``\ *j*\ 's |keyword tag type|.
-    |             ``D``\ :sub:`i+1` is ``D``\ *i* - [``d``\ *j*]
+    |             ``K`` ## *i* is the |keyword tag type| of ``d`` ## *j*.
+    |             ``D`` ## :sub:`i+1` is ``D`` ## *i* - [ ``d`` ## *j*]
     |     else
-    |         ``K``\ *i* is ``P``\ *i*\ 's |keyword tag type|.
+    |         ``K`` ## *i* is the |keyword tag type| of ``P`` ## *i*.
 
 .. _match:
 
@@ -552,31 +734,31 @@ Each element ``P`` in ``Params...`` is **satisfied** if either:
 * ``P`` is the *unspecified* default
 * **or**, ``P`` is a *keyword tag type*
 * **or**, ``P`` is |optional|_ ``<X,F>`` and either
-    - ``X`` is not ``K``\ *i* for any *i*,
-    - **or** ``X`` is some ``K``\ *i*  and ``mpl::apply<F,R``\ *i*\
+    - ``X`` is not ``K`` ## *i* for any *i*,
+    - **or** ``X`` is some ``K`` ## *i*  and ``mpl::apply<F,R`` ## *i*\
         ``>::type::value`` is ``true``
 * **or**, ``P`` is |required|_ ``<X,F>``, and
-    - ``X`` is some ``K``\ *i*, **and**
-    - ``mpl::apply<F,R``\ *i*\ ``>::type::value`` is ``true``
+    - ``X`` is some ``K`` ## *i*, **and**
+    - ``mpl::apply<F,R`` ## *i* ``>::type::value`` is ``true``
 
 **If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
 
-:Returns: if ``P0``, ``P1``, …\ ``P``\ β are *satisfied* (see below), then
-``parameters<P0,P1,…Pβ>``.  Otherwise, ``match<A0,A1,…Aβ>::type`` is not
+:Returns: if ``P0``, ``P1``, …, ``P`` ## β are *satisfied* (see below), then
+``parameters<P0,P1,…,Pβ>``.  Otherwise, ``match<A0,A1,…,Aβ>::type`` is not
 defined.
 
-``P0``, ``P1``, …\ ``P``\ β are **satisfied** if, for every *j* in 0…β,
+``P0``, ``P1``, …, ``P`` ## β are **satisfied** if, for every *j* in 0…β,
 either:
 
-* ``P``\ *j* is the *unspecified* default
-* **or**, ``P``\ *j* is a *keyword tag type*
-* **or**, ``P``\ *j* is |optional|_ ``<X,F>`` and either
-    - ``X`` is not ``K``\ *i* for any *i*,
-    - **or** ``X`` is some ``K``\ *i*  and ``mpl::apply<F,R``\ *i*\
+* ``P`` ## *j* is the *unspecified* default
+* **or**, ``P`` ## *j* is a *keyword tag type*
+* **or**, ``P`` ## *j* is |optional|_ ``<X,F>`` and either
+    - ``X`` is not ``K`` ## *i* for any *i*,
+    - **or** ``X`` is some ``K`` ## *i*  and ``mpl::apply<F,R`` ## *i*\
         ``>::type::value`` is ``true``
-* **or**, ``P``\ *j* is |required|_ ``<X,F>``, and
-    - ``X`` is some ``K``\ *i*, **and**
-    - ``mpl::apply<F,R``\ *i*\ ``>::type::value`` is ``true``
+* **or**, ``P`` ## *j* is |required|_ ``<X,F>``, and
+    - ``X`` is some ``K`` ## *i*, **and**
+    - ``mpl::apply<F,R`` ## *i* ``>::type::value`` is ``true``
 
 .. _operator():
 
@@ -597,8 +779,9 @@ either:
 
     :vellipsis:`⋮`
 
-    template <class A0, …class A\ β>
-    |ArgumentPack|_ `operator()`_\(A0 const& a0, …A\ β const& a\ β) const;
+    template <class A0, …, class A ## β>
+    |ArgumentPack|_
+    `operator()`_\(A0 const& a0, …, A ## β const& a ## β) const;
 
 :Returns: An |ArgumentPack|_ containing, for each ``a`` ## *i*,  
 
@@ -680,7 +863,7 @@ __ ../../../../boost/parameter/binding.hpp
         typedef … type;
     };
 
-:Requires: ``A`` is a model of |ArgumentPack|_.
+:Requires: ``A`` must be a model of |ArgumentPack|_.
 
 :Returns: the reference type of the |tagged reference| in ``A`` having
 |keyword tag type| ``K``, if any.  If no such |tagged reference| exists,
@@ -704,12 +887,11 @@ __ ../../../../boost/parameter/binding.hpp
         typedef … type;
     };
 
-:Requires: ``A`` is a model of |ArgumentPack|_.
+:Requires: ``A`` must be a model of |ArgumentPack|_.
 
 :Returns: the reference type of the |tagged reference| in ``A`` having
 |keyword tag type| ``K``, if any.  If no such |tagged reference| exists,
 returns ``boost::``\ |result_of|_\ ``<F()>::type``. [#no_result_of]_
-
 
 ``value_type``
 --------------
@@ -729,7 +911,7 @@ __ ../../../../boost/parameter/value_type.hpp
         typedef … type;
     };
 
-:Requires: ``A`` is a model of |ArgumentPack|_.
+:Requires: ``A`` must be a model of |ArgumentPack|_.
 
 :Returns: the (possibly const-qualified) type of the |tagged reference| in
 ``A`` having |keyword tag type| ``K``, if any.  If no such |tagged reference|
@@ -747,7 +929,7 @@ Code Generation Macros
 ======================
 
 Macros in this section can be used to ease the writing of code
-using the Parameter libray by eliminating repetitive boilerplate.
+using the Parameter library by eliminating repetitive boilerplate.
 
 ``BOOST_PARAMETER_FUNCTION(result, name, tag_namespace, arguments)``
 --------------------------------------------------------------------
@@ -756,34 +938,52 @@ using the Parameter libray by eliminating repetitive boilerplate.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
-:Requires: ``result`` is the parenthesized return type of the function.
-``name`` is the base name of the function, this is the name of the
-generated forwarding functions. ``tag_namespace`` is the namespace in
-which the keywords used by the function resides. ``arguments`` is
-a list of *argument specifiers*, as defined below.
+:Requires: ``result`` is the parenthesized return type of the
+function.  ``name`` is the base name of the function; it determines the name
+of the generated forwarding functions.  ``tag_namespace`` is the namespace in
+which the keywords used by the function resides.  ``arguments`` is a
+`Boost.Preprocessor`_ `sequence`_ of *argument-specifiers*, as defined below.
 
 :Argument specifiers syntax:
 .. parsed-literal::
 
-    argument-specifiers ::= *specifier-group* {*specifier-group*}
+    argument-specifiers ::= *specifier-group* {*specifier-group*\ }
 
     specifier-group0 ::= *specifier-group1* |
-                         ( '**(**' '**deduced**' *specifier-group1* {*specifier-group1*} '**)**' )
+        (
+            '**(**' '**deduced**'
+                *specifier-group1* {*specifier-group1*\ }
+            '**)**'
+        )
 
-    specifier-group1 ::= ( '**(**' '**optional**' *optional-specifier* {*optional-specifier*} '**)**' ) |
-                         ( '**(**' '**required**' *required-specifier* {*required-specifier*} '**)**' )
+    specifier-group1 ::=
+        (
+            '**(**' '**optional**'
+                *optional-specifier* {*optional-specifier*\ }
+            '**)**'
+        ) | (
+            '**(**' '**required**'
+                *required-specifier* {*required-specifier*\ }
+            '**)**'
+        )
 
-    optional-specifier ::= '**(**' *name* '**,**' *restriction* '**,**' *default-value* ')'
-    required-specifier ::= '**(**' *name* '**,**' *restriction* ')'
+    optional-specifier ::=
+        '**(**' *name* '**,**' *restriction* '**,**' *default-value* ')'
 
-    restriction ::= ('*****' '**(**' *lambda-expression* '**)**' ) |
-                    ( '**(**' *typename* '**)**' ) |
-                    '*****'
+    required-specifier ::=
+        '**(**' *name* '**,**' *restriction* ')'
 
-``name`` is any valid C++ identifier. ``default-value`` is any valid
-C++ expression. ``typename`` is the name of a type.
-``lambda-expression`` is an `MPL lambda expression`_.
+    restriction ::=
+        ( '**\***' '**(**' *lambda-expression* '**)**' ) |
+        ( '**(**' *type-name* '**)**' ) |
+        '**\***'
 
+``name`` is any valid C++ identifier. ``default-value`` is any valid C++
+expression.  ``type-name`` is the name of a type.  ``lambda-expression``
+is an `MPL lambda expression`_.
+
+.. _`Boost.Preprocessor`: ../../../preprocessor/doc/index.html
+.. _`sequence`: ../../../preprocessor/doc/data/sequences.html
 .. _`MPL lambda expression`: ../../../mpl/doc/refmanual/lambda-expression.html
 
 :Generated names in enclosing scope:
@@ -791,7 +991,7 @@ C++ expression. ``typename`` is the name of a type.
 * ``boost_param_params_ ## __LINE__ ## name``
 * ``boost_param_parameters_ ## __LINE__ ## name``
 * ``boost_param_impl ## name``
-* ``boost_param_default_ ## __LINE__ ## name``
+* ``boost_param_dispatch_ ## __LINE__ ## name``
 
 Approximate expansion:
 **Where**:
@@ -813,34 +1013,40 @@ Approximate expansion:
       : boost::parameter::parameters<
             *list of parameter specifications, based on arguments*
         >
-    {};
+    {
+    };
 
     typedef boost_param_params\_ ## __LINE__ ## **name** 
         boost_param_parameters\_ ## __LINE__ ## **name**;
 
+    *… forward declaration of front-end implementation …*
+
     template <class A0, …, class A ## **n**>
-    *result type* **name**\ (
+    **result** **name**\ (
         A0&& a0, …, A ## **n**\ && a ## **n**
       , typename boost_param_parameters\_ ## __LINE__ ## **name**::match<
             A0, …, A ## **n**
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to implementation …*
+        *… forward to front-end implementation …*
     }
 
     :vellipsis:`⋮`
 
     template <class A0, …, class A ## **m**>
-    *result type* **name**\ (
+    **result** **name**\ (
         A0&& a0, …, A ## **m**\ && a ## **m**
       , typename boost_param_parameters\_ ## __LINE__ ## **name**::match<
             A0, …, A ## **m**
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to implementation …*
+        *… forward to front-end implementation …*
     }
+
+    *… forward declaration of dispatch functions …*
+    *… front-end implementation forwards to dispatch functions …*
 
     template <
         class ResultType
@@ -848,7 +1054,7 @@ Approximate expansion:
         :vellipsis:`⋮`
       , class *argument name* ## **m** ## _type
     >
-    ResultType boost_param_default\_ ## __LINE__ ## **name**\ (
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
         (ResultType(\ *)())
       , *argument name* ## **0** ## _type&& *argument name*\ **0**
         :vellipsis:`⋮`
@@ -869,34 +1075,68 @@ Approximate expansion:
       : boost::parameter::parameters<
             *list of parameter specifications, based on arguments*
         >
-    {};
+    {
+    };
 
     typedef boost_param_params\_ ## __LINE__ ## **name** 
         boost_param_parameters\_ ## __LINE__ ## **name**;
 
+    *… forward declaration of front-end implementation …*
+
     template <class A0, …, class A ## **n**>
-    *result type* **name**\ (
+    **result** **name**\ (
         A0 const& a0, …, A ## **n** const& a ## **n**
       , typename boost_param_parameters\_ ## __LINE__ ## **name**::match<
             A0 const, …, A ## **n** const
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to implementation …*
+        *… forward to front-end implementation …*
+    }
+
+    *… exponential number of overloads …*
+    :vellipsis:`⋮`
+
+    template <class A0, …, class A ## **n**>
+    **result** **name**\ (
+        A0& a0, …, A ## **n** & a ## **n**
+      , typename boost_param_parameters\_ ## __LINE__ ## **name**::match<
+            A0, …, A ## **n**
+        >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
+    )
+    {
+        *… forward to front-end implementation …*
     }
 
     :vellipsis:`⋮`
 
     template <class A0, …, class A ## **m**>
-    *result type* **name**\ (
+    **result** **name**\ (
         A0 const& a0, …, A ## **m** const& a ## **m**
       , typename boost_param_parameters\_ ## __LINE__ ## **name**::match<
             A0 const, …, A ## **m** const
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to implementation …*
+        *… forward to front-end implementation …*
     }
+
+    *… exponential number of overloads …*
+    :vellipsis:`⋮`
+
+    template <class A0, …, class A ## **m**>
+    **result** **name**\ (
+        A0& a0, …, A ## **m** & a ## **m**
+      , typename boost_param_parameters\_ ## __LINE__ ## **name**::match<
+            A0, …, A ## **m**
+        >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
+    )
+    {
+        *… forward to front-end implementation …*
+    }
+
+    *… forward declaration of dispatch functions …*
+    *… front-end implementation forwards to dispatch functions …*
 
     template <
         class ResultType
@@ -904,20 +1144,22 @@ Approximate expansion:
         :vellipsis:`⋮`
       , class *argument name* ## **m** ## _type
     >
-    ResultType boost_param_default\_ ## __LINE__ ## **name**\ (
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
         (ResultType(\ *)())
       , *argument name* ## **0** ## _type const& *argument name* ## **0**
         :vellipsis:`⋮`
       , *argument name* ## **m** ## _type const& *argument name* ## **m**
     )
 
-The |preprocessor|_ and |preprocessor_deduced|_ test programs demonstrate
-proper usage of this macro.
+The |preprocessor|_, |preprocessor_deduced|_, and |preprocessor_eval_cat|_
+test programs demonstrate proper usage of this macro.
 
 .. |preprocessor| replace:: preprocessor.cpp
 .. _preprocessor: ../../test/preprocessor.cpp
 .. |preprocessor_deduced| replace:: preprocessor_deduced.cpp
 .. _preprocessor_deduced: ../../test/preprocessor_deduced.cpp
+.. |preprocessor_eval_cat| replace:: preprocessor_eval_category.cpp
+.. _preprocessor_eval_cat: ../../test/preprocessor_eval_category.cpp
 
 ``BOOST_PARAMETER_MEMBER_FUNCTION(result, name, tag_namespace, arguments)``
 ---------------------------------------------------------------------------
@@ -926,7 +1168,71 @@ proper usage of this macro.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
-See ``BOOST_PARAMETER_FUNCTION(result, name, tag_namespace, arguments)``
+Same as ``BOOST_PARAMETER_FUNCTION``, except:
+
+\*. ``name`` may be qualified by the ``static`` keyword to declare the member
+function and its helpers as not associated with any object of the enclosing
+type.
+
+\*. Expansion of this macro omits all forward declarations of the front-end
+implementation and dispatch functions.
+
+The |preprocessor|_ and |preprocessor_eval_cat|_ test programs demonstrate
+proper usage of this macro.
+
+.. |preprocessor| replace:: preprocessor.cpp
+.. _preprocessor: ../../test/preprocessor.cpp
+.. |preprocessor_eval_cat| replace:: preprocessor_eval_category.cpp
+.. _preprocessor_eval_cat: ../../test/preprocessor_eval_category.cpp
+
+``BOOST_PARAMETER_CONST_MEMBER_FUNCTION(result, name, tag_ns, arguments)``
+--------------------------------------------------------------------------
+
+:Defined in: `boost/parameter/preprocessor.hpp`__
+
+__ ../../../../boost/parameter/preprocessor.hpp
+
+Same as ``BOOST_PARAMETER_MEMBER_FUNCTION``, except that the overloaded
+forwarding member function overloads and their helper methods are
+``const``-qualified.
+
+The |preprocessor|_ test programs demonstrates proper usage of this macro.
+
+.. |preprocessor| replace:: preprocessor.cpp
+.. _preprocessor: ../../test/preprocessor.cpp
+
+``BOOST_PARAMETER_FUNCTION_CALL_OPERATOR(result, tag_namespace, arguments)``
+----------------------------------------------------------------------------
+
+:Defined in: `boost/parameter/preprocessor.hpp`__
+
+__ ../../../../boost/parameter/preprocessor.hpp
+
+Same as ``BOOST_PARAMETER_MEMBER_FUNCTION``, except that the name of the
+forwarding member function overloads is ``operator()``.
+
+:Generated names in enclosing scope:
+* ``boost_param_result_ ## __LINE__ ## operator``
+* ``boost_param_params_ ## __LINE__ ## operator``
+* ``boost_param_parameters_ ## __LINE__ ## operator``
+* ``boost_param_impl ## operator``
+* ``boost_param_dispatch_ ## __LINE__ ## operator``
+
+``BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR(result, tag_ns, arguments)``
+---------------------------------------------------------------------------
+
+:Defined in: `boost/parameter/preprocessor.hpp`__
+
+__ ../../../../boost/parameter/preprocessor.hpp
+
+Same as ``BOOST_PARAMETER_FUNCTION_CALL_OPERATOR``, except that the overloaded
+function call operators and their helper methods are ``const``-qualified.
+
+The |preprocessor_eval_cat|_ test program demonstrates proper usage of this
+macro.
+
+.. |preprocessor_eval_cat| replace:: preprocessor_eval_category.cpp
+.. _preprocessor_eval_cat: ../../test/preprocessor_eval_category.cpp
 
 ``BOOST_PARAMETER_CONSTRUCTOR(cls, impl, tag_namespace, arguments)``
 --------------------------------------------------------------------
@@ -935,12 +1241,13 @@ See ``BOOST_PARAMETER_FUNCTION(result, name, tag_namespace, arguments)``
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
-:Requires: ``cls`` is the name of this class. ``impl`` is the 
-parenthesized implementation base class for ``cls``.
-``tag_namespace`` is the namespace in which the keywords 
-used by the function resides. ``arguments`` is
-a list of *argument specifiers*, as defined in 
-``BOOST_PARAMETER_FUNCTION(result,name,tag_namespace,arguments)``.
+:Requires: ``cls`` is the name of the enclosing class.  ``impl`` is the
+parenthesized implementation base class for ``cls``.  ``tag_namespace`` is the
+namespace in which the keywords used by the function resides.  ``arguments``
+is a list of *argument-specifiers*, as defined in ``BOOST_PARAMETER_FUNCTION``
+except that *optional-specifier* no longer includes *default-value*.  The
+delegate constructor in ``impl`` determines the default value of all optional
+arguments.
 
 :Generated names in enclosing scope:
 * ``boost_param_params_ ## __LINE__ ## ctor``
@@ -960,21 +1267,23 @@ Approximate expansion:
       : boost::parameter::parameters<
             *list of parameter specifications, based on arguments*
         >
-    {};
+    {
+    };
 
-    typedef boost_param_params\_ ## __LINE__ ## **name** 
-      constructor_parameters ## __LINE__;
+    typedef boost_param_params\_ ## __LINE__ ## **name**
+        constructor_parameters ## __LINE__;
 
     template <class A0, …, class A ## **n**>
     *cls*\ (A0&& a0, …, A ## **n** && a ## **n**)
       : *impl*\ (
             constructor_parameters ## __LINE__(
-                boost::forward<A0>(a0),
+                boost::`forward`_<A0>(a0),
                 :vellipsis:`⋮`
-              , boost::forward<A ## **n**>(a ## **n**)
+              , boost::`forward`_<A ## **n**>(a ## **n**)
             )
         )
-    {}
+    {
+    }
 
     :vellipsis:`⋮`
 
@@ -982,12 +1291,13 @@ Approximate expansion:
     *cls*\ (A0&& a0, …, A ## **m** && a ## **m**)
       : *impl*\ (
             constructor_parameters ## __LINE__(
-                boost::forward<A0>(a0),
+                boost::`forward`_<A0>(a0),
                 :vellipsis:`⋮`
-              , boost::forward<A ## **m**>(a ## **m**)
+              , boost::`forward`_<A ## **m**>(a ## **m**)
             )
         )
-    {}
+    {
+    }
 
 **If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
 
@@ -997,50 +1307,72 @@ Approximate expansion:
       : boost::parameter::parameters<
             *list of parameter specifications, based on arguments*
         >
-    {};
+    {
+    };
 
-    typedef boost_param_params\_ ## __LINE__ ## **name** 
+    typedef boost_param_params\_ ## __LINE__ ## **name**
         constructor_parameters ## __LINE__;
 
     template <class A0, …, class A ## **n**>
     *cls*\ (A0 const& a0, …, A ## **n** const& a ## **n**)
       : *impl*\ (constructor_parameters ## __LINE__(a0, …, a ## **n**))
-    {}
+    {
+    }
+
+    *… exponential number of overloads …*
+    :vellipsis:`⋮`
+
+    template <class A0, …, class A ## **n**>
+    *cls*\ (A0& a0, …, A ## **n** & a ## **n**)
+      : *impl*\ (constructor_parameters ## __LINE__(a0, …, a ## **n**))
+    {
+    }
 
     :vellipsis:`⋮`
 
     template <class A0, …, class A ## **m**>
     *cls*\ (A0 const& a0, …, A ## **m** const& a ## **m**)
       : *impl*\ (constructor_parameters ## __LINE__(a0, …, a ## **m**))
-    {}
+    {
+    }
 
-The |preprocessor_cpp|_ and |preprocessor_deduced|_ test programs demonstrate
+    *… exponential number of overloads …*
+    :vellipsis:`⋮`
+
+    template <class A0, …, class A ## **m**>
+    *cls*\ (A0& a0, …, A ## **m** & a ## **m**)
+      : *impl*\ (constructor_parameters ## __LINE__(a0, …, a ## **m**))
+    {
+    }
+
+The |preprocessor|_ and |preprocessor_eval_cat|_ test programs demonstrate
 proper usage of this macro.
 
-.. |preprocessor_cpp| replace:: preprocessor.cpp
-.. _preprocessor_cpp: ../../test/preprocessor.cpp
-.. |preprocessor_deduced| replace:: preprocessor_deduced.cpp
-.. _preprocessor_deduced: ../../test/preprocessor_deduced.cpp
+.. _`forward`: ../../../../doc/html/boost/forward.html
+.. |preprocessor| replace:: preprocessor.cpp
+.. _preprocessor: ../../test/preprocessor.cpp
+.. |preprocessor_eval_cat| replace:: preprocessor_eval_category.cpp
+.. _preprocessor_eval_cat: ../../test/preprocessor_eval_category.cpp
 
 ``BOOST_PARAMETER_NAME(name)``
 ------------------------------
 
 Declares a tag-type and keyword object.
 
-Expands to:
-
 **If** *name* is of the form:
 
 .. parsed-literal::
 
-    (*tag-name*, *namespace-name*) *object-name*
+    (*qualifier*\ (*tag-name*), *namespace-name*) *object-name*
 
 **then**
 
+Expands to:
+
 .. parsed-literal::
 
-    namespace *namespace-name* 
-    {
+    namespace *namespace-name* {
+
         struct *tag-name*
         {
             static char const* keyword_name()
@@ -1050,6 +1382,7 @@ Expands to:
 
             typedef *unspecified* _;
             typedef *unspecified* _1;
+            typedef boost::parameter::*qualifier* ## _reference qualifier;
         };
     }
 
@@ -1058,12 +1391,28 @@ Expands to:
             *tag-namespace* :: *tag-name*
         >::instance;
 
-**Else**
+**Else If** *name* is of the form:
 
 .. parsed-literal::
 
-    namespace tag
-    {
+    (*tag-name*, *namespace-name*) *object-name*
+
+**then**
+
+Treats *name* as if it were of the form:
+
+.. parsed-literal::
+
+    (forward(*tag-name*), *namespace-name*) *object-name*
+
+**Else**
+
+Expands to:
+
+.. parsed-literal::
+
+    namespace tag {
+
         struct *name*
         {
             static char const* keyword_name()
@@ -1073,6 +1422,7 @@ Expands to:
 
             typedef *unspecified* _;
             typedef *unspecified* _1;
+            typedef boost::parameter::forward_reference qualifier;
         };
     }
 
@@ -1086,15 +1436,16 @@ Expands to:
 
 .. parsed-literal::
 
-    namespace tag
-    {
+    namespace tag {
+
         struct *name*;
     }
 
     template <class T>
     struct *name* 
       : ::boost::parameter::template_keyword<tag:: *name*, T>
-    {};
+    {
+    };
 
 ``BOOST_PARAMETER_FUN(r, n, l, h, p)``
 --------------------------------------
@@ -1122,18 +1473,18 @@ Expands to:
 
 .. parsed-literal::
 
-    template <class A1, class A2, …class A ## **l**>
+    template <class A1, class A2, …, class A ## **l**>
     r name(
-        A1 && a1, A2 && a2, …A ## **l** && a ## **l**
-      , typename **p**::match<A1, A2, …A ## **l**>::type p = **p**\ ()
+        A1 && a1, A2 && a2, …, A ## **l** && a ## **l**
+      , typename **p**::match<A1, A2, …, A ## **l**>::type p = **p**\ ()
     )
     {
         return **name**\ _with_named_params(
             **p**\ (
-                boost::forward<A1>(a1)
-              , boost::forward<A2>(a2)
+                boost::`forward`_<A1>(a1)
+              , boost::`forward`_<A2>(a2)
                 :vellipsis:`⋮`
-              , boost::forward<A ## **l**>(a ## **l**)
+              , boost::`forward`_<A ## **l**>(a ## **l**)
             )
         );
     }
@@ -1146,21 +1497,21 @@ Expands to:
       , class A ## BOOST_PP_INC_\ (**l**)
     >
     r name(
-        A1 && a1, A2 && a2, …A ## **l** && a ## **l**
+        A1 && a1, A2 && a2, …, A ## **l** && a ## **l**
       , A ## BOOST_PP_INC_\ (**l**) const& a ## BOOST_PP_INC_\ (**l**)
       , typename **p**::match<
-            A1, A2, …A ## **l**, A ## BOOST_PP_INC_\ (**l**)
+            A1, A2, …, A ## **l**, A ## BOOST_PP_INC_\ (**l**)
         >::type p = **p**\ ()
     )
     {
         return **name**\ _with_named_params(
             **p**\ (
-                boost::forward<A1>(a1)
-              , boost::forward<A2>(a2)
+                boost::`forward`_<A1>(a1)
+              , boost::`forward`_<A2>(a2)
                 :vellipsis:`⋮`
-              , boost::forward<A ## **l**>(a ## **l**)
-              , boost::forward<A ## BOOST_PP_INC_\ (**l**)>(
-                    a ## BOOST_PP_INC_\ (**l**)
+              , boost::`forward`_<A ## **l**>(a ## **l**)
+              , boost::`forward`_<A ## `BOOST_PP_INC`_\ (**l**)>(
+                    a ## `BOOST_PP_INC`_\ (**l**)
                 )
             )
         );
@@ -1170,16 +1521,16 @@ Expands to:
 
     template <class A1, class A2, …class A ## **h**>
     r name(
-        A1 && a1, A2 && a2, …A ## **h** && x ## **h**
-      , typename **p**::match<A1, A2, …A ## **h**>::type p = **p**\ ()
+        A1 && a1, A2 && a2, …, A ## **h** && x ## **h**
+      , typename **p**::match<A1, A2, …, A ## **h**>::type p = **p**\ ()
     )
     {
         return **name**\ _with_named_params(
             **p**\ (
-                boost::forward<A1>(a1)
-              , boost::forward<A2>(a2)
+                boost::`forward`_<A1>(a1)
+              , boost::`forward`_<A2>(a2)
                 :vellipsis:`⋮`
-              , boost::forward<A ## **h**>(a ## **h**)
+              , boost::`forward`_<A ## **h**>(a ## **h**)
             )
         );
     }
@@ -1190,13 +1541,13 @@ Expands to:
 
 .. parsed-literal::
 
-    template <class A1, class A2, …class A ## **l**>
+    template <class A1, class A2, …, class A ## **l**>
     r name(
-        A1 const& a1, A2 const& a2, …A ## **l** const& a ## **l**
-      , typename **p**::match<A1, A2, …A ## **l**>::type p = **p**\ ()
+        A1 const& a1, A2 const& a2, …, A ## **l** const& a ## **l**
+      , typename **p**::match<A1, A2, …, A ## **l**>::type p = **p**\ ()
     )
     {
-        return **name**\ _with_named_params(**p**\ (a1, a2, …a ## **l**));
+        return **name**\ _with_named_params(**p**\ (a1, a2, …, a ## **l**));
     }
 
     template <
@@ -1204,35 +1555,74 @@ Expands to:
       , class A2
         :vellipsis:`⋮`
       , class A ## **l**
-      , class A ## BOOST_PP_INC_\ (**l**)
+      , class A ## `BOOST_PP_INC`_\ (**l**)
     >
     r name(
-        A1 const& a1, A2 const& a2, …A ## **l** const& a ## **l**
-      , A ## BOOST_PP_INC_\ (**l**) const& a ## BOOST_PP_INC_\ (**l**)
+        A1 const& a1, A2 const& a2, …, A ## **l** const& a ## **l**
+      , A ## `BOOST_PP_INC`_\ (**l**) const& a ## `BOOST_PP_INC`_\ (**l**)
       , typename **p**::match<
-            A1, A2, …A ## **l**, A ## BOOST_PP_INC_\ (**l**)
+            A1 const, A2 const, …, A ## **l** const
+          , A ## `BOOST_PP_INC`_\ (**l**) const
         >::type p = **p**\ ()
     )
     {
         return **name**\ _with_named_params(
-            **p**\ (a1, a2, …a ## **l**, a ## BOOST_PP_INC_\ (**l**))
+            **p**\ (a1, a2, …, a ## **l**, a ## `BOOST_PP_INC`_\ (**l**))
+        );
+    }
+
+    *… exponential number of overloads …*
+    :vellipsis:`⋮`
+
+    template <
+        class A1
+      , class A2
+        :vellipsis:`⋮`
+      , class A ## **l**
+      , class A ## `BOOST_PP_INC`_\ (**l**)
+    >
+    r name(
+        A1& a1, A2& a2, …, A ## **l** & a ## **l**
+      , A ## `BOOST_PP_INC`_\ (**l**) & a ## `BOOST_PP_INC`_\ (**l**)
+      , typename **p**::match<
+            A1, A2, …, A ## **l**, A ## `BOOST_PP_INC`_\ (**l**)
+        >::type p = **p**\ ()
+    )
+    {
+        return **name**\ _with_named_params(
+            **p**\ (a1, a2, …, a ## **l**, a ## `BOOST_PP_INC`_\ (**l**))
         );
     }
 
     :vellipsis:`⋮`
 
-    template <class A1, class A2, …class A ## **h**>
+    template <class A1, class A2, …, class A ## **h**>
     r name(
-        A1 const& a1, A2 const& a2, …A ## **h** const& x ## **h**
-      , typename **p**::match<A1, A2, …A ## **h**>::type p = **p**\ ()
+        A1 const& a1, A2 const& a2, …, A ## **h** const& x ## **h**
+      , typename **p**::match<
+            A1 const, A2 const, …, A ## **h** const
+        >::type p = **p**\ ()
     )
     {
-        return **name**\ _with_named_params(**p**\ (a1, a2, …a ## **h**));
+        return **name**\ _with_named_params(**p**\ (a1, a2, …, a ## **h**));
+    }
+
+    *… exponential number of overloads …*
+    :vellipsis:`⋮`
+
+    template <class A1, class A2, …, class A ## **h**>
+    r name(
+        A1& a1, A2& a2, …, A ## **h** & x ## **h**
+      , typename **p**::match<A1, A2, …, A ## **h**>::type p = **p**\ ()
+    )
+    {
+        return **name**\ _with_named_params(**p**\ (a1, a2, …, a ## **h**));
     }
 
 The |macros_cpp|_ test program demonstrates proper usage of this macro.
 
-.. _BOOST_PP_INC: ../../../preprocessor/doc/ref/inc.html
+.. _`BOOST_PP_INC`: ../../../preprocessor/doc/ref/inc.html
+.. _`forward`: ../../../../doc/html/boost/forward.html
 .. |macros_cpp| replace:: macros.cpp
 .. _macros_cpp: ../../test/macros.cpp
 
@@ -1283,7 +1673,7 @@ Expands to:
 
 .. parsed-literal::
 
-    typename **p**::match<**A0**\ , **A1**\ …, **A** ## *n*>::type
+    typename **p**::match<**A0**\ , **A1**\ , …, **A** ## *n*>::type
         **x** = **p**\ ()
 
 Configuration Macros
@@ -1324,6 +1714,23 @@ with arity higher than ``7``.
 __ ../../../../boost/parameter/config.hpp
 
 :Default Value: ``8``
+
+``BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY``
+---------------------------------------------
+
+If this library supports perfect forwarding, determines the minimum number of
+arguments that are all passed by ``const`` lvalue reference to a function
+overload generated by ``BOOST_PARAMETER_FUNCTION`` et. al.  Will only be
+``#defined`` by the library if it is not already ``#defined`` and
+``BOOST_PARAMETER_HAS_PERFECT_FORWARDING`` is ``#defined``.
+
+.. |BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY| replace:: ``BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY``
+
+:Defined in: `boost/parameter/config.hpp`__
+
+__ ../../../../boost/parameter/config.hpp
+
+:Default Value: ``11``
 
 Tutorial
 ========

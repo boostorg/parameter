@@ -30,14 +30,15 @@ value.  The library also supports *deduced* parameters; that is to say,
 parameters whose identity can be deduced from their types.
 
 .. @jam_prefix.append('''
-    project test : requirements <include>. <implicit-dependency>/boost//headers ;
+    project test
+        : requirements <include>. <implicit-dependency>/boost//headers ;
 ''')
 
 .. @example.prepend('''
     #include <boost/parameter.hpp>
 
-    namespace test
-    {
+    namespace test {
+
         BOOST_PARAMETER_NAME(title)
         BOOST_PARAMETER_NAME(width)
         BOOST_PARAMETER_NAME(titlebar)
@@ -52,12 +53,21 @@ parameters whose identity can be deduced from their types.
         BOOST_PARAMETER_TEMPLATE_KEYWORD(deleter)
         BOOST_PARAMETER_TEMPLATE_KEYWORD(copy_policy)
 
-        template <class T> struct Deallocate {};
-        struct DeepCopy {};
+        template <class T>
+        struct Deallocate
+        {
+        };
+
+        struct DeepCopy
+        {
+        };
 
         namespace parameter = boost::parameter;
 
-        struct Foo {};
+        struct Foo
+        {
+        };
+
         template <class T, class A0, class A1>
         struct smart_ptr
         {
@@ -397,8 +407,8 @@ library provides a convenient macro for defining keyword objects::
 
     #include <boost/parameter/name.hpp>
 
-    namespace graphs
-    {
+    namespace graphs {
+
         BOOST_PARAMETER_NAME(graph)    // Note: no semicolon
         BOOST_PARAMETER_NAME(visitor)
         BOOST_PARAMETER_NAME(root_vertex)
@@ -455,10 +465,10 @@ follows a simple pattern using the ``BOOST_PARAMETER_FUNCTION`` macro::
 
             (optional               //    four optional parameters,
                                     //    with defaults
-                (visitor,           \*, boost::dfs_visitor<>()) 
-                (root_vertex,       \*, \*vertices(graph).first) 
-                (index_map,         \*, get(boost::vertex_index,graph)) 
-                (in_out(color_map), \*, 
+                (visitor,     \*, boost::dfs_visitor<>()) 
+                (root_vertex, \*, \*vertices(graph).first) 
+                (index_map,   \*, get(boost::vertex_index,graph)) 
+                (color_map,   \*, 
                     default_color_map(num_vertices(graph), index_map)
                 ) 
             )
@@ -476,13 +486,14 @@ follows a simple pattern using the ``BOOST_PARAMETER_FUNCTION`` macro::
     BOOST_PARAMETER_NAME(visitor)
     BOOST_PARAMETER_NAME(root_vertex)
     BOOST_PARAMETER_NAME(index_map)
-    BOOST_PARAMETER_NAME(color_map)
+    BOOST_PARAMETER_NAME(in_out(color_map))
 
     namespace boost {
 
         template <class T = int>
         struct dfs_visitor
-        {};
+        {
+        };
 
         int vertex_index = 0;
     }
@@ -513,6 +524,7 @@ parameters must come first, but the ``(required … )`` clause can be omitted
 when all the parameters are optional.
 
 .. _Boost.Preprocessor: ../../../preprocessor/index.html
+.. _sequence: http://boost-consulting.com/mplbook/preprocessor.html#sequences
 
 Required Parameters
 -------------------
@@ -557,11 +569,11 @@ parameter's default value:
 
 .. parsed-literal::
 
-    (optional \ **\
-        (visitor,           \*, boost::dfs_visitor<>()) 
-        (root_vertex,       \*, \*vertices(graph).first) 
-        (index_map,         \*, get(boost::vertex_index,graph)) 
-        (in_out(color_map), \*,
+    (optional
+        **(visitor,     \*, boost::dfs_visitor<>())
+        (root_vertex, \*, \*vertices(graph).first)
+        (index_map,   \*, get(boost::vertex_index,graph))
+        (color_map,   \*,
             default_color_map(num_vertices(graph), index_map)
         )**
     )
@@ -575,7 +587,8 @@ parameter's default value:
 
         template <class T = int>
         struct dfs_visitor
-        {};
+        {
+        };
     }
 
     BOOST_PARAMETER_NAME(graph)
@@ -591,29 +604,46 @@ parameter's default value:
 .. @example.append(') {}')
 .. @test('compile')
 
-Handling “Out” Parameters
--------------------------
+Handling “In”, “Out”, “Consume / Move-From”, and “Forward” Parameters
+---------------------------------------------------------------------
 
 .. compound::
 
-Within the function body, a parameter name such as ``visitor`` is an
-*lvalue reference*, bound either to an actual argument passed by the caller
-or to the result of evaluating a default expression.  In most cases,
-parameter types are of the form ``T const&`` for some ``T``.  Parameters whose
-values are expected to be modified, however, must be passed by lvalue or
-rvalue reference to *non*\ -``const``.  To indicate that ``color_map`` is
-both read and written, we wrap its name in ``in_out(…)``:
+By default, Boost.Parameter treats all parameters as if they were *forward*
+`parameters`_, which functions would take in by rvalue reference and only
+``std::forward`` or ``boost::forward`` to other functions.  Such parameters
+can be ``const`` lvalues, mutable lvalues, ``const`` rvalues, or mutable
+rvalues.  Therefore, the default configuration grants the most flexibility to
+user code.  However:
+
+\*. Users can configure one or more parameters to be *in* `parameters`_, which
+can fall into the same categories as *forward* `parameters`_ but are now
+passed by ``const`` lvalue reference and so must only be read from.  Continuing
+from the previous example, to indicate that ``root_vertex`` and ``index_map``
+are read-only, we wrap their names in ``in(…)``.
+
+\*. Users can configure one or more parameters to be either *out*
+`parameters`_, which functions would strictly write to, or *in-out*
+`parameters`_, which functions would both read from and write to.  Such
+parameters can only be mutable lvalues.  In the example, to indicate that
+``color_map`` is read-write, we wrap its name in ``in_out(…)``.  Note that
+Boost.Parameter sees no functional difference between ``out(…)`` and
+``in_out(…)``, so you may choose whichever makes your interfaces more
+self-documenting.
+
+\*. Users can configure one or more parameters to be *consume* or *move-from*
+`parameters`_, which functions would take in by mutable rvalue reference and
+``std::move`` or ``boost::move`` as the last access step.  Such parameters can
+only be mutable rvalues.  Boost.Parameter supports wrapping the corresponding
+names in ``consume(…)`` or ``move_from(…)``.
 
 .. parsed-literal::
 
-    (optional
-        (visitor,            \*, boost::dfs_visitor<>())
-        (root_vertex,        \*, \*vertices(graph).first)
-        (index_map,          \*, get(boost::vertex_index,graph))
-        (**in_out(color_map)**, \*,
-            default_color_map(num_vertices(graph), index_map)
-        )
-    )
+    BOOST_PARAMETER_NAME(graph)
+    BOOST_PARAMETER_NAME(visitor)
+    BOOST_PARAMETER_NAME(**in(root_vertex)**)
+    BOOST_PARAMETER_NAME(**in(index_map)**)
+    BOOST_PARAMETER_NAME(**in_out(color_map)**)
 
 .. @example.prepend('''
     #include <boost/parameter.hpp>
@@ -624,27 +654,30 @@ both read and written, we wrap its name in ``in_out(…)``:
 
         template <class T = int>
         struct dfs_visitor
-        {};
+        {
+        };
     }
-
-    BOOST_PARAMETER_NAME(graph)
-
-    BOOST_PARAMETER_NAME(visitor)
-    BOOST_PARAMETER_NAME(root_vertex)
-    BOOST_PARAMETER_NAME(index_map)
-    BOOST_PARAMETER_NAME(color_map)
-
-    BOOST_PARAMETER_FUNCTION((void), f, tag,
-        (required (graph, \*))
 ''')
 
-.. @example.append(') {}')
+.. @example.append('''
+    BOOST_PARAMETER_FUNCTION((void), f, tag,
+        (required (graph, \*))
+        (optional
+            (visitor,     \*, boost::dfs_visitor<>())
+            (root_vertex, \*, \*vertices(graph).first)
+            (index_map,   \*, get(boost::vertex_index, graph))
+            (color_map,   \*,
+                default_color_map(num_vertices(graph), index_map)
+            )
+        )
+    )
+    {
+    }
+''')
+
 .. @test('compile')
 
-If ``color_map`` were strictly going to be modified but not examined, we could
-have written ``out(color_map)``.  There is no functional difference between
-``out`` and ``in_out``; the library provides both so you can make your
-interfaces more self-documenting.
+.. _`parameters`: http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters
 
 Positional Arguments
 --------------------
@@ -660,24 +693,22 @@ signature, so for example in this call ::
 ``x`` will always be interpreted as a graph and ``y`` will always be
 interpreted as a visitor.
 
-.. _sequence: http://boost-consulting.com/mplbook/preprocessor.html#sequences
-
 Default Expression Evaluation
 -----------------------------
 
 .. compound::
 
 Note that in our example, the value of the graph parameter is used in the
-default expressions for ``root_vertex``, ``index_map`` and ``color_map``.  
+default expressions for ``root_vertex``, ``index_map``, and ``color_map``.  
 
 .. parsed-literal::
 
     (required (**graph**, \*) )
     (optional
-        (visitor,           \*, boost::dfs_visitor<>())
-        (root_vertex,       \*, \*vertices(**graph**).first)
-        (index_map,         \*, get(boost::vertex_index,\ **graph**))
-        (in_out(color_map), \*,
+        (visitor,     \*, boost::dfs_visitor<>())
+        (root_vertex, \*, \*vertices(**graph**).first)
+        (index_map,   \*, get(boost::vertex_index, **graph**))
+        (color_map,   \*,
             default_color_map(num_vertices(**graph**), index_map)
         )
     )
@@ -790,7 +821,8 @@ it would be ambiguous::
 
     // new overload
     BOOST_PARAMETER_FUNCTION(
-        (void), depth_first_search, (tag), (required (graph,*))( … ))
+        (void), depth_first_search, (tag), (required (graph,*))( … )
+    )
     {
         // new algorithm implementation
     }
@@ -817,9 +849,9 @@ __ `parameter table`_
 
 .. parsed-literal::
 
-    (root_vertex,
-        **(typename boost::graph_traits<graph_type>::vertex_descriptor)**,
-       \*vertices(graph).first
+    (root_vertex
+      , **(typename boost::graph_traits<graph_type>::vertex_descriptor)**
+      , \*vertices(graph).first
     )
 
 .. @ignore()
@@ -831,7 +863,7 @@ overload.
 
 .. Note:: The *type* of the ``graph`` argument is available in the
 signature—and in the function body—as ``graph_type``.  In general, to access
-the type of any parameter *foo*, write *foo*\ ``_type``.
+the type of any parameter *foo*, concatenate *foo* with ``_type``.
 
 Predicate Requirements
 ......................
@@ -888,7 +920,8 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
         (void), depth_first_search, graphs
 
       , (required 
-            (graph, **\ \*(boost::mpl::and_<
+            (graph
+              , **\ \*(boost::mpl::and_<
                     boost::is_convertible<
                         traversal_category<_>, boost::incidence_graph_tag
                     >
@@ -941,7 +974,8 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
 ''')
 
 .. @example.append('''
-    {}
+    {
+    }
 
     int main()
     {
@@ -959,6 +993,7 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
 
         depth_first_search(g);
         depth_first_search(g, _root_vertex = (int)x);
+        return 0;
     }
 ''')
 
@@ -1066,28 +1101,34 @@ follows:
     BOOST_PARAMETER_NAME(policies)
 
     struct default_call_policies
-    {};
+    {
+    };
 
     struct no_keywords
-    {};
+    {
+    };
 
     struct keywords
-    {};
+    {
+    };
 
     template <class T>
     struct is_keyword_expression
       : boost::mpl::false_
-    {};
+    {
+    };
 
     template <>
     struct is_keyword_expression<keywords>
       : boost::mpl::true_
-    {};
+    {
+    };
 
     default_call_policies some_policies;
 
     void f()
-    {}
+    {
+    }
 
 ''')
 
@@ -1117,7 +1158,8 @@ name explicitly, as follows:
 
     def(
         "f", &f
-      , **_policies = some_policies**, "Documentation for f");
+      , **_policies = some_policies**, "Documentation for f"
+    );
 
 .. @example.append('}')
 .. @test('compile', howmany='all')
@@ -1175,6 +1217,7 @@ implementation function::
         {
             call_impl(arg1,arg2);
         }
+
      private:
         void call_impl(int, int); // implemented elsewhere.
     };
@@ -1276,7 +1319,7 @@ only ``name`` is required.  We can exercise our new interface as follows::
     myclass y(_index = 12, _name = "sally"); // named
     myclass z("june");                       // positional/defaulted
 
-.. @example.wrap('int main() {', '}')
+.. @example.wrap('int main() {', ' return 0; }')
 .. @test('run', howmany='all')
 
 For more on |ArgumentPack| manipulation, see the `Advanced Topics`_ section.
@@ -1334,7 +1377,6 @@ The first step is to define keywords for each template parameter::
         BOOST_PARAMETER_TEMPLATE_KEYWORD(base_list)
         BOOST_PARAMETER_TEMPLATE_KEYWORD(held_type)
         BOOST_PARAMETER_TEMPLATE_KEYWORD(copyable)
-
     }}
 
 .. @example.prepend('#include <boost/parameter.hpp>')
@@ -1348,8 +1390,8 @@ The declaration of the ``class_type`` keyword you see here is equivalent to::
         template <class T>
         struct class_type
           : parameter::template_keyword<tag::class_type,T>
-        {};
-
+        {
+        };
     }}
 
 .. @example.prepend('#include <boost/parameter.hpp>')
@@ -1382,7 +1424,6 @@ them.  Instead, we'll give them generic names and use the special type
         {
             *…*
         };
-
     }}
 
 .. @example.prepend('#include <boost/parameter.hpp>')
@@ -1408,7 +1449,6 @@ dealt with separately)::
           , parameter::optional<tag::held_type>
           , parameter::optional<tag::copyable>
         > class_signature;
-
     }}
 
 .. @example.prepend('''
@@ -1429,8 +1469,8 @@ dealt with separately)::
 
         template <class B = int>
         struct bases
-        {};
-
+        {
+        };
     }}
 ''')
 
@@ -1481,7 +1521,6 @@ optional third argument::
                 args, tag::copyable, void
             >::type copyable;
         };
-
     }}
 
 .. |ArgumentPack| replace:: :concept:`ArgumentPack`
@@ -1551,8 +1590,8 @@ the same class, as an implementation detail:
 
         template <class A0 = void, class A1 = void, class A2 = void *…* >
         struct bases **: detail::bases_base**
-        {};
-
+        {
+        };
     }}  
 
 .. @example.replace_emphasis('')
@@ -1571,7 +1610,6 @@ the same class, as an implementation detail:
         BOOST_PARAMETER_TEMPLATE_KEYWORD(base_list)
         BOOST_PARAMETER_TEMPLATE_KEYWORD(held_type)
         BOOST_PARAMETER_TEMPLATE_KEYWORD(copyable)
-
     }}
 ''')
 
@@ -1634,7 +1672,6 @@ deducible::
                 args, tag::copyable, void
             >::type copyable;
         };
-
     }}
 ''')
 
@@ -1717,7 +1754,9 @@ Here is a usage example:
 .. @example.prepend('#include <boost/parameter.hpp>')
 .. @example.append('''
     int main()
-    {}
+    {
+        return 0;
+    }
 ''')
 .. @test('run')
 
@@ -1809,7 +1848,9 @@ and any associated type requirements.  Just as we can build an |ArgumentPack|
 
 .. @example.append('''
     int main()
-    {}
+    {
+        return 0;
+    }
 ''')
 
 .. @test('run', howmany='all')
@@ -1855,6 +1896,7 @@ function template and allow *it* to do type deduction::
     {
         assert(a1 == 42);
         assert(a2 == 3);
+        return 0;
     }
 ''')
 
@@ -1888,6 +1930,7 @@ metafunction introduced `earlier`__::
     int main()
     {
         assert(six == 6);
+        return 0;
     }
 ''')
 
@@ -1933,7 +1976,9 @@ explicitly, we need a tool other than ``operator|``::
 
 .. @example.append('''
     int main()
-    {}
+    {
+        return 0;
+    }
 ''')
 
 .. @test('run')
@@ -1987,7 +2032,9 @@ compute the default value *lazily* (that is, only on demand), by using
     std::string x = f((_s1="hello,", _s2=" world", _s3="hi world"));
 
     int main()
-    {}
+    {
+        return 0;
+    }
 ''')
 
 .. @test('run')
@@ -2030,14 +2077,14 @@ keyword objects in order to avoid the following usually-silent bug:
 
     namespace people
     {
-        namespace tag { struct name; struct age;  }
+        namespace tag { struct name; struct age; }
 
         namespace // unnamed
         {
             boost::parameter::keyword<tag::name>& **name**
-            = boost::parameter::keyword<tag::name>::instance;
+                = boost::parameter::keyword<tag::name>::instance;
             boost::parameter::keyword<tag::age>& **age**
-            = boost::parameter::keyword<tag::age>::instance;
+                = boost::parameter::keyword<tag::age>::instance;
         }
 
         BOOST_PARAMETER_FUNCTION(
@@ -2119,7 +2166,7 @@ Users of these functions have a few choices:
 This approach is more verbose than many users would like.
 
 .. @example.prepend(namespace_setup)
-.. @example.append('int main() {}')
+.. @example.append('int main() { return 0; }')
 .. @test('run')
 
 2. Make keyword objects available through *using-declarations*:
@@ -2135,7 +2182,7 @@ This version is much better at the actual call site, but the
 *using-declarations* themselves can be verbose and hard-to manage.
 
 .. @example.prepend(namespace_setup)
-.. @example.append('int main() {}')
+.. @example.append('int main() { return 0; }')
 .. @test('run')
 
 3. Bring in the entire namespace with a *using-directive*:
@@ -2149,7 +2196,7 @@ This option is convenient, but it indiscriminately makes the *entire* contents
 of ``lib`` available without qualification.
 
 .. @example.prepend(namespace_setup)
-.. @example.append('int main() {}')
+.. @example.append('int main() { return 0; }')
 .. @test('run')
 
 If we add an additional namespace around keyword declarations, though, we can
@@ -2188,7 +2235,7 @@ all keywords associated with ``lib``:
     **using namespace lib::keywords;**
     int y = lib::f(_name = "bob", _index = 2);
 
-.. @example.append('int main() {}')
+.. @example.append('int main() { return 0; }')
 .. @test('run', howmany='all')
 
 -------------
@@ -2285,7 +2332,9 @@ your |ParameterSpec| as a class:
       :** parameter::parameters<
             tag::graph, tag::visitor, tag::root_vertex
           , tag::index_map, tag::color_map
-        > **{};**
+        >
+    **{
+    };**
 
 -------------------------------------------------
 Default Arguments Unsupported on Nested Templates

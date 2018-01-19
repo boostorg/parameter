@@ -12,106 +12,110 @@
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/add_reference.hpp>
-#include <boost/optional.hpp>
-#include <boost/aligned_storage.hpp>
-#include <boost/type_traits/remove_cv.hpp>
 #include <boost/type_traits/add_const.hpp>
+#include <boost/type_traits/add_lvalue_reference.hpp>
+#include <boost/type_traits/aligned_storage.hpp>
+#include <boost/type_traits/remove_cv.hpp>
+#include <boost/optional/optional.hpp>
 #include <boost/parameter/aux_/is_maybe.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
-template <class T>
-struct referent_size;
+    template <class T>
+    struct referent_size;
 
-template <class T>
-struct referent_size<T&>
-{
-    BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(T));
-};
+    template <class T>
+    struct referent_size<T&>
+    {
+        BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(T));
+    };
 
-// A metafunction returning a POD type which can store U, where T == U&.
-// If T is not a reference type, returns a POD which can store T.
-template <class T>
-struct referent_storage
-  : boost::aligned_storage<referent_size<T>::value>
-{
-};
+    // A metafunction returning a POD type which can store U, where T == U&.
+    // If T is not a reference type, returns a POD which can store T.
+    template <class T>
+    struct referent_storage
+      : boost::aligned_storage<boost::parameter::aux::referent_size<T>::value>
+    {
+    };
 
-template <class T>
-struct maybe : maybe_base
-{
-    typedef typename add_reference<
+    template <class T>
+    struct maybe : boost::parameter::aux::maybe_base
+    {
+        typedef typename boost::add_lvalue_reference<
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        T const
+            T const
 #else
-        typename add_const<T>::type
+            typename boost::add_const<T>::type
 #endif
-    >::type reference;
+        >::type reference;
 
-    typedef typename remove_cv<
-        BOOST_DEDUCED_TYPENAME remove_reference<reference>::type
-    >::type non_cv_value;
+        typedef typename boost::remove_cv<
+            BOOST_DEDUCED_TYPENAME boost::remove_reference<reference>::type
+        >::type non_cv_value;
 
-    inline explicit maybe(T value_) : value(value_), constructed(false)
-    {
-    }
-
-    inline maybe() : value(), constructed(false)
-    {
-    }
-
-    ~maybe()
-    {
-        if (constructed)
+        inline explicit maybe(T value_) : value(value_), constructed(false)
         {
-            this->destroy();
         }
-    }
 
-    inline reference construct(reference value_) const
-    {
-        return value_;
-    }
+        inline maybe() : value(), constructed(false)
+        {
+        }
 
-    template <class U>
-    reference construct2(U const& value_) const
-    {
-        new (this->m_storage.address()) non_cv_value(value_);
-        this->constructed = true;
-        return *reinterpret_cast<non_cv_value*>(this->m_storage.address());
-    }
+        ~maybe()
+        {
+            if (this->constructed)
+            {
+                this->destroy();
+            }
+        }
 
-    template <class U>
-    inline reference construct(U const& value_) const
-    {
-        return this->construct2(value_);
-    }
+        inline reference construct(reference value_) const
+        {
+            return value_;
+        }
 
-    void destroy()
-    {
-        reinterpret_cast<non_cv_value*>(
-            this->m_storage.address()
-        )->~non_cv_value();
-    }
+        template <class U>
+        reference construct2(U const& value_) const
+        {
+            new (this->m_storage.address()) non_cv_value(value_);
+            this->constructed = true;
+            return *reinterpret_cast<non_cv_value*>(
+                this->m_storage.address()
+            );
+        }
 
-    typedef reference(maybe<T>::*safe_bool)() const;
+        template <class U>
+        inline reference construct(U const& value_) const
+        {
+            return this->construct2(value_);
+        }
 
-    inline operator safe_bool() const
-    {
-        return this->value ? &maybe<T>::get : 0 ;
-    }
+        void destroy()
+        {
+            reinterpret_cast<non_cv_value*>(
+                this->m_storage.address()
+            )->~non_cv_value();
+        }
 
-    inline reference get() const
-    {
-        return this->value.get();
-    }
+        typedef reference(maybe<T>::*safe_bool)() const;
 
- private:
-    boost::optional<T> value;
-    mutable bool constructed;
-    mutable typename referent_storage<reference>::type m_storage;
-};
+        inline operator safe_bool() const
+        {
+            return this->value ? &maybe<T>::get : 0;
+        }
+
+        inline reference get() const
+        {
+            return this->value.get();
+        }
+
+     private:
+        boost::optional<T> value;
+        mutable bool constructed;
+        mutable typename boost::parameter::aux::referent_storage<
+            reference
+        >::type m_storage;
+    };
 }}} // namespace boost::parameter::aux
 
 #endif // BOOST_PARAMETER_MAYBE_060211_HPP

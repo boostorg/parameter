@@ -6,80 +6,189 @@
 #ifndef BOOST_PARAMETER_NAME_060806_HPP
 #define BOOST_PARAMETER_NAME_060806_HPP
 
-#include <boost/parameter/keyword.hpp>
-#include <boost/parameter/value_type.hpp>
-#include <boost/detail/workaround.hpp>
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/stringize.hpp>
-#include <boost/preprocessor/control/iif.hpp>
-#include <boost/preprocessor/tuple/eat.hpp>
-#include <boost/preprocessor/tuple/elem.hpp>
-#include <boost/mpl/placeholders.hpp>
+namespace boost { namespace parameter { namespace aux {
 
-#if !defined(BOOST_NO_SFINAE) && \
-    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
-#include <boost/core/enable_if.hpp>
-#include <boost/mpl/lambda.hpp>
+    // Tag type passed to MPL lambda.
+    struct lambda_tag;
+
+    struct name_tag_base
+    {
+    };
+
+    template <class Tag>
+    struct name_tag
+    {
+    };
+}}} // namespace boost::parameter::aux
+
+#include <boost/mpl/bool.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
-// Tag type passed to MPL lambda.
-struct lambda_tag;
-
-struct name_tag_base
-{
-};
-
-template <class Tag>
-struct name_tag
-{
-};
-
-template <class T>
-struct is_name_tag : mpl::false_
-{
-};
+    template <class T>
+    struct is_name_tag : boost::mpl::false_
+    {
+    };
 }}} // namespace boost::parameter::aux
+
+#include <boost/parameter/value_type.hpp>
+#include <boost/mpl/placeholders.hpp>
+#include <boost/config.hpp>
+
+#if !defined(BOOST_NO_SFINAE) && \
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
+
+#include <boost/mpl/lambda.hpp>
+#include <boost/mpl/bind.hpp>
+#include <boost/mpl/quote.hpp>
+#include <boost/core/enable_if.hpp>
 
 namespace boost { namespace mpl {
 
-template <class T>
-struct lambda<
-    T
-  , typename boost::enable_if<
-        parameter::aux::is_name_tag<T>, parameter::aux::lambda_tag
-    >::type
->
-{
-    typedef true_ is_le;
-    typedef bind3< quote3<parameter::value_type>, arg<2>, T, void> result_;
-    typedef result_ type;
-};
+    template <class T>
+    struct lambda<
+        T
+      , typename boost::enable_if<
+            boost::parameter::aux::is_name_tag<T>
+          , boost::parameter::aux::lambda_tag
+        >::type
+    >
+    {
+        typedef boost::mpl::true_ is_le;
+        typedef boost::mpl::bind3<
+            boost::mpl::quote3<boost::parameter::value_type>
+          , boost::mpl::arg<2>
+          , T
+          , void
+        > result_;
+        typedef result_ type;
+    };
 }} // namespace boost::mpl
+
 #endif // SFINAE enabled, not Borland.
 
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#include <boost/preprocessor/detail/split.hpp>
-// From Paul Mensonides
-#define BOOST_PARAMETER_IS_BINARY(x) \
-    BOOST_PP_SPLIT(1, BOOST_PARAMETER_IS_BINARY_C x BOOST_PP_COMMA() 0) \
-    /**/
-#define BOOST_PARAMETER_IS_BINARY_C(x,y) \
-    ~, 1 BOOST_PP_RPAREN() \
-    BOOST_PP_TUPLE_EAT(2) BOOST_PP_LPAREN() ~ \
-    /**/
-#else
-#include <boost/preprocessor/detail/is_binary.hpp>
-#define BOOST_PARAMETER_IS_BINARY(x) BOOST_PP_IS_BINARY(x)
-#endif
+#include <boost/preprocessor/facilities/is_empty.hpp>
+#include <boost/preprocessor/cat.hpp>
+
+#define BOOST_PARAMETER_NAME_EAT_IN_in(x)
+
+// Expands to 1 if x is "in(k)"; expands to 0 otherwise.
+#define BOOST_PARAMETER_IS_NAME_QUALIFIER_IN(x) \
+    BOOST_PP_IS_EMPTY(BOOST_PP_CAT(BOOST_PARAMETER_NAME_EAT_IN_, x))
+/**/
+
+#define BOOST_PARAMETER_NAME_EAT_OUT_out(x)
+#define BOOST_PARAMETER_NAME_EAT_OUT_in_out(x)
+
+// Expands to 1 if x is either "out(k)" or "in_out(k)";
+// expands to 0 otherwise.
+#define BOOST_PARAMETER_IS_NAME_QUALIFIER_OUT(x) \
+    BOOST_PP_IS_EMPTY(BOOST_PP_CAT(BOOST_PARAMETER_NAME_EAT_OUT_, x))
+/**/
+
+#define BOOST_PARAMETER_NAME_EAT_CONSUME_consume(x)
+#define BOOST_PARAMETER_NAME_EAT_CONSUME_move_from(x)
+
+// Expands to 1 if x is either "consume(k)" or "move_from(k)";
+// expands to 0 otherwise.
+#define BOOST_PARAMETER_IS_NAME_QUALIFIER_CONSUME(x) \
+    BOOST_PP_IS_EMPTY(BOOST_PP_CAT(BOOST_PARAMETER_NAME_EAT_CONSUME_, x))
+/**/
+
+#define BOOST_PARAMETER_NAME_EAT_FWD_forward(x)
+
+// Expands to 1 if x is "forward(k)"; expands to 0 otherwise.
+#define BOOST_PARAMETER_IS_NAME_QUALIFIER_FORWARD(x) \
+    BOOST_PP_IS_EMPTY(BOOST_PP_CAT(BOOST_PARAMETER_NAME_EAT_FWD_, x))
+/**/
+
+#include <boost/preprocessor/control/iif.hpp>
+
+#define BOOST_PARAMETER_IS_NAME_QUALIFIER_LREF(x) \
+    BOOST_PP_IIF( \
+        BOOST_PARAMETER_IS_NAME_QUALIFIER_IN(x) \
+      , 1 \
+      , BOOST_PARAMETER_IS_NAME_QUALIFIER_OUT(x) \
+    )
+/**/
+
+#define BOOST_PARAMETER_IS_NAME_QUALIFIER_RREF(x) \
+    BOOST_PP_IIF( \
+        BOOST_PARAMETER_IS_NAME_QUALIFIER_CONSUME(x) \
+      , 1 \
+      , BOOST_PARAMETER_IS_NAME_QUALIFIER_FORWARD(x) \
+    )
+/**/
+
+// Expands to 1 if x is either "out(k)", "in_out(k)", "forward(k)",
+// "consume(k)", or "move_from(k)"; expands to 0 otherwise.
+#define BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
+    BOOST_PP_IIF( \
+        BOOST_PARAMETER_IS_NAME_QUALIFIER_LREF(x) \
+      , 1 \
+      , BOOST_PARAMETER_IS_NAME_QUALIFIER_RREF(x) \
+    )
+/**/
+
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_in(x) in_reference
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_out(x) out_reference
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_in_out(x) in_out_reference
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_forward(x) forward_reference
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_consume(x) consume_reference
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_move_from(x) move_from_reference
+
+// Expands to the qualifier of x, where x is either a keyword qualifier
+// or a keyword.
+//
+//   k => forward_reference
+//   in(k) => in_reference
+//   out(k) => out_reference
+//   in_out(k) => in_out_reference
+//   forward(k) => forward_reference
+//   consume(k) => consume_reference
+//   move_from(k) => move_from_reference
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER(x) \
+    BOOST_PP_IIF( \
+        BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
+      , BOOST_PP_CAT \
+      , forward_reference BOOST_PP_TUPLE_EAT(2) \
+    )(BOOST_PARAMETER_GET_NAME_QUALIFIER_, x)
+/**/
+
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_out(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in_out(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_forward(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_consume(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_move_from(x) x
+
+// Expands to the unqualified name of x, where x is either a keyword qualifier
+// or a keyword.
+//
+//   k => k
+//   in(k) => k
+//   out(k) => k
+//   in_out(k) => k
+//   forward(k) => k
+//   consume(k) => k
+//   move_from(k) => k
+#define BOOST_PARAMETER_UNQUALIFIED_NAME(x) \
+    BOOST_PP_IIF( \
+        BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
+      , BOOST_PP_CAT \
+      , x BOOST_PP_TUPLE_EAT(2) \
+    )(BOOST_PARAMETER_STRIP_NAME_QUALIFIER_, x)
+/**/
 
 #define BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(tag)                            \
     boost::parameter::value_type<                                            \
-        boost::mpl::_2, tag, boost::parameter::void_                         \
-    >                                                                        \
-    /**/
+        boost::mpl::_2,tag,boost::parameter::void_                           \
+    >
+/**/
 
-#define BOOST_PARAMETER_BASIC_NAME(tag_namespace, tag, name)                 \
+#include <boost/preprocessor/stringize.hpp>
+
+#define BOOST_PARAMETER_NAME_TAG(tag_namespace, tag, q)                      \
     namespace tag_namespace                                                  \
     {                                                                        \
         struct tag                                                           \
@@ -90,45 +199,79 @@ struct lambda<
             }                                                                \
             typedef BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(tag) _;             \
             typedef BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(tag) _1;            \
+            typedef boost::parameter::q qualifier;                           \
         };                                                                   \
-    }                                                                        \
+    }
+/**/
+
+#include <boost/parameter/keyword.hpp>
+
+#define BOOST_PARAMETER_NAME_KEYWORD(tag_namespace, tag, name)               \
     namespace                                                                \
     {                                                                        \
         ::boost::parameter::keyword<tag_namespace::tag> const& name          \
             = ::boost::parameter::keyword<tag_namespace::tag>::instance;     \
     }
+/**/
 
-#define BOOST_PARAMETER_COMPLEX_NAME_TUPLE1(tag,namespace)                   \
+#define BOOST_PARAMETER_BASIC_NAME(tag_namespace, tag, qualifier, name)      \
+    BOOST_PARAMETER_NAME_TAG(tag_namespace, tag, qualifier)                  \
+    BOOST_PARAMETER_NAME_KEYWORD(tag_namespace, tag, name)
+/**/
+
+#define BOOST_PARAMETER_COMPLEX_NAME_TUPLE1(tag, namespace)                  \
     (tag, namespace), ~
+/**/
+
+#include <boost/preprocessor/tuple/elem.hpp>
 
 #define BOOST_PARAMETER_COMPLEX_NAME_TUPLE(name)                             \
     BOOST_PP_TUPLE_ELEM(2, 0, (BOOST_PARAMETER_COMPLEX_NAME_TUPLE1 name))
+/**/
 
 #define BOOST_PARAMETER_COMPLEX_NAME_TAG(name)                               \
     BOOST_PP_TUPLE_ELEM(2, 0, BOOST_PARAMETER_COMPLEX_NAME_TUPLE(name))
+/**/
 
 #define BOOST_PARAMETER_COMPLEX_NAME_NAMESPACE(name)                         \
     BOOST_PP_TUPLE_ELEM(2, 1, BOOST_PARAMETER_COMPLEX_NAME_TUPLE(name))
+/**/
+
+#include <boost/preprocessor/tuple/eat.hpp>
 
 #define BOOST_PARAMETER_COMPLEX_NAME(name)                                   \
     BOOST_PARAMETER_BASIC_NAME(                                              \
         BOOST_PARAMETER_COMPLEX_NAME_NAMESPACE(name)                         \
+      , BOOST_PARAMETER_UNQUALIFIED_NAME(                                    \
+            BOOST_PARAMETER_COMPLEX_NAME_TAG(name)                           \
+        )                                                                    \
+      , BOOST_PARAMETER_GET_NAME_QUALIFIER(                                  \
+            BOOST_PARAMETER_COMPLEX_NAME_TAG(name)                           \
+        )                                                                    \
       , BOOST_PP_TUPLE_EAT(2) name                                           \
-      , BOOST_PARAMETER_COMPLEX_NAME_TAG(name)                               \
-    )                                                                        \
+    )
 /**/
 
 #define BOOST_PARAMETER_SIMPLE_NAME(name)                                    \
-    BOOST_PARAMETER_BASIC_NAME(tag, name, BOOST_PP_CAT(_, name))
+    BOOST_PARAMETER_BASIC_NAME(                                              \
+        tag                                                                  \
+      , BOOST_PARAMETER_UNQUALIFIED_NAME(name)                               \
+      , BOOST_PARAMETER_GET_NAME_QUALIFIER(name)                             \
+      , BOOST_PP_CAT(_, BOOST_PARAMETER_UNQUALIFIED_NAME(name))              \
+    )
+/**/
+
+#include <boost/parameter/aux_/preprocessor/is_binary.hpp>
 
 #define BOOST_PARAMETER_NAME(name)                                           \
     BOOST_PP_IIF(                                                            \
         BOOST_PARAMETER_IS_BINARY(name)                                      \
       , BOOST_PARAMETER_COMPLEX_NAME                                         \
       , BOOST_PARAMETER_SIMPLE_NAME                                          \
-    )(name)                                                                  \
+    )(name)
 /**/
 
+#include <boost/parameter/aux_/template_keyword.hpp>
 
 #define BOOST_PARAMETER_TEMPLATE_KEYWORD(name)                               \
     namespace tag                                                            \
@@ -136,9 +279,9 @@ struct lambda<
         struct name;                                                         \
     }                                                                        \
     template <class T>                                                       \
-    struct name : boost::parameter::template_keyword<tag::name, T>           \
+    struct name : boost::parameter::template_keyword<tag::name,T>            \
     {                                                                        \
-    };                                                                       \
+    };
 /**/
 
 #endif // BOOST_PARAMETER_NAME_060806_HPP

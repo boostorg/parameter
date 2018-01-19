@@ -6,270 +6,78 @@
 #ifndef BOOST_PARAMETERS_031014_HPP
 #define BOOST_PARAMETERS_031014_HPP
 
-#include <boost/detail/is_xxx.hpp>
+namespace boost {
 
-#include <boost/mpl/lambda.hpp>
-#include <boost/mpl/apply.hpp>
-#include <boost/mpl/always.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/mpl/or.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/mpl/identity.hpp>
-#include <boost/mpl/not.hpp>
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/pair.hpp>
+    template <class T>
+    class reference_wrapper;
+} // namespace boost
+
+namespace boost { namespace parameter { namespace aux {
+
+    struct use_default
+    {
+    };
+
+    // Tag type passed to MPL lambda.
+    struct lambda_tag;
+}}} // namespace boost::parameter::aux
+
+namespace boost { namespace parameter {
+
+    // These templates can be used to describe the treatment of particular
+    // named parameters for the purposes of overload elimination with
+    // SFINAE, by placing specializations in the parameters<...> list.  In
+    // order for a treated function to participate in overload resolution:
+    //
+    //   - all keyword tags wrapped in required<...> must have a matching
+    //     actual argument
+    //
+    //   - The actual argument type matched by every keyword tag
+    //     associated with a predicate must satisfy that predicate
+    //
+    // If a keyword k is specified without an optional<...> or required<...>
+    // wrapper, it is treated as though optional<k> were specified.
+    //
+    // If a keyword k is specified with deduced<...>, that keyword
+    // will be automatically deduced from the argument list.
+    //
+    template <class Tag, class Predicate = boost::parameter::aux::use_default>
+    struct required
+    {
+        typedef Tag key_type;
+        typedef Predicate predicate;
+    };
+
+    template <class Tag, class Predicate = boost::parameter::aux::use_default>
+    struct optional
+    {
+        typedef Tag key_type;
+        typedef Predicate predicate;
+    };
+
+    template <class Tag>
+    struct deduced
+    {
+        typedef Tag key_type;
+    };
+}} // namespace boost::parameter
 
 #include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-
-#if BOOST_WORKAROUND(BOOST_MSVC, == 1310)
-#include <boost/tti/detail/dnullptr.hpp>
-#endif
-
-#include <boost/parameter/aux_/arg_list.hpp>
-#include <boost/parameter/aux_/yesno.hpp>
-#include <boost/parameter/aux_/void.hpp>
-#include <boost/parameter/aux_/default.hpp>
-#include <boost/parameter/aux_/unwrap_cv_reference.hpp>
-#include <boost/parameter/aux_/is_tagged_argument.hpp>
-#include <boost/parameter/aux_/tag.hpp>
-#include <boost/parameter/aux_/template_keyword.hpp>
-#include <boost/parameter/aux_/set.hpp>
-#include <boost/parameter/config.hpp>
-
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-#include <boost/move/utility_core.hpp>
-#include <boost/fusion/container/deque.hpp>
-#include <boost/fusion/mpl.hpp>
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/identity.hpp>
-#include <boost/mpl/empty.hpp>
-#include <boost/mpl/front.hpp>
-#include <boost/mpl/pop_front.hpp>
-#include <boost/type_traits/is_lvalue_reference.hpp>
-#include <boost/type_traits/remove_const.hpp>
-#else
-#include <boost/parameter/aux_/preprocessor/inc_binary_seq.hpp>
-#include <boost/parameter/aux_/preprocessor/convert_binary_seq.hpp>
-#include <boost/parameter/aux_/preprocessor/not_equal_binary_seq.hpp>
-#include <boost/preprocessor/arithmetic/inc.hpp>
-#include <boost/preprocessor/arithmetic/dec.hpp>
-#include <boost/preprocessor/arithmetic/sub.hpp>
-#include <boost/preprocessor/comparison/not_equal.hpp>
-#include <boost/preprocessor/control/if.hpp>
-#include <boost/preprocessor/facilities/intercept.hpp>
-#include <boost/preprocessor/iteration/iterate.hpp>
-#include <boost/preprocessor/repetition/enum.hpp>
-#include <boost/preprocessor/repetition/enum_shifted.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/enum_trailing_params.hpp>
-#include <boost/preprocessor/repetition/enum_shifted_params.hpp>
-#include <boost/preprocessor/repetition/for.hpp>
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/selection/min.hpp>
-#include <boost/preprocessor/seq/for_each_i.hpp>
-#include <boost/preprocessor/seq/elem.hpp>
-#include <boost/preprocessor/seq/size.hpp>
-#include <boost/preprocessor/cat.hpp>
-
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#include <boost/preprocessor/repetition/enum_binary_params.hpp>
-#endif
-
-// Generates:
-//
-//   make<
-//       parameter_spec#0, argument_type#0
-//     , make<
-//           parameter_spec#1, argument_type#1
-//         , ... mpl::identity<aux::empty_arg_list>
-//    ...>
-//   >
-#define BOOST_PARAMETER_make_arg_list(z, n, names)                           \
-    BOOST_PP_SEQ_ELEM(0, names)<                                             \
-        BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(1, names), n),                        \
-        BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(2, names), n),
-/**/
-
-#define BOOST_PARAMETER_build_arg_list(n, make, param_spec, arg_type)        \
-    BOOST_PP_REPEAT(                                                         \
-        n, BOOST_PARAMETER_make_arg_list, (make)(param_spec)(arg_type)       \
-    )                                                                        \
-    mpl::identity<void_>                                                     \
-    BOOST_PP_REPEAT(n, BOOST_PARAMETER_right_angle, _)
-/**/
-
-#define BOOST_PARAMETER_make_deduced_list(z, n, names)                       \
-    BOOST_PP_SEQ_ELEM(0, names)<BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(1, names), n),
-/**/
-
-#define BOOST_PARAMETER_make_arg_items(r, p, i, elem)                        \
-    aux::item<BOOST_PP_CAT(p, i),                                            \
-    BOOST_PP_IF(elem, BOOST_PP_CAT(A, i)&, BOOST_PP_CAT(A, i) const&),
-/**/
-
-#define BOOST_PARAMETER_right_angle(z, n, _) >
-/**/
-
-#define BOOST_PARAMETER_build_deduced_list(n, make, parameter_spec)          \
-    BOOST_PP_REPEAT(                                                         \
-        n, BOOST_PARAMETER_make_deduced_list, (make)(parameter_spec)         \
-    )                                                                        \
-    mpl::identity<void_>                                                     \
-    BOOST_PP_REPEAT(n, BOOST_PARAMETER_right_angle, _)
-/**/
-
-#define BOOST_PARAMETER_forward_typedef(z, n, names)                         \
-    typedef BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(0, names), n)                     \
-    BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(1, names), n);
-/**/
-
-#define BOOST_PARAMETER_template_args(z, n, text)                            \
-    class BOOST_PP_CAT(PS, n) = void_
-/**/
-
-#define BOOST_PARAMETER_function_call_arg_list(r, seq)                       \
-    aux::make_arg_list<                                                      \
-        BOOST_PP_SEQ_FOR_EACH_I_R(                                           \
-            r, BOOST_PARAMETER_make_arg_items, PS, seq                       \
-        )                                                                    \
-        void_                                                                \
-        BOOST_PP_REPEAT(                                                     \
-            BOOST_PP_SEQ_SIZE(seq), BOOST_PARAMETER_right_angle, _           \
-        )                                                                    \
-      , deduced_list                                                         \
-      , aux::tag_keyword_arg                                                 \
-    >
-/**/
-
-#define BOOST_PARAMETER_function_call_arg_pack_init(z, n, limit)             \
-    BOOST_PP_CAT(a, BOOST_PP_SUB(limit, n))
-/**/
-
-#define BOOST_PARAMETER_function_call_op_pred_7(r, seq)                      \
-    BOOST_PP_NOT_EQUAL(                                                      \
-        BOOST_PP_MIN(BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY), 7)             \
-      , BOOST_PP_SEQ_SIZE(seq)                                               \
-    )
-/**/
-
-#define BOOST_PARAMETER_function_call_op_pred_8(r, seq)                      \
-    BOOST_PP_NOT_EQUAL(8, BOOST_PP_SEQ_SIZE(seq))
-/**/
-
-#define BOOST_PARAMETER_function_call_op_pred_00000001(r, seq)               \
-    BOOST_PARAMETER_AUX_PP_NOT_EQUAL_BINARY_SEQ(                             \
-        (0)(0)(0)(0)(0)(0)(0)(1)                                             \
-      , seq                                                                  \
-    )
-/**/
-
-#define BOOST_PARAMETER_function_call_op_pred_9(r, seq)                      \
-    BOOST_PP_NOT_EQUAL(9, BOOST_PP_SEQ_SIZE(seq))
-/**/
-
-#define BOOST_PARAMETER_function_call_op_inc(r, seq)                         \
-    BOOST_PARAMETER_AUX_PP_INC_BINARY_SEQ(seq)
-/**/
-
-#define BOOST_PARAMETER_function_call_op_overload(r, seq)                    \
-    template <BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(seq), class A)>         \
-    inline typename mpl::first<                                              \
-        typename BOOST_PARAMETER_function_call_arg_list(r, seq)::type        \
-    >::type                                                                  \
-        operator()(                                                          \
-            BOOST_PARAMETER_AUX_PP_CONVERT_BINARY_SEQ(                       \
-                seq                                                          \
-              , A                                                            \
-              , &                                                            \
-              , const&                                                       \
-              , a                                                            \
-            )                                                                \
-        ) const                                                              \
-    {                                                                        \
-        typedef typename BOOST_PARAMETER_function_call_arg_list(             \
-            r, seq                                                           \
-        )::type result;                                                      \
-        typedef typename mpl::first<result>::type result_type;               \
-        typedef typename mpl::second<result>::type error;                    \
-        error();                                                             \
-        return result_type(                                                  \
-            BOOST_PP_ENUM(                                                   \
-                BOOST_PP_SEQ_SIZE(seq)                                       \
-              , BOOST_PARAMETER_function_call_arg_pack_init                  \
-              , BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(seq))                         \
-            )                                                                \
-            BOOST_PP_ENUM_TRAILING_PARAMS(                                   \
-                BOOST_PP_SUB(                                                \
-                    BOOST_PARAMETER_MAX_ARITY                                \
-                  , BOOST_PP_SEQ_SIZE(seq)                                   \
-                )                                                            \
-              , aux::void_reference() BOOST_PP_INTERCEPT                     \
-            )                                                                \
-        );                                                                   \
-    }
-/**/
-
-#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#include <boost/mpl/assert.hpp>
 
 namespace parameter_ {
 
     template <class T>
     struct unmatched_argument
     {
-        BOOST_MPL_ASSERT((boost::is_same<T, void>));
+        BOOST_MPL_ASSERT((boost::is_same<T,void>));
         typedef int type;
     }; 
 } // namespace parameter_
 
-namespace boost {
+#include <boost/detail/is_xxx.hpp>
 
-template <class T>
-class reference_wrapper;
-
-namespace parameter {
-
-namespace aux { struct use_default {}; }
-
-// These templates can be used to describe the treatment of particular
-// named parameters for the purposes of overload elimination with
-// SFINAE, by placing specializations in the parameters<...> list.  In
-// order for a treated function to participate in overload resolution:
-//
-//   - all keyword tags wrapped in required<...> must have a matching
-//     actual argument
-//
-//   - The actual argument type matched by every keyword tag
-//     associated with a predicate must satisfy that predicate
-//
-// If a keyword k is specified without an optional<...> or required<...>
-// wrapper, it is treated as though optional<k> were specified.
-//
-// If a keyword k is specified with deduced<...>, that keyword
-// will be automatically deduced from the argument list.
-//
-template <class Tag, class Predicate = aux::use_default>
-struct required
-{
-    typedef Tag key_type;
-    typedef Predicate predicate;
-};
-
-template <class Tag, class Predicate = aux::use_default>
-struct optional
-{
-    typedef Tag key_type;
-    typedef Predicate predicate;
-};
-
-template <class Tag>
-struct deduced
-{
-    typedef Tag key_type;
-};
-
-namespace aux {
+namespace boost { namespace parameter { namespace aux {
 
     // Defines metafunctions, is_required and is_optional, that identify
     // required<...>, optional<...>, and deduced<...> specializations.
@@ -277,23 +85,50 @@ namespace aux {
     BOOST_DETAIL_IS_XXX_DEF(optional, optional, 2)
     BOOST_DETAIL_IS_XXX_DEF(deduced_aux, deduced, 1)
 
-    template <class S>
-    struct is_deduced0 : is_deduced_aux<typename S::key_type>::type
+    template <class T>
+    struct is_deduced0
+      : boost::parameter::aux::is_deduced_aux<typename T::key_type>::type
     {
     };
+}}} // namespace boost::parameter::aux
 
-    template <class S>
-    struct is_deduced
-      : mpl::eval_if<
-            mpl::or_<is_optional<S>, is_required<S> >
-          , is_deduced0<S>
-          , mpl::false_
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <class T>
+    struct has_default
+      : boost::mpl::if_<
+            boost::parameter::aux::is_required<T>
+          , boost::mpl::false_
+          , boost::mpl::true_
         >::type
     {
     };
 
+    template <class T>
+    struct is_deduced
+      : boost::mpl::if_<
+            typename boost::mpl::if_<
+                boost::parameter::aux::is_optional<T>
+              , boost::mpl::true_
+              , boost::parameter::aux::is_required<T>
+            >::type
+          , boost::parameter::aux::is_deduced0<T>
+          , boost::mpl::false_
+        >::type
+    {
+    };
+}}} // namespace boost::parameter::aux
+
+#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/identity.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
     //
-    // key_type, has_default, and predicate --
+    // tag_type, has_default, and predicate --
     //
     // These metafunctions accept a ParameterSpec and extract the
     // keyword tag, whether or not a default is supplied for the
@@ -304,7 +139,7 @@ namespace aux {
     // required<...>, optional<...>
     //
 
-    // helper for key_type<...>, below.
+    // helper for tag_type<...>, below.
     template <class T>
     struct get_tag_type0
     {
@@ -313,28 +148,32 @@ namespace aux {
 
     template <class T>
     struct get_tag_type
-      : mpl::eval_if<
-            is_deduced_aux<typename T::key_type>
-          , get_tag_type0<typename T::key_type>
-          , mpl::identity<typename T::key_type>
+      : boost::mpl::eval_if<
+            boost::parameter::aux::is_deduced_aux<typename T::key_type>
+          , boost::parameter::aux::get_tag_type0<typename T::key_type>
+          , boost::mpl::identity<typename T::key_type>
         >
     {
     };
 
     template <class T>
     struct tag_type
-      : mpl::eval_if<
-            mpl::or_<is_optional<T>, is_required<T> >
-          , get_tag_type<T>
-          , mpl::identity<T>
+      : boost::mpl::eval_if<
+            typename boost::mpl::if_<
+                boost::parameter::aux::is_optional<T>
+              , boost::mpl::true_
+              , boost::parameter::aux::is_required<T>
+            >::type
+          , boost::parameter::aux::get_tag_type<T>
+          , boost::mpl::identity<T>
         >
     {
     };
+}}} // namespace boost::parameter::aux
 
-    template <class T>
-    struct has_default : mpl::not_<is_required<T> >
-    {
-    };
+#include <boost/mpl/always.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     // helper for get_predicate<...>, below
     template <class T>
@@ -344,26 +183,36 @@ namespace aux {
     };
 
     template <>
-    struct get_predicate_or_default<use_default>
+    struct get_predicate_or_default<boost::parameter::aux::use_default>
     {
-        typedef mpl::always<mpl::true_> type;
+        typedef boost::mpl::always<boost::mpl::true_> type;
     };
 
     // helper for predicate<...>, below
     template <class T>
-    struct get_predicate : get_predicate_or_default<typename T::predicate>
+    struct get_predicate
+      : boost::parameter::aux::get_predicate_or_default<typename T::predicate>
     {
     };
 
     template <class T>
     struct predicate
-      : mpl::eval_if<
-            mpl::or_<is_optional<T>, is_required<T> >
-          , get_predicate<T>
-          , mpl::identity<mpl::always<mpl::true_> >
+      : boost::mpl::eval_if<
+            typename boost::mpl::if_<
+                boost::parameter::aux::is_optional<T>
+              , boost::mpl::true_
+              , boost::parameter::aux::is_required<T>
+            >::type
+          , boost::parameter::aux::get_predicate<T>
+          , boost::mpl::identity<boost::mpl::always<boost::mpl::true_> >
         >
     {
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/parameter_requirements.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     // Converts a ParameterSpec into a specialization of
     // parameter_requirements.  We need to do this in order to get the
@@ -372,18 +221,67 @@ namespace aux {
     template <class ParameterSpec>
     struct as_parameter_requirements
     {
-        typedef parameter_requirements<
-            typename tag_type<ParameterSpec>::type
-          , typename predicate<ParameterSpec>::type
-          , typename has_default<ParameterSpec>::type
+        typedef boost::parameter::aux::parameter_requirements<
+            typename boost::parameter::aux::tag_type<ParameterSpec>::type
+          , typename boost::parameter::aux::predicate<ParameterSpec>::type
+          , boost::parameter::aux::has_default<ParameterSpec>
         > type;
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/tag.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    struct tag_keyword_arg
+    {
+        template <class K, class T>
+        struct apply : boost::parameter::aux::tag<K,T>
+        {
+        };
+    };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/template_keyword.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    struct tag_template_keyword_arg
+    {
+        template <class K, class T>
+        struct apply
+        {
+            typedef boost::parameter::template_keyword<K,T> type;
+        };
+    };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/is_tagged_argument.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     template <class T>
     struct is_named_argument
-      : mpl::or_<is_template_keyword<T>, is_tagged_argument<T> >
+      : boost::mpl::if_<
+            boost::parameter::aux::is_template_keyword<T>
+          , boost::mpl::true_
+          , boost::parameter::aux::is_tagged_argument<T>
+        >::type
     {
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/yesno.hpp>
+#include <boost/parameter/aux_/void.hpp>
+#include <boost/parameter/config.hpp>
+#include <boost/mpl/apply_wrap.hpp>
+#include <boost/mpl/lambda.hpp>
+
+#if !BOOST_WORKAROUND(BOOST_MSVC, == 1310)
+#include <boost/tti/detail/dnullptr.hpp>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
 
     // Returns mpl::true_ iff the given ParameterRequirements are satisfied by
     // ArgList.
@@ -393,19 +291,20 @@ namespace aux {
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1310)
         // VC7.1 can't handle the sizeof() implementation below,
         // so we use this instead.
-        typedef typename mpl::apply_wrap3<
+        typedef typename boost::mpl::apply_wrap3<
             typename ArgList::binding
           , typename ParameterRequirements::keyword
-          , void_
-          , mpl::false_
+          , boost::parameter::void_
+          , boost::mpl::false_
         >::type bound;
 
         typedef typename mpl::eval_if<
-            is_same<bound, void_>
+            boost::is_same<bound,boost::parameter::void_>
           , typename ParameterRequirements::has_default
-          , mpl::apply_wrap2<
-                typename mpl::lambda<
-                    typename ParameterRequirements::predicate, lambda_tag
+          , boost::mpl::apply_wrap2<
+                typename boost::mpl::lambda<
+                    typename ParameterRequirements::predicate
+                  , boost::parameter::aux::lambda_tag
                 >::type
               , bound
               , ArgList
@@ -415,7 +314,7 @@ namespace aux {
         BOOST_STATIC_CONSTANT(
             bool, value = (
                 sizeof(
-                    aux::to_yesno(
+                    boost::parameter::aux::to_yesno(
                         ArgList::satisfies(
                             static_cast<ParameterRequirements*>(
                                 BOOST_TTI_DETAIL_NULLPTR
@@ -423,11 +322,11 @@ namespace aux {
                           , static_cast<ArgList*>(BOOST_TTI_DETAIL_NULLPTR)
                         )
                     )
-                ) == sizeof(yes_tag)
+                ) == sizeof(boost::parameter::aux::yes_tag)
             )
         );
 
-        typedef mpl::bool_<satisfies::value> type;
+        typedef boost::mpl::bool_<satisfies::value> type;
 #endif // MSVC 7.1 workarounds needed.
     };
 
@@ -435,12 +334,32 @@ namespace aux {
     // are satisfied by ArgList.
     template <class ArgList, class ParameterSpec>
     struct satisfies_requirements_of
-      : satisfies<
+      : boost::parameter::aux::satisfies<
             ArgList
-          , typename as_parameter_requirements<ParameterSpec>::type
+          , typename boost::parameter::aux::as_parameter_requirements<
+                ParameterSpec
+            >::type
         >
     {
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/set.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    // Inserts Tagged::key_type into the UserArgs set.
+    // Extra indirection to lazily evaluate Tagged::key_type.
+    template <class UsedArgs, class Tagged>
+    struct insert_tagged
+      : boost::parameter::aux::insert_<UsedArgs,typename Tagged::key_type>
+    {
+    };
+}}} // namespace boost::parameter::aux
+
+#include <boost/mpl/pair.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     // Tags a deduced argument Arg with the keyword tag of Spec using TagFn.
     // Returns the tagged argument and the mpl::set<> UsedArgs with the
@@ -448,12 +367,15 @@ namespace aux {
     template <class UsedArgs, class Spec, class Arg, class TagFn>
     struct tag_deduced
     {
-        typedef mpl::pair<
-            typename mpl::apply_wrap2<
-                TagFn, typename tag_type<Spec>::type, Arg
+        typedef boost::mpl::pair<
+            typename boost::mpl::apply_wrap2<
+                TagFn
+              , typename boost::parameter::aux::tag_type<Spec>::type
+              , Arg
             >::type
-          , typename aux::insert_<
-                UsedArgs, typename tag_type<Spec>::type
+          , typename boost::parameter::aux::insert_<
+                UsedArgs
+              , typename boost::parameter::aux::tag_type<Spec>::type
             >::type
         > type;
     };
@@ -467,10 +389,7 @@ namespace aux {
     >
     struct deduce_tag;
 
-    // Tag type passed to MPL lambda.
-    struct lambda_tag;
-
-    // Helper for deduce_tag<> below.
+    // Helper for deduce_tag<...>, below.
     template <
         class Argument
       , class ArgumentPack
@@ -482,9 +401,10 @@ namespace aux {
     {
         typedef typename DeducedArgs::spec spec;
 
-        typedef typename mpl::apply_wrap2<
-            typename mpl::lambda<
-                typename spec::predicate, lambda_tag
+        typedef typename boost::mpl::apply_wrap2<
+            typename boost::mpl::lambda<
+                typename spec::predicate
+              , boost::parameter::aux::lambda_tag
             >::type
           , Argument
           , ArgumentPack
@@ -492,18 +412,24 @@ namespace aux {
 
         // Deduced parameter matches several arguments.
         BOOST_MPL_ASSERT((
-            mpl::not_<
-                mpl::and_<
+            typename boost::mpl::eval_if<
+                typename boost::parameter::aux::has_key_<
+                    UsedArgs
+                  , typename boost::parameter::aux::tag_type<spec>::type
+                >::type
+              , boost::mpl::if_<
                     condition
-                  , aux::has_key_<UsedArgs, typename tag_type<spec>::type>
+                  , boost::mpl::false_
+                  , boost::mpl::true_
                 >
-            >
+              , boost::mpl::true_
+            >::type
         ));
 
-        typedef typename mpl::eval_if<
+        typedef typename boost::mpl::eval_if<
             condition
-          , tag_deduced<UsedArgs, spec, Argument, TagFn>
-          , deduce_tag<
+          , boost::parameter::aux::tag_deduced<UsedArgs,spec,Argument,TagFn>
+          , boost::parameter::aux::deduce_tag<
                 Argument
               , ArgumentPack
               , typename DeducedArgs::tail
@@ -536,13 +462,26 @@ namespace aux {
       , class TagFn
     >
     struct deduce_tag
-      : mpl::eval_if<
-            is_same<DeducedArgs, void_>
-          , mpl::pair<void_, UsedArgs>
-          , deduce_tag0<Argument, ArgumentPack, DeducedArgs, UsedArgs, TagFn>
+      : boost::mpl::eval_if<
+            boost::is_same<DeducedArgs,boost::parameter::void_>
+          , boost::mpl::pair<boost::parameter::void_,UsedArgs>
+          , boost::parameter::aux::deduce_tag0<
+                Argument
+              , ArgumentPack
+              , DeducedArgs
+              , UsedArgs
+              , TagFn
+            >
         >
     {
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/arg_list.hpp>
+#include <boost/type_traits/remove_const.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     template <
         class List
@@ -554,14 +493,6 @@ namespace aux {
       , class Error
     >
     struct make_arg_list_aux;
-
-    // Inserts Tagged::key_type into the UserArgs set.
-    // Extra indirection to lazily evaluate Tagged::key_type.
-    template <class UsedArgs, class Tagged>
-    struct insert_tagged
-      : aux::insert_<UsedArgs, typename Tagged::key_type>
-    {
-    };
 
     // Borland needs the insane extra-indirection workaround below so that
     // it doesn't magically drop the const qualifier from the argument type.
@@ -586,71 +517,93 @@ namespace aux {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         typedef typename List::arg argument;
 #endif
-        typedef typename remove_const<
-            typename remove_reference<argument>::type
+        typedef typename boost::remove_const<
+            typename boost::remove_reference<argument>::type
         >::type arg_type;
         typedef typename List::spec parameter_spec;
-        typedef typename tag_type<parameter_spec>::type tag_;
-        typedef is_named_argument<argument> is_tagged;
+        typedef typename boost::parameter::aux::tag_type<
+            parameter_spec
+        >::type tag_;
+        typedef boost::parameter::aux::is_named_argument<argument> is_tagged;
 
         // If this argument is either explicitly tagged or a deduced
         // parameter, then turn off positional matching.
-        typedef mpl::and_<
-            mpl::not_<mpl::or_<is_deduced<parameter_spec>, is_tagged> >
-          , Positional
-        > positional;
+        typedef typename boost::mpl::eval_if<
+            Positional
+          , boost::mpl::eval_if<
+                boost::parameter::aux::is_deduced<parameter_spec>
+              , boost::mpl::false_
+              , boost::mpl::if_<
+                    is_tagged
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >
+            >
+          , boost::mpl::false_
+        >::type positional;
 
         // If this parameter is explicitly tagged, then add it to the
         // used-parmeters set.  We only really need to add parameters
         // that are deduced, but we would need a way to check if
         // a given tag corresponds to a deduced parameter spec.
-        typedef typename mpl::eval_if<
+        typedef typename boost::mpl::eval_if<
             is_tagged
-          , insert_tagged<UsedArgs, arg_type>
-          , mpl::identity<UsedArgs>
+          , boost::parameter::aux::insert_tagged<UsedArgs,arg_type>
+          , boost::mpl::identity<UsedArgs>
         >::type used_args;
 
         // If this parameter is neither explicitly tagged nor positionally
         // matched, then deduce the tag from the deduced parameter specs.
-        typedef typename mpl::eval_if<
-            mpl::or_<is_tagged, positional>
-          , mpl::pair<void_, used_args>
-          , deduce_tag<argument, ArgumentPack, DeducedArgs, used_args, TagFn>
+        typedef typename boost::mpl::eval_if<
+            typename boost::mpl::if_<
+                is_tagged
+              , boost::mpl::true_
+              , positional
+            >::type
+          , boost::mpl::pair<boost::parameter::void_,used_args>
+          , boost::parameter::aux::deduce_tag<
+                argument
+              , ArgumentPack
+              , DeducedArgs
+              , used_args
+              , TagFn
+            >
         >::type deduced_data;
 
         // If this parameter is explicitly tagged ...
-        typedef typename mpl::eval_if<
+        typedef typename boost::mpl::eval_if<
             is_tagged
             // ... just use it
-          , mpl::identity<arg_type>
+          , boost::mpl::identity<arg_type>
             // ... else ...
-          , mpl::eval_if<
+          , boost::mpl::eval_if<
                 // if positional matching is turned on ...
                 positional
                 // ... tag it positionally
-              , mpl::apply_wrap2<TagFn, tag_, argument>
+              , boost::mpl::apply_wrap2<TagFn,tag_,argument>
                 // ... else, use the deduced tag
-              , mpl::first<deduced_data>
+              , boost::mpl::first<deduced_data>
             >
         >::type tagged;
 
         // Build the arg_list incrementally, prepending new nodes.
-        typedef typename mpl::if_<
-            mpl::and_<
-                is_same<Error, void_>
-              , is_same<tagged, void_>
-            >
+        typedef typename boost::mpl::if_<
+            typename boost::mpl::if_<
+                boost::is_same<Error,boost::parameter::void_>
+              , boost::is_same<tagged,boost::parameter::void_>
+              , boost::mpl::false_
+            >::type
           , parameter_::unmatched_argument<argument>
-          , void_
+          , boost::parameter::void_
         >::type error;
 
-        typedef typename mpl::if_<
-            is_same<tagged, void_>
+        typedef typename boost::mpl::if_<
+            boost::is_same<tagged,boost::parameter::void_>
           , ArgumentPack
-          , arg_list<tagged, ArgumentPack>
+          , boost::parameter::aux::arg_list<tagged,ArgumentPack>
         >::type argument_pack;
 
-        typedef typename make_arg_list_aux<
+        typedef typename boost::parameter::aux::make_arg_list_aux<
             typename List::tail
           , DeducedArgs
           , TagFn
@@ -673,9 +626,9 @@ namespace aux {
     >
     struct make_arg_list0
     {
-        typedef typename mpl::eval_if<
+        typedef typename boost::mpl::eval_if<
             typename List::is_arg_const
-          , make_arg_list00<
+          , boost::parameter::aux::make_arg_list00<
                 List
               , DeducedArgs
               , TagFn
@@ -685,7 +638,7 @@ namespace aux {
               , typename List::arg const
               , Error
             >
-          , make_arg_list00<
+          , boost::parameter::aux::make_arg_list00<
                 List
               , DeducedArgs
               , TagFn
@@ -728,10 +681,10 @@ namespace aux {
       , class Error
     >
     struct make_arg_list_aux
-      : mpl::eval_if<
-            is_same<List, void_>
-          , mpl::identity<mpl::pair<ArgumentPack, Error> >
-          , make_arg_list0<
+      : boost::mpl::eval_if<
+            boost::is_same<List,boost::parameter::void_>
+          , boost::mpl::identity<boost::mpl::pair<ArgumentPack,Error> >
+          , boost::parameter::aux::make_arg_list0<
                 List
               , DeducedArgs
               , TagFn
@@ -750,28 +703,37 @@ namespace aux {
         class List
       , class DeducedArgs
       , class TagFn
-      , class EmitErrors = mpl::true_
+      , class EmitErrors = boost::mpl::true_
     >
     struct make_arg_list
-      : make_arg_list_aux<
+      : boost::parameter::aux::make_arg_list_aux<
             List
           , DeducedArgs
           , TagFn
-          , mpl::true_
-          , aux::set0
-          , empty_arg_list
-          , void_
+          , boost::mpl::true_
+          , boost::parameter::aux::set0
+          , boost::parameter::aux::empty_arg_list
+          , boost::parameter::void_
         >
     {
     };
+}}} // namespace boost::parameter::aux
+
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#include <boost/type_traits/is_const.hpp>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
 
     // A parameter spec item typelist.
-    template <class Spec, class Arg, class Tail = void_>
+    template <class Spec, class Arg, class Tail = boost::parameter::void_>
     struct item
     {
         typedef Spec spec;
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        typedef is_const<typename remove_reference<Arg>::type> is_arg_const;
+        typedef boost::is_const<
+            typename boost::remove_reference<Arg>::type
+        > is_arg_const;
 #endif
         typedef Arg arg;
         typedef Tail tail;
@@ -780,22 +742,26 @@ namespace aux {
     template <class Spec, class Arg, class Tail>
     struct make_item
     {
-        typedef item<Spec, Arg, typename Tail::type> type;
+        typedef boost::parameter::aux::item<
+            Spec
+          , Arg
+          , typename Tail::type
+        > type;
     };
 
     // Creates a item typelist.
     template <class Spec, class Arg, class Tail>
     struct make_items
-      : mpl::eval_if<
-            is_same<Arg, void_>
-          , mpl::identity<void_>
-          , make_item<Spec, Arg, Tail>
+      : boost::mpl::eval_if<
+            boost::is_same<Arg,boost::parameter::void_>
+          , boost::mpl::identity<boost::parameter::void_>
+          , boost::parameter::aux::make_item<Spec,Arg,Tail>
         >
     {
     };
 
     // A typelist that stored deduced parameter specs.
-    template <class ParameterSpec, class Tail = void_>
+    template <class ParameterSpec, class Tail = boost::parameter::void_>
     struct deduced_item
     {
         typedef ParameterSpec spec;
@@ -806,72 +772,75 @@ namespace aux {
     template <class Spec, class Tail>
     struct make_deduced_item
     {
-        typedef deduced_item<Spec, typename Tail::type> type;
+        typedef boost::parameter::aux::deduced_item<
+            Spec
+          , typename Tail::type
+        > type;
     };
 
     template <class Spec, class Tail>
     struct make_deduced_items
-      : mpl::eval_if<
-            is_same<Spec, void_>
-          , mpl::identity<void_>
-          , mpl::eval_if<
-                is_deduced<Spec>
-              , make_deduced_item<Spec, Tail>
+      : boost::mpl::eval_if<
+            boost::is_same<Spec,boost::parameter::void_>
+          , boost::mpl::identity<boost::parameter::void_>
+          , boost::mpl::eval_if<
+                boost::parameter::aux::is_deduced<Spec>
+              , boost::parameter::aux::make_deduced_item<Spec,Tail>
               , Tail
             >
         >
     {
     };
-
-    struct tag_keyword_arg
-    {
-        template <class K, class T>
-        struct apply : tag<K, T>
-        {
-        };
-    };
-
-    struct tag_template_keyword_arg
-    {
-        template <class K, class T>
-        struct apply
-        {
-            typedef template_keyword<K, T> type;
-        };
-    };
-} // namespace aux
+}}} // namespace boost::parameter::aux
 
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-namespace aux {
+
+namespace boost { namespace parameter { namespace aux {
 
     // This recursive metafunction forwards successive elements of
     // parameters::parameter_spec to make_deduced_items<>.
     // -- Cromwell D. Enage
     template <class SpecDeque>
     struct make_deduced_list;
+}}} // namespace boost::parameter::aux
+
+#include <boost/mpl/front.hpp>
+#include <boost/mpl/pop_front.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     template <class SpecDeque>
     struct make_deduced_list_not_empty
-      : make_deduced_items<
-            typename mpl::front<SpecDeque>::type
-          , make_deduced_list<typename mpl::pop_front<SpecDeque>::type>
+      : boost::parameter::aux::make_deduced_items<
+            typename boost::mpl::front<SpecDeque>::type
+          , boost::parameter::aux::make_deduced_list<
+                typename boost::mpl::pop_front<SpecDeque>::type
+            >
         >
     {
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/mpl/empty.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     template <class SpecDeque>
     struct make_deduced_list
-      : mpl::eval_if<
-            mpl::empty<SpecDeque>
-          , mpl::identity<void_>
-          , make_deduced_list_not_empty<SpecDeque>
+      : boost::mpl::eval_if<
+            boost::mpl::empty<SpecDeque>
+          , boost::mpl::identity<boost::parameter::void_>
+          , boost::parameter::aux::make_deduced_list_not_empty<SpecDeque>
         >
     {
     };
 
     template <class ArgumentPackAndError>
     struct is_arg_pack_error_void
-      : is_same<typename mpl::second<ArgumentPackAndError>::type, void_>
+      : boost::is_same<
+            typename boost::mpl::second<ArgumentPackAndError>::type
+          , boost::parameter::void_
+        >
     {
     };
 
@@ -879,35 +848,41 @@ namespace aux {
     template <class ArgumentPackAndError, class SpecDeque>
     struct match_parameters_base_cond;
 
+    // Helper for match_parameters_base_cond<...>, below.
+    template <class ArgumentPackAndError, class SpecDeque>
+    struct match_parameters_base_cond_helper
+      : boost::mpl::eval_if<
+            boost::parameter::aux::satisfies_requirements_of<
+                typename boost::mpl::first<ArgumentPackAndError>::type
+              , typename boost::mpl::front<SpecDeque>::type
+            >
+          , boost::parameter::aux::match_parameters_base_cond<
+                ArgumentPackAndError
+              , typename boost::mpl::pop_front<SpecDeque>::type
+            >
+          , boost::mpl::false_
+        >
+    {
+    };
+
     // If NamedList satisfies the PS0, PS1, ..., this is a metafunction
     // returning parameters.  Otherwise it has no nested ::type.
     template <class ArgumentPackAndError, class SpecDeque>
-    struct match_parameters_base_cond_helper
-      : mpl::eval_if<
-            satisfies_requirements_of<
-                typename mpl::first<ArgumentPackAndError>::type
-              , typename mpl::front<SpecDeque>::type
-            >
-          , match_parameters_base_cond<
-                ArgumentPackAndError
-              , typename mpl::pop_front<SpecDeque>::type
-            >
-          , mpl::false_
-        >
-    {
-    };
-
-    template <class ArgumentPackAndError, class SpecDeque>
     struct match_parameters_base_cond
-      : mpl::eval_if<
-            mpl::empty<SpecDeque>
-          , is_arg_pack_error_void<ArgumentPackAndError>
-          , match_parameters_base_cond_helper<ArgumentPackAndError, SpecDeque>
+      : boost::mpl::eval_if<
+            boost::mpl::empty<SpecDeque>
+          , boost::parameter::aux::is_arg_pack_error_void<
+                ArgumentPackAndError
+            >
+          , boost::parameter::aux::match_parameters_base_cond_helper<
+                ArgumentPackAndError
+              , SpecDeque
+            >
         >
     {
     };
 
-    // Helper metafunction for make_parameter_spec_items<>.
+    // Helper metafunction for make_parameter_spec_items<...>, below.
     template <class SpecDeque, class ...Args>
     struct make_parameter_spec_items_helper;
 
@@ -917,31 +892,40 @@ namespace aux {
     // -- Cromwell D. Enage
     template <class SpecDeque, class ...Args>
     struct make_parameter_spec_items
-      : mpl::eval_if<
-            mpl::empty<SpecDeque>
-          , mpl::identity<void_>
-          , make_parameter_spec_items_helper<SpecDeque, Args...>
-        >
-    {
-    };
-
-    template <class SpecDeque>
-    struct make_parameter_spec_items_helper<SpecDeque> : mpl::identity<void_>
-    {
-    };
-
-    template <class SpecDeque, class A0, class ...Args>
-    struct make_parameter_spec_items_helper<SpecDeque, A0, Args...>
-      : make_items<
-            typename mpl::front<SpecDeque>::type
-          , A0
-          , make_parameter_spec_items<
-                typename mpl::pop_front<SpecDeque>::type
+      : boost::mpl::eval_if<
+            boost::mpl::empty<SpecDeque>
+          , boost::mpl::identity<void_>
+          , boost::parameter::aux::make_parameter_spec_items_helper<
+                SpecDeque
               , Args...
             >
         >
     {
     };
+
+    template <class SpecDeque>
+    struct make_parameter_spec_items_helper<SpecDeque>
+      : boost::mpl::identity<boost::parameter::void_>
+    {
+    };
+
+    template <class SpecDeque, class A0, class ...Args>
+    struct make_parameter_spec_items_helper<SpecDeque,A0,Args...>
+      : boost::parameter::aux::make_items<
+            typename boost::mpl::front<SpecDeque>::type
+          , A0
+          , boost::parameter::aux::make_parameter_spec_items<
+                typename boost::mpl::pop_front<SpecDeque>::type
+              , Args...
+            >
+        >
+    {
+    };
+}}} // namespace boost::parameter::aux
+
+#include <boost/move/utility_core.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     // The make_arg_list<> metafunction produces a reversed arg_list,
     // so pass the arguments to the arg_list constructor reversed in turn.
@@ -956,10 +940,13 @@ namespace aux {
         static inline ArgList reverse(ReversedArgs&&... reversed_args)
         {
             return ArgList(
-                typename mpl::if_<
-                    is_same<typename ArgList::tagged_arg::value_type, void_>
-                  , value_type_is_void
-                  , value_type_is_not_void
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename ArgList::tagged_arg::value_type
+                      , boost::parameter::void_
+                    >
+                  , boost::parameter::aux::value_type_is_void
+                  , boost::parameter::aux::value_type_is_not_void
                 >::type()
               , boost::forward<ReversedArgs>(reversed_args)...
             );
@@ -967,319 +954,525 @@ namespace aux {
     };
 
     template <class ArgList, class A0, class ...Args>
-    struct arg_list_factory<ArgList, A0, Args...>
+    struct arg_list_factory<ArgList,A0,Args...>
     {
         template <class ...ReversedArgs>
         static inline ArgList
         reverse(A0&& a0, Args&&... args, ReversedArgs&&... reversed_args)
         {
-            return arg_list_factory<ArgList, Args...>::reverse(
+            return arg_list_factory<ArgList,Args...>::reverse(
                 boost::forward<Args>(args)...
               , static_cast<A0&&>(a0)
               , boost::forward<ReversedArgs>(reversed_args)...
             );
         }
     };
-} // namespace aux
+}}} // namespace boost::parameter::aux
 
-template <class ...Spec>
-struct parameters
-{
-    typedef fusion::deque<Spec...> parameter_spec;
+#include <boost/fusion/container/deque.hpp>
+#include <boost/fusion/mpl.hpp>
 
-    typedef typename aux::make_deduced_list<
-        parameter_spec
-    >::type deduced_list;
+namespace boost { namespace parameter {
 
-    // If the elements of NamedList match the criteria of overload resolution,
-    // returns a type which can be constructed from parameters.  Otherwise,
-    // this is not a valid metafunction (no nested ::type).
-    template <class ArgumentPackAndError>
-    struct match_base
-      : mpl::if_<
-            typename aux::match_parameters_base_cond<
-                ArgumentPackAndError, parameter_spec
-            >::type
-          , mpl::identity<parameters>
-          , void_
-        >
+    template <class ...Spec>
+    struct parameters
     {
-    };
+        typedef boost::fusion::deque<Spec...> parameter_spec;
 
-    // Specializations are to be used as an optional argument
-    // to eliminate overloads via SFINAE.
-    template <class ...Args>
-    struct match
-      : match_base<
-            typename aux::make_arg_list<
-                typename aux::make_parameter_spec_items<
-                    parameter_spec, Args...
+        typedef typename boost::parameter::aux::make_deduced_list<
+            parameter_spec
+        >::type deduced_list;
+
+        // If the elements of NamedList match the criteria of overload
+        // resolution, returns a type which can be constructed from
+        // parameters.  Otherwise, this is not a valid metafunction
+        // (no nested ::type).
+        template <class ArgumentPackAndError>
+        struct match_base
+          : boost::mpl::if_<
+                typename boost::parameter::aux::match_parameters_base_cond<
+                    ArgumentPackAndError
+                  , parameter_spec
+                >::type
+              , boost::mpl::identity<parameters>
+              , boost::parameter::void_
+            >
+        {
+        };
+
+        // Specializations are to be used as an optional argument
+        // to eliminate overloads via SFINAE.
+        template <class ...Args>
+        struct match
+          : match_base<
+                typename boost::parameter::aux::make_arg_list<
+                    typename boost::parameter::aux::make_parameter_spec_items<
+                        parameter_spec
+                      , Args...
+                    >::type
+                  , deduced_list
+                  , boost::parameter::aux::tag_keyword_arg
+                    // Don't emit errors when doing SFINAE.
+                  , boost::mpl::false_
+                >::type
+            >::type
+        {
+        };
+
+        // Metafunction that returns an ArgumentPack.
+        template <class ...Args>
+        struct bind
+          : boost::mpl::first<
+                typename boost::parameter::aux::make_arg_list<
+                    typename boost::parameter::aux::make_parameter_spec_items<
+                        parameter_spec
+                      , Args...
+                    >::type
+                  , deduced_list
+                  , boost::parameter::aux::tag_template_keyword_arg
+                >::type
+            >
+        {
+        };
+
+        // The function call operator is used to build an arg_list that
+        // labels the positional parameters and maintains whatever other
+        // tags may have been specified by the caller.
+        inline boost::parameter::aux::empty_arg_list operator()() const
+        {
+            return boost::parameter::aux::empty_arg_list();
+        }
+
+        template <class A0, class ...Args>
+        inline typename boost::mpl::first<
+            typename boost::parameter::aux::make_arg_list<
+                typename boost::parameter::aux::make_parameter_spec_items<
+                    parameter_spec
+                  , A0
+                  , Args...
                 >::type
               , deduced_list
-              , aux::tag_keyword_arg
-              , mpl::false_  // Don't emit errors when doing SFINAE.
+              , boost::parameter::aux::tag_keyword_arg
             >::type
         >::type
-    {
-    };
-
-    // Metafunction that returns an ArgumentPack.
-    template <class ...Args>
-    struct bind
-      : mpl::first<
-            typename aux::make_arg_list<
-                typename aux::make_parameter_spec_items<
-                    parameter_spec, Args...
+        operator()(A0&& a0, Args&& ...args) const
+        {
+            typedef typename boost::parameter::aux::make_arg_list<
+                typename boost::parameter::aux::make_parameter_spec_items<
+                    parameter_spec
+                  , A0
+                  , Args...
                 >::type
               , deduced_list
-              , aux::tag_template_keyword_arg
-            >::type
-        >
-    {
+              , boost::parameter::aux::tag_keyword_arg
+            >::type list_error_pair;
+
+            typedef typename boost::mpl::first<
+                list_error_pair
+            >::type result_type;
+
+            typedef typename boost::mpl::second<list_error_pair>::type error;
+
+            error();
+
+            return boost::parameter::aux::arg_list_factory<
+                result_type
+              , A0
+              , Args...
+            >::reverse(boost::forward<A0>(a0), boost::forward<Args>(args)...);
+        }
     };
+}} // namespace boost::parameter
 
-    // The function call operator is used to build an arg_list that
-    // labels the positional parameters and maintains whatever other
-    // tags may have been specified by the caller.
-    inline aux::empty_arg_list operator()() const
-    {
-        return aux::empty_arg_list();
-    }
-
-    template <class A0, class ...Args>
-    inline typename mpl::first<
-        typename aux::make_arg_list<
-            typename aux::make_parameter_spec_items<
-                parameter_spec, A0, Args...
-            >::type
-          , deduced_list
-          , aux::tag_keyword_arg
-        >::type
-    >::type
-    operator()(A0&& a0, Args&& ...args) const
-    {
-        typedef typename aux::make_arg_list<
-            typename aux::make_parameter_spec_items<
-                parameter_spec, A0, Args...
-            >::type
-          , deduced_list
-          , aux::tag_keyword_arg
-        >::type list_error_pair;
-
-        typedef typename mpl::first<list_error_pair>::type result_type;
-        typedef typename mpl::second<list_error_pair>::type error;
-        error();
-
-        return aux::arg_list_factory<result_type, A0, Args...>::reverse(
-            boost::forward<A0>(a0)
-          , boost::forward<Args>(args)...
-        );
-    }
-};
 #else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-template <
-    class PS0
-  , BOOST_PP_ENUM_SHIFTED(
-        BOOST_PARAMETER_MAX_ARITY, BOOST_PARAMETER_template_args, _
-    )
->
-struct parameters
-{
-    typedef typename BOOST_PARAMETER_build_deduced_list(
-        BOOST_PARAMETER_MAX_ARITY, aux::make_deduced_items, PS
-    )::type deduced_list;
 
-    // If the elements of NamedList match the criteria of overload resolution,
-    // returns a type which can be constructed from parameters.  Otherwise,
-    // this is not a valid metafunction (no nested ::type).
+#define BOOST_PARAMETER_right_angle(z, n, _) >
+/**/
+
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/cat.hpp>
+
+// Generates:
+//
+//   make<
+//       parameter_spec##0, argument_type##0
+//     , make<
+//           parameter_spec##1, argument_type##1
+//         , ... boost::mpl::identity<boost::parameter::aux::empty_arg_list>
+//    ...>
+//   >
+#define BOOST_PARAMETER_make_arg_list(z, n, names)                           \
+    BOOST_PP_SEQ_ELEM(0, names)<                                             \
+        BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(1, names), n),                        \
+        BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(2, names), n),
+/**/
+
+#include <boost/preprocessor/repetition/repeat.hpp>
+
+#define BOOST_PARAMETER_build_arg_list(n, make, param_spec, arg_type)        \
+    BOOST_PP_REPEAT(                                                         \
+        n, BOOST_PARAMETER_make_arg_list, (make)(param_spec)(arg_type)       \
+    )                                                                        \
+    boost::mpl::identity<boost::parameter::void_>                            \
+    BOOST_PP_REPEAT(n, BOOST_PARAMETER_right_angle, _)
+/**/
+
+#define BOOST_PARAMETER_make_deduced_list(z, n, names)                       \
+    BOOST_PP_SEQ_ELEM(0, names)<BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(1, names), n),
+/**/
+
+#define BOOST_PARAMETER_build_deduced_list(n, make, parameter_spec)          \
+    BOOST_PP_REPEAT(                                                         \
+        n, BOOST_PARAMETER_make_deduced_list, (make)(parameter_spec)         \
+    )                                                                        \
+    boost::mpl::identity<boost::parameter::void_>                            \
+    BOOST_PP_REPEAT(n, BOOST_PARAMETER_right_angle, _)
+/**/
+
+#define BOOST_PARAMETER_forward_typedef(z, n, names)                         \
+    typedef BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(0, names), n)                     \
+    BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(1, names), n);
+/**/
+
+#define BOOST_PARAMETER_template_args(z, n, prefix)                          \
+    class BOOST_PP_CAT(prefix, n) = boost::parameter::void_
+/**/
+
+#define BOOST_PARAMETER_make_arg_items_Z(z, n, prefix)                       \
+    boost::parameter::aux::item<                                             \
+        BOOST_PP_CAT(prefix, n), BOOST_PP_CAT(A, n) const&,
+/**/
+
+#include <boost/preprocessor/control/iif.hpp>
+
+#define BOOST_PARAMETER_make_arg_items_R(r, prefix, i, elem)                 \
+    boost::parameter::aux::item<BOOST_PP_CAT(prefix, i), BOOST_PP_CAT(A, i)  \
+    BOOST_PP_IIF(elem, &, const&),
+/**/
+
+#define BOOST_PARAMETER_function_call_arg_list_Z(z, n, prefix)               \
+    boost::parameter::aux::make_arg_list<                                    \
+        BOOST_PP_CAT(BOOST_PP_REPEAT_, z)(                                   \
+            n, BOOST_PARAMETER_make_arg_items_Z, prefix                      \
+        )                                                                    \
+        boost::parameter::void_                                              \
+        BOOST_PP_CAT(BOOST_PP_REPEAT_, z)(n, BOOST_PARAMETER_right_angle, _) \
+      , deduced_list                                                         \
+      , boost::parameter::aux::tag_keyword_arg                               \
+    >
+/**/
+
+#include <boost/preprocessor/seq/for_each_i.hpp>
+#include <boost/preprocessor/seq/size.hpp>
+
+#define BOOST_PARAMETER_function_call_arg_list_R(r, seq)                     \
+    boost::parameter::aux::make_arg_list<                                    \
+        BOOST_PP_SEQ_FOR_EACH_I_R(                                           \
+            r, BOOST_PARAMETER_make_arg_items_R, PS, seq                     \
+        )                                                                    \
+        boost::parameter::void_                                              \
+        BOOST_PP_REPEAT(                                                     \
+            BOOST_PP_SEQ_SIZE(seq), BOOST_PARAMETER_right_angle, _           \
+        )                                                                    \
+      , deduced_list                                                         \
+      , boost::parameter::aux::tag_keyword_arg                               \
+    >
+/**/
+
+#include <boost/preprocessor/arithmetic/sub.hpp>
+
+#define BOOST_PARAMETER_function_call_arg_pack_init(z, n, limit)             \
+    BOOST_PP_CAT(a, BOOST_PP_SUB(limit, n))
+/**/
+
+#include <boost/preprocessor/arithmetic/dec.hpp>
+#include <boost/preprocessor/facilities/intercept.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/repetition/enum_trailing_params.hpp>
+
+#define BOOST_PARAMETER_function_call_op_overload_Z(z, n, prefix)            \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class A)>                         \
+    inline typename boost::mpl::first<                                       \
+        typename BOOST_PARAMETER_function_call_arg_list_Z(                   \
+            z, n, prefix                                                     \
+        )::type                                                              \
+    >::type                                                                  \
+        operator()(                                                          \
+            BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, A, const& a)                 \
+        ) const                                                              \
+    {                                                                        \
+        typedef typename BOOST_PARAMETER_function_call_arg_list_Z(           \
+            z, n, prefix                                                     \
+        )::type result;                                                      \
+        typedef typename boost::mpl::first<result>::type result_type;        \
+        typedef typename boost::mpl::second<result>::type error;             \
+        error();                                                             \
+        return result_type(                                                  \
+            BOOST_PP_CAT(BOOST_PP_ENUM_, z)(                                 \
+                n                                                            \
+              , BOOST_PARAMETER_function_call_arg_pack_init                  \
+              , BOOST_PP_DEC(n)                                              \
+            )                                                                \
+            BOOST_PP_ENUM_TRAILING_PARAMS_Z(                                 \
+                z                                                            \
+              , BOOST_PP_SUB(BOOST_PARAMETER_MAX_ARITY, n)                   \
+              , boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT   \
+            )                                                                \
+        );                                                                   \
+    }
+/**/
+
+#include <boost/parameter/aux_/preprocessor/binary_seq_to_args.hpp>
+#include <boost/preprocessor/seq/seq.hpp>
+
+#define BOOST_PARAMETER_function_call_op_overload_R(r, seq)                  \
+    template <                                                               \
+        BOOST_PP_ENUM_PARAMS(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(seq)), class A)  \
+    >                                                                        \
+    inline typename boost::mpl::first<                                       \
+        typename BOOST_PARAMETER_function_call_arg_list_R(                   \
+            r, BOOST_PP_SEQ_TAIL(seq)                                        \
+        )::type                                                              \
+    >::type                                                                  \
+        operator()(                                                          \
+            BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                       \
+                BOOST_PP_SEQ_TAIL(seq), (A)(a)                               \
+            )                                                                \
+        ) const                                                              \
+    {                                                                        \
+        typedef typename BOOST_PARAMETER_function_call_arg_list_R(           \
+            r, BOOST_PP_SEQ_TAIL(seq)                                        \
+        )::type result;                                                      \
+        typedef typename boost::mpl::first<result>::type result_type;        \
+        typedef typename boost::mpl::second<result>::type error;             \
+        error();                                                             \
+        return result_type(                                                  \
+            BOOST_PP_ENUM(                                                   \
+                BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(seq))                         \
+              , BOOST_PARAMETER_function_call_arg_pack_init                  \
+              , BOOST_PP_DEC(BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(seq)))           \
+            )                                                                \
+            BOOST_PP_ENUM_TRAILING_PARAMS(                                   \
+                BOOST_PP_SUB(                                                \
+                    BOOST_PARAMETER_MAX_ARITY                                \
+                  , BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(seq))                     \
+                )                                                            \
+              , boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT   \
+            )                                                                \
+        );                                                                   \
+    }
+/**/
+
+#define BOOST_PARAMETER_satisfies_begin(z, n, prefix)                        \
+    boost::mpl::eval_if<                                                     \
+        boost::parameter::aux::satisfies_requirements_of<                    \
+            typename boost::mpl::first<ArgumentPackAndError>::type           \
+          , BOOST_PP_CAT(prefix, n)                                          \
+        >,
+/**/
+
+#define BOOST_PARAMETER_satisfies_end(z, n, false_t) ,false_t>
+/**/
+
+#include <boost/parameter/aux_/preprocessor/binary_seq_for_each.hpp>
+#include <boost/preprocessor/arithmetic/inc.hpp>
+#include <boost/preprocessor/repetition/enum_shifted.hpp>
+#include <boost/preprocessor/repetition/for.hpp>
+#include <boost/preprocessor/repetition/repeat_from_to.hpp>
+#include <boost/preprocessor/selection/min.hpp>
+
+namespace boost { namespace parameter {
+
+    template <
+        class PS0
+      , BOOST_PP_ENUM_SHIFTED(
+            BOOST_PARAMETER_MAX_ARITY, BOOST_PARAMETER_template_args, PS
+        )
+    >
+    struct parameters
+    {
+        typedef typename BOOST_PARAMETER_build_deduced_list(
+            BOOST_PARAMETER_MAX_ARITY
+          , boost::parameter::aux::make_deduced_items
+          , PS
+        )::type deduced_list;
+
+        // If the elements of NamedList match the criteria of overload
+        // resolution, returns a type which can be constructed from
+        // parameters.  Otherwise, this is not a valid metafunction
+        // (no nested ::type).
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
-    // If NamedList satisfies the PS0, PS1, ..., this is a metafunction
-    // returning parameters.  Otherwise it has no nested ::type.
-    template <class ArgumentPackAndError>
-    struct match_base
-      : mpl::if_<
-            // mpl::and_<
-            //    aux::satisfies_requirements_of<NamedList,PS0>
-            //  , mpl::and_<
-            //       aux::satisfies_requirements_of<NamedList,PS1>...
-            //           ..., mpl::true_
-            // ...> >
-            
-#define BOOST_PARAMETER_satisfies(z, n, text)                                \
-            mpl::and_<                                                       \
-                aux::satisfies_requirements_of<                              \
-                    typename mpl::first<ArgumentPackAndError>::type          \
-                  , BOOST_PP_CAT(PS, n)>                                     \
-                  ,
-            //!
-            mpl::and_<
-                is_same<
-                    typename mpl::second<ArgumentPackAndError>::type, void_
+        // If NamedList satisfies the PS0, PS1, ..., this is a metafunction
+        // returning parameters.  Otherwise it has no nested ::type.
+        template <class ArgumentPackAndError>
+        struct match_base
+          : boost::mpl::if_<
+                // boost::mpl::and_<
+                //    aux::satisfies_requirements_of<NamedList,PS0>
+                //  , boost::mpl::and_<
+                //       aux::satisfies_requirements_of<NamedList,PS1>...
+                //           ..., boost::mpl::true_
+                // ...> >
+                typename BOOST_PP_REPEAT(
+                    BOOST_PARAMETER_MAX_ARITY
+                  , BOOST_PARAMETER_satisfies_begin
+                  , PS
+                )
+                boost::is_same<
+                    typename boost::mpl::second<
+                        ArgumentPackAndError
+                    >::type
+                  , boost::parameter::void_
                 >
-              , BOOST_PP_REPEAT(
-                    BOOST_PARAMETER_MAX_ARITY, BOOST_PARAMETER_satisfies, _
-                )
-                mpl::true_
                 BOOST_PP_REPEAT(
-                    BOOST_PARAMETER_MAX_ARITY, BOOST_PARAMETER_right_angle, _
-                )
+                    BOOST_PARAMETER_MAX_ARITY
+                  , BOOST_PARAMETER_satisfies_end
+                  , boost::mpl::false_
+                )::type
+              , boost::mpl::identity<parameters>
+              , boost::parameter::void_
             >
-
-#undef BOOST_PARAMETER_satisfies
-
-          , mpl::identity<parameters>
-          , void_
-        >
-    {
-    };
+        {
+        };
 #endif // SFINAE enabled, not Borland.
 
-    // Specializations are to be used as an optional argument
-    // to eliminate overloads via SFINAE.
-    template <
+        // Specializations are to be used as an optional argument
+        // to eliminate overloads via SFINAE.
+        template <
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        // Borland simply can't handle default arguments in member
-        // class templates.  People wishing to write portable code can
-        // explicitly specify BOOST_PARAMETER_MAX_ARITY arguments.
-        BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, class A)
-#else 
-        BOOST_PP_ENUM_BINARY_PARAMS(
-            BOOST_PARAMETER_MAX_ARITY, class A, = void_ BOOST_PP_INTERCEPT
-        )
+            // Borland simply can't handle default arguments in member
+            // class templates.  People wishing to write portable code can
+            // explicitly specify BOOST_PARAMETER_MAX_ARITY arguments.
+            BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, class A)
+#else
+            BOOST_PP_ENUM_BINARY_PARAMS(
+                BOOST_PARAMETER_MAX_ARITY
+              , class A
+              , = boost::parameter::void_ BOOST_PP_INTERCEPT
+            )
 #endif
-    >
-    struct match
+        >
+        struct match
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
-      : match_base<
-            typename aux::make_arg_list<
+          : match_base<
+                typename boost::parameter::aux::make_arg_list<
+                    typename BOOST_PARAMETER_build_arg_list(
+                        BOOST_PARAMETER_MAX_ARITY
+                      , boost::parameter::aux::make_items
+                      , PS
+                      , A
+                    )::type
+                  , deduced_list
+                  , boost::parameter::aux::tag_keyword_arg
+                    // Don't emit errors when doing SFINAE.
+                  , boost::mpl::false_
+                >::type
+            >::type
+        {
+        };
+#else
+        {
+            typedef parameters<
+                BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, PS)
+            > type;
+        };
+#endif // SFINAE enabled, not Borland.
+
+        // Metafunction that returns an ArgumentPack.
+
+        // TODO, bind has to instantiate the error type in the result
+        // of make_arg_list.
+
+        template <
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+            // Borland simply can't handle default arguments in member
+            // class templates.  People wishing to write portable code can
+            // explicitly specify BOOST_PARAMETER_MAX_ARITY arguments
+            BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, class A)
+#else
+            BOOST_PP_ENUM_BINARY_PARAMS(
+                BOOST_PARAMETER_MAX_ARITY
+              , class A
+              , = boost::parameter::void_ BOOST_PP_INTERCEPT
+            )
+#endif
+        >
+        struct bind
+        {
+            typedef typename boost::parameter::aux::make_arg_list<
                 typename BOOST_PARAMETER_build_arg_list(
-                    BOOST_PARAMETER_MAX_ARITY, aux::make_items, PS, A
+                    BOOST_PARAMETER_MAX_ARITY
+                  , boost::parameter::aux::make_items
+                  , PS
+                  , A
                 )::type
               , deduced_list
-              , aux::tag_keyword_arg
-              , mpl::false_  // Don't emit errors when doing SFINAE.
-            >::type
-        >::type
-    {
-    };
-#else
-    {
-        typedef parameters<
-            BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, PS)
-        > type;
-    };
-#endif // SFINAE enabled, not Borland.
+              , boost::parameter::aux::tag_template_keyword_arg
+            >::type result;
 
-    // Metafunction that returns an ArgumentPack.
+            typedef typename boost::mpl::first<result>::type type;
+        };
 
-    // TODO, bind has to instantiate the error type in the result
-    // of make_arg_list.
+        BOOST_PP_REPEAT(
+            BOOST_PARAMETER_MAX_ARITY
+          , BOOST_PARAMETER_forward_typedef
+          , (PS)(parameter_spec)
+        )
 
-    template <
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        // Borland simply can't handle default arguments in member
-        // class templates.  People wishing to write portable code can
-        // explicitly specify BOOST_PARAMETER_MAX_ARITY arguments
-        BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, class A)
-#else
-        BOOST_PP_ENUM_BINARY_PARAMS(
-            BOOST_PARAMETER_MAX_ARITY, class A, = void_ BOOST_PP_INTERCEPT
+        // The function call operator is used to build an arg_list that
+        // labels the positional parameters and maintains whatever other
+        // tags may have been specified by the caller.
+        //
+        // !!!NOTE!!!
+        //
+        // The make_arg_list<> metafunction produces a reversed arg_list,
+        // so pass the arguments to the arg_list constructor reversed in turn.
+        inline boost::parameter::aux::empty_arg_list operator()() const
+        {
+            return boost::parameter::aux::empty_arg_list();
+        }
+
+        BOOST_PP_REPEAT(
+            BOOST_PP_MIN(
+                BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)
+              , BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY
+            )
+          , BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z
+          , (BOOST_PARAMETER_function_call_op_overload_R)(_)
+        )
+#if BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY < BOOST_PARAMETER_MAX_ARITY
+        BOOST_PP_REPEAT_FROM_TO(
+            BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY
+          , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)
+          , BOOST_PARAMETER_function_call_op_overload_Z
+          , PS
         )
 #endif
-    >
-    struct bind
-    {
-        typedef typename aux::make_arg_list<
-            typename BOOST_PARAMETER_build_arg_list(
-                BOOST_PARAMETER_MAX_ARITY, aux::make_items, PS, A
-            )::type
-          , deduced_list
-          , aux::tag_template_keyword_arg
-        >::type result;
-
-        typedef typename mpl::first<result>::type type;
     };
+}} // namespace boost::parameter
 
-    BOOST_PP_REPEAT(
-        BOOST_PARAMETER_MAX_ARITY
-      , BOOST_PARAMETER_forward_typedef
-      , (PS)(parameter_spec)
-    )
-
-    // The function call operator is used to build an arg_list that
-    // labels the positional parameters and maintains whatever other
-    // tags may have been specified by the caller.
-    //
-    // !!!NOTE!!!
-    //
-    // The make_arg_list<> metafunction produces a reversed arg_list,
-    // so pass the arguments to the arg_list constructor reversed in turn.
-    inline aux::empty_arg_list operator()() const
-    {
-        return aux::empty_arg_list();
-    }
-
-    BOOST_PP_FOR(
-        (0)
-      , BOOST_PARAMETER_function_call_op_pred_7
-      , BOOST_PARAMETER_function_call_op_inc
-      , BOOST_PARAMETER_function_call_op_overload
-    )
-#if 6 < BOOST_PARAMETER_MAX_ARITY
-    BOOST_PP_FOR(
-        (0)(0)(0)(0)(0)(0)(0)
-      , BOOST_PARAMETER_function_call_op_pred_8
-      , BOOST_PARAMETER_function_call_op_inc
-      , BOOST_PARAMETER_function_call_op_overload
-    )
-#endif
-#if 7 < BOOST_PARAMETER_MAX_ARITY
-    BOOST_PP_FOR(
-        (0)(0)(0)(0)(0)(0)(0)(0)
-      , BOOST_PARAMETER_function_call_op_pred_00000001
-      , BOOST_PARAMETER_function_call_op_inc
-      , BOOST_PARAMETER_function_call_op_overload
-    )
-    BOOST_PP_FOR(
-        (0)(0)(0)(0)(0)(0)(0)(1)
-      , BOOST_PARAMETER_function_call_op_pred_9
-      , BOOST_PARAMETER_function_call_op_inc
-      , BOOST_PARAMETER_function_call_op_overload
-    )
-#endif
-#if 8 < BOOST_PARAMETER_MAX_ARITY
-#define BOOST_PP_ITERATION_PARAMS_1 ( \
-    3, (9, BOOST_PARAMETER_MAX_ARITY, <boost/parameter/aux_/overloads.hpp>) \
-)
-#include BOOST_PP_ITERATE()
-#endif
-};
-#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-
-} // namespace parameter
-
-} // namespace boost
-
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-#undef BOOST_PARAMETER_function_call_op_overload
-#undef BOOST_PARAMETER_function_call_op_inc
-#undef BOOST_PARAMETER_function_call_op_pred_9
-#undef BOOST_PARAMETER_function_call_op_pred_00000001
-#undef BOOST_PARAMETER_function_call_op_pred_8
-#undef BOOST_PARAMETER_function_call_op_pred_7
+#undef BOOST_PARAMETER_satisfies_end
+#undef BOOST_PARAMETER_satisfies_begin
+#undef BOOST_PARAMETER_function_call_op_overload_R
+#undef BOOST_PARAMETER_function_call_op_overload_Z
 #undef BOOST_PARAMETER_function_call_arg_pack_init
-#undef BOOST_PARAMETER_function_call_arg_list
+#undef BOOST_PARAMETER_function_call_arg_list_R
+#undef BOOST_PARAMETER_function_call_arg_list_Z
+#undef BOOST_PARAMETER_make_arg_items_R
+#undef BOOST_PARAMETER_make_arg_items_Z
 #undef BOOST_PARAMETER_template_args
 #undef BOOST_PARAMETER_forward_typedef
-//#undef BOOST_PARAMETER_right_angle
-#undef BOOST_PARAMETER_make_arg_items
 //#undef BOOST_PARAMETER_build_deduced_list
 //#undef BOOST_PARAMETER_make_deduced_list
 //#undef BOOST_PARAMETER_build_arg_list
 //#undef BOOST_PARAMETER_make_arg_list
-#endif
+//#undef BOOST_PARAMETER_right_angle
+
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 #endif // BOOST_PARAMETERS_031014_HPP
 

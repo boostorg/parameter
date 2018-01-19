@@ -21,6 +21,12 @@
 #define BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif
 
+#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if !defined BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY
+#define BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY 11
+#endif
+#endif
+
 // Only in the absence of perfect forwarding should client code be limited
 // by BOOST_PARAMETER_MAX_ARITY.  However, BOOST_PARAMETER_MAX_ARITY will
 // remain defined for code that still needs it. -- Cromwell D. Enage
