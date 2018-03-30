@@ -8,8 +8,8 @@ The Boost Parameter Library Reference Documentation
 :date:          $Date: 2005/07/17 19:53:01 $
 
 :copyright:     Copyright David Abrahams, Daniel Wallin
-                2005-2009. Distributed under the Boost Software License,
-                Version 1.0. (See accompanying file LICENSE_1_0.txt
+                2005-2009.  Distributed under the Boost Software License,
+                Version 1.0.  (See accompanying file LICENSE_1_0.txt
                 or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 |(logo)|__
@@ -414,7 +414,8 @@ __ ../../../../boost/parameter/keyword.hpp
         static keyword<Tag>& get_\();
     };
 
-**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
+**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``,
+**then**
 
 .. parsed-literal::
 
@@ -581,7 +582,7 @@ type of ``Tag`` must be ``in_reference``.
 invocation of ``instance``.
 
 :Thread Safety:
-``instance`` can be called from multiple threads simultaneously.
+``instance`` can be accessed from multiple threads simultaneously.
 
 .. _get:
 
@@ -652,11 +653,12 @@ __ ../../../../boost/parameter/parameters.hpp
     |         matches ``A`` ## *i*
     |         then
     |             ``K`` ## *i* is the |keyword tag type| of ``d`` ## *j*.
-    |             ``D`` ## :sub:`i+1` is ``D`` ## *i* - [ ``d`` ## *j*]
+    |             ``D``:sub:`i+1` is ``D`` ## *i* - [ ``d`` ## *j*]
     |     else
     |         ``K`` ## *i* is the |keyword tag type| of ``P`` ## *i*.
 
-**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
+**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``,
+**then**
 
 .. parsed-literal::
 
@@ -694,7 +696,7 @@ __ ../../../../boost/parameter/parameters.hpp
 
 .. Note::
 
-    In this section, ``R`` ## *i* and ``K`` ## *i* are defined as follows, for
+    In this section, ``R`` ## *i* and ``K`` ## *i* are defined as follows: for
     any argument type ``A`` ## *i*:
 
     | let ``D0`` the set [ d0, …, d ## *j*] of all **deduced**
@@ -713,7 +715,7 @@ __ ../../../../boost/parameter/parameters.hpp
     |         matches ``A`` ## *i*
     |         then
     |             ``K`` ## *i* is the |keyword tag type| of ``d`` ## *j*.
-    |             ``D`` ## :sub:`i+1` is ``D`` ## *i* - [ ``d`` ## *j*]
+    |             ``D``:sub:`i+1` is ``D`` ## *i* - [ ``d`` ## *j*]
     |     else
     |         ``K`` ## *i* is the |keyword tag type| of ``P`` ## *i*.
 
@@ -741,13 +743,14 @@ Each element ``P`` in ``Params...`` is **satisfied** if either:
     - ``X`` is some ``K`` ## *i*, **and**
     - ``mpl::apply<F,R`` ## *i* ``>::type::value`` is ``true``
 
-**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
+**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``,
+**then**
 
-:Returns: if ``P0``, ``P1``, …, ``P`` ## β are *satisfied* (see below), then
+:Returns: if ``P0``, ``P1``, …, ``Pβ`` are *satisfied* (see below), then
 ``parameters<P0,P1,…,Pβ>``.  Otherwise, ``match<A0,A1,…,Aβ>::type`` is not
 defined.
 
-``P0``, ``P1``, …, ``P`` ## β are **satisfied** if, for every *j* in 0…β,
+``P0``, ``P1``, …, ``Pβ`` are **satisfied** if, for every *j* in 0…β,
 either:
 
 * ``P`` ## *j* is the *unspecified* default
@@ -785,7 +788,7 @@ either:
 
 :Returns: An |ArgumentPack|_ containing, for each ``a`` ## *i*,  
 
-    - if ``a`` ## *i*,  is a single-element |ArgumentPack|, its element
+    - if ``a`` ## *i*  is a single-element |ArgumentPack|, its element
     - Otherwise, a |tagged reference| with |kw|_ ``K`` ## *i* and *value*
         ``a`` ## *i*
 
@@ -1061,7 +1064,8 @@ Approximate expansion:
       , *argument name* ## **m** ## _type&& *argument name*\ **m**
     )
 
-**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
+**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``,
+**then**
 
 .. parsed-literal::
 
@@ -1193,7 +1197,7 @@ proper usage of this macro.
 __ ../../../../boost/parameter/preprocessor.hpp
 
 Same as ``BOOST_PARAMETER_MEMBER_FUNCTION``, except that the overloaded
-forwarding member function overloads and their helper methods are
+forwarding member functions and their helper methods are
 ``const``-qualified.
 
 The |preprocessor|_ test programs demonstrates proper usage of this macro.
@@ -1299,7 +1303,8 @@ Approximate expansion:
     {
     }
 
-**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
+**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``,
+**then**
 
 .. parsed-literal::
 
@@ -1456,7 +1461,7 @@ Expands to:
     ``BOOST_PARAMETER_FUNCTION``.
 
 Generates a sequence of `forwarding function`_ templates named
-``n``, with arities ranging from ``l`` to ``h`` , returning ``r``,
+``n``, with arities ranging from ``l`` to ``h``, returning ``r``,
 and using ``p`` to control overload resolution and assign tags to
 positional arguments.
 
@@ -1535,7 +1540,8 @@ Expands to:
         );
     }
 
-**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is not ``#defined``, **then**
+**If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``,
+**then**
 
 Expands to:
 
@@ -1544,10 +1550,22 @@ Expands to:
     template <class A1, class A2, …, class A ## **l**>
     r name(
         A1 const& a1, A2 const& a2, …, A ## **l** const& a ## **l**
-      , typename **p**::match<A1, A2, …, A ## **l**>::type p = **p**\ ()
+      , typename **p**::match<A1, A2, …, A ## **l**>::type pk = **p**\ ()
     )
     {
-        return **name**\ _with_named_params(**p**\ (a1, a2, …, a ## **l**));
+        return **name**\ _with_named_params(pk(a1, a2, …, a ## **l**));
+    }
+
+    *… exponential number of overloads …*
+    :vellipsis:`⋮`
+
+    template <class A1, class A2, …, class A ## **l**>
+    r name(
+        A1& a1, A2& a2, …, A ## **l** & a ## **l**
+      , typename **p**::match<A1, A2, …, A ## **l**>::type pk = **p**\ ()
+    )
+    {
+        return **name**\ _with_named_params(pk(a1, a2, …, a ## **l**));
     }
 
     template <
@@ -1563,11 +1581,11 @@ Expands to:
       , typename **p**::match<
             A1 const, A2 const, …, A ## **l** const
           , A ## `BOOST_PP_INC`_\ (**l**) const
-        >::type p = **p**\ ()
+        >::type pk = **p**\ ()
     )
     {
         return **name**\ _with_named_params(
-            **p**\ (a1, a2, …, a ## **l**, a ## `BOOST_PP_INC`_\ (**l**))
+            pk(a1, a2, …, a ## **l**, a ## `BOOST_PP_INC`_\ (**l**))
         );
     }
 
@@ -1586,11 +1604,11 @@ Expands to:
       , A ## `BOOST_PP_INC`_\ (**l**) & a ## `BOOST_PP_INC`_\ (**l**)
       , typename **p**::match<
             A1, A2, …, A ## **l**, A ## `BOOST_PP_INC`_\ (**l**)
-        >::type p = **p**\ ()
+        >::type pk = **p**\ ()
     )
     {
         return **name**\ _with_named_params(
-            **p**\ (a1, a2, …, a ## **l**, a ## `BOOST_PP_INC`_\ (**l**))
+            pk(a1, a2, …, a ## **l**, a ## `BOOST_PP_INC`_\ (**l**))
         );
     }
 
@@ -1601,10 +1619,10 @@ Expands to:
         A1 const& a1, A2 const& a2, …, A ## **h** const& x ## **h**
       , typename **p**::match<
             A1 const, A2 const, …, A ## **h** const
-        >::type p = **p**\ ()
+        >::type pk = **p**\ ()
     )
     {
-        return **name**\ _with_named_params(**p**\ (a1, a2, …, a ## **h**));
+        return **name**\ _with_named_params(pk(a1, a2, …, a ## **h**));
     }
 
     *… exponential number of overloads …*
@@ -1613,10 +1631,10 @@ Expands to:
     template <class A1, class A2, …, class A ## **h**>
     r name(
         A1& a1, A2& a2, …, A ## **h** & x ## **h**
-      , typename **p**::match<A1, A2, …, A ## **h**>::type p = **p**\ ()
+      , typename **p**::match<A1, A2, …, A ## **h**>::type pk = **p**\ ()
     )
     {
-        return **name**\ _with_named_params(**p**\ (a1, a2, …, a ## **h**));
+        return **name**\ _with_named_params(pk(a1, a2, …, a ## **h**));
     }
 
 The |macros_cpp|_ test program demonstrates proper usage of this macro.
@@ -1646,10 +1664,15 @@ Expands to:
 
 .. parsed-literal::
 
-    namespace **n** { struct **k**; }
+    namespace **n** {
+
+        struct **k**;
+    }
+
     namespace { 
+
         boost::parameter::keyword<*tag-namespace*::**k**>& **k**
-            = boost::parameter::keyword<*tag-namespace*::**k**>::get();
+            = boost::parameter::keyword<*tag-namespace*::**k**>::instance;
     }
 
 ``BOOST_PARAMETER_MATCH(p, a, x)``
@@ -1667,7 +1690,7 @@ __ ../../../../boost/parameter/match.hpp
 
     (A0)(A1)…(A ## *n*)
 
-__ http://www.boost.org/libs/preprocessor/doc/data.html
+__ ../../../preprocessor/doc/data.html
 
 Expands to:
 
@@ -1685,12 +1708,16 @@ Configuration Macros
 Determines whether or not the library supports perfect forwarding, or the
 preservation of parameter value categories.  Users can manually disable this
 macro by ``#defining`` the ``BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING``
-macro.  Otherwise, the library will only ``#define`` this macro if it and the
-configuration macros ``BOOST_NO_FUNCTION_TEMPLATE_ORDERING`` and
-``BOOST_NO_SFINAE`` are not already ``#defined`` but the configuration macro
+macro.  Otherwise, the library will ``#define`` this macro if and only if it
+and the configuration macros |BOOST_NO_FUNCTION_TEMPLATE_ORDERING|_ and
+|BOOST_NO_SFINAE|_ are not already ``#defined`` but the configuration macro
 ``BOOST_MOVE_PERFECT_FORWARDING`` is already defined.
 
 .. |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| replace:: ``BOOST_PARAMETER_HAS_PERFECT_FORWARDING``
+.. |BOOST_NO_FUNCTION_TEMPLATE_ORDERING| replace:: ``BOOST_NO_FUNCTION_TEMPLATE_ORDERING``
+.. _BOOST_NO_FUNCTION_TEMPLATE_ORDERING: ../../../config/doc/html/boost_config/boost_macro_reference.html
+.. |BOOST_NO_SFINAE| replace:: ``BOOST_NO_SFINAE``
+.. _BOOST_NO_SFINAE: ../../../config/doc/html/boost_config/boost_macro_reference.html
 
 :Defined in: `boost/parameter/config.hpp`__
 
@@ -1703,11 +1730,15 @@ Determines the maximum number of arguments supported by the library.  Will
 only be ``#defined`` by the library if it is not already ``#defined``.
 
 If this library supports perfect forwarding, then this macro can be safely
-ignored.  Otherwise, non-const references must be wrapped by ``boost::ref()``
-or ``std::ref()`` if passed by position to Boost.Parameter-enabled functions
-with arity higher than ``7``.
+ignored.  Otherwise, mutable references must be wrapped by |boost_ref|_ or
+|std_ref|_ if passed by position to Boost.Parameter-enabled functions with
+arity higher than ``7``.
 
 .. |BOOST_PARAMETER_MAX_ARITY| replace:: ``BOOST_PARAMETER_MAX_ARITY``
+.. |boost_ref| replace:: ``boost\:\:ref``
+.. _boost_ref: ../../../core/doc/html/core/ref.html
+.. |std_ref| replace:: ``std\:\:ref``
+.. _std_ref: http://en.cppreference.com/w/cpp/utility/functional/ref
 
 :Defined in: `boost/parameter/config.hpp`__
 
@@ -1718,11 +1749,11 @@ __ ../../../../boost/parameter/config.hpp
 ``BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY``
 ---------------------------------------------
 
-If this library supports perfect forwarding, determines the minimum number of
-arguments that are all passed by ``const`` lvalue reference to a function
-overload generated by ``BOOST_PARAMETER_FUNCTION`` et. al.  Will only be
-``#defined`` by the library if it is not already ``#defined`` and
-``BOOST_PARAMETER_HAS_PERFECT_FORWARDING`` is ``#defined``.
+If this library does **not** support perfect forwarding, determines the
+minimum number of arguments that are all passed by ``const`` lvalue reference
+to a function overload generated by ``BOOST_PARAMETER_FUNCTION`` et. al.  Will
+only be ``#defined`` by the library if it is not already ``#defined`` and
+``BOOST_PARAMETER_HAS_PERFECT_FORWARDING`` is **not** ``#defined``.
 
 .. |BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY| replace:: ``BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY``
 

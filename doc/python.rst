@@ -8,8 +8,8 @@ The Boost Parameter Library Python Binding Documentation
 :date:          $Date$
 
 :copyright:     Copyright David Abrahams, Daniel Wallin
-                2005-2009. Distributed under the Boost Software License,
-                Version 1.0. (See accompanying file LICENSE_1_0.txt
+                2005-2009.  Distributed under the Boost Software License,
+                Version 1.0.  (See accompanying file LICENSE_1_0.txt
                 or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 :abstract:      Makes it possible to bind Boost.Parameter-enabled
@@ -242,9 +242,9 @@ That's it! This class can now be used in Python with the expected syntax::
         .def(
             "open", 
             (void (\*)( 
-                  tag::title(std::string), 
-                  tag::width\*(unsigned), 
-                  tag::height\*(unsigned)) 
+                tag::title(std::string), 
+                tag::width\*(unsigned), 
+                tag::height\*(unsigned)) 
             )0
         );
 

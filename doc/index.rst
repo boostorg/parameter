@@ -16,14 +16,18 @@ that can accept arguments by name:
 
 .. parsed-literal::
 
-    new_window("alert", **_width=10**, **_titlebar=false**);
+    new_window(
+        "alert"
+      , **_width=10**
+      , **_titlebar=false**
+    );
 
     smart_ptr<
         Foo 
       , **deleter<Deallocate<Foo> >**
       , **copy_policy<DeepCopy>**
     > p(new Foo);
-    
+
 Since named arguments can be passed in any order, they are especially useful
 when a function or template has more than one parameter with a useful default
 value.  The library also supports *deduced* parameters; that is to say,
@@ -75,7 +79,8 @@ parameters whose identity can be deduced from their types.
         };
     }
     using namespace test;
-    int x = ''');
+    int x =
+''');
 
 .. @test('compile')
 
@@ -135,13 +140,13 @@ combinations of defaults unusable:
 .. parsed-literal::
 
     window* new_window(
-        char const* name, 
-        **int border_width = default_border_width,**
-        bool movable = true,
-        bool initially_visible = true
+        char const* name
+      , **int border_width = default_border_width**
+      , bool movable = true
+      , bool initially_visible = true
     );
 
-    const bool movability = false;
+    bool const movability = false;
     window* w = new_window("alert box", movability);
 
 In the example above we wanted to make an unmoveable window with a default
@@ -181,7 +186,10 @@ name, rather than by position:
 
 .. parsed-literal::
 
-    window* w = new_window("alert box", **movable_=**\ false); // OK!
+    window* w = new_window(
+        "alert box"
+      , **movable_=**\ false
+    ); // OK!
 
 .. @ignore()
 
@@ -201,8 +209,14 @@ position without causing ambiguity:
 
 .. parsed-literal::
 
-    window* w = new_window(movable_=false, **"alert box"**); // OK!
-    window* w = new_window(**"alert box"**, movable_=false); // OK!
+    window* w = new_window(
+        movable_=false
+      , **"alert box"**
+    ); // OK!
+    window* w = new_window(
+        **"alert box"**
+      , movable_=false
+    ); // OK!
 
 Appropriately used, a deduced parameter interface can free the user of the
 burden of even remembering the formal parameter names.
@@ -222,11 +236,14 @@ library, we can create interfaces that allow template arguments (in this case
 
 .. parsed-literal::
 
-    smart_ptr<**ownership<shared>**, **value_type<Client>** > p;
+    smart_ptr<
+        **ownership<shared>**
+      , **value_type<Client>**
+    > p;
 
 The syntax for passing named template arguments is not quite as natural as it
 is for function arguments (ideally, we'd be able to write
-``smart_ptr<ownership=shared,…>``).  This small syntactic deficiency makes
+``smart_ptr<ownership = shared, …>``).  This small syntactic deficiency makes
 deduced parameters an especially big win when used with class templates:
 
 .. parsed-literal::
@@ -263,7 +280,7 @@ refine the implementation with syntax improvements.  Finally we'll show how
 to streamline the implementation of named parameter interfaces, improve their
 participation in overload resolution, and optimize their runtime efficiency.
 
-__ ../../../graph/index.html
+__ ../../../graph/doc/index.html
 
 .. _dfs: ../../../graph/doc/depth_first_search.html
 
@@ -523,7 +540,7 @@ order in which they'd be expected if passed positionally.  Any required
 parameters must come first, but the ``(required … )`` clause can be omitted
 when all the parameters are optional.
 
-.. _Boost.Preprocessor: ../../../preprocessor/index.html
+.. _Boost.Preprocessor: ../../../preprocessor/doc/index.html
 .. _sequence: http://boost-consulting.com/mplbook/preprocessor.html#sequences
 
 Required Parameters
@@ -727,18 +744,23 @@ that prints the arguments:
 
 .. parsed-literal::
 
-    #include <boost/graph/depth_first_search.hpp> // for dfs_visitor
+    #include <boost/graph/depth_first_search.hpp>  // for dfs_visitor
 
     BOOST_PARAMETER_FUNCTION(
         (void), depth_first_search, tag
         *…signature goes here…*
     )
     {
-        std::cout << "graph=" << graph << std::endl;
-        std::cout << "visitor=" << visitor << std::endl;
-        std::cout << "root_vertex=" << root_vertex << std::endl;
-        std::cout << "index_map=" << index_map << std::endl;
-        std::cout << "color_map=" << color_map << std::endl;
+        std::cout << "graph=" << graph;
+        std::cout << std::endl;
+        std::cout << "visitor=" << visitor;
+        std::cout << std::endl;
+        std::cout << "root_vertex=" << root_vertex;
+        std::cout << std::endl;
+        std::cout << "index_map=" << index_map;
+        std::cout << std::endl;
+        std::cout << "color_map=" << color_map;
+        std::cout << std::endl;
     }
 
     int main()
@@ -850,7 +872,9 @@ __ `parameter table`_
 .. parsed-literal::
 
     (root_vertex
-      , **(typename boost::graph_traits<graph_type>::vertex_descriptor)**
+      , **(
+            typename boost::graph_traits<graph_type>::vertex_descriptor
+        )**
       , \*vertices(graph).first
     )
 
@@ -905,7 +929,7 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
         typedef typename boost::property_traits<G>::key_type type;
     };
 
-    template<class Size, class IndexMap>
+    template <class Size, class IndexMap>
     boost::iterator_property_map<
         boost::default_color_type\*, IndexMap
       , boost::default_color_type, boost::default_color_type&
@@ -923,17 +947,19 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
             (graph
               , **\ \*(boost::mpl::and_<
                     boost::is_convertible<
-                        traversal_category<_>, boost::incidence_graph_tag
+                        traversal_category<_>
+                      , boost::incidence_graph_tag
                     >
                   , boost::is_convertible<
-                        traversal_category<_>, boost::vertex_list_graph_tag
+                        traversal_category<_>
+                      , boost::vertex_list_graph_tag
                     >
                 >)**
             )
         )
 
         (optional
-            (visitor, \*, boost::dfs_visitor<>()) // not checkable
+            (visitor, \*, boost::dfs_visitor<>())  // not checkable
 
             (root_vertex
               , (vertex_descriptor<graphs::graph::_>)
@@ -944,7 +970,8 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
               , **\ \*(boost::mpl::and_<
                     boost::is_integral<value_type<_> >
                   , boost::is_same<
-                        vertex_descriptor<graphs::graph::_>, key_type<_>
+                        vertex_descriptor<graphs::graph::_>
+                      , key_type<_>
                     >
                 >)**
               , get(boost::vertex_index,graph)
@@ -952,7 +979,8 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
 
             (in_out(color_map)
               , **\ \*(boost::is_same<
-                    vertex_descriptor<graphs::graph::_>, key_type<_>
+                    vertex_descriptor<graphs::graph::_>
+                  , key_type<_>
                 >)**
               , default_color_map(num_vertices(graph), index_map)
             )
@@ -992,7 +1020,7 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
         G g(edges, edges + sizeof(edges) / sizeof(E), N);
 
         depth_first_search(g);
-        depth_first_search(g, _root_vertex = (int)x);
+        depth_first_search(g, _root_vertex = static_cast<int>(x));
         return 0;
     }
 ''')
@@ -1001,7 +1029,7 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
 
 Note the use of the nested `tag::_`. This is a shortcut for::
 
-    value_type<boost::mpl::_2, tag>
+    value_type<boost::mpl::_2,tag>
 
 .. @ignore()
 
@@ -1060,9 +1088,9 @@ follows:
     BOOST_PARAMETER_FUNCTION(
         (void), def, tag,
 
-        (required (name,(char const\*)) (func,\*) )   // nondeduced
+        (required (name, (char const\*)) (func,\*) )  // nondeduced
 
-        **(deduced** 
+        **(deduced**
             (optional 
                 (docstring, (char const\*), "")
 
@@ -1180,9 +1208,9 @@ Parameter-Enabled Member Functions
 ----------------------------------
 
 The ``BOOST_PARAMETER_MEMBER_FUNCTION`` and
-``BOOST_PARAMETER_CONST_MEMBER_FUNCTION`` macros accept exactly the
-same arguments as ``BOOST_PARAMETER_FUNCTION``, but are designed to
-be used within the body of a class::
+``BOOST_PARAMETER_CONST_MEMBER_FUNCTION`` macros accept exactly the same
+arguments as ``BOOST_PARAMETER_FUNCTION``, but are designed to be used within
+the body of a class::
 
     BOOST_PARAMETER_NAME(arg1)
     BOOST_PARAMETER_NAME(arg2)
@@ -1193,7 +1221,8 @@ be used within the body of a class::
             (void), call, tag, (required (arg1,(int))(arg2,(int)))
         )
         {
-            std::cout << arg1 << ", " << arg2 << std::endl;
+            std::cout << arg1 << ", " << arg2;
+            std::cout << std::endl;
         }
     };
 
@@ -1219,7 +1248,7 @@ implementation function::
         }
 
      private:
-        void call_impl(int, int); // implemented elsewhere.
+        void call_impl(int, int);  // implemented elsewhere.
     };
 
 .. @example.prepend('''
@@ -1260,6 +1289,39 @@ before the function name:
 
 .. @test('compile')
 
+-----------------------------------------
+Parameter-Enabled Function Call Operators
+-----------------------------------------
+
+The ``BOOST_PARAMETER_FUNCTION_CALL_OPERATOR`` and
+``BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR`` macros accept the same
+arguments as the ``BOOST_PARAMETER_MEMBER_FUNCTION`` and
+``BOOST_PARAMETER_CONST_MEMBER_FUNCTION`` macros except for the function name,
+because these macros allow instances of the enclosing classes to be treated as
+function objects::
+
+    BOOST_PARAMETER_NAME(first_arg)
+    BOOST_PARAMETER_NAME(second_arg)
+
+    struct callable2
+    {
+        BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR(
+            (void), tag, (required (first_arg,(int))(second_arg,(int)))
+        )
+        {
+            std::cout << first_arg << ", ";
+            std::cout << second_arg << std::endl;
+        }
+    };
+
+.. @example.prepend('''
+    #include <boost/parameter.hpp>
+    #include <iostream>
+    using namespace boost::parameter;
+''')
+
+.. @test('compile')
+
 ------------------------------
 Parameter-Enabled Constructors
 ------------------------------
@@ -1286,9 +1348,9 @@ the |ArgumentPack| by *indexing* it with keyword objects::
         template <class ArgumentPack>
         myclass_impl(ArgumentPack const& args)
         {
-            std::cout << "name = " << args[_name] 
-                    << "; index = " << args[_index | 42] 
-                    << std::endl;
+            std::cout << "name = " << args[_name];
+            std::cout << "; index = " << args[_index | 42];
+            std::cout << std::endl;
         }
     };
 
@@ -1315,9 +1377,9 @@ Now we are ready to write the parameter-enabled constructor interface::
 Since we have supplied a default value for ``index`` but not for ``name``,
 only ``name`` is required.  We can exercise our new interface as follows::
 
-    myclass x("bob", 3);                     // positional
-    myclass y(_index = 12, _name = "sally"); // named
-    myclass z("june");                       // positional/defaulted
+    myclass x("bob", 3);                      // positional
+    myclass y(_index = 12, _name = "sally");  // named
+    myclass z("june");                        // positional/defaulted
 
 .. @example.wrap('int main() {', ' return 0; }')
 .. @test('run', howmany='all')
@@ -1333,7 +1395,7 @@ In this section we'll use Boost.Parameter to build Boost.Python_\
 
 .. parsed-literal::
 
-    template class<
+    template <
         ValueType, BaseList = bases<>
       , HeldType = ValueType, Copyable = void
     >
@@ -1353,15 +1415,25 @@ positionally or by name:
 
 .. parsed-literal::
 
-    struct B { virtual ~B() = 0; };
-    struct D : B { ~D(); };
+    struct B
+    {
+        virtual ~B() = 0;
+    };
+    
+    struct D : B
+    {
+        ~D();
+    };
 
     class_<
-        **class_type<B>**, **copyable<boost::noncopyable>** 
+        **class_type<B>**
+      , **copyable<boost::noncopyable>** 
     > …;
 
     class_<
-        **D**, **held_type<std::auto_ptr<D> >**, **base_list<bases<B> >**
+        **D**
+      , **held_type<std::auto_ptr<D> >**
+      , **base_list<bases<B> >**
     > …;
 
 .. @ignore()
@@ -1385,8 +1457,11 @@ The first step is to define keywords for each template parameter::
 The declaration of the ``class_type`` keyword you see here is equivalent to::
 
     namespace boost { namespace python {
+        namespace tag {
 
-        namespace tag { struct class_type; } // keyword tag type
+            struct class_type;  // keyword tag type
+        }
+
         template <class T>
         struct class_type
           : parameter::template_keyword<tag::class_type,T>
@@ -1538,7 +1613,9 @@ Revisiting our original examples, ::
     > c1;
 
     typedef boost::python::class_<
-        D, held_type<std::auto_ptr<D> >, base_list<bases<B> > 
+        D
+      , held_type<std::auto_ptr<D> >
+      , base_list<bases<B> > 
     > c2;
 
 .. @example.prepend('''
@@ -1548,8 +1625,13 @@ Revisiting our original examples, ::
     using boost::python::base_list;
     using boost::python::bases;
 
-    struct B {};
-    struct D {};
+    struct B
+    {
+    };
+
+    struct D
+    {
+    };
 ''')
 
 we can now examine the intended parameters::
@@ -1585,10 +1667,16 @@ the same class, as an implementation detail:
 .. parsed-literal::
 
     namespace boost { namespace python {
+        namespace detail {
 
-        namespace detail { struct bases_base {}; }
+            struct bases_base
+            {
+            };
+        }
 
-        template <class A0 = void, class A1 = void, class A2 = void *…* >
+        template <
+            class A0 = void, class A1 = void, class A2 = void *…*
+        >
         struct bases **: detail::bases_base**
         {
         };
@@ -1634,7 +1722,10 @@ deducible::
             >
         >
 
-      , parameter::optional<deduced<tag::copyable>, is_same<noncopyable,_> >
+      , parameter::optional<
+            deduced<tag::copyable>
+          , is_same<noncopyable,_>
+        >
 
     > class_signature;
 
@@ -1688,8 +1779,13 @@ explicit parameter names:
     > c2;
 
 .. @example.prepend('''
-    struct B {};
-    struct D {};
+    struct B
+    {
+    };
+
+    struct D
+    {
+    };
 
     using boost::python::bases;
 ''')
@@ -1730,7 +1826,10 @@ keyword type namespace, there's another way to use ``BOOST_PARAMETER_NAME``:
 .. parsed-literal::
 
     BOOST_PARAMETER_NAME(
-        **(** *object-name* **,** *tag-namespace* **)** *parameter-name*
+        **(**
+            *object-name*
+          **,** *tag-namespace*
+        **)** *parameter-name*
     )
 
 .. @ignore()
@@ -1832,7 +1931,9 @@ and any associated type requirements.  Just as we can build an |ArgumentPack|
     char const sam[] = "sam";
     int twelve = 12;
 
-    int z0 = print_name_and_index( **spec(** sam, twelve **)** );
+    int z0 = print_name_and_index(
+        **spec(** sam, twelve **)**
+    );
 
     int z1 = print_name_and_index( 
         **spec(** _index=12, _name="sam" **)** 
@@ -1880,7 +1981,7 @@ function template and allow *it* to do type deduction::
     template <class ArgumentPack>
     int deduce_arg_types(ArgumentPack const& args)
     {
-        return deduce_arg_types_impl(args[_name], args[_index|42]);
+        return deduce_arg_types_impl(args[_name], args[_index | 42]);
     }
 
 .. @example.prepend('''
@@ -1913,7 +2014,7 @@ metafunction introduced `earlier`__::
     typename parameter::value_type<ArgumentPack, tag::index, int>::type
     twice_index(ArgumentPack const& args)
     {
-        return 2 * args[_index|42];
+        return 2 * args[_index | 42];
     }
 
     int six = twice_index(_index = 3);
@@ -1961,11 +2062,13 @@ explicitly, we need a tool other than ``operator|``::
         std::string const& s2 = args[_s2];
         typename parameter::binding<
             ArgumentPack,tag::s3,std::string
-        >::type s3 = args[_s3|(s1+s2)]; // always constructs s1+s2
+        >::type s3 = args[_s3 | (s1 + s2)];  // always constructs s1 + s2
         return s3;
     }
 
-    std::string x = f((_s1="hello,", _s2=" world", _s3="hi world"));
+    std::string x = f((
+        _s1="hello,", _s2=" world", _s3="hi world"
+    ));
 
 .. @example.prepend('''
     #include <boost/parameter.hpp>
@@ -2046,14 +2149,14 @@ compute the default value *lazily* (that is, only on demand), by using
     To remember the difference between ``|`` and ``||``, recall that ``||``
     normally uses short-circuit evaluation: its second argument is only
     evaluated if its first argument is ``false``.  Similarly, in
-    ``color_map[param||f]``, ``f`` is only invoked if no ``color_map``
+    ``color_map[param || f]``, ``f`` is only invoked if no ``color_map``
     argument was supplied.
 
 The expression ``bind(std::plus<std::string>(), ref(s1), ref(s2))`` yields a
 *function object* that, when invoked, adds the two strings together.  That
 function will only be invoked if no ``s3`` argument is supplied by the caller.
 
-.. The expression ``lambda::var(s1)+lambda::var(s2)`` yields a
+.. The expression ``lambda::var(s1) + lambda::var(s2)`` yields a
 .. *function object* that, when invoked, adds the two strings
 .. together.  That function will only be invoked if no ``s3`` argument
 .. is supplied by the caller.
@@ -2062,9 +2165,9 @@ function will only be invoked if no ``s3`` argument is supplied by the caller.
 Best Practices
 ==============
 
-By now you should have a fairly good idea of how to use the
-Parameter library.  This section points out a few more-marginal
-issues that will help you use the library more effectively.
+By now you should have a fairly good idea of how to use the Parameter
+library.  This section points out a few more-marginal issues that will help
+you use the library more effectively.
 
 --------------
 Keyword Naming
@@ -2101,7 +2204,7 @@ keyword objects in order to avoid the following usually-silent bug:
             .
             .
             ` 
-            g(**age** = 3); // whoops!
+            g(**age** = 3);  // whoops!
         }
     }
 
@@ -2112,7 +2215,7 @@ Although in the case above, the user was trying to pass the value ``3`` as the
 argument got reassigned the value 3, and was then passed as a positional
 argument to ``g``.  Since ``g``'s first positional parameter is ``name``, the
 default value for ``age`` is used, and g prints ``3:42``.  Our leading
-underscore naming convention that makes this problem less likely to occur.
+underscore naming convention makes this problem less likely to occur.
 
 In this particular case, the problem could have been detected if f's ``age``
 parameter had been made ``const``, which is always a good idea whenever
@@ -2143,7 +2246,8 @@ those keywords:
             (optional (name,*,"bob")(index,(int),1))
         )
         {
-            std::cout << name << ":" << index << std::endl;
+            std::cout << name << ":" << index;
+            std::cout << std::endl;
             return index;
         }
     }
@@ -2161,7 +2265,10 @@ Users of these functions have a few choices:
 
 .. parsed-literal::
 
-    int x = **lib::**\ f(**lib::**\ _name = "jill", **lib::**\ _index = 1);
+    int x = **lib::**\ f(
+        **lib::**\ _name = "jill"
+      , **lib::**\ _index = 1
+    );
 
 This approach is more verbose than many users would like.
 
@@ -2179,7 +2286,7 @@ This approach is more verbose than many users would like.
     int x = lib::f(_name = "jill", _index = 1);
 
 This version is much better at the actual call site, but the
-*using-declarations* themselves can be verbose and hard-to manage.
+*using-declarations* themselves can be verbose and hard to manage.
 
 .. @example.prepend(namespace_setup)
 .. @example.append('int main() { return 0; }')
@@ -2205,11 +2312,10 @@ give users more control:
 .. parsed-literal::
 
     namespace lib {
+        **namespace keywords {**
 
-        **namespace keywords
-        {**
-             BOOST_PARAMETER_NAME(name)
-             BOOST_PARAMETER_NAME(index)
+            BOOST_PARAMETER_NAME(name)
+            BOOST_PARAMETER_NAME(index)
         **}**
 
         BOOST_PARAMETER_FUNCTION(
@@ -2217,7 +2323,8 @@ give users more control:
             (optional (name,*,"bob")(index,(int),1))
         )
         {
-            std::cout << name << ":" << index << std::endl;
+            std::cout << name << ":" << index;
+            std::cout << std::endl;
             return index;
         }
     }
