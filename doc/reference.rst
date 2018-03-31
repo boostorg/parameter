@@ -1372,6 +1372,9 @@ Declares a tag-type and keyword object.
 
 **then**
 
+:Requires: *qualifier* is either ``in``, ``out``, ``in_out``, ``consume``,
+``move_from``, or ``forward``.
+
 Expands to:
 
 .. parsed-literal::

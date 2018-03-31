@@ -25,9 +25,10 @@ id="the-boost-parameter-library-reference-documentation">
 <col class="docinfo-name" />
 <col class="docinfo-content" />
 <tbody valign="top">
-<tr><th class="docinfo-name">Authors:</th>
-<td>David Abrahams
-<br />Daniel Wallin</td></tr>
+<tr>
+<th class="docinfo-name">Authors:</th>
+<td>David Abrahams<br />Daniel Wallin</td>
+</tr>
 <tr>
 <th class="docinfo-name">Contact:</th>
 <td><a class="first reference external"
@@ -2089,9 +2090,10 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tbody valign="top">
 <tr class="field">
 <th class="field-name">Requires:</th>
-<td class="field-body"><p class="first"><tt class="docutils literal">cls</tt>
-is the name of this class.  <tt class="docutils literal">impl</tt> is the
-parenthesized implementation base class for <tt class="docutils literal"
+<td class="field-body">
+<p class="first"><tt class="docutils literal">cls</tt> is the name of this
+class.  <tt class="docutils literal">impl</tt> is the parenthesized
+implementation base class for <tt class="docutils literal"
 >cls</tt>.  <tt class="docutils literal">tag_namespace</tt> is the namespace
 in which the keywords used by the function resides.  <tt
 class="docutils literal">arguments</tt> is a list of
@@ -2246,13 +2248,29 @@ usage of this macro.</p>
 <h2><a class="toc-backref" href="#id55">6.7&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></h2>
 <p>Declares a tag-type and keyword object.</p>
-<p>Expands to:</p>
 <p><strong>If</strong> <em>name</em> is of the form:</p>
 <pre class="literal-block">
 (<em>qualifier</em>(<em>tag-name</em>), <em>namespace-name</em>) <em
 >object-name</em>
 </pre>
 <p><strong>then</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">
+<p class="first"><em>qualifier</em> is either <tt class="docutils literal"
+>in</tt>, <tt class="docutils literal">out</tt>, <tt class="docutils literal"
+>in_out</tt>, <tt class="docutils literal">consume</tt>, <tt
+class="docutils literal">move_from</tt>, or <tt class="docutils literal"
+>forward</tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Expands to:</p>
 <pre class="literal-block">
 namespace <em>namespace-name</em> {
 
@@ -2280,29 +2298,12 @@ namespace <em>namespace-name</em> {
 (<em>tag-name</em>, <em>namespace-name</em>) <em>object-name</em>
 </pre>
 <p><strong>then</strong></p>
+<p>Treats <em>name</em> as if it were of the form:</p>
 <pre class="literal-block">
-namespace <em>namespace-name</em> {
-
-    struct <em>tag-name</em>
-    {
-        static char const* keyword_name()
-        {
-            return ##<em>tag-name</em>;
-        }
-
-        typedef <em>unspecified</em> _;
-        typedef <em>unspecified</em> _1;
-        typedef boost::parameter::forward_reference qualifier;
-    };
-}
-
-::boost::parameter::keyword&lt;<em>tag-namespace</em>::<em
->tag-name</em>&gt; const&amp;
-    <em>object-name</em> = ::boost::parameter::keyword&lt;
-        <em>tag-namespace</em>::<em>tag-name</em>
-    &gt;::instance;
+(forward(<em>tag-name</em>), <em>namespace-name</em>) <em >object-name</em>
 </pre>
 <p><strong>Else</strong></p>
+<p>Expands to:</p>
 <pre class="literal-block">
 namespace tag {
 
