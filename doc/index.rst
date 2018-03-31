@@ -501,8 +501,8 @@ follows a simple pattern using the ``BOOST_PARAMETER_FUNCTION`` macro::
 
     BOOST_PARAMETER_NAME(graph)
     BOOST_PARAMETER_NAME(visitor)
-    BOOST_PARAMETER_NAME(root_vertex)
-    BOOST_PARAMETER_NAME(index_map)
+    BOOST_PARAMETER_NAME(in(root_vertex))
+    BOOST_PARAMETER_NAME(in(index_map))
     BOOST_PARAMETER_NAME(in_out(color_map))
 
     namespace boost {
@@ -610,9 +610,9 @@ parameter's default value:
 
     BOOST_PARAMETER_NAME(graph)
     BOOST_PARAMETER_NAME(visitor)
-    BOOST_PARAMETER_NAME(root_vertex)
-    BOOST_PARAMETER_NAME(index_map)
-    BOOST_PARAMETER_NAME(color_map)
+    BOOST_PARAMETER_NAME(in(root_vertex))
+    BOOST_PARAMETER_NAME(in(index_map))
+    BOOST_PARAMETER_NAME(in_out(color_map))
 
     BOOST_PARAMETER_FUNCTION((void), f, tag,
         (required (graph, \*))
@@ -662,6 +662,12 @@ names in ``consume(…)`` or ``move_from(…)``.
     BOOST_PARAMETER_NAME(**in(index_map)**)
     BOOST_PARAMETER_NAME(**in_out(color_map)**)
 
+In order to see what happens when parameters are bound to arguments that
+violate their category constraints, attempt to compile the |compose_cpp|_ test
+program with the ``LIBS_PARAMETER_TEST_COMPILE_FAILURE`` macro
+``#defined``.  You should encounter at least four compiler errors, each
+corresponding to a specific constraint violation.
+
 .. @example.prepend('''
     #include <boost/parameter.hpp>
 
@@ -695,6 +701,8 @@ names in ``consume(…)`` or ``move_from(…)``.
 .. @test('compile')
 
 .. _`parameters`: http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters
+.. |compose_cpp| replace:: compose.cpp
+.. _compose_cpp: ../../test/compose.cpp
 
 Positional Arguments
 --------------------
