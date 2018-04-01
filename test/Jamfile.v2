@@ -144,8 +144,6 @@ test-suite "parameter"
     [ compile ntp.cpp ]
     [ compile ntp.cpp
         :
-        :
-        :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
     ]
     [ compile unwrap_cv_reference.cpp ]
@@ -154,19 +152,13 @@ test-suite "parameter"
     [ compile-fail deduced_unmatched_arg.cpp ]
     [ compile-fail basics.cpp
         :
-        :
-        :
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
     ]
     [ compile-fail compose.cpp
         :
-        :
-        :
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
     ]
     [ compile-fail deduced.cpp
-        :
-        :
         :
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
     ]
