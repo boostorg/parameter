@@ -1413,7 +1413,16 @@ Treats *name* as if it were of the form:
 
     (forward(*tag-name*), *namespace-name*) *object-name*
 
-**Else**
+**Else If** *name* is of the form:
+
+.. parsed-literal::
+
+    *qualifier*\ (*tag-name*)
+
+**then**
+
+:Requires: *qualifier* is either ``in``, ``out``, ``in_out``, ``consume``,
+``move_from``, or ``forward``.
 
 Expands to:
 
@@ -1421,21 +1430,29 @@ Expands to:
 
     namespace tag {
 
-        struct *name*
+        struct *tag-name*
         {
             static char const* keyword_name()
             {
-                return ## *name*;
+                return ## *tag-name*;
             }
 
             typedef *unspecified* _;
             typedef *unspecified* _1;
-            typedef boost::parameter::forward_reference qualifier;
+            typedef boost::parameter::*qualifier* ## _reference qualifier;
         };
     }
 
-    ::boost::parameter::keyword<tag:: *name* > const& _ ## *name*
-        = ::boost::parameter::keyword<tag:: *name* >::instance;
+    ::boost::parameter::keyword<tag:: *tag-name* > const& _ ## *tag-name*
+        = ::boost::parameter::keyword<tag:: *tag-name* >::instance;
+
+**Else**
+
+Treats *name* as if it were of the form:
+
+.. parsed-literal::
+
+    forward(*tag-name*)
 
 ``BOOST_PARAMETER_TEMPLATE_KEYWORD(name)``
 ------------------------------------------

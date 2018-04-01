@@ -2302,27 +2302,52 @@ namespace <em>namespace-name</em> {
 <pre class="literal-block">
 (forward(<em>tag-name</em>), <em>namespace-name</em>) <em >object-name</em>
 </pre>
-<p><strong>Else</strong></p>
+<p><strong>Else If</strong> <em>name</em> is of the form:</p>
+<pre class="literal-block">
+<em>qualifier</em>(<em>tag-name</em>)
+</pre>
+<p><strong>then</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">
+<p class="first"><em>qualifier</em> is either <tt class="docutils literal"
+>in</tt>, <tt class="docutils literal">out</tt>, <tt class="docutils literal"
+>in_out</tt>, <tt class="docutils literal">consume</tt>, <tt
+class="docutils literal">move_from</tt>, or <tt class="docutils literal"
+>forward</tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
 <p>Expands to:</p>
 <pre class="literal-block">
 namespace tag {
 
-    struct <em>name</em>
+    struct <em>tag-name</em>
     {
         static char const* keyword_name()
         {
-            return ##<em>name</em>;
+            return ##<em>tag-name</em>;
         }
 
         typedef <em>unspecified</em> _;
         typedef <em>unspecified</em> _1;
-        typedef boost::parameter::forward_reference qualifier;
+        typedef boost::parameter::<em>qualifier</em> ## _reference qualifier;
     };
 }
 
-::boost::parameter::keyword&lt;tag::<em>name</em>&gt; const&amp; _ ## <em
->name</em>
-    = ::boost::parameter::keyword&lt;tag::<em>name</em>&gt;::instance;
+::boost::parameter::keyword&lt;tag::<em>tag-name</em>&gt; const&amp; _ ## <em
+>tag-name</em>
+    = ::boost::parameter::keyword&lt;tag::<em>tag-name</em>&gt;::instance;
+</pre>
+<p><strong>Else</strong></p>
+<p>Treats <em>name</em> as if it were of the form:</p>
+<pre class="literal-block">
+forward(<em>tag-name</em>)
 </pre>
 </div>
 <div class="section" id="boost-parameter-template-keyword-name">
