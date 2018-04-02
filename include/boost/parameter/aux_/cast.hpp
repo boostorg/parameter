@@ -27,7 +27,7 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    // Handles possible implicit casts. Used by preprocessor.hpp to
+    // Handles possible implicit casts.  Used by preprocessor.hpp to
     // normalize user input.
     //
     // cast<void*>::execute() is identity
@@ -36,12 +36,12 @@ namespace boost { namespace parameter { namespace aux {
     //
     // preprocessor.hpp uses this like this:
     //
-    //   #define X(value, predicate)
-    //      cast<void predicate>::execute(value)
+    //     #define X(value, predicate)
+    //         cast<void predicate>::execute(value)
     //
-    //   X(something, *)
-    //   X(something, *(predicate))
-    //   X(something, (int))
+    //     X(something, *)
+    //     X(something, *(predicate))
+    //     X(something, (int))
 
     template <class T, class Args>
     struct cast;

@@ -12,79 +12,82 @@
 
 namespace test {
 
-BOOST_PARAMETER_NAME(x)
-BOOST_PARAMETER_NAME(y)
-BOOST_PARAMETER_NAME(z)
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
 
-struct Xbase
-{
-    // We need the disable_if part for VC7.1/8.0.
-    template <class Args>
-    Xbase(
-        Args const& args
-      , typename boost::disable_if<
-            boost::is_base_and_derived<Xbase, Args>
-        >::type* = 0
-    )
-      : value(std::string(args[_x | "foo"]) + args[_y | "bar"])
-    {}
-
-    std::string value;
-};
-
-struct X : Xbase
-{
-    BOOST_PARAMETER_CONSTRUCTOR(X, (Xbase), tag,
-        (optional
-            (x, *)
-            (y, *)
-        )
-    )
-
-    BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((int), f, tag,
-        (required
-            (x, *)
-            (y, *)
-        )
-        (optional
-            (z, *)
-        )
-    )
+    struct Xbase
     {
-        return args[_x] + args[_y] + args[_z | 0];
-    }
+        // We need the disable_if part for VC7.1/8.0.
+        template <class Args>
+        Xbase(
+            Args const& args
+          , typename boost::disable_if<
+                boost::is_base_and_derived<Xbase, Args>
+            >::type* = 0
+        ) : value(std::string(args[_x | "foo"]) + args[_y | "bar"])
+        {
+        }
 
-    BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((std::string), g, tag,
-        (optional
-            (x, *)
-            (y, *)
+        std::string value;
+    };
+
+    struct X : Xbase
+    {
+        BOOST_PARAMETER_CONSTRUCTOR(X, (Xbase), tag,
+            (optional
+                (x, *)
+                (y, *)
+            )
         )
-    )
-    {
-        return std::string(args[_x | "foo"]) + args[_y | "bar"];
-    }
 
-    BOOST_PARAMETER_MEMBER_FUNCTION((X&), h, tag,
-        (optional (x, *, "") (y, *, ""))
-    )
-    {
-        return *this;
-    }
+        BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((int), f, tag,
+            (required
+                (x, *)
+                (y, *)
+            )
+            (optional
+                (z, *)
+            )
+        )
+        {
+            return args[_x] + args[_y] + args[_z | 0];
+        }
 
-    template <class A0>
-    X& operator()(A0 const& a0)
-    {
-        return *this;
-    }
-};
+        BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((std::string), g, tag,
+            (optional
+                (x, *)
+                (y, *)
+            )
+        )
+        {
+            return std::string(args[_x | "foo"]) + args[_y | "bar"];
+        }
 
+        BOOST_PARAMETER_MEMBER_FUNCTION((X&), h, tag,
+            (optional (x, *, "") (y, *, ""))
+        )
+        {
+            return *this;
+        }
+
+        template <class A0>
+        X& operator()(A0 const& a0)
+        {
+            return *this;
+        }
+    };
 } // namespace test
 
 struct f_fwd
 {
     template <class R, class T, class A0, class A1, class A2>
     R operator()(
-        boost::type<R>, T& self, A0 const& a0, A1 const& a1, A2 const& a2
+        boost::type<R>
+      , T& self
+      , A0 const& a0
+      , A1 const& a1
+      , A2 const& a2
     )
     {
         return self.f(a0, a1, a2);

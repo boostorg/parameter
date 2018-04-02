@@ -1,5 +1,6 @@
 
 #include <boost/parameter/keyword.hpp>
+
 namespace graphs {
 
     namespace tag { struct graph; } // keyword tag type
@@ -11,3 +12,4 @@ namespace graphs {
             = boost::parameter::keyword<tag::graph>::instance;
     }
 }
+
