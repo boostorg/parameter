@@ -3,11 +3,11 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
 
-BOOST_PARAMETER_NAME((_graph, graphs) graph)
-BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
-BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
-BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
-BOOST_PARAMETER_NAME((in_out(_color_map), graphs) color_map)
+BOOST_PARAMETER_NAME((graph, graphs) graph)
+BOOST_PARAMETER_NAME((visitor, graphs) visitor)
+BOOST_PARAMETER_NAME((root_vertex, graphs) root_vertex)
+BOOST_PARAMETER_NAME((index_map, graphs) index_map)
+BOOST_PARAMETER_NAME((in_out(color_map), graphs) color_map)
 
 using boost::mpl::_;
 
