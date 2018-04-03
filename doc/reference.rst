@@ -950,7 +950,7 @@ which the keywords used by the function resides.  ``arguments`` is a
 :Argument specifiers syntax:
 .. parsed-literal::
 
-    argument-specifiers ::= *specifier-group* {*specifier-group*\ }
+    argument-specifiers ::= *specifier-group0* {*specifier-group0*\ }
 
     specifier-group0 ::= *specifier-group1* |
         (

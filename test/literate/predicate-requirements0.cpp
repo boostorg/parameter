@@ -3,13 +3,11 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
 
-BOOST_PARAMETER_NAME((graph, graphs) graph)
-BOOST_PARAMETER_NAME((visitor, graphs) visitor)
-BOOST_PARAMETER_NAME((root_vertex, graphs) root_vertex)
-BOOST_PARAMETER_NAME((index_map, graphs) index_map)
-BOOST_PARAMETER_NAME((in_out(color_map), graphs) color_map)
-
-using boost::mpl::_;
+BOOST_PARAMETER_NAME((graph, graphs) _graph)
+BOOST_PARAMETER_NAME((visitor, graphs) _visitor)
+BOOST_PARAMETER_NAME((root_vertex, graphs) _root_vertex)
+BOOST_PARAMETER_NAME((index_map, graphs) _index_map)
+BOOST_PARAMETER_NAME((in_out(color_map), graphs) _color_map)
 
 // We first need to define a few metafunctions that we use in the
 // predicates below.
@@ -51,61 +49,74 @@ default_color_map(Size num_vertices, IndexMap const& index_map)
     return &colors[0];
 }
 
-template <class T>
 struct graph_predicate
-  : boost::mpl::and_<
-        boost::is_convertible<
-            typename traversal_category<T>::type
-          , boost::incidence_graph_tag
-        >
-      , boost::is_convertible<
-            typename traversal_category<T>::type
-          , boost::vertex_list_graph_tag
-        >
-    >
 {
+    template <class T>
+    struct apply
+      : boost::mpl::and_<
+            boost::is_convertible<
+                typename traversal_category<T>::type
+              , boost::incidence_graph_tag
+            >
+          , boost::is_convertible<
+                typename traversal_category<T>::type
+              , boost::vertex_list_graph_tag
+            >
+        >
+    {
+    };
 };
 
-template <class T, class G>
+template <class G>
 struct index_map_predicate
-  : boost::mpl::and_<
-        boost::is_integral<
-            typename value_type<T>::type
+{
+    template <class T>
+    struct apply
+      : boost::mpl::and_<
+            boost::is_integral<
+                typename value_type<T>::type
+            >
+          , boost::is_same<
+                typename key_type<T>::type
+              , typename vertex_descriptor<G>::type
+            >
         >
-      , boost::is_same<
+    {
+    };
+};
+
+template <class G>
+struct color_map_predicate
+{
+    template <class T>
+    struct apply
+      : boost::is_same<
             typename key_type<T>::type
           , typename vertex_descriptor<G>::type
         >
-    >
-{
+    {
+    };
 };
 
-template <class T, class G>
-struct color_map_predicate
-  : boost::is_same<
-        typename key_type<T>::type
-      , typename vertex_descriptor<G>::type
-    >
-{
-};
-
-BOOST_PARAMETER_FUNCTION(
-    (void), depth_first_search, graphs
-  , (required
-        (graph, *(graph_predicate<_>))
+BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
+    (required
+        (graph, *(graph_predicate))
     )
     (optional
-        (visitor, *, boost::dfs_visitor<>()) // not checkable
+        (visitor
+          , *  // not checkable
+          , boost::dfs_visitor<>()
+        )
         (root_vertex
-          , (typename vertex_descriptor<graphs::graph::_>::type)
+          , (typename vertex_descriptor<graph_type>::type)
           , *vertices(graph).first
         )
         (index_map
-          , *(index_map_predicate<_,graphs::graph::_>)
+          , *(index_map_predicate<graph_type>)
           , get(boost::vertex_index, graph)
         )
         (color_map
-          , *(color_map_predicate<_,graphs::graph::_>)
+          , *(color_map_predicate<graph_type>)
           , default_color_map(num_vertices(graph), index_map)
         )
     )

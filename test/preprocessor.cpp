@@ -267,7 +267,7 @@ namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), sfinae1, test::tag,
         (required
-           (name, *(boost::is_convertible<boost::mpl::_,std::string>))
+            (name, *(boost::is_convertible<boost::mpl::_,std::string>))
         )
     )
     {
