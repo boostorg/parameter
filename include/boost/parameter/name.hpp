@@ -229,7 +229,7 @@ namespace boost { namespace mpl {
     BOOST_PP_TUPLE_ELEM(2, 0, (BOOST_PARAMETER_COMPLEX_NAME_TUPLE1 name))
 /**/
 
-#define BOOST_PARAMETER_COMPLEX_NAME_TAG(name)                               \
+#define BOOST_PARAMETER_COMPLEX_NAME_OBJECT(name)                            \
     BOOST_PP_TUPLE_ELEM(2, 0, BOOST_PARAMETER_COMPLEX_NAME_TUPLE(name))
 /**/
 
@@ -242,13 +242,9 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_COMPLEX_NAME(name)                                   \
     BOOST_PARAMETER_BASIC_NAME(                                              \
         BOOST_PARAMETER_COMPLEX_NAME_NAMESPACE(name)                         \
-      , BOOST_PARAMETER_UNQUALIFIED_NAME(                                    \
-            BOOST_PARAMETER_COMPLEX_NAME_TAG(name)                           \
-        )                                                                    \
-      , BOOST_PARAMETER_GET_NAME_QUALIFIER(                                  \
-            BOOST_PARAMETER_COMPLEX_NAME_TAG(name)                           \
-        )                                                                    \
-      , BOOST_PP_TUPLE_EAT(2) name                                           \
+      , BOOST_PARAMETER_UNQUALIFIED_NAME(BOOST_PP_TUPLE_EAT(2) name)         \
+      , BOOST_PARAMETER_GET_NAME_QUALIFIER(BOOST_PP_TUPLE_EAT(2) name)       \
+      , BOOST_PARAMETER_COMPLEX_NAME_OBJECT(name)                            \
     )
 /**/
 

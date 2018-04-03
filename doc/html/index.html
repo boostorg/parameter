@@ -523,8 +523,14 @@ namespace graphs {
 see here is equivalent to:</p>
 <pre class="literal-block">
 namespace graphs {
+    namespace tag {
 
-    namespace tag { struct graph; } // keyword tag type
+        // keyword tag type
+        struct graph
+        {
+            typedef boost::parameter::forward_reference qualifier;
+        };
+    }
 
     namespace // unnamed
     {

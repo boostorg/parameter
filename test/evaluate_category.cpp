@@ -16,21 +16,21 @@
 
 namespace test {
 
-    BOOST_PARAMETER_NAME(in(lrc0))
-    BOOST_PARAMETER_NAME(in_out(lr0))
-    BOOST_PARAMETER_NAME(in(rrc0))
+    BOOST_PARAMETER_NAME((_lrc0, keywords) in(lrc0))
+    BOOST_PARAMETER_NAME((_lr0, keywords) in_out(lr0))
+    BOOST_PARAMETER_NAME((_rrc0, keywords) in(rrc0))
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-    BOOST_PARAMETER_NAME(consume(rr0))
+    BOOST_PARAMETER_NAME((_rr0, keywords) consume(rr0))
 #else
-    BOOST_PARAMETER_NAME(rr0)
+    BOOST_PARAMETER_NAME((_rr0, keywords) rr0)
 #endif
 
     struct f_parameters
       : boost::parameter::parameters<
-            boost::parameter::required<test::tag::lrc0>
-          , boost::parameter::required<test::tag::lr0>
-          , boost::parameter::required<test::tag::rrc0>
-          , boost::parameter::required<test::tag::rr0>
+            boost::parameter::required<test::keywords::lrc0>
+          , boost::parameter::required<test::keywords::lr0>
+          , boost::parameter::required<test::keywords::rrc0>
+          , boost::parameter::required<test::keywords::rr0>
         >
     {
     };
@@ -43,25 +43,25 @@ namespace test {
 
 namespace test {
 
-    BOOST_PARAMETER_NAME(in(lrc1))
-    BOOST_PARAMETER_NAME(out(lr1))
-    BOOST_PARAMETER_NAME(in(rrc1))
-    BOOST_PARAMETER_NAME(in(lrc2))
-    BOOST_PARAMETER_NAME(out(lr2))
-    BOOST_PARAMETER_NAME(rr2)
+    BOOST_PARAMETER_NAME((_lrc1, keywords) in(lrc1))
+    BOOST_PARAMETER_NAME((_lr1, keywords) out(lr1))
+    BOOST_PARAMETER_NAME((_rrc1, keywords) in(rrc1))
+    BOOST_PARAMETER_NAME((_lrc2, keywords) in(lrc2))
+    BOOST_PARAMETER_NAME((_lr2, keywords) out(lr2))
+    BOOST_PARAMETER_NAME((_rr2, keywords) rr2)
 
     struct g_parameters
       : boost::parameter::parameters<
-            boost::parameter::required<test::tag::lrc0>
-          , boost::parameter::required<test::tag::lr0>
-          , boost::parameter::required<test::tag::rrc0>
-          , boost::parameter::required<test::tag::rr0>
-          , boost::parameter::required<test::tag::lrc1>
-          , boost::parameter::required<test::tag::lr1>
-          , boost::parameter::required<test::tag::rrc1>
-          , boost::parameter::optional<test::tag::lrc2>
-          , boost::parameter::optional<test::tag::lr2>
-          , boost::parameter::optional<test::tag::rr2>
+            boost::parameter::required<test::keywords::lrc0>
+          , boost::parameter::required<test::keywords::lr0>
+          , boost::parameter::required<test::keywords::rrc0>
+          , boost::parameter::required<test::keywords::rr0>
+          , boost::parameter::required<test::keywords::lrc1>
+          , boost::parameter::required<test::keywords::lr1>
+          , boost::parameter::required<test::keywords::rrc1>
+          , boost::parameter::optional<test::keywords::lrc2>
+          , boost::parameter::optional<test::keywords::lr2>
+          , boost::parameter::optional<test::keywords::rr2>
         >
     {
     };
@@ -74,36 +74,36 @@ namespace test {
 
 namespace test {
 
-    BOOST_PARAMETER_NAME(in(lrc3))
-    BOOST_PARAMETER_NAME(in(lrc4))
-    BOOST_PARAMETER_NAME(in(lrc5))
-    BOOST_PARAMETER_NAME(in(lrc6))
-    BOOST_PARAMETER_NAME(in(lrc7))
-    BOOST_PARAMETER_NAME(in(rrc2))
-    BOOST_PARAMETER_NAME(in(rrc3))
-    BOOST_PARAMETER_NAME(in(rrc4))
-    BOOST_PARAMETER_NAME(in(rrc5))
-    BOOST_PARAMETER_NAME(in(rrc6))
-    BOOST_PARAMETER_NAME(in(rrc7))
+    BOOST_PARAMETER_NAME((_lrc3, keywords) in(lrc3))
+    BOOST_PARAMETER_NAME((_lrc4, keywords) in(lrc4))
+    BOOST_PARAMETER_NAME((_lrc5, keywords) in(lrc5))
+    BOOST_PARAMETER_NAME((_lrc6, keywords) in(lrc6))
+    BOOST_PARAMETER_NAME((_lrc7, keywords) in(lrc7))
+    BOOST_PARAMETER_NAME((_rrc2, keywords) in(rrc2))
+    BOOST_PARAMETER_NAME((_rrc3, keywords) in(rrc3))
+    BOOST_PARAMETER_NAME((_rrc4, keywords) in(rrc4))
+    BOOST_PARAMETER_NAME((_rrc5, keywords) in(rrc5))
+    BOOST_PARAMETER_NAME((_rrc6, keywords) in(rrc6))
+    BOOST_PARAMETER_NAME((_rrc7, keywords) in(rrc7))
 
     struct h_parameters
       : boost::parameter::parameters<
-            boost::parameter::required<test::tag::lrc0>
-          , boost::parameter::required<test::tag::rrc0>
-          , boost::parameter::required<test::tag::lrc1>
-          , boost::parameter::required<test::tag::rrc1>
-          , boost::parameter::required<test::tag::lrc2>
-          , boost::parameter::required<test::tag::rrc2>
-          , boost::parameter::required<test::tag::lrc3>
-          , boost::parameter::required<test::tag::rrc3>
-          , boost::parameter::optional<test::tag::lrc4>
-          , boost::parameter::optional<test::tag::rrc4>
-          , boost::parameter::optional<test::tag::lrc5>
-          , boost::parameter::optional<test::tag::rrc5>
-          , boost::parameter::optional<test::tag::lrc6>
-          , boost::parameter::optional<test::tag::rrc6>
-          , boost::parameter::optional<test::tag::lrc7>
-          , boost::parameter::optional<test::tag::rrc7>
+            boost::parameter::required<test::keywords::lrc0>
+          , boost::parameter::required<test::keywords::rrc0>
+          , boost::parameter::required<test::keywords::lrc1>
+          , boost::parameter::required<test::keywords::rrc1>
+          , boost::parameter::required<test::keywords::lrc2>
+          , boost::parameter::required<test::keywords::rrc2>
+          , boost::parameter::required<test::keywords::lrc3>
+          , boost::parameter::required<test::keywords::rrc3>
+          , boost::parameter::optional<test::keywords::lrc4>
+          , boost::parameter::optional<test::keywords::rrc4>
+          , boost::parameter::optional<test::keywords::lrc5>
+          , boost::parameter::optional<test::keywords::rrc5>
+          , boost::parameter::optional<test::keywords::lrc6>
+          , boost::parameter::optional<test::keywords::rrc6>
+          , boost::parameter::optional<test::keywords::lrc7>
+          , boost::parameter::optional<test::keywords::rrc7>
         >
     {
     };

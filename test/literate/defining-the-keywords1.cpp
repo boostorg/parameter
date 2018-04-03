@@ -2,8 +2,14 @@
 #include <boost/parameter/keyword.hpp>
 
 namespace graphs {
+    namespace tag {
 
-    namespace tag { struct graph; } // keyword tag type
+        // keyword tag type
+        struct graph
+        {
+            typedef boost::parameter::forward_reference qualifier;
+        };
+    }
 
     namespace // unnamed
     {

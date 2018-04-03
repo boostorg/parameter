@@ -2250,8 +2250,8 @@ class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></h2>
 <p>Declares a tag-type and keyword object.</p>
 <p><strong>If</strong> <em>name</em> is of the form:</p>
 <pre class="literal-block">
-(<em>qualifier</em>(<em>tag-name</em>), <em>namespace-name</em>) <em
->object-name</em>
+(<em>object-name</em>, <em>namespace-name</em>) <em>qualifier</em>(<em
+>tag-name</em>)
 </pre>
 <p><strong>then</strong></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2295,12 +2295,12 @@ namespace <em>namespace-name</em> {
 </pre>
 <p><strong>Else If</strong> <em>name</em> is of the form:</p>
 <pre class="literal-block">
-(<em>tag-name</em>, <em>namespace-name</em>) <em>object-name</em>
+(<em>object-name</em>, <em>namespace-name</em>) <em>tag-name</em>
 </pre>
 <p><strong>then</strong></p>
 <p>Treats <em>name</em> as if it were of the form:</p>
 <pre class="literal-block">
-(forward(<em>tag-name</em>), <em>namespace-name</em>) <em >object-name</em>
+(<em>object-name</em>, <em>namespace-name</em>) forward(<em>tag-name</em>)
 </pre>
 <p><strong>Else If</strong> <em>name</em> is of the form:</p>
 <pre class="literal-block">

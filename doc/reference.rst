@@ -1368,7 +1368,7 @@ Declares a tag-type and keyword object.
 
 .. parsed-literal::
 
-    (*qualifier*\ (*tag-name*), *namespace-name*) *object-name*
+    (*object-name*, *namespace-name*) *qualifier*\ (*tag-name*)
 
 **then**
 

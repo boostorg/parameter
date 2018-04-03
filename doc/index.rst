@@ -438,8 +438,14 @@ library provides a convenient macro for defining keyword objects::
 The declaration of the ``graph`` keyword you see here is equivalent to::
 
     namespace graphs {
+        namespace tag {
 
-        namespace tag { struct graph; } // keyword tag type
+            // keyword tag type
+            struct graph
+            {
+                typedef boost::parameter::forward_reference qualifier;
+            };
+        }
 
         namespace // unnamed
         {
@@ -1846,7 +1852,11 @@ Here is a usage example:
 
 .. parsed-literal::
 
-    BOOST_PARAMETER_NAME((**pass_foo**, **keywords**) **foo**)
+    BOOST_PARAMETER_NAME(
+        (
+            **pass_foo**, **keywords**
+        ) **foo**
+    )
 
     BOOST_PARAMETER_FUNCTION(
         (int), f, 

@@ -16,31 +16,29 @@
 
 namespace test {
 
-    BOOST_PARAMETER_NAME(in(lrc0))
-    BOOST_PARAMETER_NAME(in_out(lr0))
-    BOOST_PARAMETER_NAME(in(rrc0))
+    BOOST_PARAMETER_NAME((_lrc0, kw) in(lrc0))
+    BOOST_PARAMETER_NAME((_lr0, kw) in_out(lr0))
+    BOOST_PARAMETER_NAME((_rrc0, kw) in(rrc0))
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-    BOOST_PARAMETER_NAME(consume(rr0))
+    BOOST_PARAMETER_NAME((_rr0, kw) consume(rr0))
 #else
-    BOOST_PARAMETER_NAME(rr0)
+    BOOST_PARAMETER_NAME((_rr0, kw) rr0)
 #endif
-    BOOST_PARAMETER_NAME(in(lrc1))
-    BOOST_PARAMETER_NAME(out(lr1))
-    BOOST_PARAMETER_NAME(in(rrc1))
-    BOOST_PARAMETER_NAME(rr1)
+    BOOST_PARAMETER_NAME((_lrc1, kw) in(lrc1))
+    BOOST_PARAMETER_NAME((_lr1, kw) out(lr1))
+    BOOST_PARAMETER_NAME((_rrc1, kw) in(rrc1))
+    BOOST_PARAMETER_NAME((_rr1, kw) rr1)
 } // namespace test
 
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/type_traits/is_scalar.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/mpl/placeholders.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
 namespace test {
 
-    BOOST_PARAMETER_FUNCTION((bool), evaluate, tag,
+    BOOST_PARAMETER_FUNCTION((bool), evaluate, kw,
         (required
             (lrc0, *)
             (lr0, *)
@@ -118,6 +116,35 @@ namespace test {
 
         return true;
     }
+} // namespace test
+
+#include <boost/type_traits/remove_pointer.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/mpl/placeholders.hpp>
+
+namespace test {
+
+    struct rr0_pred
+    {
+        template <typename Arg, typename Args>
+        struct apply
+          : boost::is_convertible<
+                Arg
+              , std::basic_string<
+                    typename boost::remove_const<
+                        typename boost::remove_pointer<
+                            typename boost::parameter::value_type<
+                                Args
+                              , test::kw::lr0
+                              , char const*
+                            >::type
+                        >::type
+                    >::type
+                >
+            >
+        {
+        };
+    };
 
     struct B
     {
@@ -130,9 +157,8 @@ namespace test {
 #if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
         typedef boost::is_convertible<boost::mpl::_,float> lrc0_pred;
         typedef boost::is_convertible<boost::mpl::_,char const*> lr0_pred;
-        typedef boost::is_convertible<boost::mpl::_,std::string> rr0_pred;
 
-        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, tag,
+        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, kw,
             (deduced
                 (required
                     (lrc0, *(lrc0_pred))
@@ -141,13 +167,13 @@ namespace test {
                 )
             )
         )
-#else
-        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, tag,
+#else // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, kw,
             (deduced
                 (required
                     (lrc0, *(boost::is_convertible<boost::mpl::_,float>))
                     (lr0, *(boost::is_convertible<boost::mpl::_,char const*>))
-                    (rr0, *(boost::is_convertible<boost::mpl::_,std::string>))
+                    (rr0, *(rr0_pred))
                 )
             )
         )
@@ -192,7 +218,7 @@ namespace test {
 
     struct C : B
     {
-        BOOST_PARAMETER_CONSTRUCTOR(C, (B), tag,
+        BOOST_PARAMETER_CONSTRUCTOR(C, (B), kw,
             (required
                 (lrc0, *)
                 (lr0, *)
@@ -210,7 +236,7 @@ namespace test {
         typedef boost::is_convertible<boost::mpl::_,std::bitset<7> > bs6_pred;
         typedef boost::is_convertible<boost::mpl::_,std::bitset<8> > bs7_pred;
 
-        BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR((bool), tag,
+        BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR((bool), kw,
             (deduced
                 (required
                     (lrc0, *(bs0_pred))

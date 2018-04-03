@@ -149,7 +149,7 @@ namespace boost { namespace parameter { namespace aux {
         typedef typename boost::mpl::if_<
             typename boost::mpl::apply2<Predicate,T,Args>::type
           , char
-          , int
+          , long double
         >::type type;
     };
 }}} // namespace boost::parameter::aux
@@ -176,7 +176,7 @@ namespace boost { namespace parameter { namespace aux {
         static typename boost::mpl::if_<
             boost::is_convertible<T,P0>
           , char
-          , int
+          , long double
         >::type
         check_predicate(boost::type<T>, Args*, void*(*)(P0));
 
@@ -185,7 +185,7 @@ namespace boost { namespace parameter { namespace aux {
         {
             BOOST_STATIC_CONSTANT(
                 bool, result = (
-                    1 == sizeof(
+                    sizeof(char) == sizeof(
                         boost::parameter::aux::funptr_predicate<P>
                         ::check_predicate(
                             boost::type<T>()
