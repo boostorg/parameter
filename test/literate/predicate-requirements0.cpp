@@ -15,11 +15,11 @@ BOOST_PARAMETER_NAME((_graph, graphs) graph)
 BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
 BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
 BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
-BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
+BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
 
 struct graph_predicate
 {
-    template <class T>
+    template <class T, class Args>
     struct apply
       : boost::mpl::and_<
             boost::is_convertible<
@@ -35,17 +35,20 @@ struct graph_predicate
     };
 };
 
-struct vertex_descriptor_metaclass
+struct vertex_descriptor_predicate
 {
     template <class T, class Args>
     struct apply
+      : boost::is_convertible<
+            T
+          , typename boost::graph_traits<
+                typename boost::parameter::value_type<
+                    Args
+                  , graphs::graph
+                >::type
+            >::vertex_descriptor
+        >
     {
-        typedef typename boost::graph_traits<
-            typename boost::parameter::value_type<
-                Args
-              , graphs::graph
-            >::type
-        >::vertex_descriptor type;
     };
 };
 
@@ -90,7 +93,7 @@ struct color_map_predicate
 
 template <class Size, class IndexMap>
 boost::iterator_property_map<
-    boost::default_color_type*
+    std::vector<boost::default_color_type>::iterator
   , IndexMap
   , boost::default_color_type
   , boost::default_color_type&
@@ -98,7 +101,12 @@ boost::iterator_property_map<
 default_color_map(Size num_vertices, IndexMap const& index_map)
 {
     std::vector<boost::default_color_type> colors(num_vertices);
-    return &colors[0];
+    return boost::iterator_property_map<
+        std::vector<boost::default_color_type>::iterator
+      , IndexMap
+      , boost::default_color_type
+      , boost::default_color_type&
+    >(colors.begin(), index_map);
 }
 
 BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
@@ -107,11 +115,11 @@ BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
     )
     (optional
         (visitor
-          , *  // not checkable
+          , *  // not easily checkable
           , boost::dfs_visitor<>()
         )
         (root_vertex
-          , (vertex_descriptor_metaclass)
+          , *(vertex_descriptor_predicate)
           , *vertices(graph).first
         )
         (index_map
@@ -135,7 +143,7 @@ int main()
       , boost::directedS
     > G;
     enum {u, v, w, x, y, z, N};
-    typedef std::pair<int, int> E;
+    typedef std::pair<std::size_t,std::size_t> E;
     E edges[] = {
         E(u, v), E(u, x), E(x, v), E(y, x),
         E(v, y), E(w, y), E(w, z), E(z, z)
@@ -143,7 +151,7 @@ int main()
     G g(edges, edges + sizeof(edges) / sizeof(E), N);
 
     ::depth_first_search(g);
-    ::depth_first_search(g, _root_vertex = static_cast<int>(x));
+    ::depth_first_search(g, _root_vertex = static_cast<std::size_t>(x));
 
     return 0;
 }

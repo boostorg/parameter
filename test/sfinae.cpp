@@ -23,8 +23,8 @@
 
 namespace test {
 
-    BOOST_PARAMETER_NAME((in(name), keywords) name)
-    BOOST_PARAMETER_NAME((in(value), keywords) value)
+    BOOST_PARAMETER_NAME((name, keywords) in(name))
+    BOOST_PARAMETER_NAME((value, keywords) in(value))
 
     struct f_parameters
       : boost::parameter::parameters<

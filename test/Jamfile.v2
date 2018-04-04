@@ -182,6 +182,11 @@ test-suite "parameter"
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         : deduced_fail
     ]
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : preproc_eval_cat_fail
+    ]
     [ bpl-test python_test ]
     ;
 

@@ -36,6 +36,7 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <boost/parameter/aux_/tagged_argument_fwd.hpp>
 #include <boost/parameter/aux_/is_tagged_argument.hpp>
+#include <boost/parameter/aux_/default.hpp>
 #include <boost/parameter/aux_/unwrap_cv_reference.hpp>
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/parameter/aux_/arg_list.hpp>

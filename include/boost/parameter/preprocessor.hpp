@@ -1100,7 +1100,10 @@ namespace boost { namespace parameter { namespace aux {
         )
 /**/
 
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_LAST_Z(z, n, p) , p
+#include <boost/preprocessor/punctuation/comma.hpp>
+
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_LAST_Z(z, n, p)      \
+    BOOST_PP_COMMA() p
 /**/
 
 #include <boost/preprocessor/arithmetic/sub.hpp>
@@ -1267,7 +1270,7 @@ namespace boost { namespace parameter { namespace aux {
 // Also generates the front-end implementation function, which uses
 // BOOST_PARAMETER_FUNCTION_CAST to extract each argument from the argument
 // pack.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER(x, fwd_decl)                 \
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER(fwd_decl, x)                 \
     BOOST_PP_IF(fwd_decl, BOOST_PP_REPEAT_FROM_TO, BOOST_PP_TUPLE_EAT(4))(   \
         0                                                                    \
       , BOOST_PP_INC(                                                        \
@@ -1339,7 +1342,7 @@ namespace boost { namespace parameter { namespace aux {
     BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name);                                \
     BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, name, args, 0)          \
     BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER(                                 \
-        (name, BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args), 0, tag_ns), 1      \
+        1, (name, BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args), 0, tag_ns)      \
     )
 /**/
 
@@ -1359,7 +1362,7 @@ namespace boost { namespace parameter { namespace aux {
     BOOST_PARAMETER_FUNCTION_HEAD(r, impl, tag_ns, args)                     \
     BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, args, c)          \
     BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER(                                 \
-        (impl, BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args), c, tag_ns), 0      \
+        0, (impl, BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args), c, tag_ns)      \
     )
 /**/
 

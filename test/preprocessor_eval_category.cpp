@@ -120,7 +120,6 @@ namespace test {
 
 #include <boost/type_traits/remove_pointer.hpp>
 #include <boost/type_traits/is_convertible.hpp>
-#include <boost/mpl/placeholders.hpp>
 
 namespace test {
 
@@ -136,7 +135,9 @@ namespace test {
                             typename boost::parameter::value_type<
                                 Args
                               , test::kw::lr0
+#if !defined LIBS_PARAMETER_TEST_COMPILE_FAILURE
                               , char const*
+#endif
                             >::type
                         >::type
                     >::type
@@ -154,30 +155,15 @@ namespace test {
             test::evaluate(args[_lrc0], args[_lr0], args[_rrc0], args[_rr0]);
         }
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-        typedef boost::is_convertible<boost::mpl::_,float> lrc0_pred;
-        typedef boost::is_convertible<boost::mpl::_,char const*> lr0_pred;
-
         BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, kw,
             (deduced
                 (required
-                    (lrc0, *(lrc0_pred))
-                    (lr0, *(lr0_pred))
+                    (lrc0, (float))
+                    (lr0, (char const*))
                     (rr0, *(rr0_pred))
                 )
             )
         )
-#else // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, kw,
-            (deduced
-                (required
-                    (lrc0, *(boost::is_convertible<boost::mpl::_,float>))
-                    (lr0, *(boost::is_convertible<boost::mpl::_,char const*>))
-                    (rr0, *(rr0_pred))
-                )
-            )
-        )
-#endif // SunPro CC workarounds needed.
         {
             BOOST_TEST((
                 passed_by_lvalue_reference_to_const == A<
@@ -215,6 +201,11 @@ namespace test {
             return true;
         }
     };
+} // namespace test
+
+#include <boost/mpl/placeholders.hpp>
+
+namespace test {
 
     struct C : B
     {

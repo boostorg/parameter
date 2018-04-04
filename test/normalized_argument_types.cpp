@@ -89,7 +89,10 @@ int main()
 {
     test::f(1, 2);
     test::f(1., 2.f);
+#if !defined BOOST_MSVC
+    // Appveyor reports MSVC declaring suffix I illegal.
     test::f(1U, 2I);
+#endif
     test::g(0);
     test::h(0);
     return boost::report_errors();

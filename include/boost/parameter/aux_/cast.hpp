@@ -118,13 +118,14 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#include <boost/mpl/apply.hpp>
+
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #include <boost/type_traits/add_rvalue_reference.hpp>
 #else
 #include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #endif
-#include <boost/mpl/apply.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 

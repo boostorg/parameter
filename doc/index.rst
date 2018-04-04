@@ -877,18 +877,34 @@ We really don't want the compiler to consider the original version of
 ``depth_first_search`` because the ``root_vertex`` argument, ``"hello"``,
 doesn't meet the requirement__ that it match the ``graph`` parameter's vertex
 descriptor type.  Instead, this call should just invoke our new overload.  To
-take the original ``depth_first_search`` overload out of contention, we need
-to tell the library about this requirement by replacing the ``*`` element of
-the signature with the required type, in parentheses:
+
 
 __ `parameter table`_
 
 .. parsed-literal::
 
+    struct vertex_descriptor_metaclass
+    {
+        template <class T, class Args>
+        struct apply
+        {
+            typedef typename boost::graph_traits<
+                typename boost::parameter::value_type<
+                    Args
+                  , graphs::graph
+                >::type
+            >::vertex_descriptor type;
+        };
+    };
+
+Then, to take the original ``depth_first_search`` overload out of contention,
+we need to tell the library about this requirement by replacing the ``*``
+element of the signature with the required type, in parentheses:
+
+.. parsed-literal::
+
     (root_vertex
-      , **(
-            typename boost::graph_traits<graph_type>::vertex_descriptor
-        )**
+      , **(vertex_descriptor_metaclass)**
       , \*vertices(graph).first
     )
 
@@ -916,103 +932,140 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
 
 .. parsed-literal::
 
-    // We first need to define a few metafunction that we use in the
-    // predicates below.
-
-    template <class G>
-    struct traversal_category
+    **struct graph_predicate
     {
-        typedef typename boost::graph_traits<G>::traversal_category type;
+        template <class T, class Args>
+        struct apply
+          : boost::mpl::and_<
+                boost::is_convertible<
+                    typename boost::graph_traits<T>::traversal_category
+                  , boost::incidence_graph_tag
+                >
+              , boost::is_convertible<
+                    typename boost::graph_traits<T>::traversal_category
+                  , boost::vertex_list_graph_tag
+                >
+            >
+        {
+        };
     };
 
-    template <class G>
-    struct vertex_descriptor
+    struct vertex_descriptor_predicate
     {
-        typedef typename boost::graph_traits<G>::vertex_descriptor type;
+        template <class T, class Args>
+        struct apply
+          : boost::is_convertible<
+                T
+              , typename boost::graph_traits<
+                    typename boost::parameter::value_type<
+                        Args
+                      , graphs::graph
+                    >::type
+                >::vertex_descriptor
+            >
+        {
+        };
     };
 
-    template <class G>
-    struct value_type
+    struct index_map_predicate
     {
-        typedef typename boost::property_traits<G>::value_type type;
+        template <class T, class Args>
+        struct apply
+          : boost::mpl::and_<
+                boost::is_integral<
+                    typename boost::property_traits<T>::value_type
+                >
+              , boost::is_same<
+                    typename boost::property_traits<T>::key_type
+                  , typename boost::graph_traits<
+                        typename boost::parameter::value_type<
+                            Args
+                          , graphs::graph
+                        >::type
+                    >::vertex_descriptor
+                >
+            >
+        {
+        };
     };
 
-    template <class G>
-    struct key_type
+    struct color_map_predicate
     {
-        typedef typename boost::property_traits<G>::key_type type;
-    };
+        template <class T, class Args>
+        struct apply
+          : boost::is_same<
+                typename boost::property_traits<T>::key_type
+              , typename boost::graph_traits<
+                    typename boost::parameter::value_type<
+                        Args
+                      , graphs::graph
+                    >::type
+                >::vertex_descriptor
+            >
+        {
+        };
+    };**
 
     template <class Size, class IndexMap>
     boost::iterator_property_map<
-        boost::default_color_type\*, IndexMap
-      , boost::default_color_type, boost::default_color_type&
+        std::vector<boost::default_color_type>::iterator
+      , IndexMap
+      , boost::default_color_type
+      , boost::default_color_type&
     >
     default_color_map(Size num_vertices, IndexMap const& index_map)
     {
         std::vector<boost::default_color_type> colors(num_vertices);
-        return &colors[0];
+        return boost::iterator_property_map<
+            std::vector<boost::default_color_type>::iterator
+          , IndexMap
+          , boost::default_color_type
+          , boost::default_color_type&
+        >(colors.begin(), index_map);
     }
 
-    BOOST_PARAMETER_FUNCTION(
-        (void), depth_first_search, graphs
-
-      , (required 
-            (graph
-              , **\ \*(boost::mpl::and_<
-                    boost::is_convertible<
-                        traversal_category<_>
-                      , boost::incidence_graph_tag
-                    >
-                  , boost::is_convertible<
-                        traversal_category<_>
-                      , boost::vertex_list_graph_tag
-                    >
-                >)**
-            )
+    BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
+    (required
+        (graph, \*(**graph_predicate**))
+    )
+    (optional
+        (visitor
+          , \*  // not easily checkable
+          , boost::dfs_visitor<>()
         )
-
-        (optional
-            (visitor, \*, boost::dfs_visitor<>())  // not checkable
-
-            (root_vertex
-              , (vertex_descriptor<graphs::graph::_>)
-              , \*vertices(graph).first
-            )
-
-            (index_map
-              , **\ \*(boost::mpl::and_<
-                    boost::is_integral<value_type<_> >
-                  , boost::is_same<
-                        vertex_descriptor<graphs::graph::_>
-                      , key_type<_>
-                    >
-                >)**
-              , get(boost::vertex_index,graph)
-            )
-
-            (in_out(color_map)
-              , **\ \*(boost::is_same<
-                    vertex_descriptor<graphs::graph::_>
-                  , key_type<_>
-                >)**
-              , default_color_map(num_vertices(graph), index_map)
-            )
+        (root_vertex
+          , (**vertex_descriptor_predicate**)
+          , \*vertices(graph).first
         )
+        (index_map
+          , \*(**index_map_predicate**)
+          , get(boost::vertex_index, graph)
+        )
+        (color_map
+          , \*(**color_map_predicate**)
+          , default_color_map(num_vertices(graph), index_map)
+        )
+    )
     )
 
 .. @example.prepend('''
     #include <boost/parameter.hpp>
     #include <boost/graph/adjacency_list.hpp>
     #include <boost/graph/depth_first_search.hpp>
+    #include <boost/graph/graph_traits.hpp>
+    #include <boost/property_map/property_map.hpp>
+    #include <boost/mpl/and.hpp>
+    #include <boost/type_traits/is_convertible.hpp>
+    #include <boost/type_traits/is_integral.hpp>
+    #include <boost/type_traits/is_same.hpp>
+    #include <vector>
+    #include <utility>
 
-    BOOST_PARAMETER_NAME((_graph, graphs) graph) 
-    BOOST_PARAMETER_NAME((_visitor, graphs) visitor) 
-    BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex) 
-    BOOST_PARAMETER_NAME((_index_map, graphs) index_map) 
+    BOOST_PARAMETER_NAME((_graph, graphs) graph)
+    BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
+    BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
+    BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
     BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
-
-    using boost::mpl::_;
 ''')
 
 .. @example.append('''
@@ -1024,7 +1077,6 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
         typedef boost::adjacency_list<
             boost::vecS, boost::vecS, boost::directedS
         > G;
-
         enum {u, v, w, x, y, z, N};
         typedef std::pair<int, int> E;
         E edges[] = {
