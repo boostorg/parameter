@@ -6,17 +6,7 @@
 #ifndef BOOST_PARAMETER_CAST_060902_HPP
 #define BOOST_PARAMETER_CAST_060902_HPP
 
-namespace boost { namespace parameter { namespace aux {
-
-    struct use_default_tag
-    {
-        inline use_default_tag operator()() const
-        {
-            return *this;
-        }
-    };
-}}} // namespace boost::parameter::aux
-
+#include <boost/parameter/aux_/use_default_tag.hpp>
 #include <boost/parameter/config.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))

@@ -137,6 +137,21 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_consume(x) consume_reference
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_move_from(x) move_from_reference
 
+#if 1//defined BOOST_MSVC
+
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_GET(x) \
+    BOOST_PP_CAT(BOOST_PARAMETER_GET_NAME_QUALIFIER_, x)
+/**/
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER(x) \
+    BOOST_PP_IIF( \
+        BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
+      , BOOST_PARAMETER_GET_NAME_QUALIFIER_GET \
+      , forward_reference BOOST_PP_TUPLE_EAT(1) \
+    )(x)
+/**/
+
+#else
+
 // Expands to the qualifier of x, where x is either a keyword qualifier
 // or a keyword.
 //
@@ -155,6 +170,8 @@ namespace boost { namespace mpl {
     )(BOOST_PARAMETER_GET_NAME_QUALIFIER_, x)
 /**/
 
+#endif // BOOST_MSVC
+
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_out(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in_out(x) x
@@ -162,7 +179,7 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_consume(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_move_from(x) x
 
-#if defined BOOST_MSVC
+#if 1//defined BOOST_MSVC
 
 #define BOOST_PARAMETER_UNQUALIFIED_NAME_GET(x) \
     BOOST_PP_CAT(BOOST_PARAMETER_STRIP_NAME_QUALIFIER_, x)
