@@ -853,11 +853,13 @@ supplied, but we're not likely to see a depth first search that doesn't take a
 graph to operate on.  Suppose, instead, that we found a different depth first
 search algorithm that could work on graphs that don't model
 |IncidenceGraph|_?  If we just added a simple overload,
-it would be ambiguous::
+it would be ambiguous:
+
+.. parsed-literal::
 
     // new overload
-    BOOST_PARAMETER_FUNCTION(
-        (void), depth_first_search, (tag), (required (graph,*))( … )
+    BOOST_PARAMETER_FUNCTION((void), depth_first_search, (tag),
+        (required (graph,*))( … )
     )
     {
         // new algorithm implementation
@@ -870,45 +872,19 @@ it would be ambiguous::
 
 .. @ignore()
 
-Adding Type Requirements
-........................
+Predicate Requirements
+......................
 
 We really don't want the compiler to consider the original version of
 ``depth_first_search`` because the ``root_vertex`` argument, ``"hello"``,
 doesn't meet the requirement__ that it match the ``graph`` parameter's vertex
 descriptor type.  Instead, this call should just invoke our new overload.  To
 
-
 __ `parameter table`_
-
-.. parsed-literal::
-
-    struct vertex_descriptor_metaclass
-    {
-        template <class T, class Args>
-        struct apply
-        {
-            typedef typename boost::graph_traits<
-                typename boost::parameter::value_type<
-                    Args
-                  , graphs::graph
-                >::type
-            >::vertex_descriptor type;
-        };
-    };
 
 Then, to take the original ``depth_first_search`` overload out of contention,
 we need to tell the library about this requirement by replacing the ``*``
 element of the signature with the required type, in parentheses:
-
-.. parsed-literal::
-
-    (root_vertex
-      , **(vertex_descriptor_metaclass)**
-      , \*vertices(graph).first
-    )
-
-.. @ignore()
 
 Now the original ``depth_first_search`` will only be called when the
 ``root_vertex`` argument can be converted to the graph's vertex descriptor
@@ -918,9 +894,6 @@ overload.
 .. Note:: The *type* of the ``graph`` argument is available in the
 signature—and in the function body—as ``graph_type``.  In general, to access
 the type of any parameter *foo*, concatenate *foo* with ``_type``.
-
-Predicate Requirements
-......................
 
 The requirements on other arguments are a bit more interesting than those on
 ``root_vertex``; they can't be described in terms of simple type matching.
@@ -1112,22 +1085,77 @@ also have an easier transition to an upcoming C++ standard with
 
 __ `ConceptsTS`_
 
+More on Type Requirements
+.........................
+
+Encoding type requirements onto a function's parameters is essential for
+enabling the function to have deduced parameter interface.  Let's revisit the
+``new_window`` example for a moment:
+
+.. parsed-literal::
+
+    window\* w = new_window(
+        movable_=false
+      , "alert box"
+    );
+    window\* w = new_window(
+        "alert box"
+      , movable_=false
+    );
+
+.. @ignore()
+
+The goal this time is to be able to invoke the ``new_window`` function without
+specifying the keywords.  For each parameter that has a required type, we can
+enclose that type in parentheses, then replace the ``*`` element of the
+parameter signature:
+
+.. parsed-literal::
+
+    BOOST_PARAMETER_NAME((name_, keywords) name)
+    BOOST_PARAMETER_NAME((movable_, keywords) movable)
+
+    BOOST_PARAMETER_FUNCTION((window\*), new_window, keywords,
+        (deduced
+            (required
+                (name, *(char const\*)*)
+                (movable, *(bool)*)
+            )
+        )
+    )
+    {
+        // ...
+    }
+
+.. @ignore()
+
+The following statements will now work and are equivalent to each other as
+well as the previous statements:
+
+.. parsed-literal::
+
+    window\* w = new_window(false, "alert box");
+    window\* w = new_window("alert box", false);
+
+.. @ignore()
+
 Deduced Parameters
 ------------------
 
-To illustrate deduced parameter support we'll have to leave behind our example
-from the Graph library.  Instead, consider the example of the |def|_ function
-from Boost.Python_.  Its signature is roughly as follows::
+To further illustrate deduced parameter support, consider the example of the
+|def|_ function from Boost.Python_.  Its signature is roughly as follows:
+
+.. parsed-literal::
 
     template <
         class Function, Class KeywordExpression, class CallPolicies
     >
     void def(
         // Required parameters
-        char const* name, Function func
+        char const\* name, Function func
 
         // Optional, deduced parameters
-      , char const* docstring = ""
+      , char const\* docstring = ""
       , KeywordExpression keywords = no_keywords()
       , CallPolicies policies = default_call_policies()
     );

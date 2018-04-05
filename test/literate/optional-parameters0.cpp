@@ -17,8 +17,7 @@ BOOST_PARAMETER_NAME(root_vertex)
 BOOST_PARAMETER_NAME(index_map)
 BOOST_PARAMETER_NAME(in_out(color_map))
 
-BOOST_PARAMETER_FUNCTION(
-    (void), f, tag,
+BOOST_PARAMETER_FUNCTION((void), f, tag,
     (required (graph, *))
     (optional
         (visitor,     *, boost::dfs_visitor<>())

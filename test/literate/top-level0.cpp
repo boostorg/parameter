@@ -7,8 +7,8 @@ namespace test {
     BOOST_PARAMETER_NAME(width)
     BOOST_PARAMETER_NAME(titlebar)
 
-    BOOST_PARAMETER_FUNCTION(
-        (int), new_window, tag, (required (title,*)(width,*)(titlebar,*))
+    BOOST_PARAMETER_FUNCTION((int), new_window, tag,
+        (required (title,*)(width,*)(titlebar,*))
     )
     {
         return 0;

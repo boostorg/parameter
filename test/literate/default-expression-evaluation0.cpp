@@ -10,9 +10,8 @@ BOOST_PARAMETER_NAME(color_map)
 
 #include <boost/graph/depth_first_search.hpp> // for dfs_visitor
 
-BOOST_PARAMETER_FUNCTION(
-    (void), depth_first_search, tag
-  , (required
+BOOST_PARAMETER_FUNCTION((void), depth_first_search, tag,
+    (required
         (graph, *)
         (visitor, *)
         (root_vertex, *)

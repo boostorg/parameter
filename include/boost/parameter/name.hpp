@@ -162,6 +162,21 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_consume(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_move_from(x) x
 
+#if defined BOOST_MSVC
+
+#define BOOST_PARAMETER_UNQUALIFIED_NAME_GET(x) \
+    BOOST_PP_CAT(BOOST_PARAMETER_STRIP_NAME_QUALIFIER_, x)
+/**/
+#define BOOST_PARAMETER_UNQUALIFIED_NAME(x) \
+    BOOST_PP_IIF( \
+        BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
+      , BOOST_PARAMETER_UNQUALIFIED_NAME_GET \
+      , x BOOST_PP_TUPLE_EAT(1) \
+    )(x)
+/**/
+
+#else
+
 // Expands to the unqualified name of x, where x is either a keyword qualifier
 // or a keyword.
 //
@@ -179,6 +194,8 @@ namespace boost { namespace mpl {
       , x BOOST_PP_TUPLE_EAT(2) \
     )(BOOST_PARAMETER_STRIP_NAME_QUALIFIER_, x)
 /**/
+
+#endif // BOOST_MSVC
 
 #define BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(tag)                            \
     boost::parameter::value_type<                                            \

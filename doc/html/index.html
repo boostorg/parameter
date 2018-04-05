@@ -960,8 +960,8 @@ BOOST_PARAMETER_FUNCTION(
 depth_first_search(boost::adjacency_list&lt;&gt;(), 2, &quot;hello&quot;);
 </pre>
 <!-- @ignore() -->
-<div class="section" id="adding-type-requirements">
-<h5>2.1.5.6.1&nbsp;&nbsp;&nbsp;Adding Type Requirements</h5>
+<div class="section" id="predicate-requirements">
+
 <p>We really don't want the compiler to consider the original version of
 <tt class="docutils literal">depth_first_search</tt> because the
 <tt class="docutils literal">root_vertex</tt> argument,
@@ -1009,9 +1009,8 @@ signature—and in the function body—as
 of any parameter <em>foo</em>, write
 <em>foo</em><tt class="docutils literal">_type</tt>.</p>
 </div>
-</div>
-<div class="section" id="predicate-requirements">
-<h5>2.1.5.6.2&nbsp;&nbsp;&nbsp;Predicate Requirements</h5>
+
+<h5>2.1.5.6.1&nbsp;&nbsp;&nbsp;Predicate Requirements</h5>
 <p>The requirements on other arguments are a bit more interesting than
 those on <tt class="docutils literal">root_vertex</tt>; they can't be
 described in terms of simple type matching.  Instead, they must be described
@@ -1211,12 +1210,57 @@ standard with <a class="reference external"
 href="http://en.cppreference.com/w/cpp/language/constraints">language support
 for concepts</a>.</p>
 </div>
+<div class="section" id="adding-type-requirements">
+<h5>2.1.5.6.2&nbsp;&nbsp;&nbsp;More on Type Requirements</h5>
+<p>Encoding type requirements onto a function's parameters is essential for
+enabling the function to have deduced parameter interface.  Let's revisit the
+<tt class="docutils literal">new_window</tt> example for a moment:</p>
+<pre class="literal-block">
+window* w = new_window(
+    movable_=false
+  , "alert box"
+);
+window* w = new_window(
+    "alert box"
+  , movable_=false
+);
+</pre>
+<!-- @ignore() -->
+<p>The goal this time is to be able to invoke the <tt class="docutils literal"
+>new_window</tt> function without specifying the keywords.  For each parameter
+that has a required type, we can enclose that type in parentheses, then
+replace the <tt class="docutils literal">*</tt> element of the parameter
+signature:</p>
+<pre class="literal-block">
+BOOST_PARAMETER_NAME((name_, keywords) name)
+BOOST_PARAMETER_NAME((movable_, keywords) movable)
+
+BOOST_PARAMETER_FUNCTION((window*), new_window, keywords,
+    (deduced
+        (required
+            (name, <strong>(char const*)</strong>)
+            (movable, <strong>(bool)</strong>)
+        )
+    )
+)
+{
+    // ...
+}
+</pre>
+<!-- @ignore() -->
+<p>The following statements will now work and are equivalent to each other as
+well as the previous statements:</p>
+<pre class="literal-block">
+window* w = new_window(false, "alert box");
+window* w = new_window("alert box", false);
+</pre>
+<!-- @ignore() -->
+</div>
 </div>
 <div class="section" id="deduced-parameters">
 <h4>2.1.5.7&nbsp;&nbsp;&nbsp;Deduced Parameters</h4>
-<p>To illustrate deduced parameter support we'll have to leave behind our
-example from the Graph library.  Instead, consider the example of the
-<a class="reference external" href="../../../python/doc/v2/def.html"><tt
+<p>To further illustrate deduced parameter support, consider the example of
+the <a class="reference external" href="../../../python/doc/v2/def.html"><tt
 class="docutils literal">def</tt></a> function from <a
 class="reference external" href="../../../python/doc/index.html"
 >Boost.Python</a>.  Its signature is roughly as follows:</p>
