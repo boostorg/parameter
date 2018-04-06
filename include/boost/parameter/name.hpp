@@ -77,22 +77,22 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_in(x) in_reference
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_out(x) out_reference
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_in_out(x) in_out_reference
-#define BOOST_PARAMETER_GET_NAME_QUALIFIER_forward(x) forward_reference
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_consume(x) consume_reference
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_move_from(x) move_from_reference
+#define BOOST_PARAMETER_GET_NAME_QUALIFIER_forward(x) forward_reference
 
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_out(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in_out(x) x
-#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_forward(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_consume(x) x
 #define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_move_from(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_forward(x) x
 
 #include <boost/preprocessor/facilities/is_empty.hpp>
 #include <boost/preprocessor/cat.hpp>
 
-// Expands to 1 if x is either "out(k)", "in_out(k)", "forward(k)",
-// "consume(k)", or "move_from(k)"; expands to 0 otherwise.
+// Expands to 1 if x is either "in(k)", "out(k)", "in_out(k)", "consume(k)",
+// "move_from(k)", or "forward(k)"; expands to 0 otherwise.
 #define BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
     BOOST_PP_IS_EMPTY(BOOST_PP_CAT(BOOST_PARAMETER_NAME_EAT_, x))
 /**/
@@ -108,7 +108,7 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER(x) \
     BOOST_PP_IIF( \
         BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
-      , BOOST_PARAMETER_GET_NAME_QUALIFIER_GET \
+      , BOOST_PARAMETER_GET_NAME_QUALIFIER_GET(x) \
       , forward_reference BOOST_PP_TUPLE_EAT(1) \
     )(x)
 /**/
@@ -118,7 +118,7 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_UNQUALIFIED_NAME(x) \
     BOOST_PP_IIF( \
         BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
-      , BOOST_PARAMETER_UNQUALIFIED_NAME_GET \
+      , BOOST_PARAMETER_UNQUALIFIED_NAME_GET(x) \
       , x BOOST_PP_TUPLE_EAT(1) \
     )(x)
 /**/
