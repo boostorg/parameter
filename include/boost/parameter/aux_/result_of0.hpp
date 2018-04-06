@@ -6,7 +6,7 @@
 #ifndef BOOST_PARAMETER_AUX_RESULT_OF0_DWA2005511_HPP
 #define BOOST_PARAMETER_AUX_RESULT_OF0_DWA2005511_HPP
 
-# include <boost/utility/result_of.hpp>
+#include <boost/utility/result_of.hpp>
 
 // A metafunction returning the result of invoking a nullary function object
 // of the given type.
@@ -28,7 +28,7 @@ namespace boost { namespace parameter { namespace aux {
 
 }}} // namespace boost::parameter::aux
 
-# include <boost/parameter/aux_/use_default_tag.hpp>
+#include <boost/parameter/aux_/use_default_tag.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -37,7 +37,6 @@ namespace boost { namespace parameter { namespace aux {
     {
         typedef boost::parameter::aux::use_default_tag type;
     };
-
 }}} // namespace boost::parameter::aux
 
 #endif // BOOST_PARAMETER_AUX_RESULT_OF0_DWA2005511_HPP
