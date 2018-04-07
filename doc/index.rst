@@ -852,8 +852,7 @@ library already does this when the required ``graph`` parameter is not
 supplied, but we're not likely to see a depth first search that doesn't take a
 graph to operate on.  Suppose, instead, that we found a different depth first
 search algorithm that could work on graphs that don't model
-|IncidenceGraph|_?  If we just added a simple overload,
-it would be ambiguous:
+|IncidenceGraph|_?  If we just added a simple overload, it would be ambiguous:
 
 .. parsed-literal::
 
@@ -879,49 +878,12 @@ We really don't want the compiler to consider the original version of
 ``depth_first_search`` because the ``root_vertex`` argument, ``"hello"``,
 doesn't meet the requirement__ that it match the ``graph`` parameter's vertex
 descriptor type.  Instead, this call should just invoke our new overload.  To
+take the original ``depth_first_search`` overload out of contention, we first
+encode this requirement as follows:
 
 __ `parameter table`_
 
-Then, to take the original ``depth_first_search`` overload out of contention,
-we need to tell the library about this requirement by replacing the ``*``
-element of the signature with the required type, in parentheses:
-
-Now the original ``depth_first_search`` will only be called when the
-``root_vertex`` argument can be converted to the graph's vertex descriptor
-type, and our example that *was* ambiguous will smoothly call the new
-overload.
-
-.. Note:: The *type* of the ``graph`` argument is available in the
-signature—and in the function body—as ``graph_type``.  In general, to access
-the type of any parameter *foo*, concatenate *foo* with ``_type``.
-
-The requirements on other arguments are a bit more interesting than those on
-``root_vertex``; they can't be described in terms of simple type matching.
-Instead, they must be described in terms of `MPL Metafunctions`__.  There's
-no space to give a complete description of metafunctions or of graph library
-details here, but we'll show you the complete signature with maximal checking,
-just to give you a feel for how it's done.  Each predicate metafunction is
-enclosed in parentheses *and preceded by an asterix*, as follows:
-
 .. parsed-literal::
-
-    **struct graph_predicate
-    {
-        template <class T, class Args>
-        struct apply
-          : boost::mpl::and_<
-                boost::is_convertible<
-                    typename boost::graph_traits<T>::traversal_category
-                  , boost::incidence_graph_tag
-                >
-              , boost::is_convertible<
-                    typename boost::graph_traits<T>::traversal_category
-                  , boost::vertex_list_graph_tag
-                >
-            >
-        {
-        };
-    };
 
     struct vertex_descriptor_predicate
     {
@@ -935,6 +897,63 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
                       , graphs::graph
                     >::type
                 >::vertex_descriptor
+            >
+        {
+        };
+    };
+
+This encoding is an `MPL Binary Metafunction Class`__, a type with a nested
+``apply`` metafunction that takes in two template arguments.  For the first
+template argument, Boost.Parameter will pass in the type on which we will
+impose the requirement.  For the second template argument, Boost.Parameter
+will pass in the entire argument pack, making it possible to extract the
+type of each of the other ``depth_first_search`` parameters via the
+``value_type`` metafunction and the corresponding keyword tag type.  The
+result ``type`` of the ``apply`` metafunction will be equivalent to
+``boost::mpl::true_`` if ``T`` fulfills our requirement as imposed by the
+``boost::is_convertible`` statement; otherwise, the result will be
+equivalent to ``boost::mpl::false_``.
+
+__ ../../../mpl/doc/refmanual/metafunction-class.html
+
+At this point, we can append the name of our metafunction class, in
+parentheses, to the appropriate ``*`` element of the function signature.
+
+.. parsed-literal::
+
+    (root_vertex
+      , \*(**vertex_descriptor_predicate**)
+      , \*vertices(graph).first
+    )
+
+.. @ignore()
+
+Now the original ``depth_first_search`` will only be called when the
+``root_vertex`` argument can be converted to the graph's vertex descriptor
+type, and our example that *was* ambiguous will smoothly call the new
+overload.
+
+We can encode the requirements on other arguments using the same concept; only
+the implementation of the nested ``apply`` metafunction needs to be tweaked
+for each argument.  There's no space to give a complete description of graph
+library details here, but suffice it to show that the next few metafunction
+classes provide the necessary checks.
+
+.. parsed-literal::
+
+    struct graph_predicate
+    {
+        template <class T, class Args>
+        struct apply
+          : boost::mpl::and_<
+                boost::is_convertible<
+                    typename boost::graph_traits<T>::traversal_category
+                  , boost::incidence_graph_tag
+                >
+              , boost::is_convertible<
+                    typename boost::graph_traits<T>::traversal_category
+                  , boost::vertex_list_graph_tag
+                >
             >
         {
         };
@@ -977,7 +996,13 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
             >
         {
         };
-    };**
+    };
+
+Likewise, computing the default value for the ``color_map`` parameter is no
+trivial matter, so it's best to factor the computation out to a separate
+function template.
+
+.. parsed-literal::
 
     template <class Size, class IndexMap>
     boost::iterator_property_map<
@@ -996,6 +1021,11 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
           , boost::default_color_type&
         >(colors.begin(), index_map);
     }
+
+The signature encloses each predicate metafunction in parentheses *preceded
+by an asterix*, as follows:
+
+.. parsed-literal::
 
     BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
     (required
@@ -1066,22 +1096,11 @@ enclosed in parentheses *and preceded by an asterix*, as follows:
 
 .. @test('compile')
 
-Note the use of the nested `tag::_`. This is a shortcut for::
-
-    value_type<boost::mpl::_2,tag>
-
-.. @ignore()
-
-Intended to be used to access preceding arguments types in the predicates.
-
-__ ../../../mpl/doc/refmanual/metafunction.html
-
-We acknowledge that this signature is pretty hairy looking, and it usually
-isn't necessary to so completely encode the type requirements on arguments to
-generic functions.  However, doing so is worth the effort: your code will be
-more self-documenting and will often provide a better user experience.  You'll
-also have an easier transition to an upcoming C++ standard with
-`language support for constraints and concepts`__.
+It usually isn't necessary to so completely encode the type requirements on
+arguments to generic functions.  However, doing so is worth the effort: your
+code will be more self-documenting and will often provide a better user
+experience.  You'll also have an easier transition to an upcoming C++ standard
+with `language support for constraints and concepts`__.
 
 __ `ConceptsTS`_
 
@@ -1107,7 +1126,7 @@ enabling the function to have deduced parameter interface.  Let's revisit the
 
 The goal this time is to be able to invoke the ``new_window`` function without
 specifying the keywords.  For each parameter that has a required type, we can
-enclose that type in parentheses, then replace the ``*`` element of the
+enclose that type in parentheses, then *replace* the ``*`` element of the
 parameter signature:
 
 .. parsed-literal::

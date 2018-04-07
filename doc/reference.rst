@@ -971,23 +971,30 @@ which the keywords used by the function resides.  ``arguments`` is a
         )
 
     optional-specifier ::=
-        '**(**' *name* '**,**' *restriction* '**,**' *default-value* ')'
+        '**(**'
+            *argument-name* '**,**' *restriction* '**,**' *default-value*
+        ')'
 
     required-specifier ::=
-        '**(**' *name* '**,**' *restriction* ')'
+        '**(**' *argument-name* '**,**' *restriction* ')'
 
     restriction ::=
-        ( '**\***' '**(**' *lambda-expression* '**)**' ) |
+        ( '**\***' '**(**' *mfc* '**)**' ) |
         ( '**(**' *type-name* '**)**' ) |
         '**\***'
 
-``name`` is any valid C++ identifier. ``default-value`` is any valid C++
-expression.  ``type-name`` is the name of a type.  ``lambda-expression``
-is an `MPL lambda expression`_.
+``argument-name`` is any valid C++ identifier. ``default-value`` is any valid
+C++ expression; if necessary, user code can compute it in terms of
+``previous-name ## _type``, where ``previous-name`` is the ``argument-name``
+in a previous ``specifier-group0``.  ``mfc`` is an `MPL Binary Metafunction
+Class`_ whose first argument will be the type of the corresponding
+``argument-name`` and whose second argument will be the entire
+|ArgumentPack|_; however, user code *cannot* compute ``mfc`` in terms of
+``previous-name ## _type``.  ``type-name`` is the name of a type.
 
 .. _`Boost.Preprocessor`: ../../../preprocessor/doc/index.html
 .. _`sequence`: ../../../preprocessor/doc/data/sequences.html
-.. _`MPL lambda expression`: ../../../mpl/doc/refmanual/lambda-expression.html
+.. _`MPL Binary Metafunction Class`: ../../../mpl/doc/refmanual/metafunction-class.html
 
 :Generated names in enclosing scope:
 * ``boost_param_result_ ## __LINE__ ## name``

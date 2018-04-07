@@ -155,30 +155,15 @@ namespace test {
             test::evaluate(args[_lrc0], args[_lr0], args[_rrc0], args[_rr0]);
         }
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-        typedef boost::is_convertible<boost::mpl::_,float> lrc0_pred;
-        typedef boost::is_convertible<boost::mpl::_,char const*> lr0_pred;
-
         BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, kw,
             (deduced
                 (required
-                    (lrc0, *(lrc0_pred))
-                    (lr0, *(lr0_pred))
+                    (lrc0, (float))
+                    (lr0, (char const*))
                     (rr0, *(rr0_pred))
                 )
             )
         )
-#else
-        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate_deduced, kw,
-            (deduced
-                (required
-                    (lrc0, *(boost::is_convertible<boost::mpl::_,float>))
-                    (lr0, *(boost::is_convertible<boost::mpl::_,char const*>))
-                    (rr0, *(rr0_pred))
-                )
-            )
-        )
-#endif // SunPro CC workarounds needed.
         {
             BOOST_TEST((
                 passed_by_lvalue_reference_to_const == A<
@@ -417,6 +402,11 @@ int main()
 #endif
       , test::_lrc0 = "baz"
     );
+
+#if defined BOOST_CLANG && (1 == BOOST_CLANG) && defined __APPLE_CC__ && \
+    (__clang_major__ < 9)
+    // Travis Cl is having problems with the following statements.
+#else
     test::B::evaluate_deduced(
         test::lvalue_char_ptr()
       , test::rvalue_str()
@@ -427,6 +417,7 @@ int main()
       , test::lvalue_const_float()
       , test::lvalue_char_ptr()
     );
+#endif
 
     test::C cp0(
         "baz"

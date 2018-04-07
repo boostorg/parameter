@@ -961,7 +961,7 @@ depth_first_search(boost::adjacency_list&lt;&gt;(), 2, &quot;hello&quot;);
 </pre>
 <!-- @ignore() -->
 <div class="section" id="predicate-requirements">
-
+<h5>2.1.5.6.1&nbsp;&nbsp;&nbsp;Predicate Requirements</h5>
 <p>We really don't want the compiler to consider the original version of
 <tt class="docutils literal">depth_first_search</tt> because the
 <tt class="docutils literal">root_vertex</tt> argument,
@@ -969,77 +969,9 @@ depth_first_search(boost::adjacency_list&lt;&gt;(), 2, &quot;hello&quot;);
 <a class="reference internal" href="#parameter-table">requirement</a> that it
 match the <tt class="docutils literal">graph</tt> parameter's vertex
 descriptor type.  Instead, this call should just invoke our new overload.  To
-</p>
+take the original <tt class="docutils literal">depth_first_search</tt>
+overload out of contention, we first encode this requirement as follows:</p>
 <pre class="literal-block">
-struct vertex_descriptor_metaclass
-{
-    template &lt;class T, class Args&gt;
-    struct apply
-    {
-        typedef typename boost::graph_traits&lt;
-            typename boost::parameter::value_type&lt;
-                Args
-              , graphs::graph
-            &gt;::type
-        &gt;::vertex_descriptor type;
-    };
-};
-</pre>
-<p>Then, to take the original <tt class="docutils literal"
->depth_first_search</tt> overload out of contention, we need to tell the
-library about this requirement by replacing the <tt class="docutils literal"
->*</tt> element of the signature with the required type, in parentheses:</p>
-<pre class="literal-block">
-(root_vertex
-  , <strong>(vertex_descriptor_metaclass)</strong>
-  , *vertices(graph).first
-)
-</pre>
-<!-- @ignore() -->
-<p>Now the original <tt class="docutils literal">depth_first_search</tt> will
-only be called when the <tt class="docutils literal">root_vertex</tt> argument
-can be converted to the graph's vertex descriptor type, and our example that
-<em>was</em> ambiguous will smoothly call the new overload.</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <em>type</em> of the
-<tt class="docutils literal">graph</tt> argument is available in the
-signature—and in the function body—as
-<tt class="docutils literal">graph_type</tt>.  In general, to access the type
-of any parameter <em>foo</em>, write
-<em>foo</em><tt class="docutils literal">_type</tt>.</p>
-</div>
-
-<h5>2.1.5.6.1&nbsp;&nbsp;&nbsp;Predicate Requirements</h5>
-<p>The requirements on other arguments are a bit more interesting than
-those on <tt class="docutils literal">root_vertex</tt>; they can't be
-described in terms of simple type matching.  Instead, they must be described
-in terms of <a class="reference external"
-href="../../../mpl/doc/refmanual/metafunction.html">MPL
-Metafunctions</a>.  There's no space to give a complete description of
-metafunctions or of graph library details here, but we'll show you the
-complete signature with maximal checking, just to give you a feel for how it's
-done.  Each predicate metafunction is enclosed in parentheses <em>and preceded
-by an asterix</em>, as follows:</p>
-<pre class="literal-block">
-<strong>struct graph_predicate
-{
-    template &lt;class T, class Args&gt;
-    struct apply
-      : boost::mpl::and_&lt;
-            boost::is_convertible&lt;
-                typename boost::graph_traits&lt;T&gt;::traversal_category
-              , boost::incidence_graph_tag
-            &gt;
-          , boost::is_convertible&lt;
-                typename boost::graph_traits&lt;T&gt;::traversal_category
-              , boost::vertex_list_graph_tag
-            &gt;
-        &gt;
-    {
-    };
-};
-
 struct vertex_descriptor_predicate
 {
     template &lt;class T, class Args&gt;
@@ -1052,6 +984,61 @@ struct vertex_descriptor_predicate
                   , graphs::graph
                 &gt;::type
             &gt;::vertex_descriptor
+        &gt;
+    {
+    };
+};
+</pre>
+<p>This encoding is an <a class="reference external"
+href="../../../mpl/doc/refmanual/metafunction-class.html">MPL
+Binary Metafunction Class</a>, a type with a nested
+<tt class="docutils literal">apply</tt> metafunction that takes in two
+template arguments.  For the first template argument, Boost.Parameter will
+pass in the type on which we will impose the requirement.  For the second
+template argument, Boost.Parameter will pass in the entire argument pack,
+making it possible to extract the type of each of the other
+<tt class="docutils literal">depth_first_search</tt> parameters via the
+<tt class="docutils literal">value_type</tt> metafunction and the
+corresponding keyword tag type.  The result <tt class="docutils literal"
+>type</tt> of the <tt class="docutils literal">apply</tt> metafunction will be
+equivalent to <tt class="docutils literal">boost::mpl::true_</tt> if
+<tt class="docutils literal">T</tt> fulfills our requirement as imposed by the
+<tt class="docutils literal">boost::is_convertible</tt> statement; otherwise,
+the result will be equivalent to
+<tt class="docutils literal">boost::mpl::false_</tt>.</p>
+<p>At this point, we can append the name of our metafunction class, in
+parentheses, to the appropriate <tt class="docutils literal">*</tt> element of
+the function signature.</p>
+<pre class="literal-block">
+(root_vertex
+  , *<strong>(vertex_descriptor_predicate)</strong>
+  , *vertices(graph).first
+)
+</pre>
+<!-- @ignore() -->
+<p>Now the original <tt class="docutils literal">depth_first_search</tt> will
+only be called when the <tt class="docutils literal">root_vertex</tt> argument
+can be converted to the graph's vertex descriptor type, and our example that
+<em>was</em> ambiguous will smoothly call the new overload.</p>
+<p>We can encode the requirements on other arguments using the same concept;
+only the implementation of the nested <tt class="docutils literal">apply</tt>
+metafunction needs to be tweaked for each argument.  There's no space to give
+a complete description of graph library details here, but suffice it to show
+that the next few metafunction classes provide the necessary checks.</p>
+<pre class="literal-block">
+struct graph_predicate
+{
+    template &lt;class T, class Args&gt;
+    struct apply
+      : boost::mpl::and_&lt;
+            boost::is_convertible&lt;
+                typename boost::graph_traits&lt;T&gt;::traversal_category
+              , boost::incidence_graph_tag
+            &gt;
+          , boost::is_convertible&lt;
+                typename boost::graph_traits&lt;T&gt;::traversal_category
+              , boost::vertex_list_graph_tag
+            &gt;
         &gt;
     {
     };
@@ -1094,8 +1081,12 @@ struct color_map_predicate
         &gt;
     {
     };
-};</strong>
-
+};
+</pre>
+<p>Likewise, computing the default value for the <tt class="docutils literal"
+>color_map</tt> parameter is no trivial matter, so it's best to factor the
+computation out to a separate function template.</p>
+<pre class="literal-block">
 template &lt;class Size, class IndexMap&gt;
 boost::iterator_property_map&lt;
     std::vector&lt;boost::default_color_type&gt;::iterator
@@ -1113,7 +1104,10 @@ default_color_map(Size num_vertices, IndexMap const&amp; index_map)
       , boost::default_color_type&amp;
     &gt;(colors.begin(), index_map);
 }
-
+</pre>
+<p>The signature encloses each predicate metafunction in parentheses
+<em>preceded by an asterix</em>, as follows:</p>
+<pre class="literal-block">
 BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
     (required
         (graph, *(<strong>graph_predicate</strong>))
@@ -1156,20 +1150,6 @@ BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
 BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
 BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
 BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
-
-struct vertex_descriptor_metaclass
-{
-    template <class T, class Args>
-    struct apply
-    {
-        typedef typename boost::graph_traits<
-            typename boost::parameter::value_type<
-                Args
-              , graphs::graph
-            >::type
-        >::vertex_descriptor type;
-    };
-};
 ''') -->
 <!-- @example.append('''
 {
@@ -1193,16 +1173,7 @@ int main()
 }
 ''') -->
 <!-- @test('compile') -->
-<p>Note the use of the nested <cite>tag::_</cite>.  This is a shortcut
-for:</p>
-<pre class="literal-block">
-value_type&lt;boost::mpl::_2,tag&gt;
-</pre>
-<!-- @ignore() -->
-<p>Intended to be used to access preceding arguments types in the
-predicates.</p>
-<p>We acknowledge that this signature is pretty hairy looking.  Fortunately,
-it usually isn't necessary to so completely encode the type requirements on
+<p>It usually isn't necessary to so completely encode the type requirements on
 arguments to generic functions.  However, it is usally worth the effort to do
 so: your code will be more self-documenting and will often provide a better
 user experience.  You'll also have an easier transition to an upcoming C++
@@ -1229,8 +1200,8 @@ window* w = new_window(
 <p>The goal this time is to be able to invoke the <tt class="docutils literal"
 >new_window</tt> function without specifying the keywords.  For each parameter
 that has a required type, we can enclose that type in parentheses, then
-replace the <tt class="docutils literal">*</tt> element of the parameter
-signature:</p>
+<em>replace</em> the <tt class="docutils literal">*</tt> element of the
+parameter signature:</p>
 <pre class="literal-block">
 BOOST_PARAMETER_NAME((name_, keywords) name)
 BOOST_PARAMETER_NAME((movable_, keywords) movable)

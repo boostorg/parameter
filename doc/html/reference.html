@@ -1692,11 +1692,13 @@ specifier-group1 ::=
     )
 
 optional-specifier ::=
-    '<strong>(</strong>' <em>name</em> '<strong>,</strong>' <em
->restriction</em> '<strong>,</strong>' <em>default-value</em> ')'
+    '<strong>(</strong>'
+        <em>argument-name</em> '<strong>,</strong>' <em
+>restriction</em> '<strong>,</strong>' <em>default-value</em>
+    ')'
 
 required-specifier ::=
-    '<strong>(</strong>' <em>name</em> '<strong>,</strong>' <em
+    '<strong>(</strong>' <em>argument-name</em> '<strong>,</strong>' <em
 >restriction</em> ')'
 
 restriction ::=
@@ -1705,14 +1707,22 @@ restriction ::=
     ( '<strong>(</strong>' <em>typename</em> '<strong>)</strong>' ) |
     '<strong>*</strong>'
 </pre>
-<p class="last"><tt class="docutils literal">name</tt> is any valid C++
-identifier.  <tt class="docutils literal"><span class="pre"
->default-value</span></tt> is any valid C++ expression.  <tt
-class="docutils literal">typename</tt> is the name of a type.  <tt
-class="docutils literal"><span class="pre">lambda-expression</span></tt> is an
-<a class="reference external"
-href="../../../mpl/doc/refmanual/lambda-expression.html">MPL lambda
-expression</a>.</p>
+<p class="last"><tt class="docutils literal">argument-name</tt> is any valid
+C++ identifier.  <tt class="docutils literal">default-value</tt> is any valid
+C++ expression; if necessary, user code can compute it in terms of
+<tt class="docutils literal">previous-name ## _type</tt>, where
+<tt class="docutils literal">previous-name</tt> is the
+<tt class="docutils literal">argument-name</tt> in a previous
+<tt class="docutils literal">specifier-group0</tt>.  <tt
+class="docutils literal">mfc</tt> is an <a class="reference external"
+href="../../../mpl/doc/refmanual/metafunction-class.html">MPL Binary
+Metafunction Class</a> whose first argument will be the type of the
+corresponding <tt class="docutils literal">argument-name</tt> and whose second
+argument will be the entire <a class="reference internal" href="#argumentpack"
+><span class="concept">ArgumentPack</span></a>; however, user code
+<em>cannot</em> compute <tt class="docutils literal">mfc</tt> in terms of
+<tt class="docutils literal">previous-name ## _type</tt>.  <tt
+class="docutils literal">type-name</tt> is the name of a type.</p>
 </td>
 </tr>
 </tbody>

@@ -97,7 +97,7 @@ namespace boost { namespace mpl {
     BOOST_PP_IS_EMPTY(BOOST_PP_CAT(BOOST_PARAMETER_NAME_EAT_, x))
 /**/
 
-#include <boost/preprocessor/control/iif.hpp>
+#include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/tuple/eat.hpp>
 
 #if defined BOOST_MSVC
@@ -106,7 +106,7 @@ namespace boost { namespace mpl {
     BOOST_PP_CAT(BOOST_PARAMETER_GET_NAME_QUALIFIER_, x)
 /**/
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER(x) \
-    BOOST_PP_IIF( \
+    BOOST_PP_IF( \
         BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
       , BOOST_PARAMETER_GET_NAME_QUALIFIER_GET(x) \
       , forward_reference \
@@ -116,7 +116,7 @@ namespace boost { namespace mpl {
     BOOST_PP_CAT(BOOST_PARAMETER_STRIP_NAME_QUALIFIER_, x)
 /**/
 #define BOOST_PARAMETER_UNQUALIFIED_NAME(x) \
-    BOOST_PP_IIF( \
+    BOOST_PP_IF( \
         BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
       , BOOST_PARAMETER_UNQUALIFIED_NAME_GET \
       , x BOOST_PP_TUPLE_EAT(1) \
@@ -136,7 +136,7 @@ namespace boost { namespace mpl {
 //   consume(k) => consume_reference
 //   move_from(k) => move_from_reference
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER(x) \
-    BOOST_PP_IIF( \
+    BOOST_PP_IF( \
         BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
       , BOOST_PP_CAT \
       , forward_reference BOOST_PP_TUPLE_EAT(2) \
@@ -154,7 +154,7 @@ namespace boost { namespace mpl {
 //   consume(k) => k
 //   move_from(k) => k
 #define BOOST_PARAMETER_UNQUALIFIED_NAME(x) \
-    BOOST_PP_IIF( \
+    BOOST_PP_IF( \
         BOOST_PARAMETER_IS_NAME_QUALIFIER(x) \
       , BOOST_PP_CAT \
       , x BOOST_PP_TUPLE_EAT(2) \
@@ -243,7 +243,7 @@ namespace boost { namespace mpl {
 #include <boost/parameter/aux_/preprocessor/is_binary.hpp>
 
 #define BOOST_PARAMETER_NAME(name)                                           \
-    BOOST_PP_IIF(                                                            \
+    BOOST_PP_IF(                                                            \
         BOOST_PARAMETER_IS_BINARY(name)                                      \
       , BOOST_PARAMETER_COMPLEX_NAME                                         \
       , BOOST_PARAMETER_SIMPLE_NAME                                          \
