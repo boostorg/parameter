@@ -89,7 +89,9 @@ int main()
 {
     test::f(1, 2);
     test::f(1., 2.f);
-#if !defined BOOST_MSVC
+#if defined BOOST_CLANG && (1 == BOOST_CLANG) && (__clang_major__ < 6)
+    // Travis Cl on Linux reports substitution errors involving suffix I.
+#elif !defined BOOST_MSVC
     // Appveyor reports MSVC declaring suffix I illegal.
     test::f(1U, 2I);
 #endif

@@ -1093,16 +1093,17 @@ boost::iterator_property_map&lt;
   , IndexMap
   , boost::default_color_type
   , boost::default_color_type&amp;
-&gt;
+&gt;&amp;
 default_color_map(Size num_vertices, IndexMap const&amp; index_map)
 {
-    std::vector&lt;boost::default_color_type&gt; colors(num_vertices);
-    return boost::iterator_property_map&lt;
+    static std::vector&lt;boost::default_color_type&gt; colors(num_vertices);
+    static boost::iterator_property_map&lt;
         std::vector&lt;boost::default_color_type&gt;::iterator
       , IndexMap
       , boost::default_color_type
       , boost::default_color_type&amp;
-    &gt;(colors.begin(), index_map);
+    &gt; m(colors.begin(), index_map);
+    return m;
 }
 </pre>
 <p>The signature encloses each predicate metafunction in parentheses

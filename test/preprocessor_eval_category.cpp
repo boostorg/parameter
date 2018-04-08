@@ -5,6 +5,11 @@
 
 #include <boost/parameter.hpp>
 
+#if defined BOOST_CLANG && (1 == BOOST_CLANG) && (__clang_major__ < 9) && \
+    defined LIBS_PARAMETER_TEST_COMPILE_FAILURE
+#error Marking as expected.
+#endif
+
 #if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #if BOOST_PARAMETER_MAX_ARITY < 8
 #error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
@@ -146,11 +151,27 @@ namespace test {
         {
         };
     };
+} // namespace test
+
+#if !defined BOOST_NO_SFINAE
+#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/type_traits/is_base_and_derived.hpp>
+#include <boost/core/enable_if.hpp>
+#endif
+
+namespace test {
 
     struct B
     {
         template <typename Args>
-        explicit B(Args const& args)
+        explicit B(
+            Args const& args
+#if !defined BOOST_NO_SFINAE
+          , typename boost::disable_if<
+                boost::is_base_and_derived<B,Args>
+            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif
+        )
         {
             test::evaluate(args[_lrc0], args[_lr0], args[_rrc0], args[_rr0]);
         }
@@ -403,9 +424,9 @@ int main()
       , test::_lrc0 = "baz"
     );
 
-#if defined BOOST_CLANG && (1 == BOOST_CLANG) && defined __APPLE_CC__ && \
-    (__clang_major__ < 9)
-    // Travis Cl is having problems with the following statements.
+#if defined BOOST_CLANG && (1 == BOOST_CLANG) && (__clang_major__ < 9)
+    // Travis Cl reports the following function calls binding their arguments
+    // to const references.
 #else
     test::B::evaluate_deduced(
         test::lvalue_char_ptr()

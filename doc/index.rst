@@ -1010,16 +1010,17 @@ function template.
       , IndexMap
       , boost::default_color_type
       , boost::default_color_type&
-    >
+    >&
     default_color_map(Size num_vertices, IndexMap const& index_map)
     {
-        std::vector<boost::default_color_type> colors(num_vertices);
-        return boost::iterator_property_map<
+        static std::vector<boost::default_color_type> colors(num_vertices);
+        static boost::iterator_property_map<
             std::vector<boost::default_color_type>::iterator
           , IndexMap
           , boost::default_color_type
           , boost::default_color_type&
-        >(colors.begin(), index_map);
+        > m(colors.begin(), index_map);
+        return m;
     }
 
 The signature encloses each predicate metafunction in parentheses *preceded

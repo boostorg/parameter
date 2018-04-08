@@ -10,11 +10,14 @@
 #include <boost/parameter/aux_/tag.hpp>
 #include <boost/parameter/aux_/default.hpp>
 #include <boost/parameter/config.hpp>
+
+#if !defined BOOST_NO_SFINAE
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/or.hpp>
 #include <boost/core/enable_if.hpp>
+#endif
 
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #include <boost/move/utility_core.hpp>
@@ -25,22 +28,25 @@ namespace boost { namespace parameter {
     // Instances of unique specializations of keyword<...> serve to
     // associate arguments with parameter names.  For example:
     //
-    //    struct rate_;             // parameter names
-    //    struct skew_;
+    //     struct rate_;             // parameter names
+    //     struct skew_;
     //
-    //    namespace
-    //    {
-    //        keyword<rate_> rate;  // keywords
-    //        keyword<skew_> skew;
-    //    }
+    //     namespace
+    //     {
+    //         keyword<rate_> rate;  // keywords
+    //         keyword<skew_> skew;
+    //     }
     //
-    //    ...
+    //     ...
     //
-    //    f(rate = 1, skew = 2.4);
+    //     f(rate = 1, skew = 2.4);
     template <class Tag>
     struct keyword
     {
         template <class T>
+#if defined BOOST_NO_SFINAE
+        inline typename aux::tag<Tag,T&>::type
+#else
         inline typename boost::lazy_enable_if<
             boost::mpl::or_<
                 boost::is_same<
@@ -54,6 +60,7 @@ namespace boost { namespace parameter {
             >
           , aux::tag<Tag,T&>
         >::type BOOST_CONSTEXPR
+#endif
         operator=(T& x) const
         {
             typedef typename aux::tag<Tag,T&>::type result;
@@ -61,6 +68,9 @@ namespace boost { namespace parameter {
         }
 
         template <class Default>
+#if defined BOOST_NO_SFINAE
+        inline aux::default_<Tag,Default>
+#else
         inline typename boost::enable_if<
             boost::mpl::or_<
                 boost::is_same<
@@ -74,6 +84,7 @@ namespace boost { namespace parameter {
             >
           , aux::default_<Tag,Default>
         >::type
+#endif
         operator|(Default& d) const
         {
             return aux::default_<Tag,Default>(d);
@@ -86,6 +97,9 @@ namespace boost { namespace parameter {
         }
 
         template <class T>
+#if defined BOOST_NO_SFINAE
+        inline typename aux::tag<Tag,T const&>::type
+#else
         inline typename boost::lazy_enable_if<
             boost::mpl::or_<
                 boost::is_same<
@@ -99,6 +113,7 @@ namespace boost { namespace parameter {
             >
           , aux::tag<Tag,T const&>
         >::type BOOST_CONSTEXPR
+#endif
         operator=(T const& x) const
         {
             typedef typename aux::tag<Tag,T const&>::type result;
@@ -106,6 +121,9 @@ namespace boost { namespace parameter {
         }
 
         template <class Default>
+#if defined BOOST_NO_SFINAE
+        inline aux::default_<Tag,Default const>
+#else
         inline typename boost::enable_if<
             boost::mpl::or_<
                 boost::is_same<
@@ -119,6 +137,7 @@ namespace boost { namespace parameter {
             >
           , aux::default_<Tag,Default const>
         >::type
+#endif
         operator|(Default const& d) const
         {
             return aux::default_<Tag,Default const>(d);

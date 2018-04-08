@@ -7,8 +7,14 @@
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/parameter/python.hpp>
-#include <boost/core/enable_if.hpp>
+#include <boost/config.hpp>
 #include <cmath>
+
+#if !defined BOOST_NO_SFINAE
+#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/type_traits/is_base_and_derived.hpp>
+#include <boost/core/enable_if.hpp>
+#endif
 
 namespace test {
 
@@ -18,30 +24,34 @@ namespace test {
 
     struct Xbase
     {
-        // We need the disable_if part for VC7.1/8.0.
         template <class Args>
         Xbase(
             Args const& args
+#if !defined BOOST_NO_SFINAE
+            // We need the disable_if part for VC7.1/8.0.
           , typename boost::disable_if<
                 boost::is_base_and_derived<Xbase, Args>
-            >::type* = 0
-        ) : value(std::string(args[_x | "foo"]) + args[_y | "bar"])
+            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif
+        ) : value(
+                std::string(args[test::_x | "foo"]) + args[test::_y | "bar"]
+            )
         {
         }
 
         std::string value;
     };
 
-    struct X : Xbase
+    struct X : test::Xbase
     {
-        BOOST_PARAMETER_CONSTRUCTOR(X, (Xbase), tag,
+        BOOST_PARAMETER_CONSTRUCTOR(X, (test::Xbase), test::tag,
             (optional
                 (x, *)
                 (y, *)
             )
         )
 
-        BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((int), f, tag,
+        BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((int), f, test::tag,
             (required
                 (x, *)
                 (y, *)
@@ -51,20 +61,22 @@ namespace test {
             )
         )
         {
-            return args[_x] + args[_y] + args[_z | 0];
+            return args[test::_x] + args[test::_y] + args[test::_z | 0];
         }
 
-        BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((std::string), g, tag,
+        BOOST_PARAMETER_BASIC_MEMBER_FUNCTION((std::string), g, test::tag,
             (optional
                 (x, *)
                 (y, *)
             )
         )
         {
-            return std::string(args[_x | "foo"]) + args[_y | "bar"];
+            return std::string(
+                args[test::_x | "foo"]
+            ) + args[test::_y | "bar"];
         }
 
-        BOOST_PARAMETER_MEMBER_FUNCTION((X&), h, tag,
+        BOOST_PARAMETER_MEMBER_FUNCTION((X&), h, test::tag,
             (optional (x, *, "") (y, *, ""))
         )
         {

@@ -1029,7 +1029,9 @@ Approximate expansion:
     typedef boost_param_params\_ ## __LINE__ ## **name** 
         boost_param_parameters\_ ## __LINE__ ## **name**;
 
-    *… forward declaration of front-end implementation …*
+    template <class Args>
+    typename boost_param_result\_ ## __LINE__ ## **name**\ <Args>::type
+    boost_param_impl ## **name**\ (Args const&);
 
     template <class A0, …, class A ## **n**>
     **result** **name**\ (
@@ -1039,7 +1041,13 @@ Approximate expansion:
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to front-end implementation …*
+        return boost_param_impl ## **name**\ (
+            boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
+                boost::forward<A0>(a0)
+              , …
+              , boost::forward<A ## **n**>(a ## **n**)
+            )
+        );
     }
 
     :vellipsis:`⋮`
@@ -1052,23 +1060,121 @@ Approximate expansion:
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to front-end implementation …*
+        return boost_param_impl ## **name**\ (
+            boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
+                boost::forward<A0>(a0)
+              , …
+              , boost::forward<A ## **m**>(a ## **m**)
+            )
+        );
     }
-
-    *… forward declaration of dispatch functions …*
-    *… front-end implementation forwards to dispatch functions …*
 
     template <
         class ResultType
+      , class Args
       , class *argument name* ## **0** ## _type
-        :vellipsis:`⋮`
+      , …
+      , class *argument name* ## **n** ## _type
+    >
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+        (ResultType(\ *)())
+      , Args const& args
+      , *argument name* ## **0** ## _type&& *argument name* ## **0**
+      , …
+      , *argument name* ## **n** ## _type&& *argument name* ## **m**
+    );
+
+    :vellipsis:`⋮`
+
+    template <
+        class ResultType
+      , class Args
+      , class *argument name* ## **0** ## _type
+      , …
       , class *argument name* ## **m** ## _type
     >
     ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
         (ResultType(\ *)())
-      , *argument name* ## **0** ## _type&& *argument name*\ **0**
-        :vellipsis:`⋮`
-      , *argument name* ## **m** ## _type&& *argument name*\ **m**
+      , Args const& args
+      , *argument name* ## **0** ## _type&& *argument name* ## **0**
+      , …
+      , *argument name* ## **m** ## _type&& *argument name* ## **m**
+    );
+
+    template <class Args>
+    typename boost_param_result\_ ## __LINE__ ## **name**\ <Args>::type
+    boost_param_impl ## **name**\ (Args const& args)
+    {
+        return boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+            static_cast<ResultType(\ *)()>(std::nullptr)
+          , args
+          , boost::forward<
+                typename boost::parameter::value_type<
+                    Args
+                  , *keyword tag type of required parameter* ## **0**
+                >::type
+            >(args[ *keyword object of required parameter* ## **0**])
+          , …
+          , boost::forward<
+                typename boost::parameter::value_type<
+                    Args
+                  , *keyword tag type of required parameter* ## **n**
+                >::type
+            >(args[ *keyword object of required parameter* ## **n**])
+        );
+    }
+
+    template <
+        class ResultType
+      , class Args
+      , class *argument name* ## **0** ## _type
+      , …
+      , class *argument name* ## **n** ## _type
+    >
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+        (ResultType(\ *)())
+      , Args const& args
+      , *argument name* ## **0** ## _type&& *argument name* ## **0**
+      , …
+      , *argument name* ## **n** ## _type&& *argument name* ## **n**
+    )
+    {
+        return boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+            static_cast<ResultType(\ *)()>(std::nullptr)
+          , (args, *keyword object of optional parameter* ## **n + 1** =
+                *default value of optional parameter* ## **n + 1**
+            )
+          , boost::forward<*argument name* ## **0** ## _type>(
+                *argument name* ## **0**
+            )
+          , …
+          , boost::forward<*argument name* ## **n** ## _type>(
+                *argument name* ## **n**
+            )
+          , boost::forward<
+                typename boost::parameter::value_type<
+                    Args
+                  , *keyword tag type of optional parameter* ## **n + 1**
+                >::type
+            >(*default value of optional parameter* ## **n + 1**)
+        );
+    }
+
+    :vellipsis:`⋮`
+
+    template <
+        class ResultType
+      , class Args
+      , class *argument name* ## **0** ## _type
+      , …
+      , class *argument name* ## **m** ## _type
+    >
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+        (ResultType(\ *)())
+      , Args const& args
+      , *argument name* ## **0** ## _type&& *argument name* ## **0**
+      , …
+      , *argument name* ## **m** ## _type&& *argument name* ## **m**
     )
 
 **If** |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``,
@@ -1092,7 +1198,9 @@ Approximate expansion:
     typedef boost_param_params\_ ## __LINE__ ## **name** 
         boost_param_parameters\_ ## __LINE__ ## **name**;
 
-    *… forward declaration of front-end implementation …*
+    template <class Args>
+    typename boost_param_result\_ ## __LINE__ ## **name**\ <Args>::type
+    boost_param_impl ## **name**\ (Args const&);
 
     template <class A0, …, class A ## **n**>
     **result** **name**\ (
@@ -1102,7 +1210,11 @@ Approximate expansion:
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to front-end implementation …*
+        return boost_param_impl ## **name**\ (
+            boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
+                a0, …, a ## **n**
+            )
+        );
     }
 
     *… exponential number of overloads …*
@@ -1116,7 +1228,11 @@ Approximate expansion:
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to front-end implementation …*
+        return boost_param_impl ## **name**\ (
+            boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
+                a0, …, a ## **n**
+            )
+        );
     }
 
     :vellipsis:`⋮`
@@ -1129,7 +1245,11 @@ Approximate expansion:
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to front-end implementation …*
+        return boost_param_impl ## **name**\ (
+            boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
+                a0, …, a ## **m**
+            )
+        );
     }
 
     *… exponential number of overloads …*
@@ -1143,23 +1263,100 @@ Approximate expansion:
         >::type = boost_param_parameters\_ ## __LINE__ ## **name**\ ()
     )
     {
-        *… forward to front-end implementation …*
+        return boost_param_impl ## **name**\ (
+            boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
+                a0, …, a ## **m**
+            )
+        );
     }
-
-    *… forward declaration of dispatch functions …*
-    *… front-end implementation forwards to dispatch functions …*
 
     template <
         class ResultType
+      , class Args
       , class *argument name* ## **0** ## _type
-        :vellipsis:`⋮`
+      , …
+      , class *argument name* ## **n** ## _type
+    >
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+        (ResultType(\ *)())
+      , Args const& args
+      , *argument name* ## **0** ## _type& *argument name* ## **0**
+      , …
+      , *argument name* ## **n** ## _type& *argument name* ## **m**
+    );
+
+    :vellipsis:`⋮`
+
+    template <
+        class ResultType
+      , class Args
+      , class *argument name* ## **0** ## _type
+      , …
       , class *argument name* ## **m** ## _type
     >
     ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
         (ResultType(\ *)())
-      , *argument name* ## **0** ## _type const& *argument name* ## **0**
+      , Args const& args
+      , *argument name* ## **0** ## _type& *argument name* ## **0**
+      , …
+      , *argument name* ## **m** ## _type& *argument name* ## **m**
+    );
+
+    template <class Args>
+    typename boost_param_result\_ ## __LINE__ ## **name**\ <Args>::type
+    boost_param_impl ## **name**\ (Args const& args)
+    {
+        return boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+            static_cast<ResultType(\ *)()>(std::nullptr)
+          , args
+          , args[ *keyword object of required parameter* ## **0**]
+          , …
+          , args[ *keyword object of required parameter* ## **n**]
+        );
+    }
+
+    template <
+        class ResultType
+      , class Args
+      , class *argument name* ## **0** ## _type
+      , …
+      , class *argument name* ## **n** ## _type
+    >
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+        (ResultType(\ *)())
+      , Args const& args
+      , *argument name* ## **0** ## _type& *argument name* ## **0**
+      , …
+      , *argument name* ## **n** ## _type& *argument name* ## **m**
+    )
+    {
+        return boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+            static_cast<ResultType(\ *)()>(std::nullptr)
+          , (args, *keyword object of optional parameter* ## **n + 1** =
+                *default value of optional parameter* ## **n + 1**
+            )
+          , *argument name* ## **0**
+          , …
+          , *argument name* ## **n**
+          , *default value of optional parameter* ## **n + 1**
+        );
+    }
+
+    :vellipsis:`⋮`
+
+    template <
+        class ResultType
+      , class Args
+      , class *argument name* ## **0** ## _type
+      , …
+      , class *argument name* ## **m** ## _type
+    >
+    ResultType boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+        (ResultType(\ *)())
+      , Args const& args
+      , *argument name* ## **0** ## _type& *argument name* ## **0**
         :vellipsis:`⋮`
-      , *argument name* ## **m** ## _type const& *argument name* ## **m**
+      , *argument name* ## **m** ## _type& *argument name* ## **m**
     )
 
 The |preprocessor|_, |preprocessor_deduced|_, and |preprocessor_eval_cat|_
@@ -1256,9 +1453,9 @@ __ ../../../../boost/parameter/preprocessor.hpp
 parenthesized implementation base class for ``cls``.  ``tag_namespace`` is the
 namespace in which the keywords used by the function resides.  ``arguments``
 is a list of *argument-specifiers*, as defined in ``BOOST_PARAMETER_FUNCTION``
-except that *optional-specifier* no longer includes *default-value*.  The
-delegate constructor in ``impl`` determines the default value of all optional
-arguments.
+except that *optional-specifier* no longer includes *default-value*.  It is up
+to the delegate constructor in ``impl`` to determine the default value of all
+optional arguments.
 
 :Generated names in enclosing scope:
 * ``boost_param_params_ ## __LINE__ ## ctor``
@@ -1288,8 +1485,8 @@ Approximate expansion:
     *cls*\ (A0&& a0, …, A ## **n** && a ## **n**)
       : *impl*\ (
             constructor_parameters ## __LINE__(
-                boost::`forward`_<A0>(a0),
-                :vellipsis:`⋮`
+                boost::`forward`_<A0>(a0)
+              , …
               , boost::`forward`_<A ## **n**>(a ## **n**)
             )
         )
@@ -1302,8 +1499,8 @@ Approximate expansion:
     *cls*\ (A0&& a0, …, A ## **m** && a ## **m**)
       : *impl*\ (
             constructor_parameters ## __LINE__(
-                boost::`forward`_<A0>(a0),
-                :vellipsis:`⋮`
+                boost::`forward`_<A0>(a0)
+              , …
               , boost::`forward`_<A ## **m**>(a ## **m**)
             )
         )
@@ -1365,6 +1562,69 @@ proper usage of this macro.
 .. _preprocessor: ../../test/preprocessor.cpp
 .. |preprocessor_eval_cat| replace:: preprocessor_eval_category.cpp
 .. _preprocessor_eval_cat: ../../test/preprocessor_eval_category.cpp
+
+``BOOST_PARAMETER_BASIC_FUNCTION(result, name, tag_namespace, arguments)``
+--------------------------------------------------------------------------
+
+:Defined in: `boost/parameter/preprocessor.hpp`__
+
+__ ../../../../boost/parameter/preprocessor.hpp
+
+Same as ``BOOST_PARAMETER_FUNCTION``, except:
+
+\*. For the argument specifiers syntax, *optional-specifier* no longer
+includes *default-value*.  It is up to the function body to determine the
+default value of all optional arguments.
+
+\*. Generated names in the enclosing scope no longer include
+``boost_param_dispatch_ ## __LINE__ ## name``.
+
+\*. Expansion of this macro omits all overloads of
+``boost_param_dispatch_ ## __LINE__ ## name`` and stops at the header of
+``boost_param_impl ## name``.  Therefore, only the |ArgumentPack|_ type
+``Args`` and its object instance ``args`` are available for use within the
+function body.
+
+The |preprocessor|_ test program demonstrates proper usage of this macro.
+
+.. |preprocessor| replace:: preprocessor.cpp
+.. _preprocessor: ../../test/preprocessor.cpp
+
+``BOOST_PARAMETER_BASIC_MEMBER_FUNCTION(result, name, tag_ns, arguments)``
+--------------------------------------------------------------------------
+
+:Defined in: `boost/parameter/preprocessor.hpp`__
+
+__ ../../../../boost/parameter/preprocessor.hpp
+
+Same as ``BOOST_PARAMETER_BASIC_FUNCTION``, except that:
+
+\*. ``name`` may be qualified by the ``static`` keyword to declare the member
+function and its helpers as not associated with any object of the enclosing
+type.
+
+\*. Expansion of this macro omits the forward declaration of the
+implementation function.
+
+The |preprocessor|_ test program demonstrates proper usage of this macro.
+
+.. |preprocessor| replace:: preprocessor.cpp
+.. _preprocessor: ../../test/preprocessor.cpp
+
+``BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION(result, name, tag_ns, args)``
+---------------------------------------------------------------------------
+
+:Defined in: `boost/parameter/preprocessor.hpp`__
+
+__ ../../../../boost/parameter/preprocessor.hpp
+
+Same as ``BOOST_PARAMETER_BASIC_MEMBER_FUNCTION``, except that the overloaded
+forwarding member functions and their helper methods are ``const``-qualified.
+
+The |preprocessor|_ test program demonstrates proper usage of this macro.
+
+.. |preprocessor| replace:: preprocessor.cpp
+.. _preprocessor: ../../test/preprocessor.cpp
 
 ``BOOST_PARAMETER_NAME(name)``
 ------------------------------

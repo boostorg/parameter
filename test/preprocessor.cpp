@@ -11,6 +11,8 @@
 #include "basics.hpp"
 
 #if !defined BOOST_NO_SFINAE
+#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/type_traits/is_base_and_derived.hpp>
 #include <boost/core/enable_if.hpp>
 #endif
 
@@ -110,10 +112,45 @@ namespace test {
         return 1;
     }
 
-    struct base
+    struct base_0
+    {
+        float f;
+        int i;
+
+        template <class Args>
+        explicit base_0(
+            Args const& args
+#if !defined BOOST_NO_SFINAE
+          , typename boost::disable_if<
+                boost::is_base_and_derived<base_0,Args>
+            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif
+        ) : f(args[test::_value | 1.f]), i(args[test::_index | 2])
+        {
+        }
+    };
+
+    struct class_0 : test::base_0
+    {
+        BOOST_PARAMETER_CONSTRUCTOR(class_0, (test::base_0), test::tag,
+            (optional
+                (value, *)
+                (index, *)
+            )
+        )
+    };
+
+    struct base_1
     {
         template <class Args>
-        base(Args const& args)
+        explicit base_1(
+            Args const& args
+#if !defined BOOST_NO_SFINAE
+          , typename boost::disable_if<
+                boost::is_base_and_derived<base_1,Args>
+            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif
+        )
         {
             args[test::_tester](
                 args[test::_name]
@@ -123,9 +160,9 @@ namespace test {
         }
     };
 
-    struct class_ : test::base
+    struct class_1 : test::base_1
     {
-        BOOST_PARAMETER_CONSTRUCTOR(class_, (test::base), test::tag,
+        BOOST_PARAMETER_CONSTRUCTOR(class_1, (test::base_1), test::tag,
             (required
                 (tester, *)
                 (name, *)
@@ -373,7 +410,12 @@ int main()
       , test::_value = 1.f
     );
 
-    test::class_ x(test::values(S("foo"), 1.f, 2), S("foo"), test::_index = 2);
+    test::class_0 u;
+
+    BOOST_TEST(2 == u.i);
+    BOOST_TEST(1.f == u.f);
+
+    test::class_1 x(test::values(S("foo"), 1.f, 2), S("foo"), test::_index = 2);
 
     x.f(test::values(S("foo"), 1.f, 2), S("foo"));
     x.f(
@@ -384,7 +426,7 @@ int main()
         test::_tester = test::values(S("foo"), 1.f, 2), test::_name = S("foo")
     );
 
-    test::class_ const& x_const = x;
+    test::class_1 const& x_const = x;
 
     x_const.f(test::values(S("foo"), 1.f, 2), S("foo"));
     x_const.f(
@@ -394,8 +436,8 @@ int main()
     x_const.f2(
         test::_tester = test::values(S("foo"), 1.f, 2), test::_name = S("foo")
     );
-    test::class_::f_static(test::values(S("foo"), 1.f, 2), S("foo"));
-    test::class_::f_static(
+    test::class_1::f_static(test::values(S("foo"), 1.f, 2), S("foo"));
+    test::class_1::f_static(
         test::_tester = test::values(S("foo"), 1.f, 2), test::_name = S("foo")
     );
 
