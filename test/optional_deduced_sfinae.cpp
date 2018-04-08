@@ -1,73 +1,65 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <string>
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/core/enable_if.hpp>
 #include "basics.hpp"
-#include <boost/utility/enable_if.hpp>
+#include <string>
 
 namespace test {
 
-namespace mpl = boost::mpl;
-
-using mpl::_;
-using boost::is_convertible;
-
-BOOST_PARAMETER_NAME(x)
-
-// Sun has problems with this syntax:
-//
-//   template1< r* ( template2<x> ) >
-//
-// Workaround: factor template2<x> into a separate typedef
+    BOOST_PARAMETER_NAME(x)
 
 #if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+    // Sun has problems with this syntax:
+    //
+    //   template1< r* ( template2<x> ) >
+    //
+    // Workaround: factor template2<x> into a separate typedef
+    typedef boost::is_convertible<boost::mpl::_,char const*> predicate;
 
-typedef is_convertible<_,char const*> predicate;
-
-BOOST_PARAMETER_FUNCTION((int), sfinae, tag,
-  (deduced
-     (optional (x, *(predicate), 0))
-  )
-)
-{
-    return 1;
-}
-
+    BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
+        (deduced
+            (optional (x, *(test::predicate), BOOST_TTI_DETAIL_NULLPTR))
+        )
+    )
+    {
+        return 1;
+    }
 #else
+    BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
+        (deduced
+            (optional
+                (x, *(boost::is_convertible<boost::mpl::_,char const*>),
+                    BOOST_TTI_DETAIL_NULLPTR
+                )
+            )
+        )
+    )
+    {
+        return 1;
+    }
+#endif // SunPro CC workarounds needed.
 
-BOOST_PARAMETER_FUNCTION((int), sfinae, tag,
-  (deduced
-     (optional (x, *(is_convertible<_,char const*>), 0))
-  )
-)
-{
-    return 1;
-}
-
-#endif
-
-template<class A0>
-typename boost::enable_if<boost::is_same<int,A0>, int>::type
-sfinae(A0 const& a0)
-{
-    return 0;
-}
-
+    template <class A0>
+    typename boost::enable_if<boost::is_same<int,A0>,int>::type
+    sfinae(A0 const& a0)
+    {
+        return 0;
+    }
 } // namespace test
 
 int main()
 {
-    using namespace test;
-
-    assert(sfinae() == 1);
-    assert(sfinae("foo") == 1);
-    assert(sfinae(1) == 0);
-
-    return 0;
+    BOOST_TEST_EQ(1, test::sfinae());
+    BOOST_TEST_EQ(1, test::sfinae("foo"));
+    BOOST_TEST_EQ(0, test::sfinae(1));
+    return boost::report_errors();
 }
 

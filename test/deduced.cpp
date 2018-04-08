@@ -1,114 +1,135 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/parameters.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/parameter/binding.hpp>
+#include <boost/mpl/placeholders.hpp>
+#include <boost/type_traits/is_convertible.hpp>
 #include "deduced.hpp"
 
-namespace parameter = boost::parameter;
-namespace mpl = boost::mpl;
+#if defined LIBS_PARAMETER_TEST_COMPILE_FAILURE
+#include <boost/tti/detail/dnullptr.hpp>
+#endif
 
-BOOST_PARAMETER_NAME(x)
-BOOST_PARAMETER_NAME(y)
-BOOST_PARAMETER_NAME(z)
+namespace test {
+
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
+} // namespace test
 
 int main()
 {
-    using namespace parameter;
+    test::check<
+        boost::parameter::parameters<test::tag::x,test::tag::y>
+    >((test::_x = 0, test::_y = 1), 0, 1);
 
-    check<
-        parameters<
-            tag::x
-          , tag::y
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::required<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::z>
+              , boost::is_convertible<boost::mpl::_,char const*>
+            >
         >
     >(
-        (_x = 0, _y = 1)
-      , 0
-      , 1
-    );
-
-    check<
-        parameters<
-            tag::x
-          , required<deduced<tag::y>, boost::is_convertible<mpl::_, int> >
-          , optional<deduced<tag::z>, boost::is_convertible<mpl::_, char const*> >
-        >
-    >(
-        (_x = 0, _y = not_present, _z = "foo")
-      , _x = 0
+        (test::_x = 0, test::_y = test::not_present, test::_z = "foo")
+      , test::_x = 0
       , "foo"
     );
 
-    check<
-        parameters<
-            tag::x
-          , required<deduced<tag::y>, boost::is_convertible<mpl::_, int> >
-          , optional<deduced<tag::z>, boost::is_convertible<mpl::_, char const*> >
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::required<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::z>
+              , boost::is_convertible<boost::mpl::_,char const*>
+            >
+        >
+    >((test::_x = 0, test::_y = 1, test::_z = "foo"), 0, "foo", 1);
+
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::required<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::z>
+              , boost::is_convertible<boost::mpl::_,char const*>
+            >
+        >
+    >((test::_x = 0, test::_y = 1, test::_z = "foo"), 0, 1, "foo");
+
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::required<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::z>
+              , boost::is_convertible<boost::mpl::_,char const*>
+            >
+        >
+    >((test::_x = 0, test::_y = 1, test::_z = "foo"), 0, test::_y = 1, "foo");
+
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::required<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::z>
+              , boost::is_convertible<boost::mpl::_,char const*>
+            >
         >
     >(
-        (_x = 0, _y = 1, _z = "foo")
-      , 0
-      , "foo"
+        (test::_x = 0, test::_y = 1, test::_z = "foo")
+      , test::_z = "foo"
+      , test::_x = 0
       , 1
     );
 
-    check<
-        parameters<
-            tag::x
-          , required<deduced<tag::y>, boost::is_convertible<mpl::_, int> >
-          , optional<deduced<tag::z>, boost::is_convertible<mpl::_, char const*> >
+#if defined LIBS_PARAMETER_TEST_COMPILE_FAILURE
+    // Fails because boost::parameter::aux::make_arg_list<> evaluates
+    // boost::parameter::aux::is_named_argument<> to boost::mpl::false_
+    // for static_cast<long*>(BOOST_TTI_DETAIL_NULLPTR).
+    test::check<
+        boost::parameter::parameters<
+            test::tag::x
+          , boost::parameter::required<
+                boost::parameter::deduced<test::tag::y>
+              , boost::is_convertible<boost::mpl::_,int>
+            >
+          , boost::parameter::optional<
+                boost::parameter::deduced<test::tag::z>
+              , boost::is_convertible<boost::mpl::_,char const*>
+            >
         >
     >(
-        (_x = 0, _y = 1, _z = "foo")
-      , 0
-      , 1
-      , "foo"
-    );
-
-    check<
-        parameters<
-            tag::x
-          , required<deduced<tag::y>, boost::is_convertible<mpl::_, int> >
-          , optional<deduced<tag::z>, boost::is_convertible<mpl::_, char const*> >
-        >
-    >(
-        (_x = 0, _y = 1, _z = "foo")
-      , 0
-      , _y = 1
-      , "foo"
-    );
-
-    check<
-        parameters<
-            tag::x
-          , required<deduced<tag::y>, boost::is_convertible<mpl::_, int> >
-          , optional<deduced<tag::z>, boost::is_convertible<mpl::_, char const*> >
-        >
-    >(
-        (_x = 0, _y = 1, _z = "foo")
-      , _z = "foo"
-      , _x = 0
+        (test::_x = 0, test::_y = 1, test::_z = "foo")
+      , test::_x = 0
+      , static_cast<long*>(BOOST_TTI_DETAIL_NULLPTR)
       , 1
     );
+#endif
 
-    // Fails becasue of parameters.hpp:428
-/*
-    check<
-        parameters<
-            tag::x
-          , required<deduced<tag::y>, boost::is_convertible<mpl::_, int> >
-          , optional<deduced<tag::z>, boost::is_convertible<mpl::_, char const*> >
-        >
-    >(
-        (_x = 0, _y = 1, _z = "foo")
-      , _x = 0
-      , (long*)0
-      , 1
-    );
-*/
-
-    return 0;
-};
+    return boost::report_errors();
+}
 

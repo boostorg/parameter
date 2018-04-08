@@ -1,6 +1,7 @@
 
 #include <boost/parameter.hpp>
 #include <iostream>
+
 BOOST_PARAMETER_NAME(index)
 
 template <class ArgumentPack>
@@ -23,12 +24,12 @@ int print_name_and_index(ArgumentPack const& args)
 
 int y = print_name_and_index((_index = 3, _name = "jones"));
 
-
 namespace parameter = boost::parameter;
 using parameter::required;
 using parameter::optional;
 using boost::is_convertible;
 using boost::mpl::_;
+
 parameter::parameters<
     required<tag::name, is_convertible<_,char const*> >
   , optional<tag::index, is_convertible<_,int> >
@@ -36,12 +37,13 @@ parameter::parameters<
 
 char const sam[] = "sam";
 int twelve = 12;
-
-int z0 = print_name_and_index( spec(sam, twelve) );
-
+int z0 = print_name_and_index(spec(sam, twelve));
 int z1 = print_name_and_index(
-   spec(_index=12, _name="sam")
+    spec(_index=12, _name="sam")
 );
+
 int main()
-{}
+{
+    return 0;
+}
 

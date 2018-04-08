@@ -3,6 +3,7 @@
 #include <string>
 
 namespace parameter = boost::parameter;
+
 BOOST_PARAMETER_NAME(s1)
 BOOST_PARAMETER_NAME(s2)
 BOOST_PARAMETER_NAME(s3)
@@ -19,6 +20,9 @@ std::string f(ArgumentPack const& args)
 }
 
 std::string x = f((_s1="hello,", _s2=" world", _s3="hi world"));
+
 int main()
-{}
+{
+    return 0;
+}
 

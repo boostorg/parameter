@@ -16,15 +16,22 @@ std::string f(ArgumentPack const& args)
 {
     std::string const& s1 = args[_s1];
     std::string const& s2 = args[_s2];
-typename parameter::binding<
-    ArgumentPack, tag::s3, std::string
->::type s3 = args[_s3
-    || boost::bind(std::plus<std::string>(), boost::ref(s1), boost::ref(s2)) ];
+    typename parameter::binding<
+        ArgumentPack, tag::s3, std::string
+    >::type s3 = args[
+        _s3 || boost::bind(
+            std::plus<std::string>()
+          , boost::ref(s1)
+          , boost::ref(s2)
+        )
+    ];
     return s3;
 }
 
 std::string x = f((_s1="hello,", _s2=" world", _s3="hi world"));
 
 int main()
-{}
+{
+    return 0;
+}
 

@@ -1,38 +1,192 @@
-# Copyright David Abrahams, Daniel Wallin 2006. Distributed under the
-# Boost Software License, Version 1.0. (See accompanying file
-# LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+# Copyright David Abrahams, Daniel Wallin 2006.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
 
 # Boost Parameter Library test Jamfile
 
 import python ;
 
 project boost/parameter
-  : default-build <warnings>off
-  ;
+    :
+    default-build <warnings>off
+    ;
 
 build-project literate ;
   
 test-suite "parameter"
-  :  [ run basics.cpp ]
-     [ run sfinae.cpp ]
-     [ run macros.cpp ]
-     [ run earwicker.cpp ]
-     [ run tutorial.cpp ]
-     [ run singular.cpp ]
-     [ run mpl.cpp ]
-     [ run preprocessor.cpp ]
-     [ run preprocessor_deduced.cpp ]
-     [ run efficiency.cpp : : : : : <variant>release ]
-     [ run maybe.cpp ]
-     [ run deduced.cpp ]
-     [ run optional_deduced_sfinae.cpp ]
-     [ run deduced_dependent_predicate.cpp ]
-     [ run normalized_argument_types.cpp ]
-     [ compile ntp.cpp ]
-     [ compile unwrap_cv_reference.cpp ]
-     [ compile-fail duplicates.cpp ]
-     [ compile-fail deduced_unmatched_arg.cpp ]
-     [ compile compose.cpp ]
-     [ bpl-test python_test ]
-  ;
+    :
+    [ run basics.cpp ]
+    [ run basics.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : basics_no_perfect_fwd
+    ]
+    [ run sfinae.cpp ]
+    [ run sfinae.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : sfinae_no_perfect_fwd
+    ]
+    [ run compose.cpp ]
+    [ run compose.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : compose_no_perfect_fwd
+    ]
+    [ run macros.cpp ]
+    [ run macros.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+        : macros_no_perfect_fwd
+    ]
+    [ run earwicker.cpp ]
+    [ run earwicker.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : earwicker_no_perfect_fwd
+    ]
+    [ run tutorial.cpp ]
+    [ run tutorial.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : tutorial_no_perfect_fwd
+    ]
+    [ run singular.cpp ]
+    [ run singular.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : singular_no_perfect_fwd
+    ]
+    [ run mpl.cpp ]
+    [ run mpl.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : mpl_no_perfect_fwd
+    ]
+    [ run evaluate_category.cpp ]
+    [ run evaluate_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=16
+        : eval_cat_no_perfect_fwd
+    ]
+    [ run preprocessor.cpp ]
+    [ run preprocessor.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : preproc_no_perfect_fwd
+    ]
+    [ run preprocessor_deduced.cpp ]
+    [ run preprocessor_deduced.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : preproc_ded_no_perfect_fwd
+    ]
+    [ run preprocessor_eval_category.cpp ]
+    [ run preprocessor_eval_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : preproc_eval_cat_no_perfect_fwd
+    ]
+    [ run efficiency.cpp : : : : : <variant>release ]
+    [ run efficiency.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : efficiency_no_perfect_fwd
+        :
+        <variant>release
+    ]
+    [ run maybe.cpp ]
+    [ run deduced.cpp ]
+    [ run deduced.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : deduced_no_perfect_fwd
+    ]
+    [ run optional_deduced_sfinae.cpp ]
+    [ run optional_deduced_sfinae.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : opt_ded_sfinae_no_perfect_fwd
+    ]
+    [ run deduced_dependent_predicate.cpp ]
+    [ run deduced_dependent_predicate.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : ded_dep_pred_no_perfect_fwd
+    ]
+    [ run normalized_argument_types.cpp ]
+    [ run normalized_argument_types.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : norm_arg_types_no_perfect_fwd
+    ]
+    [ compile ntp.cpp ]
+    [ compile ntp.cpp
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : ntp_no_perfect_fwd
+    ]
+    [ compile unwrap_cv_reference.cpp ]
+    [ compile function_type_tpl_param.cpp ]
+    [ compile-fail duplicates.cpp ]
+    [ compile-fail deduced_unmatched_arg.cpp ]
+    [ compile-fail basics.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : basics_fail
+    ]
+    [ compile-fail compose.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : compose_fail
+    ]
+    [ compile-fail deduced.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : deduced_fail
+    ]
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : preproc_eval_cat_fail
+    ]
+    [ bpl-test python_test ]
+    ;
 
