@@ -7,8 +7,6 @@
 #include <boost/parameter.hpp>
 #include <boost/parameter/macros.hpp>
 #include <boost/bind.hpp>
-#include <boost/static_assert.hpp>
-#include <boost/ref.hpp>
 #include <cstring>
 
 #include "basics.hpp"
@@ -23,6 +21,22 @@ namespace test {
           , p[test::_index | 999]
         );
 
+        return 1;
+    }
+
+    BOOST_PARAMETER_NAME(foo)
+    BOOST_PARAMETER_NAME(bar)
+
+    struct baz_parameters
+      : boost::parameter::parameters<
+            boost::parameter::optional<test::tag::foo>
+          , boost::parameter::optional<test::tag::bar>
+        >
+    {
+    };
+
+    BOOST_PARAMETER_FUN(int, baz, 0, 2, baz_parameters)
+    {
         return 1;
     }
 } // namespace test
@@ -152,12 +166,15 @@ namespace test {
 
 #endif // Test with many arguments.
 
+#include <boost/ref.hpp>
+
 int main()
 {
     test::f(
         test::values(S("foo"), S("bar"), S("baz"))
       , S("foo"), S("bar"), S("baz")
     );
+    BOOST_TEST_EQ(1, test::baz());
 
     int x = 56;
     test::f(

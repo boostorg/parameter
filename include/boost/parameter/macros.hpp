@@ -7,40 +7,45 @@
 #define BOOST_PARAMETER_MACROS_050412_HPP
 
 #include <boost/parameter/config.hpp>
-#include <boost/preprocessor/control/expr_if.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
 
 #define BOOST_PARAMETER_MATCH_TYPE(n, param)                                 \
-    BOOST_PP_EXPR_IF(n, typename) param::match<                              \
-        BOOST_PP_ENUM_PARAMS(n, T)                                           \
-    >::type
+  , typename param::match<BOOST_PP_ENUM_PARAMS(n, T)>::type kw = param()
 /**/
 
 #define BOOST_PARAMETER_MATCH_TYPE_Z(z, n, param)                            \
-    BOOST_PP_EXPR_IF(n, typename) param::match<                              \
-        BOOST_PP_ENUM_PARAMS_Z(z, n, T)                                      \
-    >::type
+  , typename param::match<BOOST_PP_ENUM_PARAMS_Z(z, n, T)>::type kw = param()
 /**/
 
 #else // SFINAE disbled, or Borland workarounds needed.
 
-#define BOOST_PARAMETER_MATCH_TYPE(n, param) param
+#define BOOST_PARAMETER_MATCH_TYPE(n, param) , param kw = param()
 /**/
 
-#define BOOST_PARAMETER_MATCH_TYPE_Z(z, n, param) param
+#define BOOST_PARAMETER_MATCH_TYPE_Z(z, n, param) , param kw = param()
 /**/
 
 #endif // SFINAE enabled, not Borland.
 
-#include <boost/preprocessor/punctuation/comma_if.hpp>
+#include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
 #include <boost/preprocessor/cat.hpp>
 
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
+#define BOOST_PARAMETER_FUN_0(z, n, params)                                  \
+    BOOST_PP_TUPLE_ELEM(3, 0, params) BOOST_PP_TUPLE_ELEM(3, 1, params)()    \
+    {                                                                        \
+        return BOOST_PP_CAT(                                                 \
+            BOOST_PP_TUPLE_ELEM(3, 1, params)                                \
+          , _with_named_params                                               \
+        )(BOOST_PP_TUPLE_ELEM(3, 2, params)()());                            \
+    }
+/**/
 
 #include <boost/move/utility_core.hpp>
 
@@ -50,18 +55,14 @@
 
 #include <boost/preprocessor/repetition/enum.hpp>
 
-#define BOOST_PARAMETER_FUN_DECL(z, n, params)                               \
-    BOOST_PP_EXPR_IF(n, template <)                                          \
-        BOOST_PP_ENUM_PARAMS_Z(z, n, class T)                                \
-    BOOST_PP_EXPR_IF(n, >)                                                   \
+#define BOOST_PARAMETER_FUN_DEFN_1(z, n, params)                             \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class T)>                         \
     BOOST_PP_TUPLE_ELEM(3, 0, params)                                        \
         BOOST_PP_TUPLE_ELEM(3, 1, params)(                                   \
             BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, T, && p)                     \
-            BOOST_PP_COMMA_IF(n)                                             \
             BOOST_PARAMETER_MATCH_TYPE_Z(                                    \
                 z, n, BOOST_PP_TUPLE_ELEM(3, 2, params)                      \
             )                                                                \
-            kw = BOOST_PP_TUPLE_ELEM(3, 2, params)()                         \
         )                                                                    \
     {                                                                        \
         return BOOST_PP_CAT(                                                 \
@@ -77,20 +78,24 @@
     }
 /**/
 
+#define BOOST_PARAMETER_FUN_DECL(z, n, params)                               \
+    BOOST_PP_IF(                                                             \
+        n                                                                    \
+      , BOOST_PARAMETER_FUN_DEFN_1                                           \
+      , BOOST_PARAMETER_FUN_0                                                \
+    )(z, n, params)
+/**/
+
 #else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 #define BOOST_PARAMETER_FUN_DEFN_0(z, n, params)                             \
-    BOOST_PP_EXPR_IF(n, template <)                                          \
-        BOOST_PP_ENUM_PARAMS_Z(z, n, class T)                                \
-    BOOST_PP_EXPR_IF(n, >)                                                   \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class T)>                         \
     BOOST_PP_TUPLE_ELEM(3, 0, params)                                        \
         BOOST_PP_TUPLE_ELEM(3, 1, params)(                                   \
             BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, T, const& p)                 \
-            BOOST_PP_COMMA_IF(n)                                             \
             BOOST_PARAMETER_MATCH_TYPE_Z(                                    \
                 z, n, BOOST_PP_TUPLE_ELEM(3, 2, params)                      \
             )                                                                \
-            kw = BOOST_PP_TUPLE_ELEM(3, 2, params)()                         \
         )                                                                    \
     {                                                                        \
         return BOOST_PP_CAT(                                                 \
@@ -100,25 +105,39 @@
     }
 /**/
 
-#include <boost/parameter/aux_/preprocessor/binary_seq_to_args.hpp>
 #include <boost/preprocessor/seq/seq.hpp>
+
+#define BOOST_PARAMETER_FUN_0(z, n, seq)                                     \
+    BOOST_PP_TUPLE_ELEM(3, 0, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq)))     \
+    BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq)))()   \
+    {                                                                        \
+        return BOOST_PP_CAT(                                                 \
+            BOOST_PP_TUPLE_ELEM(                                             \
+                3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))              \
+            )                                                                \
+          , _with_named_params                                               \
+        )(                                                                   \
+        BOOST_PP_TUPLE_ELEM(3, 2, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))) \
+        ()()                                                                 \
+        );                                                                   \
+    }
+/**/
+
+#include <boost/parameter/aux_/preprocessor/binary_seq_to_args.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 
 #define BOOST_PARAMETER_FUN_DEFN_R(r, seq)                                   \
-    BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), template <)  \
+    template <                                                               \
     BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), class T) \
-    BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), >)           \
-    BOOST_PP_TUPLE_ELEM(3, 0, BOOST_PP_SEQ_HEAD(seq))                        \
+    > BOOST_PP_TUPLE_ELEM(3, 0, BOOST_PP_SEQ_HEAD(seq))                      \
         BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))(                   \
             BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                       \
                 BOOST_PP_SEQ_TAIL(seq), (T)(p)                               \
             )                                                                \
-            BOOST_PP_COMMA_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)))     \
             BOOST_PARAMETER_MATCH_TYPE(                                      \
                 BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                    \
               , BOOST_PP_TUPLE_ELEM(3, 2, BOOST_PP_SEQ_HEAD(seq))            \
             )                                                                \
-            kw = BOOST_PP_TUPLE_ELEM(3, 2, BOOST_PP_SEQ_HEAD(seq))()         \
         )                                                                    \
     {                                                                        \
         return BOOST_PP_CAT(                                                 \
@@ -135,22 +154,22 @@
 /**/
 
 #include <boost/parameter/aux_/preprocessor/binary_seq_for_each.hpp>
+#include <boost/preprocessor/tuple/eat.hpp>
 
 #define BOOST_PARAMETER_FUN_DEFN_1(z, n, params)                             \
-    BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z(                            \
-        z, n, (BOOST_PARAMETER_FUN_DEFN_R)(params)                           \
-    )
+    BOOST_PP_IF(                                                             \
+        n                                                                    \
+      , BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z                         \
+      , BOOST_PARAMETER_FUN_0                                                \
+    )(z, n, (BOOST_PARAMETER_FUN_DEFN_R)(params))
 /**/
 
 #include <boost/preprocessor/comparison/less.hpp>
-#include <boost/preprocessor/logical/and.hpp>
 
 #define BOOST_PARAMETER_FUN_DECL(z, n, params)                               \
     BOOST_PP_CAT(                                                            \
         BOOST_PARAMETER_FUN_DEFN_                                            \
-      , BOOST_PP_AND(                                                        \
-            BOOST_PP_LESS(n, BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY), n   \
-        )                                                                    \
+      , BOOST_PP_LESS(n, BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY)          \
     )(z, n, params)
 /**/
 

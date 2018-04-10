@@ -5,11 +5,6 @@
 
 #include <boost/parameter.hpp>
 
-#if defined BOOST_CLANG && (1 == BOOST_CLANG) && (__clang_major__ < 9) && \
-    defined LIBS_PARAMETER_TEST_COMPILE_FAILURE
-#error Marking as expected.
-#endif
-
 #if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #if BOOST_PARAMETER_MAX_ARITY < 8
 #error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
@@ -423,11 +418,6 @@ int main()
 #endif
       , test::_lrc0 = "baz"
     );
-
-#if defined BOOST_CLANG && (1 == BOOST_CLANG) && (__clang_major__ < 9)
-    // Travis Cl reports the following function calls binding their arguments
-    // to const references.
-#else
     test::B::evaluate_deduced(
         test::lvalue_char_ptr()
       , test::rvalue_str()
@@ -438,7 +428,6 @@ int main()
       , test::lvalue_const_float()
       , test::lvalue_char_ptr()
     );
-#endif
 
     test::C cp0(
         "baz"

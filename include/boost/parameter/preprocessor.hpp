@@ -503,21 +503,39 @@ namespace boost { namespace parameter { namespace aux {
     boost::forward<BOOST_PP_CAT(type_prefix, n)>(BOOST_PP_CAT(a, n))
 /**/
 
-// Expands to a forwarding function, whose job is to consolidate its arguments
-// into a pack for the front-end implementation function to take in.
-#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_Z(z, n, data)              \
-    BOOST_PP_EXPR_IF(n, template <)                                          \
-        BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)            \
-    BOOST_PP_EXPR_IF(n, >)                                                   \
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_Z(z, n, data)            \
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(3, 1, data))  \
-    inline BOOST_PP_EXPR_IF(n, typename)                                     \
+    inline                                                                   \
     BOOST_PARAMETER_FUNCTION_RESULT_NAME(BOOST_PP_TUPLE_ELEM(3, 1, data))<   \
-        BOOST_PP_EXPR_IF(n, typename) boost::parameter::aux::argument_pack<  \
+        boost::parameter::aux::argument_pack<                                \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
                 BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
             )                                                                \
-            BOOST_PP_COMMA_IF(n)                                             \
-            BOOST_PP_CAT(BOOST_PP_ENUM_, z)(                                 \
+        >::type                                                              \
+    >::type                                                                  \
+    BOOST_PARAMETER_MEMBER_FUNCTION_NAME(BOOST_PP_TUPLE_ELEM(3, 0, data))(   \
+    ) BOOST_PP_EXPR_IF(BOOST_PP_TUPLE_ELEM(3, 2, data), const)               \
+    {                                                                        \
+        return BOOST_PARAMETER_FUNCTION_IMPL_NAME(                           \
+            BOOST_PP_TUPLE_ELEM(3, 1, data)                                  \
+        )(                                                                   \
+            BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
+                BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
+            )()()                                                            \
+        );                                                                   \
+    }
+/**/
+
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_1_Z(z, n, data)            \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)>     \
+    BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(3, 1, data))  \
+    inline typename                                                          \
+    BOOST_PARAMETER_FUNCTION_RESULT_NAME(BOOST_PP_TUPLE_ELEM(3, 1, data))<   \
+        typename boost::parameter::aux::argument_pack<                       \
+            BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
+                BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
+            )                                                                \
+          , BOOST_PP_CAT(BOOST_PP_ENUM_, z)(                                 \
                 n                                                            \
               , BOOST_PARAMETER_FUNCTION_ARG_TYPE_Z                          \
               , ParameterArgumentType                                        \
@@ -526,12 +544,7 @@ namespace boost { namespace parameter { namespace aux {
     >::type                                                                  \
     BOOST_PARAMETER_MEMBER_FUNCTION_NAME(BOOST_PP_TUPLE_ELEM(3, 0, data))(   \
         BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, ParameterArgumentType, && a)     \
-        BOOST_PP_COMMA_IF(n)                                                 \
-        BOOST_PP_IF(                                                         \
-            n                                                                \
-          , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z                         \
-          , BOOST_PP_TUPLE_EAT(5)                                            \
-        )(                                                                   \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(                            \
             z                                                                \
           , BOOST_PP_TUPLE_ELEM(3, 1, data)                                  \
           , BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
@@ -558,20 +571,31 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
-// Expands to a constructor whose job is to consolidate its arguments into a
-// pack for the delegate to take in.
-#define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_Z(z, n, data)                   \
-    BOOST_PP_EXPR_IF(n, template <)                                          \
-        BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)            \
-    BOOST_PP_EXPR_IF(n, >) BOOST_PP_EXPR_IF(BOOST_PP_EQUAL(n, 1), explicit)  \
+// Expands to a forwarding function, whose job is to consolidate its arguments
+// into a pack for the front-end implementation function to take in.
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_Z(z, n, data)              \
+    BOOST_PP_IF(                                                             \
+        n                                                                    \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_1_Z                        \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_Z                        \
+    )(z, n, data)
+/**/
+
+#define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_0_Z(z, n, data)                 \
+    inline BOOST_PP_TUPLE_ELEM(2, 0, data)()                                 \
+      : BOOST_PARAMETER_PARENTHESIZED_TYPE(BOOST_PP_TUPLE_ELEM(2, 1, data))( \
+            BOOST_PP_CAT(constructor_parameters, __LINE__)()()               \
+        )                                                                    \
+    {                                                                        \
+    }
+/**/
+
+#define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_1_Z(z, n, data)                 \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)>     \
+    BOOST_PP_EXPR_IF(BOOST_PP_EQUAL(n, 1), explicit)                         \
     inline BOOST_PP_TUPLE_ELEM(2, 0, data)(                                  \
         BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, ParameterArgumentType, && a)     \
-        BOOST_PP_COMMA_IF(n)                                                 \
-        BOOST_PP_IF(                                                         \
-            n                                                                \
-          , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z                         \
-          , BOOST_PP_TUPLE_EAT(5)                                            \
-        )(                                                                   \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(                            \
             z                                                                \
           , BOOST_PP_TUPLE_ELEM(2, 0, data)                                  \
           , BOOST_PP_CAT(constructor_parameters, __LINE__)                   \
@@ -591,6 +615,16 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
+// Expands to a constructor whose job is to consolidate its arguments into a
+// pack for the delegate to take in.
+#define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_Z(z, n, data)                   \
+    BOOST_PP_IF(                                                             \
+        n                                                                    \
+      , BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_1_Z                             \
+      , BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_0_Z                             \
+    )(z, n, data)
+/**/
+
 #else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 // Expands to a definition of a constructor or forwarding function argument
@@ -607,18 +641,15 @@ namespace boost { namespace parameter { namespace aux {
 // BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY, in which case all the arguments
 // will be passed by const reference.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0(z, n, data)              \
-    BOOST_PP_EXPR_IF(n, template <)                                          \
-        BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)            \
-    BOOST_PP_EXPR_IF(n, >)                                                   \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)>     \
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(3, 1, data))  \
-    inline BOOST_PP_EXPR_IF(n, typename)                                     \
+    inline typename                                                          \
     BOOST_PARAMETER_FUNCTION_RESULT_NAME(BOOST_PP_TUPLE_ELEM(3, 1, data))<   \
-        BOOST_PP_EXPR_IF(n, typename) boost::parameter::aux::argument_pack<  \
+        typename boost::parameter::aux::argument_pack<                       \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
                 BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
             )                                                                \
-            BOOST_PP_COMMA_IF(n)                                             \
-            BOOST_PP_CAT(BOOST_PP_ENUM_, z)(                                 \
+          , BOOST_PP_CAT(BOOST_PP_ENUM_, z)(                                 \
                 n                                                            \
               , BOOST_PARAMETER_FUNCTION_ARG_TYPE_Z                          \
               , ParameterArgumentType                                        \
@@ -629,12 +660,7 @@ namespace boost { namespace parameter { namespace aux {
         BOOST_PP_ENUM_BINARY_PARAMS_Z(                                       \
             z, n, ParameterArgumentType, const& a                            \
         )                                                                    \
-        BOOST_PP_COMMA_IF(n)                                                 \
-        BOOST_PP_IF(                                                         \
-            n                                                                \
-          , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z                         \
-          , BOOST_PP_TUPLE_EAT(5)                                            \
-        )(                                                                   \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(                            \
             z                                                                \
           , BOOST_PP_TUPLE_ELEM(3, 1, data)                                  \
           , BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
@@ -656,21 +682,19 @@ namespace boost { namespace parameter { namespace aux {
 /**/
 
 // Expands to a constructor whose job is to consolidate its arguments into a
-// pack for the delegate to take in.
+// pack for the delegate to take in.  Used by
+// BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_Z when the number of arguments
+// the forwarding function will take in is greater than or equal to
+// BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY, in which case all the arguments
+// will be passed by const reference.
 #define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_0(z, n, data)                   \
-    BOOST_PP_EXPR_IF(n, template <)                                          \
-        BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)            \
-    BOOST_PP_EXPR_IF(n, >) BOOST_PP_EXPR_IF(BOOST_PP_EQUAL(n, 1), explicit)  \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)>     \
+    BOOST_PP_EXPR_IF(BOOST_PP_EQUAL(n, 1), explicit)                         \
     inline BOOST_PP_TUPLE_ELEM(2, 0, data)(                                  \
         BOOST_PP_ENUM_BINARY_PARAMS_Z(                                       \
             z, n, ParameterArgumentType, const& a                            \
         )                                                                    \
-        BOOST_PP_COMMA_IF(n)                                                 \
-        BOOST_PP_IF(                                                         \
-            n                                                                \
-          , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z                         \
-          , BOOST_PP_TUPLE_EAT(5)                                            \
-        )(                                                                   \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(                            \
             z                                                                \
           , BOOST_PP_TUPLE_ELEM(2, 0, data)                                  \
           , BOOST_PP_CAT(constructor_parameters, __LINE__)                   \
@@ -686,6 +710,64 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
+// Expands to a 0-arity forwarding function.
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_ARITY(z, n, seq)         \
+    inline BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(                           \
+        BOOST_PP_TUPLE_ELEM(                                                 \
+            3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+        )                                                                    \
+    )                                                                        \
+    BOOST_PARAMETER_FUNCTION_RESULT_NAME(                                    \
+        BOOST_PP_TUPLE_ELEM(                                                 \
+            3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+        )                                                                    \
+    )<                                                                       \
+        boost::parameter::aux::argument_pack<                                \
+            BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
+                BOOST_PP_TUPLE_ELEM(                                         \
+                    3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
+                )                                                            \
+            )                                                                \
+        >::type                                                              \
+    >::type                                                                  \
+    BOOST_PARAMETER_MEMBER_FUNCTION_NAME(                                    \
+        BOOST_PP_TUPLE_ELEM(                                                 \
+            3, 0, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+        )                                                                    \
+    )() BOOST_PP_EXPR_IF(                                                    \
+        BOOST_PP_TUPLE_ELEM(                                                 \
+            3, 2, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+        )                                                                    \
+      , const                                                                \
+    )                                                                        \
+    {                                                                        \
+        return BOOST_PARAMETER_FUNCTION_IMPL_NAME(                           \
+            BOOST_PP_TUPLE_ELEM(                                             \
+                3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))              \
+            )                                                                \
+        )(                                                                   \
+            BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
+                BOOST_PP_TUPLE_ELEM(                                         \
+                    3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
+                )                                                            \
+            )()()                                                            \
+        );                                                                   \
+    }
+/**/
+
+// Expands to the default constructor.
+#define BOOST_PARAMETER_DEFAULT_CONSTRUCTOR(z, n, seq)                       \
+    inline                                                                   \
+    BOOST_PP_TUPLE_ELEM(2, 0, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq)))()   \
+      : BOOST_PARAMETER_PARENTHESIZED_TYPE(                                  \
+            BOOST_PP_TUPLE_ELEM(                                             \
+                2, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))              \
+            )                                                                \
+        )(BOOST_PP_CAT(constructor_parameters, __LINE__)()())                \
+    {                                                                        \
+    }
+/**/
+
 #include <boost/parameter/aux_/preprocessor/binary_seq_to_args.hpp>
 
 // Expands to a forwarding function, whose job is to consolidate its arguments
@@ -693,25 +775,23 @@ namespace boost { namespace parameter { namespace aux {
 // element in BOOST_PP_SEQ_TAIL(seq) determines the const-ness of the
 // corresponding argument.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_R(r, seq)                  \
-    BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), template <)  \
+    template <                                                               \
         BOOST_PP_ENUM_PARAMS(                                                \
             BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                        \
           , class ParameterArgumentType                                      \
         )                                                                    \
-    BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), >)           \
+    >                                                                        \
     inline BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(                           \
         BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))                    \
     )                                                                        \
-    BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), typename)    \
-    BOOST_PARAMETER_FUNCTION_RESULT_NAME(                                    \
+    typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(                           \
         BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))                    \
-    )<BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), typename)  \
-        boost::parameter::aux::argument_pack<                                \
+    )<                                                                       \
+        typename boost::parameter::aux::argument_pack<                       \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
                 BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))            \
             )                                                                \
-            BOOST_PP_COMMA_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)))     \
-            BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                       \
+          , BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                       \
                 BOOST_PP_SEQ_TAIL(seq), (ParameterArgumentType)              \
             )                                                                \
         >::type                                                              \
@@ -722,12 +802,7 @@ namespace boost { namespace parameter { namespace aux {
         BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                           \
             BOOST_PP_SEQ_TAIL(seq), (ParameterArgumentType)(a)               \
         )                                                                    \
-        BOOST_PP_COMMA_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)))         \
-        BOOST_PP_IF(                                                         \
-            BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                        \
-          , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH                           \
-          , BOOST_PP_TUPLE_EAT(4)                                            \
-        )(                                                                   \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH(                              \
             BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))                \
           , BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
                 BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))            \
@@ -757,12 +832,12 @@ namespace boost { namespace parameter { namespace aux {
 // pack for the delegate to take in.  Each element in BOOST_PP_SEQ_TAIL(seq)
 // determines the const-ness of the corresponding argument.
 #define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_R(r, seq)                       \
-    BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), template <)  \
+    template <                                                               \
         BOOST_PP_ENUM_PARAMS(                                                \
             BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                        \
           , class ParameterArgumentType                                      \
         )                                                                    \
-    BOOST_PP_EXPR_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), >)           \
+    >                                                                        \
     inline BOOST_PP_EXPR_IF(                                                 \
         BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), 1)         \
       , explicit                                                             \
@@ -771,12 +846,7 @@ namespace boost { namespace parameter { namespace aux {
         BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                           \
             BOOST_PP_SEQ_TAIL(seq), (ParameterArgumentType)(a)               \
         )                                                                    \
-        BOOST_PP_COMMA_IF(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)))         \
-        BOOST_PP_IF(                                                         \
-            BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                        \
-          , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH                           \
-          , BOOST_PP_TUPLE_EAT(4)                                            \
-        )(                                                                   \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_MATCH(                              \
             BOOST_PP_TUPLE_ELEM(2, 0, BOOST_PP_SEQ_HEAD(seq))                \
           , BOOST_PP_CAT(constructor_parameters, __LINE__)                   \
           , BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                        \
@@ -801,22 +871,25 @@ namespace boost { namespace parameter { namespace aux {
 // BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_Z when n is less than
 // BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_1(z, n, data)              \
-    BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z(                            \
-        z, n, (BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_R)(data)            \
-    )
+    BOOST_PP_IF(                                                             \
+        n                                                                    \
+      , BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z                         \
+      , BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_ARITY                    \
+    )(z, n, (BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_R)(data))
 /**/
 
 // Expands to all constructors that take in n arguments.  Used by
 // BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_Z when n is less than
 // BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY.
 #define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_1(z, n, data)                   \
-    BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z(                            \
-        z, n, (BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_R)(data)                 \
-    )
+    BOOST_PP_IF(                                                             \
+        n                                                                    \
+      , BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z                         \
+      , BOOST_PARAMETER_DEFAULT_CONSTRUCTOR                                  \
+    )(z, n, (BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_R)(data))
 /**/
 
 #include <boost/preprocessor/comparison/less.hpp>
-#include <boost/preprocessor/logical/and.hpp>
 
 // Enables BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS_AUX to use either
 // BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0 or
@@ -824,9 +897,7 @@ namespace boost { namespace parameter { namespace aux {
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_Z(z, n, data)              \
     BOOST_PP_CAT(                                                            \
         BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_                           \
-      , BOOST_PP_AND(                                                        \
-            BOOST_PP_LESS(n, BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY), n   \
-        )                                                                    \
+      , BOOST_PP_LESS(n, BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY)          \
     )(z, n, data)
 /**/
 

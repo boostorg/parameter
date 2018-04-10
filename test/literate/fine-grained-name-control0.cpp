@@ -1,7 +1,7 @@
 
 #include <boost/parameter.hpp>
 
-BOOST_PARAMETER_NAME((foo, keywords) pass_foo)
+BOOST_PARAMETER_NAME((pass_foo, keywords) foo)
 
 BOOST_PARAMETER_FUNCTION(
     (int), f, keywords, (required (foo, *))

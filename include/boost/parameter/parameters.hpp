@@ -75,15 +75,41 @@ namespace parameter_ {
     }; 
 } // namespace parameter_
 
-#include <boost/detail/is_xxx.hpp>
+#include <boost/mpl/bool.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
-    // Defines metafunctions, is_required and is_optional, that identify
-    // required<...>, optional<...>, and deduced<...> specializations.
-    BOOST_DETAIL_IS_XXX_DEF(required, required, 2)
-    BOOST_DETAIL_IS_XXX_DEF(optional, optional, 2)
-    BOOST_DETAIL_IS_XXX_DEF(deduced_aux, deduced, 1)
+    template <class T>
+    struct is_required : boost::mpl::false_
+    {
+    };
+
+    template <class Tag, class Predicate>
+    struct is_required<boost::parameter::required<Tag,Predicate> >
+      : boost::mpl::true_
+    {
+    };
+
+    template <class T>
+    struct is_optional : boost::mpl::false_
+    {
+    };
+
+    template <class Tag, class Predicate>
+    struct is_optional<boost::parameter::optional<Tag,Predicate> >
+      : boost::mpl::true_
+    {
+    };
+
+    template <class T>
+    struct is_deduced_aux : boost::mpl::false_
+    {
+    };
+
+    template <class Tag>
+    struct is_deduced_aux<boost::parameter::deduced<Tag> > : boost::mpl::true_
+    {
+    };
 
     template <class T>
     struct is_deduced0
@@ -92,10 +118,21 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 
 namespace boost { namespace parameter { namespace aux {
+
+    //
+    // tag_type, has_default, and predicate --
+    //
+    // These metafunctions accept a ParameterSpec and extract the
+    // keyword tag, whether or not a default is supplied for the
+    // parameter, and the predicate that the corresponding actual
+    // argument type is required match.
+    //
+    // a ParameterSpec is a specialization of either keyword<...>,
+    // required<...>, optional<...>
+    //
 
     template <class T>
     struct has_default
@@ -126,18 +163,6 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/identity.hpp>
 
 namespace boost { namespace parameter { namespace aux {
-
-    //
-    // tag_type, has_default, and predicate --
-    //
-    // These metafunctions accept a ParameterSpec and extract the
-    // keyword tag, whether or not a default is supplied for the
-    // parameter, and the predicate that the corresponding actual
-    // argument type is required match.
-    //
-    // a ParameterSpec is a specialization of either keyword<...>,
-    // required<...>, optional<...>
-    //
 
     // helper for tag_type<...>, below.
     template <class T>
@@ -271,11 +296,11 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#include <boost/parameter/aux_/augment_predicate.hpp>
 #include <boost/parameter/aux_/yesno.hpp>
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/parameter/config.hpp>
 #include <boost/mpl/apply_wrap.hpp>
-#include <boost/mpl/lambda.hpp>
 
 #if !BOOST_WORKAROUND(BOOST_MSVC, == 1310)
 #include <boost/tti/detail/dnullptr.hpp>
@@ -302,10 +327,10 @@ namespace boost { namespace parameter { namespace aux {
             boost::is_same<bound,boost::parameter::void_>
           , typename ParameterRequirements::has_default
           , boost::mpl::apply_wrap2<
-                typename boost::mpl::lambda<
+                boost::parameter::aux::augment_predicate<
                     typename ParameterRequirements::predicate
-                  , boost::parameter::aux::lambda_tag
-                >::type
+                  , typename ArgList::key_type
+                >
               , bound
               , ArgList
             >

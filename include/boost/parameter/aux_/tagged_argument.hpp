@@ -68,6 +68,7 @@ namespace boost { namespace parameter { namespace aux {
     template <class Keyword, class Arg>
     class tagged_argument : boost::parameter::aux::tagged_argument_base
     {
+#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         typedef typename boost::mpl::eval_if<
             boost::is_same<
                 typename Keyword::qualifier
@@ -80,6 +81,9 @@ namespace boost { namespace parameter { namespace aux {
               , boost::mpl::identity<Arg>
             >
         >::type arg_type;
+#else
+        typedef typename boost::remove_const<Arg>::type arg_type;
+#endif
 
      public:
         typedef Keyword key_type;

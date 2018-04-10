@@ -8,9 +8,6 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-    // Tag type passed to MPL lambda.
-    struct lambda_tag;
-
     //
     // Structures used to build the tuple of actual arguments.  The tuple is a
     // nested cons-style list of arg_list specializations terminated by an
@@ -191,6 +188,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/aux_/is_maybe.hpp>
 #include <boost/parameter/aux_/tagged_argument_fwd.hpp>
 #include <boost/parameter/aux_/parameter_requirements.hpp>
+#include <boost/parameter/aux_/augment_predicate.hpp>
 #include <boost/parameter/keyword_fwd.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
@@ -338,6 +336,8 @@ namespace boost { namespace parameter { namespace aux {
         // that default.
         struct binding
         {
+            typedef typename Next::binding next_binding;
+
             template <class KW, class Default, class Reference>
             struct apply
             {
@@ -345,7 +345,7 @@ namespace boost { namespace parameter { namespace aux {
                     boost::is_same<KW,key_type>
                   , boost::mpl::if_<Reference,reference,value_type>
                   , boost::mpl::apply_wrap3<
-                        typename Next::binding
+                        next_binding
                       , KW
                       , Default
                       , Reference
@@ -402,13 +402,15 @@ namespace boost { namespace parameter { namespace aux {
         // sublist whose get() function can produce the value for that key.
         struct key_owner
         {
-            template<class KW>
+            typedef typename Next::key_owner next_key_owner;
+
+            template <class KW>
             struct apply
             {
                 typedef typename boost::mpl::eval_if<
                     boost::is_same<KW,key_type>
                   , boost::mpl::identity<arg_list<TaggedArg,Next> >
-                  , boost::mpl::apply_wrap1<typename Next::key_owner,KW>
+                  , boost::mpl::apply_wrap1<next_key_owner,KW>
                 >::type type;
             };
         };
@@ -563,10 +565,7 @@ namespace boost { namespace parameter { namespace aux {
         // and never really called, so a declaration is enough.
         template <class HasDefault, class Predicate, class ArgPack>
         static typename boost::mpl::apply_wrap2<
-            typename boost::mpl::lambda<
-                Predicate
-              , boost::parameter::aux::lambda_tag
-            >::type
+            boost::parameter::aux::augment_predicate<Predicate,key_type>
           , value_type
           , ArgPack
         >::type

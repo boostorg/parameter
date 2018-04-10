@@ -81,13 +81,6 @@ namespace boost { namespace mpl {
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_move_from(x) move_from_reference
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_forward(x) forward_reference
 
-#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in(x) x
-#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_out(x) x
-#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in_out(x) x
-#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_consume(x) x
-#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_move_from(x) x
-#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_forward(x) x
-
 #include <boost/preprocessor/facilities/is_empty.hpp>
 #include <boost/preprocessor/cat.hpp>
 
@@ -100,7 +93,7 @@ namespace boost { namespace mpl {
 #include <boost/preprocessor/control/iif.hpp>
 #include <boost/preprocessor/tuple/eat.hpp>
 
-#if defined BOOST_MSVC
+#if 1//defined BOOST_MSVC
 
 #define BOOST_PARAMETER_GET_NAME_QUALIFIER_GET(x) \
     BOOST_PP_CAT(BOOST_PARAMETER_GET_NAME_QUALIFIER_, x)
@@ -112,6 +105,16 @@ namespace boost { namespace mpl {
       , forward_reference \
     )
 /**/
+
+#include <boost/preprocessor/seq/seq.hpp>
+
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_out(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in_out(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_consume(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_move_from(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_forward(x) x
+
 #define BOOST_PARAMETER_UNQUALIFIED_NAME_GET(x) \
     BOOST_PP_CAT(BOOST_PARAMETER_STRIP_NAME_QUALIFIER_, x)
 /**/
@@ -142,6 +145,13 @@ namespace boost { namespace mpl {
       , forward_reference BOOST_PP_TUPLE_EAT(2) \
     )(BOOST_PARAMETER_GET_NAME_QUALIFIER_, x)
 /**/
+
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_out(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_in_out(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_consume(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_move_from(x) x
+#define BOOST_PARAMETER_STRIP_NAME_QUALIFIER_forward(x) x
 
 // Expands to the unqualified name of x, where x is either a keyword qualifier
 // or a keyword.

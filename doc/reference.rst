@@ -300,15 +300,18 @@ __ ../../../../boost/parameter/keyword.hpp
     {
         template <class T>
         typename boost::`enable_if`_<
-            boost::mpl::`or_`_<
-                boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::out_reference
+            boost::mpl::`and_`_<
+                boost::mpl::`or_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    >
                 >
-              , boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
-                >
+              , boost::mpl::`not_`_<boost::`is_const`_<T> >
             >
           , |ArgumentPack|_
         >::type constexpr
@@ -373,15 +376,18 @@ __ ../../../../boost/parameter/keyword.hpp
 
         template <class T>
         typename boost::`enable_if`_<
-            boost::mpl::`or_`_<
-                boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::out_reference
+            boost::mpl::`and_`_<
+                boost::mpl::`or_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    >
                 >
-              , boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
-                >
+              , boost::mpl::`not_`_<boost::`is_const`_<T> >
             >
           , *tagged default*
         >::type
@@ -424,15 +430,18 @@ __ ../../../../boost/parameter/keyword.hpp
     {
         template <class T>
         typename boost::`enable_if`_<
-            boost::mpl::`or_`_<
-                boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::out_reference
+            boost::mpl::`and_`_<
+                boost::mpl::`or_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    >
                 >
-              , boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
-                >
+              , boost::mpl::`not_`_<boost::`is_const`_<T> >
             >
           , |ArgumentPack|_
         >::type constexpr
@@ -456,15 +465,18 @@ __ ../../../../boost/parameter/keyword.hpp
 
         template <class T>
         typename boost::`enable_if`_<
-            boost::mpl::`or_`_<
-                boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::out_reference
+            boost::mpl::`and_`_<
+                boost::mpl::`or_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    >
                 >
-              , boost::`is_same`_<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
-                >
+              , boost::mpl::`not_`_<boost::`is_const`_<T> >
             >
           , *tagged default*
         >::type
@@ -499,8 +511,10 @@ __ ../../../../boost/parameter/keyword.hpp
 
 .. _and_: ../../../mpl/doc/refmanual/and.html
 .. _enable_if: ../../../core/doc/html/core/enable_if.html
+.. _is_const: ../../../type_traits/doc/html/boost_typetraits/reference/is_const.html
 .. _is_same: ../../../type_traits/doc/html/boost_typetraits/reference/is_same.html
 .. _is_scalar: ../../../type_traits/doc/html/boost_typetraits/reference/is_scalar.html
+.. _not_: ../../../mpl/doc/refmanual/not.html
 .. _or_: ../../../mpl/doc/refmanual/or.html
 
 .. |operator=| replace:: ``operator=``
@@ -523,7 +537,8 @@ __ ../../../../boost/parameter/keyword.hpp
 \*. The nested ``qualifier`` type of ``Tag`` must be ``forward_reference``.
 
 \*. To use the mutable lvalue reference overload, the nested ``qualifier``
-type of ``Tag`` must be ``out_reference`` or ``in_out_reference``.
+type of ``Tag`` must be ``out_reference`` or ``in_out_reference``, and ``T``
+must not be ``const``-qualified.
 
 \*. To use the mutable rvalue reference overload for non-scalar ``T``, the
 nested ``qualifier`` type of ``Tag`` must be ``consume_reference`` or
@@ -552,7 +567,8 @@ of ``Tag`` must be ``in_reference``.
 \*. The nested ``qualifier`` type of ``Tag`` must be ``forward_reference``.
 
 \*. To use the mutable lvalue reference overload, the nested ``qualifier``
-type of ``Tag`` must be ``out_reference`` or ``in_out_reference``.
+type of ``Tag`` must be ``out_reference`` or ``in_out_reference``, and ``T``
+must not be ``const``-qualified.
 
 \*. To use the ``const`` lvalue reference overload, the nested ``qualifier``
 type of ``Tag`` must be ``in_reference``.
@@ -1043,9 +1059,9 @@ Approximate expansion:
     {
         return boost_param_impl ## **name**\ (
             boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
-                boost::forward<A0>(a0)
+                boost::`forward`_<A0>(a0)
               , …
-              , boost::forward<A ## **n**>(a ## **n**)
+              , boost::`forward`_<A ## **n**>(a ## **n**)
             )
         );
     }
@@ -1062,9 +1078,9 @@ Approximate expansion:
     {
         return boost_param_impl ## **name**\ (
             boost_param_parameters\_ ## __LINE__ ## **name**\ ()(
-                boost::forward<A0>(a0)
+                boost::`forward`_<A0>(a0)
               , …
-              , boost::forward<A ## **m**>(a ## **m**)
+              , boost::`forward`_<A ## **m**>(a ## **m**)
             )
         );
     }
@@ -1108,14 +1124,14 @@ Approximate expansion:
         return boost_param_dispatch\_ ## __LINE__ ## **name**\ (
             static_cast<ResultType(\ *)()>(std::nullptr)
           , args
-          , boost::forward<
+          , boost::`forward`_<
                 typename boost::parameter::value_type<
                     Args
                   , *keyword tag type of required parameter* ## **0**
                 >::type
             >(args[ *keyword object of required parameter* ## **0**])
           , …
-          , boost::forward<
+          , boost::`forward`_<
                 typename boost::parameter::value_type<
                     Args
                   , *keyword tag type of required parameter* ## **n**
@@ -1144,14 +1160,14 @@ Approximate expansion:
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
             )
-          , boost::forward<*argument name* ## **0** ## _type>(
+          , boost::`forward`_<*argument name* ## **0** ## _type>(
                 *argument name* ## **0**
             )
           , …
-          , boost::forward<*argument name* ## **n** ## _type>(
+          , boost::`forward`_<*argument name* ## **n** ## _type>(
                 *argument name* ## **n**
             )
-          , boost::forward<
+          , boost::`forward`_<
                 typename boost::parameter::value_type<
                     Args
                   , *keyword tag type of optional parameter* ## **n + 1**

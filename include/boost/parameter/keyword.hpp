@@ -12,10 +12,12 @@
 #include <boost/parameter/config.hpp>
 
 #if !defined BOOST_NO_SFINAE
+#include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/or.hpp>
+#include <boost/mpl/not.hpp>
 #include <boost/core/enable_if.hpp>
 #endif
 
@@ -48,15 +50,18 @@ namespace boost { namespace parameter {
         inline typename aux::tag<Tag,T&>::type
 #else
         inline typename boost::lazy_enable_if<
-            boost::mpl::or_<
-                boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::out_reference
+            boost::mpl::and_<
+                boost::mpl::or_<
+                    boost::is_same<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::is_same<
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    >
                 >
-              , boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
-                >
+              , boost::mpl::not_<boost::is_const<T> >
             >
           , aux::tag<Tag,T&>
         >::type BOOST_CONSTEXPR
@@ -72,15 +77,18 @@ namespace boost { namespace parameter {
         inline aux::default_<Tag,Default>
 #else
         inline typename boost::enable_if<
-            boost::mpl::or_<
-                boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::out_reference
+            boost::mpl::and_<
+                boost::mpl::or_<
+                    boost::is_same<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::is_same<
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    >
                 >
-              , boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
-                >
+              , boost::mpl::not_<boost::is_const<Default> >
             >
           , aux::default_<Tag,Default>
         >::type
