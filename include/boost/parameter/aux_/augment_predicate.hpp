@@ -61,11 +61,7 @@ namespace boost { namespace parameter { namespace aux {
             >
           , boost::mpl::eval_if<
                 boost::is_lvalue_reference<T>
-              , boost::mpl::eval_if<
-                    boost::parameter::aux::augment_predicate_is_const<T>
-                  , boost::mpl::true_
-                  , boost::mpl::false_
-                >
+              , boost::mpl::false_
               , boost::mpl::true_
             >
           , boost::mpl::true_

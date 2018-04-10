@@ -1119,11 +1119,26 @@ namespace boost { namespace parameter { namespace aux {
   , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))& macro(arg)
 /**/
 
+namespace boost { namespace parameter { namespace aux {
+
+    template <class T>
+    T& as_lvalue(T& value, long)
+    {
+        return value;
+    }
+
+    template <class T>
+    T const& as_lvalue(T const& value, int)
+    {
+        return value;
+    }
+}}} // namespace boost::parameter::aux
+
 // Expands to an argument passed from a dispatch function to the dispatch
 // function with the next higher number of specified parameters.  Explicit
 // forwarding not needed.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_FWD(r, macro, arg)             \
-  , macro(arg)
+  , boost::parameter::aux::as_lvalue(macro(arg), 0L)
 /**/
 
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
@@ -1256,21 +1271,6 @@ namespace boost { namespace parameter { namespace aux {
 /**/
 
 #else
-
-namespace boost { namespace parameter { namespace aux {
-
-    template <class T>
-    T& as_lvalue(T& value, long)
-    {
-        return value;
-    }
-
-    template <class T>
-    T const& as_lvalue(T const& value, int)
-    {
-        return value;
-    }
-}}} // namespace boost::parameter::aux
 
 // Default values are often rvalues, which cannot be implicitly bound to
 // non-const lvalue references.
