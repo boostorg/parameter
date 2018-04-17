@@ -30,7 +30,7 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <boost/parameter/config.hpp>
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 namespace boost { namespace parameter { namespace aux {
 
     struct value_type_is_void
@@ -47,7 +47,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/aux_/result_of0.hpp>
 #include <boost/parameter/aux_/default.hpp>
 
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 #endif
@@ -59,7 +59,7 @@ namespace boost { namespace parameter { namespace aux {
     // feel for what's really happening here.
     struct empty_arg_list
     {
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         struct tagged_arg
         {
             typedef boost::parameter::void_ value_type;
@@ -70,7 +70,7 @@ namespace boost { namespace parameter { namespace aux {
         inline empty_arg_list(Args&&...)
         {
         }
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         inline empty_arg_list()
         {
         }
@@ -124,7 +124,7 @@ namespace boost { namespace parameter { namespace aux {
             return x.value;
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <class K, class T>
         inline T&& get(boost::parameter::aux::default_r_<K,T> const& x) const
         {
@@ -150,7 +150,7 @@ namespace boost { namespace parameter { namespace aux {
             return x.value;
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <class K, class Default>
         inline Default&&
         operator[](boost::parameter::aux::default_r_<K,Default> x) const
@@ -195,13 +195,18 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/assert.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
+#else
+#include <type_traits>
+#endif
 
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 #include <boost/tti/detail/dnullptr.hpp>
 #endif
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/move/utility_core.hpp>
 #else
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
@@ -251,7 +256,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         // Store the arguments in successive nodes of this list.
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         // Use tag dispatching to determine whether to forward all arguments
         // to the Next constructor, or store the first argument and forward
         // the rest. -- Cromwell D. Enage
@@ -261,7 +266,11 @@ namespace boost { namespace parameter { namespace aux {
           , A0&& a0
         ) : Next(
                 typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename Next::tagged_arg::value_type
                       , boost::parameter::void_
                     >
@@ -279,7 +288,11 @@ namespace boost { namespace parameter { namespace aux {
           , Args&&... args
         ) : Next(
                 typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename Next::tagged_arg::value_type
                       , boost::parameter::void_
                     >
@@ -300,7 +313,11 @@ namespace boost { namespace parameter { namespace aux {
           , Args&&... args
         ) : Next(
                 typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename Next::tagged_arg::value_type
                       , boost::parameter::void_
                     >
@@ -313,7 +330,7 @@ namespace boost { namespace parameter { namespace aux {
           , arg(boost::forward<A0>(a0))
         {
         }
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <
             // class A0, class A1, ...
             BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, class A)
@@ -342,7 +359,11 @@ namespace boost { namespace parameter { namespace aux {
             struct apply
             {
                 typedef typename boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<KW,key_type>
+#else
+                    std::is_same<KW,key_type>
+#endif
                   , boost::mpl::if_<Reference,reference,value_type>
                   , boost::mpl::apply_wrap3<
                         next_binding
@@ -408,7 +429,11 @@ namespace boost { namespace parameter { namespace aux {
             struct apply
             {
                 typedef typename boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<KW,key_type>
+#else
+                    std::is_same<KW,key_type>
+#endif
                   , boost::mpl::identity<arg_list<TaggedArg,Next> >
                   , boost::mpl::apply_wrap1<next_key_owner,KW>
                 >::type type;
@@ -445,7 +470,7 @@ namespace boost { namespace parameter { namespace aux {
             return sublist.get(x);
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <class KW, class Default>
         inline typename boost::mpl::apply_wrap3<
             binding
@@ -494,7 +519,7 @@ namespace boost { namespace parameter { namespace aux {
             return this->get_default(d, holds_maybe());
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <class Default>
         inline reference
         get(
@@ -530,7 +555,7 @@ namespace boost { namespace parameter { namespace aux {
             return this->get_default(d, holds_maybe());
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <class Default>
         inline reference
         operator[](
@@ -565,7 +590,11 @@ namespace boost { namespace parameter { namespace aux {
         // and never really called, so a declaration is enough.
         template <class HasDefault, class Predicate, class ArgPack>
         static typename boost::mpl::apply_wrap2<
-            boost::parameter::aux::augment_predicate<Predicate,key_type>
+            boost::parameter::aux::augment_predicate<
+                Predicate
+              , reference
+              , key_type
+            >
           , value_type
           , ArgPack
         >::type
@@ -597,7 +626,7 @@ namespace boost { namespace parameter { namespace aux {
             >(x, *this);
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <class KW, class T2>
         inline arg_list<
             boost::parameter::aux::tagged_argument_rref<KW,T2>

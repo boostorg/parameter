@@ -10,10 +10,16 @@
 #include <boost/config.hpp>
 #include <cmath>
 
-#if !defined BOOST_NO_SFINAE
+#if !defined(BOOST_NO_SFINAE)
 #include <boost/tti/detail/dnullptr.hpp>
-#include <boost/type_traits/is_base_and_derived.hpp>
 #include <boost/core/enable_if.hpp>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_base_of.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
 #endif
 
 namespace test {
@@ -27,12 +33,20 @@ namespace test {
         template <class Args>
         Xbase(
             Args const& args
-#if !defined BOOST_NO_SFINAE
+#if !defined(BOOST_NO_SFINAE)
             // We need the disable_if part for VC7.1/8.0.
           , typename boost::disable_if<
-                boost::is_base_and_derived<Xbase, Args>
-            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                boost::is_base_of<Xbase,Args>
+#else
+                typename boost::mpl::if_<
+                    std::is_base_of<Xbase,Args>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
 #endif
+            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif // BOOST_NO_SFINAE
         ) : value(
                 std::string(args[test::_x | "foo"]) + args[test::_y | "bar"]
             )

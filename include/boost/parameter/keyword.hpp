@@ -11,17 +11,21 @@
 #include <boost/parameter/aux_/default.hpp>
 #include <boost/parameter/config.hpp>
 
-#if !defined BOOST_NO_SFINAE
+#if !defined(BOOST_NO_SFINAE)
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/eval_if.hpp>
+#include <boost/core/enable_if.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_scalar.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/mpl/or.hpp>
-#include <boost/mpl/not.hpp>
-#include <boost/core/enable_if.hpp>
+#else
+#include <type_traits>
 #endif
+#endif // BOOST_NO_SFINAE
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/move/utility_core.hpp>
 #endif
 
@@ -46,26 +50,44 @@ namespace boost { namespace parameter {
     struct keyword
     {
         template <class T>
-#if defined BOOST_NO_SFINAE
+#if defined(BOOST_NO_SFINAE)
         inline typename aux::tag<Tag,T&>::type
 #else
         inline typename boost::lazy_enable_if<
-            boost::mpl::and_<
-                boost::mpl::or_<
+            typename boost::mpl::eval_if<
+                typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::out_reference
                     >
+                  , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                   , boost::is_same<
+#else
+                  , std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     >
+                >::type
+              , boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                    boost::is_const<T>
+#else
+                    std::is_const<T>
+#endif
+                  , boost::mpl::false_
+                  , boost::mpl::true_
                 >
-              , boost::mpl::not_<boost::is_const<T> >
-            >
+              , boost::mpl::false_
+            >::type
           , aux::tag<Tag,T&>
         >::type BOOST_CONSTEXPR
-#endif
+#endif // BOOST_NO_SFINAE
         operator=(T& x) const
         {
             typedef typename aux::tag<Tag,T&>::type result;
@@ -73,26 +95,44 @@ namespace boost { namespace parameter {
         }
 
         template <class Default>
-#if defined BOOST_NO_SFINAE
+#if defined(BOOST_NO_SFINAE)
         inline aux::default_<Tag,Default>
 #else
         inline typename boost::enable_if<
-            boost::mpl::and_<
-                boost::mpl::or_<
+            typename boost::mpl::eval_if<
+                typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::out_reference
                     >
+                  , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                   , boost::is_same<
+#else
+                  , std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     >
+                >::type
+              , boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                    boost::is_const<Default>
+#else
+                    std::is_const<Default>
+#endif
+                  , boost::mpl::false_
+                  , boost::mpl::true_
                 >
-              , boost::mpl::not_<boost::is_const<Default> >
-            >
+              , boost::mpl::false_
+            >::type
           , aux::default_<Tag,Default>
         >::type
-#endif
+#endif // BOOST_NO_SFINAE
         operator|(Default& d) const
         {
             return aux::default_<Tag,Default>(d);
@@ -105,23 +145,38 @@ namespace boost { namespace parameter {
         }
 
         template <class T>
-#if defined BOOST_NO_SFINAE
+#if defined(BOOST_NO_SFINAE)
         inline typename aux::tag<Tag,T const&>::type
 #else
         inline typename boost::lazy_enable_if<
-            boost::mpl::or_<
+            typename boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                 boost::is_same<
+#else
+                std::is_same<
+#endif
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 >
+              , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
               , boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
+#else
+              , boost::mpl::if_<
+                    std::is_same<
+#endif
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+#endif
                 >
-            >
+            >::type
           , aux::tag<Tag,T const&>
         >::type BOOST_CONSTEXPR
-#endif
+#endif // BOOST_NO_SFINAE
         operator=(T const& x) const
         {
             typedef typename aux::tag<Tag,T const&>::type result;
@@ -129,23 +184,38 @@ namespace boost { namespace parameter {
         }
 
         template <class Default>
-#if defined BOOST_NO_SFINAE
+#if defined(BOOST_NO_SFINAE)
         inline aux::default_<Tag,Default const>
 #else
         inline typename boost::enable_if<
-            boost::mpl::or_<
+            typename boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                 boost::is_same<
+#else
+                std::is_same<
+#endif
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 >
+              , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
               , boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
+#else
+              , boost::mpl::if_<
+                    std::is_same<
+#endif
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+#endif
                 >
-            >
+            >::type
           , aux::default_<Tag,Default const>
         >::type
-#endif
+#endif // BOOST_NO_SFINAE
         operator|(Default const& d) const
         {
             return aux::default_<Tag,Default const>(d);
@@ -158,28 +228,52 @@ namespace boost { namespace parameter {
             return aux::lazy_default<Tag,Default>(d);
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <class T>
         inline typename boost::lazy_enable_if<
-            boost::mpl::or_<
-                boost::mpl::or_<
+            typename boost::mpl::eval_if<
+                typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::consume_reference
                     >
+                  , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                   , boost::is_same<
+#else
+                  , std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     >
-                >
-              , boost::mpl::and_<
+                >::type
+              , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+              , boost::mpl::if_<
                     boost::is_same<
+#else
+              , boost::mpl::eval_if<
+                    std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::in_reference
                     >
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                   , boost::is_scalar<T>
+#else
+                  , boost::mpl::if_<
+                        std::is_scalar<T>
+                      , boost::mpl::true_
+                      , boost::mpl::false_
+                    >
+#endif
+                  , boost::mpl::false_
                 >
-            >
+            >::type
           , aux::tag<Tag,T>
         >::type BOOST_CONSTEXPR
         operator=(T&& x) const
@@ -190,16 +284,31 @@ namespace boost { namespace parameter {
 
         template <class T>
         inline typename boost::lazy_enable_if<
-            boost::mpl::or_<
+            typename boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                 boost::is_same<
+#else
+                std::is_same<
+#endif
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 >
+              , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
               , boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
+#else
+              , boost::mpl::if_<
+                    std::is_same<
+#endif
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+#endif
                 >
-            >
+            >::type
           , aux::tag<Tag,T const>
         >::type BOOST_CONSTEXPR
         operator=(T const&& x) const
@@ -210,25 +319,49 @@ namespace boost { namespace parameter {
 
         template <class Default>
         inline typename boost::enable_if<
-            boost::mpl::or_<
-                boost::mpl::or_<
+            typename boost::mpl::eval_if<
+                typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::consume_reference
                     >
+                  , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                   , boost::is_same<
+#else
+                  , std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     >
-                >
-              , boost::mpl::and_<
+                >::type
+              , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+              , boost::mpl::if_<
                     boost::is_same<
+#else
+              , boost::mpl::eval_if<
+                    std::is_same<
+#endif
                         typename Tag::qualifier
                       , boost::parameter::in_reference
                     >
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                   , boost::is_scalar<Default>
+#else
+                  , boost::mpl::if_<
+                        std::is_scalar<Default>
+                      , boost::mpl::true_
+                      , boost::mpl::false_
+                    >
+#endif
+                  , boost::mpl::false_
                 >
-            >
+            >::type
           , aux::default_r_<Tag,Default>
         >::type
         operator|(Default&& d) const
@@ -238,16 +371,31 @@ namespace boost { namespace parameter {
 
         template <class Default>
         inline typename boost::enable_if<
-            boost::mpl::or_<
+            typename boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                 boost::is_same<
+#else
+                std::is_same<
+#endif
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 >
+              , boost::mpl::true_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
               , boost::is_same<
-                    typename Tag::qualifier
-                  , boost::parameter::forward_reference
+#else
+              , boost::mpl::if_<
+                    std::is_same<
+#endif
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+#endif
                 >
-            >
+            >::type
           , aux::default_r_<Tag,Default const>
         >::type
         operator|(Default const&& d) const

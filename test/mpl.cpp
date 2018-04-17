@@ -4,12 +4,15 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "basics.hpp"
-#include <boost/type_traits/add_pointer.hpp>
 #include <boost/mpl/list.hpp>
 #include <boost/mpl/for_each.hpp>
 #include <boost/mpl/size.hpp>
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/assert.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/add_pointer.hpp>
+#endif
 
 namespace test {
 
@@ -32,7 +35,14 @@ namespace test {
           , boost::mpl::size<Params>::value
         );
 
-        boost::mpl::for_each<Params, boost::add_pointer<boost::mpl::_1> >(
+        boost::mpl::for_each<
+            Params
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::add_pointer<boost::mpl::_1>
+#else
+          , std::add_pointer<boost::mpl::_1>
+#endif
+        >(
             test::assert_in_set<Expected>()
         );
     }

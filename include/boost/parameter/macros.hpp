@@ -35,7 +35,7 @@
 #include <boost/preprocessor/tuple/elem.hpp>
 #include <boost/preprocessor/cat.hpp>
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 #define BOOST_PARAMETER_FUN_0(z, n, params)                                  \
     BOOST_PP_TUPLE_ELEM(3, 0, params) BOOST_PP_TUPLE_ELEM(3, 1, params)()    \
@@ -86,7 +86,7 @@
     )(z, n, params)
 /**/
 
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 #define BOOST_PARAMETER_FUN_DEFN_0(z, n, params)                             \
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, class T)>                         \

@@ -5,15 +5,10 @@
 
 #include <boost/parameter.hpp>
 
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING && \
-    BOOST_PARAMETER_MAX_ARITY < 2
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_MAX_ARITY < 2)
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
-
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/mpl/assert.hpp>
-#include <boost/core/lightweight_test.hpp>
 
 namespace test {
 
@@ -41,12 +36,29 @@ namespace test {
         }
 
         static std::size_t count;
+
+        void noop() const
+        {
+        }
     };
 
     std::size_t count_instances::count = 0;
 
     BOOST_PARAMETER_NAME(x)
     BOOST_PARAMETER_NAME(y)
+} // namespace test
+
+#include <boost/mpl/assert.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
+
+namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), f, tag,
         (required
@@ -55,10 +67,32 @@ namespace test {
         )
     )
     {
-        BOOST_MPL_ASSERT((boost::is_same<x_type,int>));
-        BOOST_MPL_ASSERT((boost::is_same<y_type,int>));
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        BOOST_MPL_ASSERT((boost::is_convertible<x_type,int>));
+        BOOST_MPL_ASSERT((boost::is_convertible<y_type,int>));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_convertible<x_type,int>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_convertible<y_type,int>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
         return 0;
     }
+} // namespace test
+
+#include <boost/core/lightweight_test.hpp>
+
+namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), g, tag,
         (required
@@ -66,7 +100,20 @@ namespace test {
         )
     )
     {
-        BOOST_MPL_ASSERT((boost::is_same<x_type,test::count_instances>));
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        BOOST_MPL_ASSERT((
+            boost::is_convertible<x_type,test::count_instances>
+        ));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_convertible<x_type,test::count_instances>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+        x.noop();
         BOOST_TEST_LT(0, test::count_instances::count);
         return 0;
     }
@@ -77,9 +124,20 @@ namespace test {
         )
     )
     {
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_MPL_ASSERT((
             boost::is_convertible<x_type,test::count_instances const>
         ));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_convertible<x_type,test::count_instances const>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif
+        x.noop();
         BOOST_TEST_EQ(1, test::count_instances::count);
         return 0;
     }
@@ -89,9 +147,9 @@ int main()
 {
     test::f(1, 2);
     test::f(1., 2.f);
-#if defined BOOST_CLANG && (1 == BOOST_CLANG) && (__clang_major__ < 6)
+#if defined(BOOST_CLANG) && (1 == BOOST_CLANG) && (__clang_major__ < 6)
     // Travis Cl on Linux reports substitution errors involving suffix I.
-#elif !defined BOOST_MSVC
+#elif !defined(BOOST_MSVC)
     // Appveyor reports MSVC declaring suffix I illegal.
     test::f(1U, 2I);
 #endif

@@ -239,33 +239,34 @@ will be propagated to the caller.
 |ParameterSpec|
 ---------------
 
-A |ParameterSpec| describes the type requirements for arguments
-corresponding to a given |kw|_ and indicates whether the argument
-is optional or required.  The table below details the allowed forms
-and describes their condition for satisfaction by an actual
-argument type. In each row,
+A |ParameterSpec| describes the type requirements for arguments corresponding
+to a given |kw|_ and indicates whether the argument is optional or
+required.  The table below details the allowed forms and describes their
+condition for satisfaction by an actual argument type. In each row,
 
 .. _conditions:
 
 * ``K`` is the |ParameterSpec|\ 's |keyword tag type|
 * ``A`` is an |intended argument type| associated with ``K``, if any
-* ``F`` is a unary `MPL lambda expression`_
+* ``P`` is a model of |ArgumentPack| that contains ``A``
+* ``F`` is an `MPL Binary Metafunction Class`_
 
-.. _`MPL lambda expression`: ../../../mpl/doc/refmanual/lambda-expression.html
+.. _`MPL Binary Metafunction Class`: ../../../mpl/doc/refmanual/metafunction-class.html
 
 .. table:: |ParameterSpec| allowed forms and conditions of satisfaction
 
-+------------------------+----------------+----------------------------------+
-| Type                   | ``A`` required | Condition ``A`` must satisfy     |
-+========================+================+==================================+
-| ``K``                  | no             | *n/a*                            |
-+------------------------+----------------+----------------------------------+
-| |optional|_\ ``<K,F>`` | no             | ``mpl::apply<F,A>::type::value`` |
-|                        |                | is ``true``.                     |
-+------------------------+----------------+----------------------------------+
-| |required|_\ ``<K,F>`` | yes            | ``mpl::apply<F,A>::type::value`` |
-|                        |                | is ``true``.                     |
-+------------------------+----------------+----------------------------------+
++------------------------+----------+----------------------------------------+
+| Type                   | ``A``    | Condition ``A`` must satisfy           |
+|                        | required |                                        |
++========================+==========+========================================+
+| ``K``                  | no       |       *n/a*                            |
++------------------------+----------+----------------------------------------+
+| |optional|_\ ``<K,F>`` | no       | ``mpl::apply2<F,A,P>::type::value`` is |
+|                        |          | ``true``.                              |
++------------------------+----------+----------------------------------------+
+| |required|_\ ``<K,F>`` | yes      | ``mpl::apply2<F,A,P>::type::value`` is |
+|                        |          | ``true``.                              |
++------------------------+----------+----------------------------------------+
 
 The information in a |ParameterSpec| is used to `limit`__ the arguments that
 will be matched by `forwarding functions`_.  
@@ -833,11 +834,10 @@ __ ../../../../boost/parameter/parameters.hpp
     template <class Tag, class Predicate = *unspecified*>
     struct required;
 
-The default value of ``Predicate`` is an unspecified |Metafunction|_ that
-returns ``mpl::true_`` for any argument.
+The default value of ``Predicate`` is an unspecified `MPL Binary Metafunction
+Class`_ that returns ``mpl::true_`` for any argument.
 
-.. |Metafunction| replace:: :concept:`Metafunction`
-.. _Metafunction: ../../../mpl/doc/refmanual/metafunction.html
+.. _`MPL Binary Metafunction Class`: ../../../mpl/doc/refmanual/metafunction-class.html
 
 ``deduced``
 -----------
@@ -999,18 +999,29 @@ which the keywords used by the function resides.  ``arguments`` is a
         ( '**(**' *type-name* '**)**' ) |
         '**\***'
 
-``argument-name`` is any valid C++ identifier. ``default-value`` is any valid
-C++ expression; if necessary, user code can compute it in terms of
-``previous-name ## _type``, where ``previous-name`` is the ``argument-name``
-in a previous ``specifier-group0``.  ``mfc`` is an `MPL Binary Metafunction
-Class`_ whose first argument will be the type of the corresponding
-``argument-name`` and whose second argument will be the entire
-|ArgumentPack|_; however, user code *cannot* compute ``mfc`` in terms of
-``previous-name ## _type``.  ``type-name`` is the name of a type.
+* ``argument-name`` is any valid C++ identifier.
+* ``default-value`` is any valid C++ expression; if necessary, user code can
+compute it in terms of ``previous-name ## _type``, where ``previous-name`` is
+the ``argument-name`` in a previous ``specifier-group0`` or
+``specifier-group1``.
+* ``mfc`` is an `MPL Binary Metafunction Class`_ whose first argument will be
+the type of the corresponding ``argument-name``, whose second argument will be
+the entire |ArgumentPack|_, and whose return type is a `Boolean Integral
+Constant`_; however, user code *cannot* compute ``mfc`` in terms of
+``previous-name ## _type``.
+* ``type-name`` is either the name of a **target type** or an `MPL Binary
+Metafunction Class`_ whose first argument will be the type of the
+corresponding ``argument-name``, whose second argument will be the entire
+|ArgumentPack|_, and whose return type is the **target type**.  If
+``restriction`` uses this form, then the type of the generated name
+``argument-name ## _type`` will be computed in terms of the **target type**,
+and the generated reference ``argument-name`` (but not its corresponding entry
+in ``args``) will be cast to that type.
 
 .. _`Boost.Preprocessor`: ../../../preprocessor/doc/index.html
 .. _`sequence`: ../../../preprocessor/doc/data/sequences.html
 .. _`MPL Binary Metafunction Class`: ../../../mpl/doc/refmanual/metafunction-class.html
+.. _`Boolean Integral Constant`: ../../../mpl/doc/refmanual/integral-constant.html
 
 :Generated names in enclosing scope:
 * ``boost_param_result_ ## __LINE__ ## name``

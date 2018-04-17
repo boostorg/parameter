@@ -5,11 +5,11 @@
 
 #include <boost/parameter.hpp>
 
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-#if BOOST_PARAMETER_MAX_ARITY < 4
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if (BOOST_PARAMETER_MAX_ARITY < 4)
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
-#if BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY < 5
+#if (BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY < 5)
 #error Define BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY as 5 or greater.
 #endif
 #endif
@@ -19,7 +19,7 @@ namespace test {
     BOOST_PARAMETER_NAME((_lrc0, keywords) in(lrc0))
     BOOST_PARAMETER_NAME((_lr0, keywords) in_out(lr0))
     BOOST_PARAMETER_NAME((_rrc0, keywords) in(rrc0))
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     BOOST_PARAMETER_NAME((_rr0, keywords) consume(rr0))
 #else
     BOOST_PARAMETER_NAME((_rr0, keywords) rr0)
@@ -36,7 +36,7 @@ namespace test {
     };
 } // namespace test
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || ( \
         (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
         (9 < BOOST_PARAMETER_MAX_ARITY) \
     )
@@ -69,8 +69,8 @@ namespace test {
 
 #endif // Test with many arguments.
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || \
-    15 < BOOST_PARAMETER_MAX_ARITY
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    (15 < BOOST_PARAMETER_MAX_ARITY)
 
 namespace test {
 
@@ -111,7 +111,12 @@ namespace test {
 
 #endif // Test with more arguments.
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_scalar.hpp>
+#else
+#include <type_traits>
+#endif
+
 #include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
@@ -131,9 +136,13 @@ namespace test {
                 test::passed_by_lvalue_reference
               , A<T>::evaluate_category(args[test::_lr0])
             );
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             if (boost::is_scalar<T>::value)
+#else
+            if (std::is_scalar<T>::value)
+#endif
             {
                 BOOST_TEST_EQ(
                     test::passed_by_rvalue_reference
@@ -152,7 +161,7 @@ namespace test {
                 test::passed_by_rvalue_reference
               , A<T>::evaluate_category(args[test::_rr0])
             );
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
               , A<T>::evaluate_category(args[test::_rrc0])
@@ -166,7 +175,7 @@ namespace test {
     };
 } // namespace test
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || ( \
         (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
         (9 < BOOST_PARAMETER_MAX_ARITY) \
     )
@@ -206,7 +215,7 @@ namespace test {
                     args[test::_lr2 || test::lvalue_bitset_function<2>()]
                 )
             );
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference_to_const
               , U::evaluate_category<0>(args[test::_rrc0])
@@ -225,7 +234,7 @@ namespace test {
                     args[test::_rr2 || test::rvalue_bitset_function<2>()]
                 )
             );
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
               , U::evaluate_category<0>(args[test::_rrc0])
@@ -251,8 +260,8 @@ namespace test {
 
 #endif // Test with many arguments.
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || \
-    15 < BOOST_PARAMETER_MAX_ARITY
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    (15 < BOOST_PARAMETER_MAX_ARITY)
 
 namespace test {
 
@@ -305,7 +314,7 @@ namespace test {
                     ]
                 )
             );
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference_to_const
               , U::evaluate_category<0>(args[test::_rrc0])
@@ -350,7 +359,7 @@ namespace test {
                     ]
                 )
             );
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
               , U::evaluate_category<0>(args[test::_rrc0])
@@ -402,6 +411,160 @@ namespace test {
 
 #endif // Test with more arguments.
 
+#include <boost/mpl/placeholders.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#endif
+
+namespace test {
+
+    struct e_parameters
+      : boost::parameter::parameters<
+            boost::parameter::required<
+                boost::parameter::deduced<test::keywords::lrc0>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+              , boost::is_convertible<boost::mpl::_1,float>
+#else
+              , boost::mpl::if_<
+                    std::is_convertible<boost::mpl::_1,float>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >
+#endif
+            >
+          , boost::parameter::required<
+                boost::parameter::deduced<test::keywords::lr0>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+              , boost::is_convertible<boost::mpl::_1,char const*>
+#else
+              , boost::mpl::if_<
+                    std::is_convertible<boost::mpl::_1,char const*>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >
+#endif
+            >
+          , boost::parameter::required<
+                boost::parameter::deduced<test::keywords::rr0>
+              , test::string_predicate<test::keywords::lr0>
+            >
+        >
+    {
+    };
+} // namespace test
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/remove_const.hpp>
+#endif
+
+namespace test {
+
+    struct E
+    {
+        template <class Args>
+        static void evaluate(Args const& args)
+        {
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::lrc0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_lrc0])
+            ));
+            BOOST_TEST((
+                test::passed_by_lvalue_reference == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::lr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_lr0])
+            ));
+#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::lrc0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_lrc0])
+            ));
+            BOOST_TEST((
+                test::passed_by_lvalue_reference == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::lr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_lr0])
+            ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            BOOST_TEST((
+                test::passed_by_rvalue_reference == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            BOOST_TEST((
+                test::passed_by_rvalue_reference == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined BOOST_NO_CXX11_HDR_TYPE_TRAITS
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+        }
+    };
+} // namespace test
+
 int main()
 {
     test::B<float>::evaluate(
@@ -447,35 +610,35 @@ int main()
       , test::_lrc0 = test::lvalue_const_str()
     ));
 
-    char baz_arr[4] = "baz";
+    char baz_arr[4] = "qux";
     typedef char char_arr[4];
 
     test::B<char_arr>::evaluate(
         test::f_parameters()(
-            "baz"
+            "crg"
           , baz_arr
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-          , static_cast<char_arr const&&>("baz")
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+          , static_cast<char_arr const&&>("uir")
           , static_cast<char_arr&&>(baz_arr)
 #else
-          , "baz"
-          , "baz"
+          , "grl"
+          , "grp"
 #endif
         )
     );
     test::B<char_arr>::evaluate((
         test::_lr0 = baz_arr
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-      , test::_rrc0 = static_cast<char_arr const&&>("baz")
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+      , test::_rrc0 = static_cast<char_arr const&&>("wld")
       , test::_rr0 = static_cast<char_arr&&>(baz_arr)
 #else
-      , test::_rrc0 = "baz"
-      , test::_rr0 = "baz"
+      , test::_rrc0 = "frd"
+      , test::_rr0 = "plg"
 #endif
-      , test::_lrc0 = "baz"
+      , test::_lrc0 = "mos"
     ));
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || ( \
         (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
         (9 < BOOST_PARAMETER_MAX_ARITY) \
     )
@@ -506,8 +669,8 @@ int main()
     );
 #endif // Test with many arguments.
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || \
-    15 < BOOST_PARAMETER_MAX_ARITY
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    (15 < BOOST_PARAMETER_MAX_ARITY)
     test::D::evaluate(
         test::h_parameters()(
             test::lvalue_const_bitset<0>()
@@ -541,6 +704,21 @@ int main()
         )
     );
 #endif // Test with more arguments.
+
+    test::E::evaluate(
+        test::e_parameters()(
+            test::lvalue_char_ptr()
+          , test::rvalue_str()
+          , test::lvalue_const_float()
+        )
+    );
+    test::E::evaluate(
+        test::e_parameters()(
+            test::rvalue_str()
+          , test::lvalue_const_float()
+          , test::lvalue_char_ptr()
+        )
+    );
 
     return boost::report_errors();
 }

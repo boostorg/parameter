@@ -6,23 +6,39 @@
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
 #include "basics.hpp"
 #include <string>
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
+
 namespace test {
 
     BOOST_PARAMETER_NAME(x)
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    // Sun has problems with this syntax:
-    //
-    //   template1< r* ( template2<x> ) >
-    //
-    // Workaround: factor template2<x> into a separate typedef
-    typedef boost::is_convertible<boost::mpl::_,char const*> predicate;
+    struct predicate
+    {
+        template <class T, class Args>
+        struct apply
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          : boost::is_convertible<T,char const*>
+#else
+          : boost::mpl::if_<
+                std::is_convertible<T,char const*>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+#endif
+        {
+        };
+    };
 
     BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
         (deduced
@@ -32,23 +48,20 @@ namespace test {
     {
         return 1;
     }
-#else
-    BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
-        (deduced
-            (optional
-                (x, *(boost::is_convertible<boost::mpl::_,char const*>),
-                    BOOST_TTI_DETAIL_NULLPTR
-                )
-            )
-        )
-    )
-    {
-        return 1;
-    }
-#endif // SunPro CC workarounds needed.
 
     template <class A0>
-    typename boost::enable_if<boost::is_same<int,A0>,int>::type
+    typename boost::enable_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        boost::is_same<int,A0>
+#else
+        typename boost::mpl::if_<
+            std::is_same<int,A0>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
+      , int
+    >::type
     sfinae(A0 const& a0)
     {
         return 0;

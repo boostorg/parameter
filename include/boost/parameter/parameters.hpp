@@ -62,19 +62,6 @@ namespace boost { namespace parameter {
     };
 }} // namespace boost::parameter
 
-#include <boost/type_traits/is_same.hpp>
-#include <boost/mpl/assert.hpp>
-
-namespace parameter_ {
-
-    template <class T>
-    struct unmatched_argument
-    {
-        BOOST_MPL_ASSERT((boost::is_same<T,void>));
-        typedef int type;
-    }; 
-} // namespace parameter_
-
 #include <boost/mpl/bool.hpp>
 
 namespace boost { namespace parameter { namespace aux {
@@ -302,6 +289,12 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/config.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_same.hpp>
+#else
+#include <type_traits>
+#endif
+
 #if !BOOST_WORKAROUND(BOOST_MSVC, == 1310)
 #include <boost/tti/detail/dnullptr.hpp>
 #endif
@@ -324,11 +317,16 @@ namespace boost { namespace parameter { namespace aux {
         >::type bound;
 
         typedef typename mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_same<bound,boost::parameter::void_>
+#else
+            std::is_same<bound,boost::parameter::void_>
+#endif
           , typename ParameterRequirements::has_default
           , boost::mpl::apply_wrap2<
                 boost::parameter::aux::augment_predicate<
                     typename ParameterRequirements::predicate
+                  , typename ArgList::reference
                   , typename ArgList::key_type
                 >
               , bound
@@ -368,6 +366,28 @@ namespace boost { namespace parameter { namespace aux {
     {
     };
 }}} // namespace boost::parameter::aux
+
+#include <boost/mpl/assert.hpp>
+
+namespace parameter_ {
+
+    template <class T>
+    struct unmatched_argument
+    {
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        BOOST_MPL_ASSERT((boost::is_same<T,void>));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_same<T,void>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif
+        typedef int type;
+    }; 
+} // namespace parameter_
 
 #include <boost/parameter/aux_/set.hpp>
 
@@ -488,7 +508,11 @@ namespace boost { namespace parameter { namespace aux {
     >
     struct deduce_tag
       : boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_same<DeducedArgs,boost::parameter::void_>
+#else
+            std::is_same<DeducedArgs,boost::parameter::void_>
+#endif
           , boost::mpl::pair<boost::parameter::void_,UsedArgs>
           , boost::parameter::aux::deduce_tag0<
                 Argument
@@ -503,8 +527,11 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #include <boost/parameter/aux_/arg_list.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -542,9 +569,15 @@ namespace boost { namespace parameter { namespace aux {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         typedef typename List::arg argument;
 #endif
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         typedef typename boost::remove_const<
             typename boost::remove_reference<argument>::type
         >::type arg_type;
+#else
+        typedef typename std::remove_const<
+            typename std::remove_reference<argument>::type
+        >::type arg_type;
+#endif
         typedef typename List::spec parameter_spec;
         typedef typename boost::parameter::aux::tag_type<
             parameter_spec
@@ -614,8 +647,13 @@ namespace boost { namespace parameter { namespace aux {
         // Build the arg_list incrementally, prepending new nodes.
         typedef typename boost::mpl::if_<
             typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                 boost::is_same<Error,boost::parameter::void_>
               , boost::is_same<tagged,boost::parameter::void_>
+#else
+                std::is_same<Error,boost::parameter::void_>
+              , std::is_same<tagged,boost::parameter::void_>
+#endif
               , boost::mpl::false_
             >::type
           , parameter_::unmatched_argument<argument>
@@ -623,7 +661,11 @@ namespace boost { namespace parameter { namespace aux {
         >::type error;
 
         typedef typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_same<tagged,boost::parameter::void_>
+#else
+            std::is_same<tagged,boost::parameter::void_>
+#endif
           , ArgumentPack
           , boost::parameter::aux::arg_list<tagged,ArgumentPack>
         >::type argument_pack;
@@ -707,7 +749,11 @@ namespace boost { namespace parameter { namespace aux {
     >
     struct make_arg_list_aux
       : boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_same<List,boost::parameter::void_>
+#else
+            std::is_same<List,boost::parameter::void_>
+#endif
           , boost::mpl::identity<boost::mpl::pair<ArgumentPack,Error> >
           , boost::parameter::aux::make_arg_list0<
                 List
@@ -745,7 +791,9 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_const.hpp>
+#endif
 #endif
 
 namespace boost { namespace parameter { namespace aux {
@@ -756,9 +804,15 @@ namespace boost { namespace parameter { namespace aux {
     {
         typedef Spec spec;
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         typedef boost::is_const<
             typename boost::remove_reference<Arg>::type
         > is_arg_const;
+#else
+        typedef std::is_const<
+            typename std::remove_reference<Arg>::type
+        > is_arg_const;
+#endif
 #endif
         typedef Arg arg;
         typedef Tail tail;
@@ -778,7 +832,11 @@ namespace boost { namespace parameter { namespace aux {
     template <class Spec, class Arg, class Tail>
     struct make_items
       : boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_same<Arg,boost::parameter::void_>
+#else
+            std::is_same<Arg,boost::parameter::void_>
+#endif
           , boost::mpl::identity<boost::parameter::void_>
           , boost::parameter::aux::make_item<Spec,Arg,Tail>
         >
@@ -806,7 +864,11 @@ namespace boost { namespace parameter { namespace aux {
     template <class Spec, class Tail>
     struct make_deduced_items
       : boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_same<Spec,boost::parameter::void_>
+#else
+            std::is_same<Spec,boost::parameter::void_>
+#endif
           , boost::mpl::identity<boost::parameter::void_>
           , boost::mpl::eval_if<
                 boost::parameter::aux::is_deduced<Spec>
@@ -818,7 +880,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -862,10 +924,20 @@ namespace boost { namespace parameter { namespace aux {
 
     template <class ArgumentPackAndError>
     struct is_arg_pack_error_void
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::is_same<
-            typename boost::mpl::second<ArgumentPackAndError>::type
-          , boost::parameter::void_
-        >
+#else
+      : boost::mpl::if_<
+            std::is_same<
+#endif
+                typename boost::mpl::second<ArgumentPackAndError>::type
+              , boost::parameter::void_
+            >
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
     {
     };
 
@@ -966,7 +1038,11 @@ namespace boost { namespace parameter { namespace aux {
         {
             return ArgList(
                 typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                     boost::is_same<
+#else
+                    std::is_same<
+#endif
                         typename ArgList::tagged_arg::value_type
                       , boost::parameter::void_
                     >
@@ -987,7 +1063,7 @@ namespace boost { namespace parameter { namespace aux {
         {
             return arg_list_factory<ArgList,Args...>::reverse(
                 boost::forward<Args>(args)...
-              , static_cast<A0&&>(a0)
+              , boost::forward<A0>(a0)
               , boost::forward<ReversedArgs>(reversed_args)...
             );
         }
@@ -1109,7 +1185,7 @@ namespace boost { namespace parameter {
     };
 }} // namespace boost::parameter
 
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 #define BOOST_PARAMETER_right_angle(z, n, _) >
 /**/
@@ -1346,7 +1422,11 @@ namespace boost { namespace parameter {
                   , BOOST_PARAMETER_satisfies_begin
                   , PS
                 )
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
                 boost::is_same<
+#else
+                std::is_same<
+#endif
                     typename boost::mpl::second<
                         ArgumentPackAndError
                     >::type
@@ -1469,7 +1549,7 @@ namespace boost { namespace parameter {
           , BOOST_PARAMETER_AUX_PP_BINARY_SEQ_FOR_EACH_Z
           , (BOOST_PARAMETER_function_call_op_overload_R)(_)
         )
-#if BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY < BOOST_PARAMETER_MAX_ARITY
+#if (BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY < BOOST_PARAMETER_MAX_ARITY)
         BOOST_PP_REPEAT_FROM_TO(
             BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY
           , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)

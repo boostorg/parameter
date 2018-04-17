@@ -13,9 +13,9 @@
 
 BOOST_PARAMETER_NAME((_graph, graphs) graph)
 BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
-BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
-BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
-BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
+BOOST_PARAMETER_NAME((_root_vertex, graphs) in(root_vertex))
+BOOST_PARAMETER_NAME((_index_map, graphs) in(index_map))
+BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 
 struct graph_predicate
 {

@@ -14,7 +14,7 @@ namespace param {
     BOOST_PARAMETER_NAME(a3)
     BOOST_PARAMETER_NAME(in(lrc))
     BOOST_PARAMETER_NAME(out(lr))
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     BOOST_PARAMETER_NAME(consume(rr))
 #else
     BOOST_PARAMETER_NAME(rr)
@@ -23,7 +23,7 @@ namespace param {
 
 #include <boost/config.hpp>
 
-#if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -75,7 +75,7 @@ namespace test {
 
     struct B : A
     {
-#if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
         boost::function<float()> k;
         boost::function<double()> l;
 #else
@@ -127,7 +127,7 @@ int main()
     BOOST_TEST_EQ(198.9, b1.l());
     int x = 7;
     int const y = 9;
-#if defined LIBS_PARAMETER_TEST_COMPILE_FAILURE
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
     test::G g((param::_lr = y, param::_rr = x, param::_lrc = 8));
     test::G g0((param::_lr = 8, param::_rr = y, param::_lrc = x));
 #else

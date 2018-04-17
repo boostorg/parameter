@@ -180,7 +180,7 @@ namespace test {
             return test::passed_by_lvalue_reference;
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         static test::invoked evaluate_category(T const&&)
         {
             return test::passed_by_rvalue_reference_to_const;
@@ -190,7 +190,7 @@ namespace test {
         {
             return test::passed_by_rvalue_reference;
         }
-#endif
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
     };
 
     struct U
@@ -207,7 +207,7 @@ namespace test {
             return test::passed_by_lvalue_reference;
         }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <std::size_t N>
         static test::invoked evaluate_category(std::bitset<N + 1> const&&)
         {
@@ -220,6 +220,61 @@ namespace test {
             return test::passed_by_rvalue_reference;
         }
 #endif
+    };
+} // namespace test
+
+#include <boost/parameter/value_type.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/remove_const.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
+
+namespace test {
+
+    template <class CharConstPtrParamTag>
+    struct string_predicate
+    {
+        template <class Arg, class Args>
+        struct apply
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          : boost::is_convertible<
+#else
+          : boost::mpl::if_<
+                std::is_convertible<
+#endif
+                    Arg
+                  , std::basic_string<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                        typename boost::remove_const<
+                            typename boost::remove_pointer<
+#else
+                        typename std::remove_const<
+                            typename std::remove_pointer<
+#endif
+                                typename boost::parameter::value_type<
+                                    Args
+                                  , CharConstPtrParamTag
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
+                                  , char const*
+#endif
+                                >::type
+                            >::type
+                        >::type
+                    >
+                >
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+#endif
+        {
+        };
     };
 } // namespace test
 

@@ -5,40 +5,68 @@
 
 #include <boost/parameter.hpp>
 
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING && \
-    BOOST_PARAMETER_MAX_ARITY < 2
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_MAX_ARITY < 2)
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
-
-#include <boost/parameter/match.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/core/lightweight_test.hpp>
-#include <string>
-
-#if !defined(BOOST_NO_SFINAE) && \
-    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
-#include <boost/core/enable_if.hpp>
-#include <boost/type_traits/is_same.hpp>
-#endif 
 
 namespace test {
 
     BOOST_PARAMETER_NAME((name, keywords) in(name))
     BOOST_PARAMETER_NAME((value, keywords) in(value))
+} // namespace test
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
+
+namespace test {
+
+    template <class To>
+    struct f_predicate
+    {
+        template <class From, class Args>
+        struct apply
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          : boost::is_convertible<From,To>
+#else
+          : boost::mpl::if_<
+                std::is_convertible<From,To>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+#endif
+        {
+        };
+    };
+} // namespace test
+
+#include <string>
+
+namespace test {
 
     struct f_parameters
       : boost::parameter::parameters<
             boost::parameter::optional<
                 test::keywords::name
-              , boost::is_convertible<boost::mpl::_,std::string>
+              , test::f_predicate<std::string>
             >
           , boost::parameter::optional<
                 test::keywords::value
-              , boost::is_convertible<boost::mpl::_,float>
+              , test::f_predicate<float>
             >
         >
     {
     };
+} // namespace test
+
+#include <boost/core/lightweight_test.hpp>
+
+namespace test {
 
     // The use of assert_equal_string is just a nasty workaround for a
     // vc++ 6 ICE.
@@ -59,6 +87,11 @@ namespace test {
     {
         f_impl(f_parameters()());
     }
+} // namespace test
+
+#include <boost/parameter/match.hpp>
+
+namespace test {
 
     template <class A0>
     void f(
@@ -77,22 +110,44 @@ namespace test {
     {
         f_impl(args(a0, a1));
     }
+} // namespace test
 
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
+
+#include <boost/core/enable_if.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_same.hpp>
+#endif
+
+namespace test {
+
     // On compilers that actually support SFINAE, add another overload that is
     // an equally good match and can only be in the overload set when the
     // others are not.  This tests that the SFINAE is actually working.  On
     // all other compilers we're just checking that everything about
     // SFINAE-enabled code will work, except of course the SFINAE.
     template <class A0, class A1>
-    typename boost::enable_if<boost::is_same<int,A0>,int>::type
+    typename boost::enable_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        boost::is_same<int,A0>
+#else
+        typename boost::mpl::if_<
+            std::is_same<int,A0>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
+      , int
+    >::type
     f(A0 const& a0, A1 const& a1)
     {
         return 0;
     }
-#endif 
 } // namespace test
+
+#endif // SFINAE enabled, no Borland workarounds needed.
 
 int main()
 {

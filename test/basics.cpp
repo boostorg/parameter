@@ -41,7 +41,7 @@ namespace test {
         return 1;
     }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     template <class ...Args>
     int f(Args const&... args)
     {
@@ -101,7 +101,7 @@ int main()
     ));
 #endif // No comma operator available on Borland.
 
-#if defined LIBS_PARAMETER_TEST_COMPILE_FAILURE
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
     test::f(test::_index = 56, test::_name = 55); // won't compile
 #endif
 

@@ -28,7 +28,17 @@ namespace test {
         template <class T>
         bool check_not_present(T const&) const
         {
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_MPL_ASSERT((boost::is_same<T,test::not_present_tag>));
+#else
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    std::is_same<T,test::not_present_tag>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+#endif
             return true;
         }
 
@@ -62,7 +72,7 @@ namespace test {
         boost::mpl::for_each<E>(test::assert_expected<E,ArgPack>(e, args));
     }
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     template <class P, class E, class ...Args>
     void check(E const& e, Args const&... args)
     {

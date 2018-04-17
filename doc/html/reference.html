@@ -426,10 +426,13 @@ each row,</p>
 <li><tt class="docutils literal">A</tt> is an <a class="reference internal"
 href="#intended-argument-type">intended argument type</a> associated with
 <tt class="docutils literal">K</tt>, if any</li>
-<li><tt class="docutils literal">F</tt> is a unary
-<a class="reference external"
-href="../../../mpl/doc/refmanual/lambda-expression.html">MPL lambda
-expression</a></li>
+<li><tt class="docutils literal">P</tt> is a model of
+<a class="reference internal" href="#argumentpack"><span
+class="concept">ArgumentPack</span></a> that contains
+<tt class="docutils literal">A</tt></li>
+<li><tt class="docutils literal">F</tt> is an <a class="reference external"
+href="../../../mpl/doc/refmanual/metafunction-class.html">MPL Binary
+Metafunction Class</a></li>
 </ul>
 <table border="1" class="docutils">
 <caption><span class="concept">ParameterSpec</span> allowed forms and
@@ -459,7 +462,7 @@ class="docutils literal">optional</tt></a><tt
 class="docutils literal">&lt;K,F&gt;</tt></td>
 <td>no</td>
 <td><tt class="docutils literal"><span
-class="pre">mpl::apply&lt;F,A&gt;::type::value</span></tt>
+class="pre">mpl::apply2&lt;F,A,P&gt;::type::value</span></tt>
 is <tt class="docutils literal">true</tt>.</td>
 </tr>
 <tr>
@@ -468,7 +471,7 @@ class="docutils literal">required</tt></a><tt
 class="docutils literal">&lt;K,F&gt;</tt></td>
 <td>yes</td>
 <td><tt class="docutils literal"><span
-class="pre">mpl::apply&lt;F,A&gt;::type::value</span></tt>
+class="pre">mpl::apply2&lt;F,A,P&gt;::type::value</span></tt>
 is <tt class="docutils literal">true</tt>.</td>
 </tr>
 </tbody>
@@ -1485,8 +1488,8 @@ struct required;
 </pre>
 <p>The default value of <tt class="docutils literal">Predicate</tt> is an
 unspecified <a class="reference external"
-href="../../../mpl/doc/refmanual/metafunction.html"><span class="concept"
->Metafunction</span></a> that returns <tt class="docutils literal"><span
+href="../../../mpl/doc/refmanual/metafunction-class.html">MPL Binary
+Metafunction Class</a> that returns <tt class="docutils literal"><span
 class="pre">mpl::true_</span></tt> for any argument.</p>
 </div>
 <div class="section" id="deduced">
@@ -1708,7 +1711,10 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field">
-<th class="field-name">Requires:</th>
+<th class="field-name" colspan="2">Requires:</th>
+</tr>
+<tr>
+<td>&nbsp;</td>
 <td class="field-body">
 <p class="first"><tt class="docutils literal">result</tt> is the parenthesized
 return type of the function.  <tt class="docutils literal">name</tt> is the
@@ -1762,22 +1768,42 @@ restriction ::=
     ( '<strong>(</strong>' <em>typename</em> '<strong>)</strong>' ) |
     '<strong>*</strong>'
 </pre>
-<p class="last"><tt class="docutils literal">argument-name</tt> is any valid
-C++ identifier.  <tt class="docutils literal">default-value</tt> is any valid
-C++ expression; if necessary, user code can compute it in terms of
+<ul class="last simple">
+<li><tt class="docutils literal">argument-name</tt> is any valid C++
+identifier.</li>
+<li><tt class="docutils literal">default-value</tt> is any valid C++
+expression; if necessary, user code can compute it in terms of
 <tt class="docutils literal">previous-name ## _type</tt>, where
 <tt class="docutils literal">previous-name</tt> is the
 <tt class="docutils literal">argument-name</tt> in a previous
-<tt class="docutils literal">specifier-group0</tt>.  <tt
-class="docutils literal">mfc</tt> is an <a class="reference external"
+<tt class="docutils literal">specifier-group0</tt> or
+<tt class="docutils literal">specifier-group1</tt>.</li>
+<li><tt class="docutils literal">mfc</tt> is an <a class="reference external"
 href="../../../mpl/doc/refmanual/metafunction-class.html">MPL Binary
 Metafunction Class</a> whose first argument will be the type of the
-corresponding <tt class="docutils literal">argument-name</tt> and whose second
+corresponding <tt class="docutils literal">argument-name</tt>, whose second
 argument will be the entire <a class="reference internal" href="#argumentpack"
-><span class="concept">ArgumentPack</span></a>; however, user code
-<em>cannot</em> compute <tt class="docutils literal">mfc</tt> in terms of
-<tt class="docutils literal">previous-name ## _type</tt>.  <tt
-class="docutils literal">type-name</tt> is the name of a type.</p>
+><span class="concept">ArgumentPack</span></a>, and whose return type is a
+<a class="reference external"
+href="../../../mpl/doc/refmanual/integral-constant.html">Boolean Integral
+Concept</a>; however, user code <em>cannot</em> compute
+<tt class="docutils literal">mfc</tt> in terms of
+<tt class="docutils literal">previous-name ## _type</tt>.</li>
+<li><tt class="docutils literal">type-name</tt> is either the name of a
+<strong>target type</strong> or an <a class="reference external"
+href="../../../mpl/doc/refmanual/metafunction-class.html">MPL Binary
+Metafunction Class</a> whose first argument will be the type of the
+corresponding <tt class="docutils literal">argument-name</tt>, whose second
+argument will be the entire <a class="reference internal" href="#argumentpack"
+><span class="concept">ArgumentPack</span></a>, and whose return type is the
+<strong>target type</strong>.  If <tt class="docutils literal"
+>restriction</tt> uses this form, then the type of the generated name <tt
+class="docutils literal">argument-name ## _type</tt> will be computed in terms
+of the <strong>target type</strong>, and the generated reference
+<tt class="docutils literal">argument-name</tt> (but not its corresponding
+entry in <tt class="docutils literal">args</tt>) will be cast to that
+type.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -2404,7 +2430,10 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field">
-<th class="field-name">Requires:</th>
+<th class="field-name" colspan="2">Requires:</th>
+</tr>
+<tr>
+<td>&nbsp;</td>
 <td class="field-body">
 <p class="first"><tt class="docutils literal">cls</tt> is the name of this
 class.  <tt class="docutils literal">impl</tt> is the parenthesized

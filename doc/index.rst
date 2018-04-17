@@ -30,7 +30,7 @@ that can accept arguments by name:
 
 Since named arguments can be passed in any order, they are especially useful
 when a function or template has more than one parameter with a useful default
-value.  The library also supports *deduced* parameters; that is to say,
+value.  The library also supports *deduced* parameters: that is to say,
 parameters whose identity can be deduced from their types.
 
 .. @jam_prefix.append('''
@@ -1067,9 +1067,9 @@ by an asterix*, as follows:
 
     BOOST_PARAMETER_NAME((_graph, graphs) graph)
     BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
-    BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
-    BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
-    BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
+    BOOST_PARAMETER_NAME((_root_vertex, graphs) in(root_vertex))
+    BOOST_PARAMETER_NAME((_index_map, graphs) in(index_map))
+    BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 ''')
 
 .. @example.append('''

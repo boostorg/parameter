@@ -6,10 +6,17 @@
 
 #include <boost/mpl/assert.hpp>
 #include <boost/parameter.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/config.hpp>
 
-#if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_same.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
+
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -36,17 +43,27 @@ namespace test {
 
     template <typename T>
     struct Y
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::is_same<
-            typename X<
-                test::keywords::tag::function_type
-              , test::keywords::function_type<T>
-            >::type
-#if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
-          , boost::function<T>
 #else
-          , std::function<T>
+      : boost::mpl::if_<
+            std::is_same<
 #endif
-        >
+                typename X<
+                    test::keywords::tag::function_type
+                  , test::keywords::function_type<T>
+                >::type
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+              , boost::function<T>
+#else
+              , std::function<T>
+#endif
+            >
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
     {
     };
 } // namespace test

@@ -7,17 +7,21 @@
 #define BOOST_PARAMETER_TEMPLATE_KEYWORD_060203_HPP
 
 #include <boost/parameter/config.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #else
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_reference.hpp>
 #include <boost/type_traits/is_convertible.hpp>
-#endif
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else
+#include <type_traits>
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -25,22 +29,33 @@ namespace boost { namespace parameter { namespace aux {
     {
     };
 
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     template <class T>
     struct is_template_keyword_aux
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::is_convertible<
-            T*
-          , boost::parameter::aux::template_keyword_base const*
-        >
+#else
+      : boost::mpl::if_<
+            std::is_convertible<
+#endif
+                T*
+              , boost::parameter::aux::template_keyword_base const*
+            >
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
     {
     };
-#endif
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
     template <class T>
     struct is_template_keyword
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         // Cannot use is_convertible<> to check if T is derived from
         // template_keyword_base. -- Cromwell D. Enage
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::is_base_of<
             boost::parameter::aux::template_keyword_base
           , typename boost::remove_const<
@@ -49,16 +64,36 @@ namespace boost { namespace parameter { namespace aux {
         >
 #else
       : boost::mpl::if_<
+            std::is_base_of<
+                boost::parameter::aux::template_keyword_base
+              , typename std::remove_const<
+                    typename std::remove_reference<T>::type
+                >::type
+            >
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+      : boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_reference<T>
+#else
+            std::is_reference<T>
+#endif
           , boost::mpl::false_
           , boost::parameter::aux::is_template_keyword_aux<T>
         >::type
-#endif
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
     {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_function.hpp>
+#endif
+
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -74,8 +109,12 @@ namespace boost { namespace parameter {
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
         typedef typename mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_function<T>
-#if defined BOOST_NO_CXX11_HDR_FUNCTIONAL
+#else
+            std::is_function<T>
+#endif
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
           , boost::function<T>
 #else
           , std::function<T>

@@ -9,15 +9,21 @@
 #ifndef BOOST_PARAMETER_MAYBE_091021_HPP
 #define BOOST_PARAMETER_MAYBE_091021_HPP
 
+#include <boost/parameter/aux_/is_maybe.hpp>
+#include <boost/optional/optional.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
+#include <boost/config.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_reference.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/type_traits/aligned_storage.hpp>
 #include <boost/type_traits/remove_cv.hpp>
-#include <boost/optional/optional.hpp>
-#include <boost/parameter/aux_/is_maybe.hpp>
+#else
+#include <type_traits>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -34,24 +40,42 @@ namespace boost { namespace parameter { namespace aux {
     // If T is not a reference type, returns a POD which can store T.
     template <class T>
     struct referent_storage
-      : boost::aligned_storage<boost::parameter::aux::referent_size<T>::value>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+      : boost::aligned_storage<
+#else
+      : std::aligned_storage<
+#endif
+            boost::parameter::aux::referent_size<T>::value
+        >
     {
     };
 
     template <class T>
     struct maybe : boost::parameter::aux::maybe_base
     {
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         typedef typename boost::add_lvalue_reference<
+#else
+        typedef typename std::add_lvalue_reference<
+#endif
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
             T const
-#else
+#elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             typename boost::add_const<T>::type
+#else
+            typename std::add_const<T>::type
 #endif
         >::type reference;
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         typedef typename boost::remove_cv<
             BOOST_DEDUCED_TYPENAME boost::remove_reference<reference>::type
         >::type non_cv_value;
+#else
+        typedef typename std::remove_cv<
+            BOOST_DEDUCED_TYPENAME std::remove_reference<reference>::type
+        >::type non_cv_value;
+#endif
 
         inline explicit maybe(T value_) : value(value_), constructed(false)
         {

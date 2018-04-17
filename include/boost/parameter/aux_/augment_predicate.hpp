@@ -11,56 +11,38 @@ namespace boost { namespace parameter { namespace aux {
     struct lambda_tag;
 }}} // namespace boost::parameter::aux
 
-#include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-
-namespace boost { namespace parameter { namespace aux {
-
-    template <class T>
-    struct augment_predicate_is_const
-      : boost::is_const<typename boost::remove_reference<T>::type>
-    {
-    };
-}}} // namespace boost::parameter::aux
-
 #include <boost/parameter/keyword_fwd.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/eval_if.hpp>
+#include <boost/config.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_lvalue_reference.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/eval_if.hpp>
+#else
+#include <type_traits>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T, class Tag>
-    struct augment_predicate_check_out_ref
-      : boost::mpl::eval_if<
-            boost::is_same<
-                typename Tag::qualifier
-              , boost::parameter::out_reference
-            >
-          , boost::mpl::eval_if<
-                boost::is_lvalue_reference<T>
-              , boost::mpl::eval_if<
-                    boost::parameter::aux::augment_predicate_is_const<T>
-                  , boost::mpl::false_
-                  , boost::mpl::true_
-                >
-              , boost::mpl::false_
-            >
-          , boost::mpl::true_
-        >::type
-    {
-    };
-
-    template <class T, class Tag>
+    template <class R, class Tag>
     struct augment_predicate_check_consume_ref
       : boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_same<
+#else
+            std::is_same<
+#endif
                 typename Tag::qualifier
               , boost::parameter::consume_reference
             >
-          , boost::mpl::eval_if<
-                boost::is_lvalue_reference<T>
+          , boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                boost::is_lvalue_reference<R>
+#else
+                std::is_lvalue_reference<R>
+#endif
               , boost::mpl::false_
               , boost::mpl::true_
             >
@@ -70,13 +52,52 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/parameter/config.hpp>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_const.hpp>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <class V, class R, class Tag>
+    struct augment_predicate_check_out_ref
+      : boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            boost::is_same<
+#else
+            std::is_same<
+#endif
+                typename Tag::qualifier
+              , boost::parameter::out_reference
+            >
+          , boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                boost::is_lvalue_reference<R>
+#else
+                std::is_lvalue_reference<R>
+#endif
+              , boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                    boost::is_const<V>
+#else
+                    std::is_const<V>
+#endif
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >
+              , boost::mpl::false_
+            >
+          , boost::mpl::true_
+        >::type
+    {
+    };
+}}} // namespace boost::parameter::aux
+
 #include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/lambda.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Predicate, class Tag>
+    template <class Predicate, class R, class Tag>
     struct augment_predicate
     {
         typedef typename boost::mpl::lambda<
@@ -88,12 +109,12 @@ namespace boost { namespace parameter { namespace aux {
         struct apply
         {
             typedef typename boost::mpl::eval_if<
-                typename boost::mpl::eval_if<
+                typename boost::mpl::if_<
                     boost::parameter::aux
-                    ::augment_predicate_check_out_ref<T,Tag>
+                    ::augment_predicate_check_consume_ref<R,Tag>
                   , boost::parameter::aux
-                    ::augment_predicate_check_consume_ref<T,Tag>
-                  , boost::mpl::true_
+                    ::augment_predicate_check_out_ref<T,R,Tag>
+                  , boost::mpl::false_
                 >::type
               , boost::mpl::apply_wrap2<actual_predicate,T,Args>
               , boost::mpl::false_

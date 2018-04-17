@@ -8,14 +8,20 @@
 
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/mpl/bool.hpp>
-#include <boost/mpl/and.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/config.hpp>
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_same.hpp>
+#else
+#include <type_traits>
+#endif
+
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/is_placeholder.hpp>
 #include <boost/mpl/identity.hpp>
 
 namespace boost { namespace parameter {
@@ -29,17 +35,31 @@ namespace boost { namespace parameter {
           , Default
           , boost::mpl::false_
         >::type type;
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_MPL_ASSERT_NOT((
-            boost::mpl::and_<
+            typename boost::mpl::if_<
                 boost::is_same<Default,boost::parameter::void_>
               , boost::is_same<type,boost::parameter::void_>
-            >
+              , boost::mpl::false_
+            >::type
         ));
+#else
+        BOOST_MPL_ASSERT_NOT((
+            typename boost::mpl::eval_if<
+                std::is_same<Default,boost::parameter::void_>
+              , boost::mpl::if_<
+                    std::is_same<type,boost::parameter::void_>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >
+              , boost::mpl::false_
+            >::type
+        ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
     };
 }} // namespace boost::parameter
-#endif
+#endif // Borland workarounds needed.
 
-#include <boost/mpl/is_placeholder.hpp>
 #include <boost/mpl/aux_/lambda_support.hpp>
 
 namespace boost { namespace parameter {
@@ -68,13 +88,28 @@ namespace boost { namespace parameter {
           , Default
           , boost::mpl::false_
         >::type type;
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_MPL_ASSERT_NOT((
-            boost::mpl::and_<
+            typename boost::mpl::if_<
                 boost::is_same<Default,boost::parameter::void_>
               , boost::is_same<type,boost::parameter::void_>
-            >
+              , boost::mpl::false_
+            >::type
         ));
-#endif
+#else
+        BOOST_MPL_ASSERT_NOT((
+            typename boost::mpl::eval_if<
+                std::is_same<Default,boost::parameter::void_>
+              , boost::mpl::if_<
+                    std::is_same<type,boost::parameter::void_>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >
+              , boost::mpl::false_
+            >::type
+        ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // Borland workarounds not needed.
         BOOST_MPL_AUX_LAMBDA_SUPPORT(
             3, value_type, (Parameters, Keyword, Default)
         )

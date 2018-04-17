@@ -8,10 +8,14 @@
 
 #include <boost/parameter/config.hpp>
 
-#if 1//defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if 1//defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
+#else
+#include <type_traits>
+#endif
 #else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
@@ -25,7 +29,7 @@ namespace boost { namespace parameter { namespace aux {
     {
     };
 
-#if 0//!defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if 0//!defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     template <class T>
     struct is_tagged_argument_aux
       : boost::is_convertible<
@@ -40,15 +44,24 @@ namespace boost { namespace parameter { namespace aux {
     // and their derived classes.
     template <class T>
     struct is_tagged_argument
-#if 1//defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if 1//defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         // Cannot use is_convertible<> to check if T is derived from
         // tagged_argument_base. -- Cromwell D. Enage
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::is_base_of<
             boost::parameter::aux::tagged_argument_base
           , typename boost::remove_const<
                 typename boost::remove_reference<T>::type
             >::type
         >
+#else
+      : std::is_base_of<
+            boost::parameter::aux::tagged_argument_base
+          , typename std::remove_const<
+                typename std::remove_reference<T>::type
+            >::type
+        >
+#endif
 #else
       : boost::mpl::if_<
             boost::is_reference<T>

@@ -5,15 +5,15 @@
 
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/keyword.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <string>
 #include "basics.hpp"
 
-#if !defined BOOST_NO_SFINAE
-#include <boost/tti/detail/dnullptr.hpp>
-#include <boost/type_traits/is_base_and_derived.hpp>
-#include <boost/core/enable_if.hpp>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_same.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
 #endif
 
 namespace test {
@@ -33,7 +33,17 @@ namespace test {
             Args,test::tag::index,int&
         >::type index_type;
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_MPL_ASSERT((boost::is_same<index_type,int&>));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_same<index_type,int&>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif
 
         args[test::_tester](
             args[test::_name]
@@ -43,6 +53,13 @@ namespace test {
 
         return 1;
     }
+} // namespace test
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/remove_const.hpp>
+#endif
+
+namespace test {
 
     BOOST_PARAMETER_BASIC_FUNCTION((int), g, test::tag,
         (required
@@ -59,7 +76,19 @@ namespace test {
             Args,test::tag::index,int
         >::type index_type;
 
-        BOOST_MPL_ASSERT((boost::is_convertible<index_type,int>));
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        BOOST_MPL_ASSERT((
+            boost::is_same<typename boost::remove_const<index_type>::type,int>
+        ));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_same<typename std::remove_const<index_type>::type,int>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif
 
         args[test::_tester](
             args[test::_name]
@@ -69,6 +98,13 @@ namespace test {
 
         return 1;
     }
+} // namespace test
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/remove_reference.hpp>
+#endif
+
+namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), h, test::tag,
         (required
@@ -83,8 +119,30 @@ namespace test {
     {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-        BOOST_MPL_ASSERT((boost::is_same<index_type,int>));
-#endif
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        BOOST_MPL_ASSERT((
+            boost::is_same<
+                typename boost::remove_const<
+                    typename boost::remove_reference<index_type>::type
+                >::type
+              , int
+            >
+        ));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_same<
+                    typename std::remove_const<
+                        typename std::remove_reference<index_type>::type
+                    >::type
+                  , int
+                >
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // Borland/MSVC workarounds not needed.
 
         tester(name, value, index);
 
@@ -104,13 +162,46 @@ namespace test {
     {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-        BOOST_MPL_ASSERT((boost::is_convertible<index_type,int>));
-#endif
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        BOOST_MPL_ASSERT((
+            boost::is_same<
+                typename boost::remove_const<
+                    typename boost::remove_reference<index_type>::type
+                >::type
+              , int
+            >
+        ));
+#else
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                std::is_same<
+                    typename std::remove_const<
+                        typename std::remove_reference<index_type>::type
+                    >::type
+                  , int
+                >
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // Borland/MSVC workarounds not needed.
 
         tester(name, value, index);
 
         return 1;
     }
+} // namespace test
+
+#if !defined(BOOST_NO_SFINAE)
+#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/core/enable_if.hpp>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_base_of.hpp>
+#endif
+#endif
+
+namespace test {
 
     struct base_0
     {
@@ -120,11 +211,19 @@ namespace test {
         template <class Args>
         explicit base_0(
             Args const& args
-#if !defined BOOST_NO_SFINAE
+#if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
-                boost::is_base_and_derived<base_0,Args>
-            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                boost::is_base_of<base_0,Args>
+#else
+                typename boost::mpl::if_<
+                    std::is_base_of<base_0,Args>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
 #endif
+            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif // BOOST_NO_SFINAE
         ) : f(args[test::_value | 1.f]), i(args[test::_index | 2])
         {
         }
@@ -145,11 +244,19 @@ namespace test {
         template <class Args>
         explicit base_1(
             Args const& args
-#if !defined BOOST_NO_SFINAE
+#if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
-                boost::is_base_and_derived<base_1,Args>
-            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                boost::is_base_of<base_1,Args>
+#else
+                typename boost::mpl::if_<
+                    std::is_base_of<base_1,Args>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
 #endif
+            >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif // BOOST_NO_SFINAE
         )
         {
             args[test::_tester](
@@ -268,28 +375,47 @@ namespace test {
         return 1;
     }
 
-#if !defined BOOST_NO_SFINAE
+#if !defined(BOOST_NO_SFINAE)
     // On compilers that actually support SFINAE, add another overload
     // that is an equally good match and can only be in the overload set
     // when the others are not.  This tests that the SFINAE is actually
     // working.  On all other compilers we're just checking that everything
     // about SFINAE-enabled code will work, except of course the SFINAE.
     template <class A0>
-    typename boost::enable_if<boost::is_same<int,A0>,int>::type
+    typename boost::enable_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        boost::is_same<int,A0>
+#else
+        typename boost::mpl::if_<
+            std::is_same<int,A0>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
+      , int
+    >::type
     sfinae(A0 const& a0)
     {
         return 0;
     }
+#endif // BOOST_NO_SFINAE
+
+    struct predicate
+    {
+        template <class T, class Args>
+        struct apply
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          : boost::is_convertible<T,std::string>
+#else
+          : boost::mpl::if_<
+                std::is_convertible<T,std::string>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
 #endif
-
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-
-    // Sun has problems with this syntax:
-    //
-    //   template1< r* ( template2<x> ) >
-    //
-    // Workaround: factor template2<x> into a separate typedef.
-    typedef boost::is_convertible<boost::mpl::_,std::string> predicate;
+        {
+        };
+    };
 
     BOOST_PARAMETER_FUNCTION((int), sfinae1, test::tag,
         (required
@@ -300,32 +426,30 @@ namespace test {
         return 1;
     }
 
-#else // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-
-    BOOST_PARAMETER_FUNCTION((int), sfinae1, test::tag,
-        (required
-            (name, *(boost::is_convertible<boost::mpl::_,std::string>))
-        )
-    )
-    {
-        return 1;
-    }
-
-#endif // SunProCC workarounds needed.
-
-#if !defined BOOST_NO_SFINAE
+#if !defined(BOOST_NO_SFINAE)
     // On compilers that actually support SFINAE, add another overload
     // that is an equally good match and can only be in the overload set
     // when the others are not.  This tests that the SFINAE is actually
     // working.  On all other compilers we're just checking that everything
     // about SFINAE-enabled code will work, except of course the SFINAE.
     template <class A0>
-    typename boost::enable_if<boost::is_same<int,A0>,int>::type
+    typename boost::enable_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        boost::is_same<int,A0>
+#else
+        typename boost::mpl::if_<
+            std::is_same<int,A0>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+#endif
+      , int
+    >::type
     sfinae1(A0 const& a0)
     {
         return 0;
     }
-#endif
+#endif // BOOST_NO_SFINAE
 
     template <class T>
     T const& as_lvalue(T const& x)
@@ -415,7 +539,9 @@ int main()
     BOOST_TEST(2 == u.i);
     BOOST_TEST(1.f == u.f);
 
-    test::class_1 x(test::values(S("foo"), 1.f, 2), S("foo"), test::_index = 2);
+    test::class_1 x(
+        test::values(S("foo"), 1.f, 2), S("foo"), test::_index = 2
+    );
 
     x.f(test::values(S("foo"), 1.f, 2), S("foo"));
     x.f(

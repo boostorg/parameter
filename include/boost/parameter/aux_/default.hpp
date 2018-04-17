@@ -72,7 +72,7 @@ namespace boost { namespace parameter { namespace aux {
 /**/
 #endif
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 #include <boost/move/utility_core.hpp>
 

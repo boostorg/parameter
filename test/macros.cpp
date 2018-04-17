@@ -41,7 +41,7 @@ namespace test {
     }
 } // namespace test
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || ( \
         (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
         (9 < BOOST_PARAMETER_MAX_ARITY) \
     )
@@ -80,7 +80,7 @@ namespace test {
 
 #include "evaluate_category.hpp"
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || ( \
         (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
         (9 < BOOST_PARAMETER_MAX_ARITY) \
     )
@@ -119,7 +119,7 @@ namespace test {
                     p[test::_lr2 || test::lvalue_bitset_function<2>()]
                 )
             );
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference_to_const
               , U::evaluate_category<0>(p[test::_rrc0])
@@ -138,7 +138,7 @@ namespace test {
                     p[test::_rr2 || test::rvalue_bitset_function<2>()]
                 )
             );
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
               , U::evaluate_category<0>(p[test::_rrc0])
@@ -183,7 +183,7 @@ int main()
       , test::_name = "foo"
     );
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING || ( \
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || ( \
         (10 < BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY) && \
         (9 < BOOST_PARAMETER_MAX_ARITY) \
     )

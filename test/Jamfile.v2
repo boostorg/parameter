@@ -165,8 +165,14 @@ test-suite "parameter"
     ]
     [ compile unwrap_cv_reference.cpp ]
     [ compile function_type_tpl_param.cpp ]
-    [ compile-fail duplicates.cpp ]
-    [ compile-fail deduced_unmatched_arg.cpp ]
+    [ compile-fail duplicates.cpp
+        :
+        : duplicates_fail
+    ]
+    [ compile-fail deduced_unmatched_arg.cpp
+        :
+        : deduced_unmatched_arg_fail
+    ]
     [ compile-fail basics.cpp
         :
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
@@ -176,6 +182,11 @@ test-suite "parameter"
         :
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         : compose_fail
+    ]
+    [ compile-fail evaluate_category.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : evaluate_category_fail
     ]
     [ compile-fail deduced.cpp
         :

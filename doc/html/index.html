@@ -40,7 +40,7 @@ smart_ptr&lt;
 <p class="last">Since named arguments can be passed in any order, they are
 especially useful when a function or template has more than one parameter with
 a useful default value.  The library also supports <em>deduced</em>
-parameters; that is to say, parameters whose identity can be deduced from
+parameters: that is to say, parameters whose identity can be deduced from
 their types.</p>
 </td>
 </tr>
@@ -1148,9 +1148,9 @@ BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
 
 BOOST_PARAMETER_NAME((_graph, graphs) graph)
 BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
-BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
-BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
-BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
+BOOST_PARAMETER_NAME((_root_vertex, graphs) in(root_vertex))
+BOOST_PARAMETER_NAME((_index_map, graphs) in(index_map))
+BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 ''') -->
 <!-- @example.append('''
 {
@@ -1175,10 +1175,10 @@ int main()
 ''') -->
 <!-- @test('compile') -->
 <p>It usually isn't necessary to so completely encode the type requirements on
-arguments to generic functions.  However, it is usally worth the effort to do
-so: your code will be more self-documenting and will often provide a better
-user experience.  You'll also have an easier transition to an upcoming C++
-standard with <a class="reference external"
+arguments to generic functions.  However, doing so is worth the effort: your
+code will be more self-documenting and will often provide a better user
+experience.  You'll also have an easier transition to an upcoming C++ standard
+with <a class="reference external"
 href="http://en.cppreference.com/w/cpp/language/constraints">language support
 for concepts</a>.</p>
 </div>

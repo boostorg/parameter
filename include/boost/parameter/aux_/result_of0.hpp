@@ -13,7 +13,7 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-#if defined BOOST_NO_RESULT_OF
+#if defined(BOOST_NO_RESULT_OF)
     template <class F>
     struct result_of0
     {

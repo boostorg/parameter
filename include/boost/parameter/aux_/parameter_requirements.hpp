@@ -8,18 +8,18 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-// Used to pass static information about parameter requirements
-// through the satisfies() overload set (below).  The
-// matched function is never invoked, but its type indicates whether
-// a parameter matches at compile-time
-template <class Keyword, class Predicate, class HasDefault>
-struct parameter_requirements
-{
-    typedef Keyword keyword;
-    typedef Predicate predicate;
-    typedef HasDefault has_default;
-};
-
+    // Used to pass static information about parameter requirements
+    // through the satisfies() overload set (below).  The
+    // matched function is never invoked, but its type indicates whether
+    // a parameter matches at compile-time
+    template <class Keyword, class Predicate, class HasDefault>
+    struct parameter_requirements
+    {
+        typedef Keyword keyword;
+        typedef Predicate predicate;
+        typedef HasDefault has_default;
+    };
 }}} // namespace boost::parameter::aux
 
 #endif // PARAMETER_REQUIREMENTS_050331_HPP
+

@@ -10,11 +10,17 @@
 #include <boost/parameter/config.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/always.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#else
+#include <type_traits>
+#endif
 
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
@@ -33,17 +39,14 @@ namespace boost { namespace parameter { namespace aux {
         typedef boost::mpl::always<boost::mpl::true_> type;
     };
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    typedef void* voidstar;
-
     // A matching predicate is explicitly specified.
+#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
     template <class Predicate>
     struct unwrap_predicate<test::voidstar (Predicate)>
     {
         typedef Predicate type;
     };
 #else
-    // A matching predicate is explicitly specified.
     template <class Predicate>
     struct unwrap_predicate<void *(Predicate)>
     {
@@ -56,12 +59,20 @@ namespace boost { namespace parameter { namespace aux {
     template <class Target>
     struct unwrap_predicate<void (Target)>
     {
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         typedef boost::is_convertible<boost::mpl::_,Target> type;
+#else
+        typedef boost::mpl::if_<
+            std::is_convertible<boost::mpl::_,Target>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        > type;
+#endif
     };
 
     // Recast the ParameterSpec's nested match metafunction
     // as a free metafunction.
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     // No more limits set by BOOST_PARAMETER_MAX_ARITY. -- Cromwell D. Enage
     template <class Parameters, class ...Args>
     struct match : Parameters::BOOST_NESTED_TEMPLATE match<Args...>
@@ -92,7 +103,7 @@ namespace boost { namespace parameter { namespace aux {
 
     template <
         class Parameters
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       , class ...Args
 #else
       , BOOST_PP_ENUM_BINARY_PARAMS(
@@ -105,7 +116,7 @@ namespace boost { namespace parameter { namespace aux {
     struct argument_pack
     {
         typedef typename boost::parameter::aux::make_arg_list<
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             typename boost::parameter::aux::make_parameter_spec_items<
                 typename Parameters::parameter_spec
               , Args...
@@ -126,7 +137,6 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/mpl/if.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
@@ -174,7 +184,11 @@ namespace boost { namespace parameter { namespace aux {
 
         template <class T, class Args, class P0>
         static typename boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_convertible<T,P0>
+#else
+            std::is_convertible<T,P0>
+#endif
           , char
           , long double
         >::type
@@ -222,7 +236,7 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <boost/preprocessor/seq/seq.hpp>
 
-#if defined BOOST_MSVC
+#if defined(BOOST_MSVC)
 // Workaround for MSVC preprocessor.
 //
 // When stripping static from "static f", msvc will produce " f".  The leading
@@ -294,7 +308,7 @@ namespace boost { namespace parameter { namespace aux {
 #define BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name)                             \
     template <class Args>                                                    \
     typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(name)<                     \
-       Args                                                                  \
+        Args                                                                 \
     >::type BOOST_PARAMETER_FUNCTION_IMPL_NAME(name)(Args const& args)
 /**/
 
@@ -343,50 +357,6 @@ namespace boost { namespace parameter { namespace aux {
 
 #define BOOST_PARAMETER_FN_ARG_NAME(x)                                       \
     BOOST_PARAMETER_UNQUALIFIED_NAME(BOOST_PARAMETER_FN_ARG_KEYWORD(x))
-/**/
-
-#include <boost/parameter/keyword.hpp>
-#include <boost/parameter/aux_/cast.hpp>
-
-// Takes in the arg tuple (name, pred) and the tag namespace.
-// Extracts the corresponding required argument from the pack.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_0(arg, tag_ns)            \
-    BOOST_PARAMETER_FUNCTION_CAST(                                           \
-        args[                                                                \
-            boost::parameter::keyword<                                       \
-                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
-            >::instance                                                      \
-        ]                                                                    \
-      , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
-      , Args                                                                 \
-    )
-/**/
-
-// Enables BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_REPEAT to use
-// BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_0 within BOOST_PP_SEQ_FOR_EACH.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_0_R(r, tag_ns, arg)       \
-  , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_0(arg, tag_ns)
-/**/
-
-// Takes in the arg tuple (name, pred, default) and the tag namespace.
-// Extracts the corresponding optional argument from the pack if specified,
-// otherwise temporarily passes use_default_tag() to the dispatch functions.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_1(arg, tag_ns)            \
-    BOOST_PARAMETER_FUNCTION_CAST(                                           \
-        args[                                                                \
-            boost::parameter::keyword<                                       \
-                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
-            >::instance || boost::parameter::aux::use_default_tag()          \
-        ]                                                                    \
-      , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
-      , Args                                                                 \
-    )
-/**/
-
-// Enables BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_REPEAT to use
-// BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_1 within BOOST_PP_SEQ_FOR_EACH.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_1_R(r, tag_ns, arg)       \
-  , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_1(arg, tag_ns)
 /**/
 
 #include <boost/preprocessor/arithmetic/inc.hpp>
@@ -479,13 +449,16 @@ namespace boost { namespace parameter { namespace aux {
     >::type = params()
 /**/
 #else
-#define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH(name, params, n, prefix)
-#define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(z, name, params, n, prefix)
+#define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH(name, params, n, prefix)      \
+    params = params()
+/**/
+#define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(z, name, params, n, prefix) \
+    params = params()
+/**/
 #endif
 
 #include <boost/parameter/aux_/parenthesized_type.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
-#include <boost/preprocessor/punctuation/comma_if.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 
 #if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
@@ -503,6 +476,8 @@ namespace boost { namespace parameter { namespace aux {
     boost::forward<BOOST_PP_CAT(type_prefix, n)>(BOOST_PP_CAT(a, n))
 /**/
 
+// Expands to a 0-arity forwarding function, whose job is to pass an empty
+// pack to the front-end implementation function.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_Z(z, n, data)            \
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(3, 1, data))  \
     inline                                                                   \
@@ -526,6 +501,8 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
+// Expands to a forwarding function, whose job is to consolidate its arguments
+// into a pack for the front-end implementation function to take in.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_1_Z(z, n, data)            \
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)>     \
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(3, 1, data))  \
@@ -571,8 +548,6 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
-// Expands to a forwarding function, whose job is to consolidate its arguments
-// into a pack for the front-end implementation function to take in.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_Z(z, n, data)              \
     BOOST_PP_IF(                                                             \
         n                                                                    \
@@ -581,6 +556,8 @@ namespace boost { namespace parameter { namespace aux {
     )(z, n, data)
 /**/
 
+// Expands to the default constructor, whose job is to pass an empty back to
+// the delegate constructor of the base class.
 #define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_0_Z(z, n, data)                 \
     inline BOOST_PP_TUPLE_ELEM(2, 0, data)()                                 \
       : BOOST_PARAMETER_PARENTHESIZED_TYPE(BOOST_PP_TUPLE_ELEM(2, 1, data))( \
@@ -590,6 +567,8 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
+// Expands to a constructor whose job is to consolidate its arguments into a
+// pack for the delegate constructor of the base class to take in.
 #define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_1_Z(z, n, data)                 \
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, class ParameterArgumentType)>     \
     BOOST_PP_EXPR_IF(BOOST_PP_EQUAL(n, 1), explicit)                         \
@@ -615,8 +594,6 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
-// Expands to a constructor whose job is to consolidate its arguments into a
-// pack for the delegate to take in.
 #define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_Z(z, n, data)                   \
     BOOST_PP_IF(                                                             \
         n                                                                    \
@@ -625,7 +602,7 @@ namespace boost { namespace parameter { namespace aux {
     )(z, n, data)
 /**/
 
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 // Expands to a definition of a constructor or forwarding function argument
 // passed by const reference.  Used by BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_0
@@ -710,7 +687,8 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
-// Expands to a 0-arity forwarding function.
+// Expands to a 0-arity forwarding function, whose job is to pass an empty
+// pack to the front-end implementation function.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_ARITY(z, n, seq)         \
     inline BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(                           \
         BOOST_PP_TUPLE_ELEM(                                                 \
@@ -755,7 +733,8 @@ namespace boost { namespace parameter { namespace aux {
     }
 /**/
 
-// Expands to the default constructor.
+// Expands to the default constructor, whose job is to pass an empty back to
+// the delegate constructor of the base class.
 #define BOOST_PARAMETER_DEFAULT_CONSTRUCTOR(z, n, seq)                       \
     inline                                                                   \
     BOOST_PP_TUPLE_ELEM(2, 0, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq)))()   \
@@ -829,8 +808,9 @@ namespace boost { namespace parameter { namespace aux {
 /**/
 
 // Expands to a constructor whose job is to consolidate its arguments into a
-// pack for the delegate to take in.  Each element in BOOST_PP_SEQ_TAIL(seq)
-// determines the const-ness of the corresponding argument.
+// pack for the delegate constructor of the base class to take in.  Each
+// element in BOOST_PP_SEQ_TAIL(seq) determines the const-ness of the
+// corresponding argument.
 #define BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_R(r, seq)                       \
     template <                                                               \
         BOOST_PP_ENUM_PARAMS(                                                \
@@ -968,6 +948,8 @@ namespace boost { namespace parameter { namespace aux {
     required<boost::parameter::deduced<tag>
 /**/
 
+#include <boost/preprocessor/punctuation/comma_if.hpp>
+
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 
 #define BOOST_PARAMETER_SPECIFICATION_ELEM_R(r, tag_namespace, i, elem)      \
@@ -1096,28 +1078,21 @@ namespace boost { namespace parameter { namespace aux {
   , class BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))
 /**/
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 // Expands to a forwarding parameter for a dispatch function.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DEFN(r, macro, arg)            \
   , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))&& macro(arg)
 /**/
 
-// Expands to an argument passed from a dispatch function to the dispatch
-// function with the next higher number of specified parameters.
+// Expands to an argument passed from one dispatch function to the next.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_FWD(r, macro, arg)             \
   , boost::forward<                                                          \
         BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))               \
     >(macro(arg))
 /**/
 
-#else // !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-
-// Expands to a forwarding parameter for a dispatch function.  The parameter
-// type stores its const-ness.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DEFN(r, macro, arg)            \
-  , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))& macro(arg)
-/**/
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -1134,9 +1109,14 @@ namespace boost { namespace parameter { namespace aux {
     }
 }}} // namespace boost::parameter::aux
 
-// Expands to an argument passed from a dispatch function to the dispatch
-// function with the next higher number of specified parameters.  Explicit
-// forwarding not needed.
+// Expands to a forwarding parameter for a dispatch function.  The parameter
+// type stores its const-ness.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DEFN(r, macro, arg)            \
+  , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))& macro(arg)
+/**/
+
+// Expands to an argument passed from one dispatch function to the next.
+// Explicit forwarding takes the form of forcing the argument to be an lvalue.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_FWD(r, macro, arg)             \
   , boost::parameter::aux::as_lvalue(macro(arg), 0L)
 /**/
@@ -1162,10 +1142,10 @@ namespace boost { namespace parameter { namespace aux {
     )
 /**/
 
-// Expands to the template parameter list of the dispatch function with the
-// specified number of non-defaulted parameters; also extracts the static
-// keyword if present.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_0(n, x)                       \
+// Expands to the template parameter list of the dispatch function with all
+// required and first n optional parameters; also extracts the static keyword
+// if present.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                     \
     template <                                                               \
         class ResultType, class Args                                         \
         BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_REPEAT(                        \
@@ -1178,68 +1158,37 @@ namespace boost { namespace parameter { namespace aux {
     )
 /**/
 
-// Expands to the argument-pack parameter and all non-defaulted parameters.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_FIRST(n, x)          \
+// Expands to the result type, name, parenthesized list of all required and
+// n optional parameters, and const-ness of the dispatch function; the bit
+// value b determines whether or not this dispatch function takes in
+// boost::parameter::aux::use_default_tag as its last parameter.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, b)                  \
+    ResultType BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x)(                    \
         ResultType(*)(), Args const& args, long                              \
         BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_REPEAT(                        \
             BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DEFN                       \
           , n                                                                \
           , BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)                  \
-        )
-/**/
-
-#include <boost/preprocessor/punctuation/comma.hpp>
-
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_LAST_Z(z, n, p)      \
-    BOOST_PP_COMMA() p
-/**/
-
-#include <boost/preprocessor/arithmetic/sub.hpp>
-
-// Expands to the result type, name, parenthesized parameter list, and
-// const-ness of the dispatch function with the specified number of
-// non-defaulted parameters.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1(n, x)                       \
-    ResultType BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x)(                    \
-        BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_FIRST(n, x)          \
-        BOOST_PP_REPEAT_FROM_TO(                                             \
-            0                                                                \
-          , BOOST_PP_SUB(                                                    \
-                BOOST_PARAMETER_SPLIT_ARG_OPT_COUNT(                         \
-                    BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)          \
-                )                                                            \
-              , n                                                            \
-            )                                                                \
-          , BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_LAST_Z           \
-          , boost::parameter::aux::use_default_tag                           \
         )                                                                    \
+        BOOST_PP_COMMA_IF(b)                                                 \
+        BOOST_PP_EXPR_IF(b, boost::parameter::aux::use_default_tag)          \
     ) BOOST_PP_EXPR_IF(BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x), const)
 /**/
 
-// BOOST_PP_REPEAT_FROM_TO-reentrant version of
-// BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_Z(z, n, x)                  \
-    ResultType BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x)(                    \
-        BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_FIRST(n, x)          \
-        BOOST_PP_CAT(BOOST_PP_REPEAT_FROM_TO_, z)(                           \
-            0                                                                \
-          , BOOST_PP_SUB(                                                    \
-                BOOST_PARAMETER_SPLIT_ARG_OPT_COUNT(                         \
-                    BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)          \
-                )                                                            \
-              , n                                                            \
-            )                                                                \
-          , BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_LAST_Z           \
-          , boost::parameter::aux::use_default_tag                           \
-        )                                                                    \
-    ) BOOST_PP_EXPR_IF(BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x), const)
+// Expands to a forward declaration of the dispatch function that takes in
+// all required and the first n optional parameters, but not
+// boost::parameter::aux::use_default_tag.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_FWD_DECL_0_Z(z, n, x)              \
+    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                         \
+    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, 0);
 /**/
 
-// Expands to a forward declaration of the dispatch function with the
-// specified number of non-defaulted parameters.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_FWD_DECL_Z(z, n, x)                \
-    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_0(n, x)                           \
-    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_Z(z, n, x);
+// Expands to a forward declaration of the dispatch function that takes in
+// all required parameters, the first n optional parameters, and
+// boost::parameter::aux::use_default_tag.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_FWD_DECL_1_Z(z, n, x)              \
+    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                         \
+    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, 1);
 /**/
 
 #include <boost/preprocessor/seq/elem.hpp>
@@ -1251,9 +1200,11 @@ namespace boost { namespace parameter { namespace aux {
     )
 /**/
 
+#include <boost/parameter/keyword.hpp>
+
 // Expands to the assignment portion which binds the default value to the
 // (n + 1)th optional parameter before composing it with the argument-pack
-// parameter of a dispatch function.
+// parameter passed in to the n-th dispatch function.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DFLT(n, s_args, tag_ns)        \
     boost::parameter::keyword<                                               \
         tag_ns::BOOST_PARAMETER_FN_ARG_NAME(                                 \
@@ -1262,7 +1213,7 @@ namespace boost { namespace parameter { namespace aux {
     >::instance = BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT_AUX(n, s_args)
 /**/
 
-#if defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 // Each dispatch function passes the default value of the (n + 1)th optional
 // parameter to the next dispatch function.
@@ -1282,20 +1233,123 @@ namespace boost { namespace parameter { namespace aux {
 
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
-// Expands to the dispatch function with the specified number of non-defaulted
-// parameters.
+#include <boost/parameter/aux_/cast.hpp>
+
+// Takes in the arg tuple (name, pred) and the tag namespace.
+// Extracts the corresponding required argument from the pack.
+// This form enables BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER to use it
+// from within BOOST_PP_SEQ_FOR_EACH.
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+// The boost::forward wrapper is necessary to transmit the target type to the
+// next dispatch function.  Otherwise, the argument will retain its original
+// type. -- Cromwell D. Enage
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_R(r, tag_ns, arg)         \
+  , boost::forward<                                                          \
+        BOOST_PARAMETER_FUNCTION_CAST_T(                                     \
+            tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                         \
+          , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
+          , Args                                                             \
+        )                                                                    \
+    >(                                                                       \
+        BOOST_PARAMETER_FUNCTION_CAST(                                       \
+            args[                                                            \
+                boost::parameter::keyword<                                   \
+                    tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                 \
+                >::instance                                                  \
+            ]                                                                \
+          , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
+          , Args                                                             \
+        )                                                                    \
+    )
+/**/
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+// The explicit type cast is necessary to transmit the target type to the next
+// dispatch function.  Otherwise, the argument will retain its original type.
+// -- Cromwell D. Enage
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_R(r, tag_ns, arg)         \
+  , BOOST_PARAMETER_FUNCTION_CAST_T(                                         \
+        tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                             \
+      , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
+      , Args                                                                 \
+    )(                                                                       \
+        BOOST_PARAMETER_FUNCTION_CAST(                                       \
+            args[                                                            \
+                boost::parameter::keyword<                                   \
+                    tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                 \
+                >::instance                                                  \
+            ]                                                                \
+          , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
+          , Args                                                             \
+        )                                                                    \
+    )
+/**/
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
+// Takes in the arg tuple (name, pred, default) and the tag namespace.
+// Extracts the corresponding optional argument from the pack if specified,
+// otherwise temporarily passes use_default_tag() to the dispatch functions.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_OPT_ARG_CAST(arg, tag_ns)          \
+    BOOST_PARAMETER_FUNCTION_CAST(                                           \
+        args[                                                                \
+            boost::parameter::keyword<                                       \
+                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
+            >::instance || boost::parameter::aux::use_default_tag()          \
+        ]                                                                    \
+      , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
+      , Args                                                                 \
+    )
+/**/
+
+// Expands to two dispatch functions that take in all required parameters and
+// the first n optional parameters.  The second dispatch function takes in
+// boost::parameter::aux::use_default_tag as the last parameter.
 //
 // x is a tuple:
 //
 //   (name, split_args, is_const, tag_namespace)
 //
-// Where name is the base name of the function, and split_args is a tuple:
+// Where name is the base name of the functions, and split_args is a tuple:
 //
 //   (required_count, required_args, optional_count, required_args)
 //
+// The first dispatch function queries args if it has bound the (n + 1)th
+// optional parameter to a user-defined argument.  If so, then it forwards
+// its own arguments followed by the user-defined argument to the dispatch
+// function that takes in all required parameters and the first (n + 1)
+// optional parameters, but not boost::parameter::aux::use_default_tag.
+// Otherwise, it forwards its own arguments to the second dispatch function.
+//
+// The second dispatch function appends the default value of the (n + 1)th
+// optional parameter to its copy of args.  Then it forwards its arguments
+// followed by the default value to the dispatch function that takes in all
+// required parameters and the first (n + 1) optional parameters, but not
+// boost::parameter::aux::use_default_tag.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_OVERLOAD_Z(z, n, x)                \
-    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_0(n, x)                           \
-    inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_Z(z, n, x)               \
+    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                         \
+    inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, 0)               \
+    {                                                                        \
+        return BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x)(                    \
+            static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
+          , args                                                             \
+          , 0L                                                               \
+            BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_REPEAT(                    \
+                BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_FWD                    \
+              , n                                                            \
+              , BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)              \
+            )                                                                \
+          , BOOST_PARAMETER_FUNCTION_DISPATCH_OPT_ARG_CAST(                  \
+                BOOST_PP_SEQ_ELEM(                                           \
+                    n                                                        \
+                  , BOOST_PARAMETER_SPLIT_ARG_OPT_SEQ(                       \
+                        BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)      \
+                    )                                                        \
+                )                                                            \
+              , BOOST_PARAMETER_FUNCTION_DISPATCH_TAG_NAMESPACE(x)           \
+            )                                                                \
+        );                                                                   \
+    }                                                                        \
+    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                         \
+    inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, 1)               \
     {                                                                        \
         return BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x)(                    \
             static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
@@ -1314,17 +1368,6 @@ namespace boost { namespace parameter { namespace aux {
             )                                                                \
           , BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT(                       \
                 n, BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)           \
-            )                                                                \
-            BOOST_PP_CAT(BOOST_PP_REPEAT_FROM_TO_, z)(                       \
-                0                                                            \
-              , BOOST_PP_SUB(                                                \
-                    BOOST_PARAMETER_SPLIT_ARG_OPT_COUNT(                     \
-                        BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)      \
-                    )                                                        \
-                  , BOOST_PP_INC(n)                                          \
-                )                                                            \
-              , BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1_PARAMS_LAST_Z       \
-              , boost::parameter::aux::use_default_tag()                     \
             )                                                                \
         );                                                                   \
     }
@@ -1351,7 +1394,15 @@ namespace boost { namespace parameter { namespace aux {
                 BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)              \
             )                                                                \
         )                                                                    \
-      , BOOST_PARAMETER_FUNCTION_DISPATCH_FWD_DECL_Z                         \
+      , BOOST_PARAMETER_FUNCTION_DISPATCH_FWD_DECL_0_Z                       \
+      , x                                                                    \
+    )                                                                        \
+    BOOST_PP_IF(fwd_decl, BOOST_PP_REPEAT_FROM_TO, BOOST_PP_TUPLE_EAT(4))(   \
+        0                                                                    \
+      , BOOST_PARAMETER_SPLIT_ARG_OPT_COUNT(                                 \
+            BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)                  \
+        )                                                                    \
+      , BOOST_PARAMETER_FUNCTION_DISPATCH_FWD_DECL_1_Z                       \
       , x                                                                    \
     )                                                                        \
     template <class Args> BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(            \
@@ -1372,16 +1423,9 @@ namespace boost { namespace parameter { namespace aux {
           , args                                                             \
           , 0L                                                               \
             BOOST_PP_SEQ_FOR_EACH(                                           \
-                BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_0_R               \
+                BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_R                 \
               , BOOST_PARAMETER_FUNCTION_DISPATCH_TAG_NAMESPACE(x)           \
               , BOOST_PARAMETER_SPLIT_ARG_REQ_SEQ(                           \
-                    BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)          \
-                )                                                            \
-            )                                                                \
-            BOOST_PP_SEQ_FOR_EACH(                                           \
-                BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_1_R               \
-              , BOOST_PARAMETER_FUNCTION_DISPATCH_TAG_NAMESPACE(x)           \
-              , BOOST_PARAMETER_SPLIT_ARG_OPT_SEQ(                           \
                     BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)          \
                 )                                                            \
             )                                                                \
@@ -1395,17 +1439,18 @@ namespace boost { namespace parameter { namespace aux {
       , BOOST_PARAMETER_FUNCTION_DISPATCH_OVERLOAD_Z                         \
       , x                                                                    \
     )                                                                        \
-    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_0(                                \
+    BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(                              \
         BOOST_PARAMETER_SPLIT_ARG_OPT_COUNT(                                 \
             BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)                  \
         )                                                                    \
       , x                                                                    \
     )                                                                        \
-    inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_1(                         \
+    inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(                       \
         BOOST_PARAMETER_SPLIT_ARG_OPT_COUNT(                                 \
             BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)                  \
         )                                                                    \
       , x                                                                    \
+      , 0                                                                    \
     )
 /**/
 

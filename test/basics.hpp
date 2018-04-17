@@ -8,12 +8,19 @@
 
 #include <boost/parameter.hpp>
 
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING && \
-    BOOST_PARAMETER_MAX_ARITY < 4
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_MAX_ARITY < 4)
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
+
 #include <boost/assert.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/core/lightweight_test.hpp>
@@ -73,18 +80,40 @@ namespace test {
         void
         operator()(Name_ const& n_, Value_ const& v_, Index_ const& i_) const
         {
-            // Only VC and its emulators fail this; they seem to have problems
-            // with deducing the constness of string literal arrays.
 #if defined(_MSC_VER) && (                                                   \
         BOOST_WORKAROUND(BOOST_INTEL_CXX_VERSION, <= 700) ||                 \
         BOOST_WORKAROUND(BOOST_MSVC, < 1310)) ||                             \
         BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)                \
     )
-#else 
+            // Only VC and its emulators fail this; they seem to have problems
+            // with deducing the constness of string literal arrays.
+#elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_MPL_ASSERT((boost::is_same<Index,Index_>));
             BOOST_MPL_ASSERT((boost::is_same<Value,Value_>));
             BOOST_MPL_ASSERT((boost::is_same<Name,Name_>));
-#endif
+#else
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    std::is_same<Index,Index_>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    std::is_same<Value,Value_>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    std::is_same<Name,Name_>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+#endif // constness deduction of string literal arrays
             BOOST_TEST(test::equal(n, n_));
             BOOST_TEST(test::equal(v, v_));
             BOOST_TEST(test::equal(i, i_));
