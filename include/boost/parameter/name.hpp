@@ -34,6 +34,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/value_type.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/config.hpp>
+#include <boost/config/workaround.hpp>
 
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))

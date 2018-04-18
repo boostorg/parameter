@@ -1,15 +1,5 @@
 
 #include <boost/parameter.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/depth_first_search.hpp>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/property_map/property_map.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/type_traits/is_integral.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <vector>
-#include <utility>
 
 BOOST_PARAMETER_NAME((_graph, graphs) graph)
 BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
@@ -17,51 +7,30 @@ BOOST_PARAMETER_NAME((_root_vertex, graphs) in(root_vertex))
 BOOST_PARAMETER_NAME((_index_map, graphs) in(index_map))
 BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 
-struct graph_predicate
-{
-    template <class T, class Args>
-    struct apply
-      : boost::mpl::and_<
-            boost::is_convertible<
-                typename boost::graph_traits<T>::traversal_category
-              , boost::incidence_graph_tag
-            >
-          , boost::is_convertible<
-                typename boost::graph_traits<T>::traversal_category
-              , boost::vertex_list_graph_tag
-            >
-        >
-    {
-    };
-};
+#include <boost/graph/graph_traits.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/config.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_same.hpp>
+#else
+#include <type_traits>
+#endif
 
 struct vertex_descriptor_predicate
 {
     template <class T, class Args>
     struct apply
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::is_convertible<
-            T
-          , typename boost::graph_traits<
-                typename boost::parameter::value_type<
-                    Args
-                  , graphs::graph
-                >::type
-            >::vertex_descriptor
-        >
-    {
-    };
-};
-
-struct index_map_predicate
-{
-    template <class T, class Args>
-    struct apply
-      : boost::mpl::and_<
-            boost::is_integral<
-                typename boost::property_traits<T>::value_type
-            >
-          , boost::is_same<
-                typename boost::property_traits<T>::key_type
+#else
+      : boost::mpl::if_<
+            std::is_convertible<
+#endif
+                T
               , typename boost::graph_traits<
                     typename boost::parameter::value_type<
                         Args
@@ -69,10 +38,58 @@ struct index_map_predicate
                     >::type
                 >::vertex_descriptor
             >
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >
+#endif
+    {
+    };
+};
+
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/mpl/eval_if.hpp>
+#endif
+
+struct graph_predicate
+{
+    template <class T, class Args>
+    struct apply
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+      : boost::mpl::if_<
+            boost::is_convertible<
+#else
+      : boost::mpl::eval_if<
+            std::is_convertible<
+#endif
+                typename boost::graph_traits<T>::traversal_category
+              , boost::incidence_graph_tag
+            >
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::is_convertible<
+#else
+          , boost::mpl::if_<
+                std::is_convertible<
+#endif
+                    typename boost::graph_traits<T>::traversal_category
+                  , boost::vertex_list_graph_tag
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                >
+              , boost::mpl::true_
+              , boost::mpl::false_
+#endif
+            >
+          , boost::mpl::false_
         >
     {
     };
 };
+
+#include <boost/property_map/property_map.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_same.hpp>
+#endif
 
 struct color_map_predicate
 {
@@ -90,6 +107,51 @@ struct color_map_predicate
     {
     };
 };
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_integral.hpp>
+#endif
+
+struct index_map_predicate
+{
+    template <class T, class Args>
+    struct apply
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+      : boost::mpl::if_<
+            boost::is_integral<
+#else
+      : boost::mpl::eval_if<
+            std::is_integral<
+#endif
+                typename boost::property_traits<T>::value_type
+            >
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::is_same<
+#else
+          , boost::mpl::if_<
+                std::is_same<
+#endif
+                    typename boost::property_traits<T>::key_type
+                  , typename boost::graph_traits<
+                        typename boost::parameter::value_type<
+                            Args
+                          , graphs::graph
+                        >::type
+                    >::vertex_descriptor
+#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                >
+              , boost::mpl::true_
+              , boost::mpl::false_
+#endif
+            >
+          , boost::mpl::false_
+        >
+    {
+    };
+};
+
+#include <boost/graph/properties.hpp>
+#include <vector>
 
 template <class Size, class IndexMap>
 boost::iterator_property_map<
@@ -109,6 +171,8 @@ default_color_map(Size num_vertices, IndexMap const& index_map)
     > m(colors.begin(), index_map);
     return m;
 }
+
+#include <boost/graph/depth_first_search.hpp>
 
 BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
     (required
@@ -135,6 +199,9 @@ BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
 )
 {
 }
+
+#include <boost/graph/adjacency_list.hpp>
+#include <utility>
 
 int main()
 {

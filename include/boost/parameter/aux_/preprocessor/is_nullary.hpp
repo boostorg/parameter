@@ -6,7 +6,7 @@
 #ifndef BOOST_PARAMETER_AUX_PREPROCESSOR_IS_NULLARY_HPP
 #define BOOST_PARAMETER_AUX_PREPROCESSOR_IS_NULLARY_HPP
 
-#include <boost/config.hpp>
+#include <boost/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 // From Paul Mensonides

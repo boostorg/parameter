@@ -6,8 +6,6 @@
 #ifndef BOOST_PARAMETER_AUX_PARENTHESIZED_TYPE_DWA2006414_HPP
 #define BOOST_PARAMETER_AUX_PARENTHESIZED_TYPE_DWA2006414_HPP
 
-#include <boost/config.hpp>
-
 namespace boost { namespace parameter { namespace aux { 
 
     // A metafunction that transforms void(*)(T) -> T

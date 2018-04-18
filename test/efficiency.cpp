@@ -10,6 +10,7 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 1 or greater.
 #endif
 
+#include <boost/config/workaround.hpp>
 #include <boost/timer.hpp>
 #include <iostream>
 

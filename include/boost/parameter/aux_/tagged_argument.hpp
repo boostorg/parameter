@@ -60,8 +60,14 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        defined(BOOST_MSVC) && (BOOST_MSVC >= 1700) && \
+        (_MSC_FULL_VER < 180020827) \
+    )
 #include <boost/type_traits/is_const.hpp>
+#endif
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #endif
@@ -96,7 +102,12 @@ namespace boost { namespace parameter { namespace aux {
             >
           , boost::parameter::aux::error_lvalue_bound_to_consume_parameter
           , boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        defined(BOOST_MSVC) && (BOOST_MSVC >= 1700) && \
+        (_MSC_FULL_VER < 180020827) \
+    )
+                // MSVC 11.0 on AppVeyor reports error C2039: '_Is_const' :
+                // is not a member of 'std::_Ptr_traits<_Ty>'
                 boost::is_const<Arg>
 #else
                 std::is_const<Arg>
@@ -264,6 +275,18 @@ namespace boost { namespace parameter { namespace aux {
             return x.value;
         }
 
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+        template <class KW, class Default>
+        inline Default&&
+        get_with_default(
+            boost::parameter::aux::default_r_<KW,Default> const& x
+          , int
+        ) const
+        {
+            return boost::forward<Default>(x.value);
+        }
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
         template <class Default>
         inline reference
         get_with_default(
@@ -344,6 +367,15 @@ namespace boost { namespace parameter { namespace aux {
         {
             return x.value;
         }
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+        template <class KW, class Default>
+        inline Default&&
+        operator[](boost::parameter::aux::default_r_<KW,Default> const& x) const
+        {
+            return boost::forward<Default>(x.value);
+        }
+#endif
 
         template <class KW, class F>
         inline typename boost::parameter::aux::result_of0<F>::type

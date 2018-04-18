@@ -49,6 +49,7 @@ namespace test {
 } // namespace test
 
 #include <boost/mpl/assert.hpp>
+#include <boost/config.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
@@ -62,25 +63,25 @@ namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), f, tag,
         (required
-            (x, (int))
-            (y, (int))
+            (x, (long))
+            (y, (long))
         )
     )
     {
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        BOOST_MPL_ASSERT((boost::is_convertible<x_type,int>));
-        BOOST_MPL_ASSERT((boost::is_convertible<y_type,int>));
+        BOOST_MPL_ASSERT((boost::is_convertible<x_type,long>));
+        BOOST_MPL_ASSERT((boost::is_convertible<y_type,long>));
 #else
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
-                std::is_convertible<x_type,int>
+                std::is_convertible<x_type,long>
               , boost::mpl::true_
               , boost::mpl::false_
             >::type
         ));
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
-                std::is_convertible<y_type,int>
+                std::is_convertible<y_type,long>
               , boost::mpl::true_
               , boost::mpl::false_
             >::type
@@ -147,12 +148,7 @@ int main()
 {
     test::f(1, 2);
     test::f(1., 2.f);
-#if defined(BOOST_CLANG) && (1 == BOOST_CLANG) && (__clang_major__ < 6)
-    // Travis Cl on Linux reports substitution errors involving suffix I.
-#elif !defined(BOOST_MSVC)
-    // Appveyor reports MSVC declaring suffix I illegal.
-    test::f(1U, 2I);
-#endif
+    test::f(1U, 2L);
     test::g(0);
     test::h(0);
     return boost::report_errors();

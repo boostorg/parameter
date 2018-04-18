@@ -9,38 +9,42 @@
 #ifndef BOOST_PARAMETER_MAYBE_091021_HPP
 #define BOOST_PARAMETER_MAYBE_091021_HPP
 
-#include <boost/parameter/aux_/is_maybe.hpp>
-#include <boost/optional/optional.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/mpl/identity.hpp>
-#include <boost/config.hpp>
-
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-#include <boost/type_traits/is_reference.hpp>
-#include <boost/type_traits/add_const.hpp>
-#include <boost/type_traits/add_lvalue_reference.hpp>
-#include <boost/type_traits/aligned_storage.hpp>
-#include <boost/type_traits/remove_cv.hpp>
-#else
-#include <type_traits>
-#endif
-
 namespace boost { namespace parameter { namespace aux {
 
     template <class T>
     struct referent_size;
+}}} // namespace boost::parameter::aux
+
+#include <boost/config.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     template <class T>
     struct referent_size<T&>
     {
         BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(T));
     };
+}}} // namespace boost::parameter::aux
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        defined(BOOST_MSVC) && (BOOST_MSVC >= 1910) && (BOOST_MSVC < 1912) \
+    )
+#include <boost/type_traits/aligned_storage.hpp>
+#else
+#include <type_traits>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
 
     // A metafunction returning a POD type which can store U, where T == U&.
     // If T is not a reference type, returns a POD which can store T.
     template <class T>
     struct referent_storage
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        defined(BOOST_MSVC) && (BOOST_MSVC >= 1910) && (BOOST_MSVC < 1912) \
+    )
+        // MSVC 14.1 on AppVeyor reports that the address() function
+        // is not a member of std::aligned_storage. -- Cromwell D. Enage
       : boost::aligned_storage<
 #else
       : std::aligned_storage<
@@ -49,6 +53,23 @@ namespace boost { namespace parameter { namespace aux {
         >
     {
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/aux_/is_maybe.hpp>
+#include <boost/optional/optional.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/identity.hpp>
+#include <boost/config/workaround.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#include <boost/type_traits/add_const.hpp>
+#endif
+#include <boost/type_traits/add_lvalue_reference.hpp>
+#include <boost/type_traits/remove_cv.hpp>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
 
     template <class T>
     struct maybe : boost::parameter::aux::maybe_base

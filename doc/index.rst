@@ -2089,10 +2089,11 @@ function template and allow *it* to do type deduction::
     BOOST_PARAMETER_NAME(index)
 
     template <class Name, class Index>
-    int deduce_arg_types_impl(Name& name, Index& index)
+    int deduce_arg_types_impl(Name&& name, Index&& index)
     {
-        Name& n2 = name;  // we know the types
-        Index& i2 = index;
+        // we know the types
+        Name&& n2 = boost::forward<Name>(name);
+        Index&& i2 = boost::forward<Index>(index);
         return index;
     }
 
@@ -2104,18 +2105,18 @@ function template and allow *it* to do type deduction::
 
 .. @example.prepend('''
     #include <boost/parameter.hpp>
-    #include <cassert>
 ''')
 
 .. @example.append('''
-    int a1 = deduce_arg_types((_name = "foo"));
-    int a2 = deduce_arg_types((_name = "foo", _index = 3));
+    #include <boost/core/lightweight_test.hpp>
 
     int main()
     {
-        assert(a1 == 42);
-        assert(a2 == 3);
-        return 0;
+        int a1 = deduce_arg_types((_name = "foo"));
+        int a2 = deduce_arg_types((_name = "foo", _index = 3));
+        BOOST_TEST_EQ(a1, 42);
+        BOOST_TEST_EQ(a2, 3);
+        return boost::report_errors();
     }
 ''')
 
@@ -2129,27 +2130,23 @@ metafunction introduced `earlier`__::
     BOOST_PARAMETER_NAME(index)
 
     template <class ArgumentPack>
-    typename parameter::value_type<ArgumentPack, tag::index, int>::type
+    typename boost::parameter::value_type<ArgumentPack,tag::index,int>::type
     twice_index(ArgumentPack const& args)
     {
         return 2 * args[_index | 42];
     }
-
-    int six = twice_index(_index = 3);
-
 .. @example.prepend('''
     #include <boost/parameter.hpp>
-    #include <boost/type_traits/remove_reference.hpp>
-    #include <cassert>
-
-    namespace parameter = boost::parameter;
 ''')
 
 .. @example.append('''
+    #include <boost/core/lightweight_test.hpp>
+
     int main()
     {
-        assert(six == 6);
-        return 0;
+        int six = twice_index(_index = 3);
+        BOOST_TEST_EQ(six, 6);
+        return boost::report_errors();
     }
 ''')
 

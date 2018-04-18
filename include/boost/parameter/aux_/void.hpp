@@ -24,7 +24,7 @@ namespace boost { namespace parameter { namespace aux {
     }
 }}} // namespace boost::parameter::aux
 
-#include <boost/detail/workaround.hpp>
+#include <boost/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
 namespace boost { namespace parameter { namespace aux {

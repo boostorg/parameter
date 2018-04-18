@@ -16,6 +16,8 @@ namespace test {
     BOOST_PARAMETER_NAME((value, keywords) in(value))
 } // namespace test
 
+#include <boost/config.hpp>
+
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
@@ -111,6 +113,8 @@ namespace test {
         f_impl(args(a0, a1));
     }
 } // namespace test
+
+#include <boost/config/workaround.hpp>
 
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))

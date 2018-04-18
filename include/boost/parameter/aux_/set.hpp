@@ -6,7 +6,7 @@
 #ifndef BOOST_PARAMETER_SET_060912_HPP
 #define BOOST_PARAMETER_SET_060912_HPP
 
-#include <boost/config.hpp>
+#include <boost/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 
@@ -16,6 +16,7 @@
 #include <boost/mpl/end.hpp>
 #include <boost/mpl/find.hpp>
 #include <boost/mpl/push_front.hpp>
+#include <boost/config.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>

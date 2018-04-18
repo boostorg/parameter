@@ -20,6 +20,8 @@
 #include <type_traits>
 #endif
 
+#include <boost/config/workaround.hpp>
+
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 #include <boost/mpl/is_placeholder.hpp>
 #include <boost/mpl/identity.hpp>

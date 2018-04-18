@@ -6,6 +6,7 @@
 #include <boost/parameter/aux_/unwrap_cv_reference.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/mpl/aux_/test.hpp>
+#include <boost/config.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>

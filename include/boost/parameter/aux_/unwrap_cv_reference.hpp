@@ -13,23 +13,6 @@ namespace boost {
 } // namespace boost
 
 #include <boost/parameter/aux_/yesno.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/tti/detail/dnullptr.hpp>
-#include <boost/config.hpp>
-
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#include <boost/mpl/eval_if.hpp>
-#endif
-
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-#include <boost/type_traits/remove_reference.hpp>
-#else
-#include <type_traits>
-#endif
-
-#if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-#include <functional>
-#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -45,14 +28,38 @@ namespace boost { namespace parameter { namespace aux {
         boost::reference_wrapper<U> const volatile*
     );
 
+    boost::parameter::aux::no_tag is_cv_reference_wrapper_check(...);
+}}} // namespace boost::parameter::aux
+
+#include <boost/config.hpp>
+
 #if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#include <functional>
+
+namespace boost { namespace parameter { namespace aux {
+
     // Support for std::ref(x) -- Cromwell D. Enage
     template <class U>
     boost::parameter::aux::yes_tag
     is_cv_reference_wrapper_check(std::reference_wrapper<U> const volatile*);
+}}} // namespace boost::parameter::aux
 #endif
 
-    boost::parameter::aux::no_tag is_cv_reference_wrapper_check(...);
+#include <boost/mpl/bool.hpp>
+#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/config/workaround.hpp>
+
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#include <boost/mpl/eval_if.hpp>
+#endif
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/remove_reference.hpp>
+#else
+#include <type_traits>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
 
     // This metafunction returns mpl::true_ if T is of type
     // reference_wrapper<U> cv.

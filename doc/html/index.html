@@ -2139,10 +2139,11 @@ BOOST_PARAMETER_NAME(name)
 BOOST_PARAMETER_NAME(index)
 
 template &lt;class Name, class Index&gt;
-int deduce_arg_types_impl(Name&amp; name, Index&amp; index)
+int deduce_arg_types_impl(Name&amp;&amp; name, Index&amp;&amp; index)
 {
-    Name&amp; n2 = name;  // we know the types
-    Index&amp; i2 = index;
+    // we know the types
+    Name&amp;&amp; n2 = boost::forward&lt;Name&gt;(name);
+    Index&amp;&amp; i2 = boost::forward&lt;Index&gt;(index);
     return index;
 }
 
@@ -2154,17 +2155,17 @@ int deduce_arg_types(ArgumentPack const&amp; args)
 </pre>
 <!-- @example.prepend('''
 #include <boost/parameter.hpp>
-#include <cassert>
 ''') -->
 <!-- @example.append('''
-int a1 = deduce_arg_types((_name = "foo"));
-int a2 = deduce_arg_types((_name = "foo", _index = 3));
+#include <boost/core/lightweight_test.hpp>
 
 int main()
 {
-    assert(a1 == 42);
-    assert(a2 == 3);
-    return 0;
+    int a1 = deduce_arg_types((_name = "foo"));
+    int a2 = deduce_arg_types((_name = "foo", _index = 3));
+    BOOST_TEST_EQ(a1, 42);
+    BOOST_TEST_EQ(a2, 3);
+    return boost::report_errors();
 }
 ''') -->
 <!-- @test('run') -->
@@ -2178,26 +2179,24 @@ introduced
 BOOST_PARAMETER_NAME(index)
 
 template &lt;class ArgumentPack&gt;
-typename parameter::value_type&lt;ArgumentPack, tag::index, int&gt;::type
+typename boost::parameter::value_type&lt;ArgumentPack,tag::index,int&gt;::type
 twice_index(ArgumentPack const&amp; args)
 {
     return 2 * args[_index | 42];
 }
 
-int six = twice_index(_index = 3);
 </pre>
 <!-- @example.prepend('''
 #include <boost/parameter.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-#include <cassert>
-
-namespace parameter = boost::parameter;
 ''') -->
 <!-- @example.append('''
+#include <boost/core/lightweight_test.hpp>
+
 int main()
 {
-    assert(six == 6);
-    return 0;
+    int six = twice_index(_index = 3);
+    BOOST_TEST_EQ(six, 6);
+    return boost::report_errors();
 }
 ''') -->
 <!-- @test('run', howmany='all') -->
