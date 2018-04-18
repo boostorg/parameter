@@ -59,21 +59,31 @@ namespace boost { namespace parameter { namespace aux {
     template <class T>
     struct is_cv_reference_wrapper
     {
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_STATIC_CONSTANT(
             bool, value = (
                 sizeof(
                     boost::parameter::aux::is_cv_reference_wrapper_check(
                         static_cast<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                            typename boost::remove_reference<T>::type*
-#else
                             typename std::remove_reference<T>::type*
-#endif
                         >(BOOST_TTI_DETAIL_NULLPTR)
                     )
                 ) == sizeof(boost::parameter::aux::yes_tag)
             )
         );
+#else
+        BOOST_STATIC_CONSTANT(
+            bool, value = (
+                sizeof(
+                    boost::parameter::aux::is_cv_reference_wrapper_check(
+                        static_cast<
+                            typename std::remove_reference<T>::type*
+                        >(BOOST_TTI_DETAIL_NULLPTR)
+                    )
+                ) == sizeof(boost::parameter::aux::yes_tag)
+            )
+        );
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
 
         typedef boost::mpl::bool_<
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))

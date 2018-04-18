@@ -19,6 +19,8 @@ struct keywords
 {
 };
 
+#include <boost/mpl/bool.hpp>
+
 template <class T>
 struct is_keyword_expression
   : boost::mpl::false_
@@ -37,24 +39,36 @@ void f()
 {
 }
 
-namespace mpl = boost::mpl;
+#include <boost/mpl/placeholders.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/eval_if.hpp>
 
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#else
+#include <type_traits>
+#endif
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 BOOST_PARAMETER_FUNCTION(
     (void), def, tag,
-    (required (name,(char const*)) (func,*) )   // nondeduced
+    (required (name,(char const*)) (func,*) )  // nondeduced
     (deduced
         (optional
             (docstring, (char const*), "")
             (keywords
-              , *(is_keyword_expression<mpl::_>) // see 5
+              , *(is_keyword_expression<boost::mpl::_>) // see 5
               , no_keywords()
             )
             (policies
               , *(
-                    mpl::not_<
-                        mpl::or_<
-                            boost::is_convertible<mpl::_, char const*>
-                          , is_keyword_expression<mpl::_> // see 5
+                    boost::mpl::eval_if<
+                        boost::is_convertible<boost::mpl::_,char const*>
+                      , boost::mpl::false_
+                      , boost::mpl::if_<
+                            is_keyword_expression<boost::mpl::_> // see 5
+                          , boost::mpl::false_
+                          , boost::mpl::true_
                         >
                     >
                 )
@@ -63,6 +77,35 @@ BOOST_PARAMETER_FUNCTION(
         )
     )
 )
+#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+BOOST_PARAMETER_FUNCTION(
+    (void), def, tag,
+    (required (name,(char const*)) (func,*) )  // nondeduced
+    (deduced
+        (optional
+            (docstring, (char const*), "")
+            (keywords
+              , *(is_keyword_expression<boost::mpl::_>) // see 5
+              , no_keywords()
+            )
+            (policies
+              , *(
+                    boost::mpl::eval_if<
+                        std::is_convertible<boost::mpl::_,char const*>
+                      , boost::mpl::false_
+                      , boost::mpl::if_<
+                            is_keyword_expression<boost::mpl::_> // see 5
+                          , boost::mpl::false_
+                          , boost::mpl::true_
+                        >
+                    >
+                )
+              , default_call_policies()
+            )
+        )
+    )
+)
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
 {
 }
 
