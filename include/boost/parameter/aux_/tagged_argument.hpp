@@ -60,10 +60,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
-        defined(BOOST_MSVC) && (BOOST_MSVC >= 1700) && \
-        (_MSC_FULL_VER < 180020827) \
-    )
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
 #include <boost/type_traits/is_const.hpp>
 #endif
 
@@ -102,10 +99,7 @@ namespace boost { namespace parameter { namespace aux {
             >
           , boost::parameter::aux::error_lvalue_bound_to_consume_parameter
           , boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
-        defined(BOOST_MSVC) && (BOOST_MSVC >= 1700) && \
-        (_MSC_FULL_VER < 180020827) \
-    )
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
                 // MSVC 11.0 on AppVeyor reports error C2039: '_Is_const' :
                 // is not a member of 'std::_Ptr_traits<_Ty>'
                 boost::is_const<Arg>

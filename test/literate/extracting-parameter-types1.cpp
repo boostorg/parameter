@@ -1,12 +1,10 @@
 
 #include <boost/parameter.hpp>
 
-namespace parameter = boost::parameter;
-
 BOOST_PARAMETER_NAME(index)
 
 template <class ArgumentPack>
-typename parameter::value_type<ArgumentPack,tag::index,int>::type
+typename boost::parameter::value_type<ArgumentPack,tag::index,int>::type
 twice_index(ArgumentPack const& args)
 {
     return 2 * args[_index|42];

@@ -27,6 +27,7 @@ namespace boost { namespace python {
     };
 }}
 
+#include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>

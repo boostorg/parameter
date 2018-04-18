@@ -613,9 +613,9 @@ int main()
     char baz_arr[4] = "qux";
     typedef char char_arr[4];
 
-#if defined(BOOST_MSVC) && (BOOST_MSVC >= 1910) && (BOOST_MSVC < 1912)
+#if defined(BOOST_MSVC)// && (BOOST_MSVC >= 1910) && (BOOST_MSVC < 1912)
     // MSVC 14.1 on AppVeyor treats static_cast<char_arr&&>(baz_arr)
-    // as an lvalue if passed directly to f_parameters().
+    // as an lvalue.
 #else
     test::B<char_arr>::evaluate(
         test::f_parameters()(

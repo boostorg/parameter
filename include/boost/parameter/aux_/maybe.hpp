@@ -26,9 +26,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
-        defined(BOOST_MSVC) && (BOOST_MSVC >= 1910) && (BOOST_MSVC < 1912) \
-    )
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
 #include <boost/type_traits/aligned_storage.hpp>
 #else
 #include <type_traits>
@@ -40,10 +38,8 @@ namespace boost { namespace parameter { namespace aux {
     // If T is not a reference type, returns a POD which can store T.
     template <class T>
     struct referent_storage
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
-        defined(BOOST_MSVC) && (BOOST_MSVC >= 1910) && (BOOST_MSVC < 1912) \
-    )
-        // MSVC 14.1 on AppVeyor reports that the address() function
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+        // Some versions of MSVC report that the address() function
         // is not a member of std::aligned_storage. -- Cromwell D. Enage
       : boost::aligned_storage<
 #else

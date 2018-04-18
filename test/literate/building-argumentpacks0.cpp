@@ -11,8 +11,6 @@ int print_index(ArgumentPack const& args)
     return 0;
 }
 
-int x = print_index(_index = 3);  // prints "index = 3"
-
 BOOST_PARAMETER_NAME(name)
 
 template <class ArgumentPack>
@@ -22,28 +20,56 @@ int print_name_and_index(ArgumentPack const& args)
     return print_index(args);
 }
 
-int y = print_name_and_index((_index = 3, _name = "jones"));
+#include <boost/core/lightweight_test.hpp>
+#include <boost/mpl/placeholders.hpp>
+#include <boost/config.hpp>
 
-namespace parameter = boost::parameter;
-using parameter::required;
-using parameter::optional;
-using boost::is_convertible;
-using boost::mpl::_;
-
-parameter::parameters<
-    required<tag::name, is_convertible<_,char const*> >
-  , optional<tag::index, is_convertible<_,int> >
-> spec;
-
-char const sam[] = "sam";
-int twelve = 12;
-int z0 = print_name_and_index(spec(sam, twelve));
-int z1 = print_name_and_index(
-    spec(_index=12, _name="sam")
-);
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_convertible.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <type_traits>
+#endif
 
 int main()
 {
-    return 0;
+    int x = print_index(_index = 3);  // prints "index = 3"
+    int y = print_name_and_index((_index = 3, _name = "jones"));
+    boost::parameter::parameters<
+        boost::parameter::required<
+            tag::name
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::is_convertible<boost::mpl::_,char const*>
+#else
+          , boost::mpl::if_<
+                std::is_convertible<boost::mpl::_,char const*>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+#endif
+        >
+      , boost::parameter::optional<
+            tag::index
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+          , boost::is_convertible<boost::mpl::_,int>
+#else
+          , boost::mpl::if_<
+                std::is_convertible<boost::mpl::_,int>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+#endif
+        >
+    > spec;
+    char const sam[] = "sam";
+    int twelve = 12;
+    int z0 = print_name_and_index(spec(sam, twelve));
+    int z1 = print_name_and_index(spec(_index=12, _name="sam"));
+    BOOST_TEST(!x);
+    BOOST_TEST(!y);
+    BOOST_TEST(!z0);
+    BOOST_TEST(!z1);
+    return boost::report_errors();
 }
 
