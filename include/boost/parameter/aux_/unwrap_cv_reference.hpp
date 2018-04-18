@@ -65,7 +65,7 @@ namespace boost { namespace parameter { namespace aux {
                 sizeof(
                     boost::parameter::aux::is_cv_reference_wrapper_check(
                         static_cast<
-                            typename std::remove_reference<T>::type*
+                            typename boost::remove_reference<T>::type*
                         >(BOOST_TTI_DETAIL_NULLPTR)
                     )
                 ) == sizeof(boost::parameter::aux::yes_tag)
