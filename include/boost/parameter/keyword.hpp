@@ -17,13 +17,16 @@
 #include <boost/core/enable_if.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-#include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #else
 #include <type_traits>
 #endif
 #endif // BOOST_NO_SFINAE
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+#include <boost/type_traits/is_const.hpp>
+#endif
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/move/utility_core.hpp>
@@ -75,7 +78,9 @@ namespace boost { namespace parameter {
                     >
                 >::type
               , boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+                    // MSVC 11.0 on AppVeyor reports error C2039:
+                    // '_Is_const': is not a member of 'std::_Ptr_traits<_Ty>'
                     boost::is_const<T>
 #else
                     std::is_const<T>
@@ -120,7 +125,9 @@ namespace boost { namespace parameter {
                     >
                 >::type
               , boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+                    // MSVC 11.0 on AppVeyor reports error C2039:
+                    // '_Is_const': is not a member of 'std::_Ptr_traits<_Ty>'
                     boost::is_const<Default>
 #else
                     std::is_const<Default>

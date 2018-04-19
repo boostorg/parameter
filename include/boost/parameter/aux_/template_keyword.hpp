@@ -16,8 +16,8 @@
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #else
-#include <boost/type_traits/is_reference.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/is_lvalue_reference.hpp>
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #else
 #include <type_traits>
@@ -77,9 +77,9 @@ namespace boost { namespace parameter { namespace aux {
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       : boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_reference<T>
+            boost::is_lvalue_reference<T>
 #else
-            std::is_reference<T>
+            std::is_lvalue_reference<T>
 #endif
           , boost::mpl::false_
           , boost::parameter::aux::is_template_keyword_aux<T>

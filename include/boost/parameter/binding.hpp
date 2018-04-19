@@ -2,20 +2,23 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
+
 #ifndef BOOST_PARAMETER_BINDING_DWA200558_HPP
 #define BOOST_PARAMETER_BINDING_DWA200558_HPP
 
 #include <boost/parameter/aux_/result_of0.hpp>
 #include <boost/parameter/aux_/void.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/apply.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/mpl/and.hpp>
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
+#include <boost/mpl/eval_if.hpp>
 #include <type_traits>
 #endif
 

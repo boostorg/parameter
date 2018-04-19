@@ -100,8 +100,8 @@ namespace boost { namespace parameter { namespace aux {
           , boost::parameter::aux::error_lvalue_bound_to_consume_parameter
           , boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
-                // MSVC 11.0 on AppVeyor reports error C2039: '_Is_const' :
-                // is not a member of 'std::_Ptr_traits<_Ty>'
+                // MSVC 11.0 on AppVeyor reports error C2039:
+                // '_Is_const': is not a member of 'std::_Ptr_traits<_Ty>'
                 boost::is_const<Arg>
 #else
                 std::is_const<Arg>

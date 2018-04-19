@@ -369,6 +369,10 @@ namespace test {
     {
         static char const* baz;
 
+        B()
+        {
+        }
+
         template <class Args>
         explicit B(
             Args const& args
@@ -671,6 +675,10 @@ namespace test {
 
     struct C : B
     {
+        C() : B()
+        {
+        }
+
         BOOST_PARAMETER_CONSTRUCTOR(C, (B), kw,
             (required
                 (lrc0, *)
@@ -930,6 +938,12 @@ int main()
       , test::lvalue_char_ptr()
     );
 
+#if defined(BOOST_MSVC)// && (BOOST_MSVC >= 1910) && (BOOST_MSVC < 1912)
+    // MSVC 14.1 on AppVeyor treats static_cast<char_arr&&>(baz_arr)
+    // as an lvalue.
+    test::C cp0;
+    test::C cp1;
+#else
     test::C cp0(
         "frd"
       , baz_arr
@@ -952,6 +966,7 @@ int main()
 #endif
       , test::_lrc0 = "zts"
     );
+#endif // MSVC 14.1
 
     cp0(
         test::lvalue_const_bitset<4>()

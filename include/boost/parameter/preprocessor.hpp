@@ -1240,26 +1240,27 @@ namespace boost { namespace parameter { namespace aux {
 // This form enables BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER to use it
 // from within BOOST_PP_SEQ_FOR_EACH.
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-// The boost::forward wrapper is necessary to transmit the target type to the
-// next dispatch function.  Otherwise, the argument will retain its original
-// type. -- Cromwell D. Enage
+// The boost::parameter::aux::forward wrapper is necessary to transmit the
+// target type to the next dispatch function.  Otherwise, the argument will
+// retain its original type. -- Cromwell D. Enage
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_R(r, tag_ns, arg)         \
-  , boost::forward<                                                          \
+  , boost::parameter::aux::forward<                                          \
         BOOST_PARAMETER_FUNCTION_CAST_T(                                     \
             tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                         \
           , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
           , Args                                                             \
         )                                                                    \
-    >(                                                                       \
-        BOOST_PARAMETER_FUNCTION_CAST(                                       \
-            args[                                                            \
-                boost::parameter::keyword<                                   \
-                    tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                 \
-                >::instance                                                  \
-            ]                                                                \
+      , BOOST_PARAMETER_FUNCTION_CAST_B(                                     \
+            tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                         \
           , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
           , Args                                                             \
         )                                                                    \
+    >(                                                                       \
+        args[                                                                \
+            boost::parameter::keyword<                                       \
+                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
+            >::instance                                                      \
+        ]                                                                    \
     )
 /**/
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
@@ -1272,15 +1273,11 @@ namespace boost { namespace parameter { namespace aux {
       , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
       , Args                                                                 \
     )(                                                                       \
-        BOOST_PARAMETER_FUNCTION_CAST(                                       \
-            args[                                                            \
-                boost::parameter::keyword<                                   \
-                    tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                 \
-                >::instance                                                  \
-            ]                                                                \
-          , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
-          , Args                                                             \
-        )                                                                    \
+        args[                                                                \
+            boost::parameter::keyword<                                       \
+                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
+            >::instance                                                      \
+        ]                                                                    \
     )
 /**/
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
@@ -1288,8 +1285,33 @@ namespace boost { namespace parameter { namespace aux {
 // Takes in the arg tuple (name, pred, default) and the tag namespace.
 // Extracts the corresponding optional argument from the pack if specified,
 // otherwise temporarily passes use_default_tag() to the dispatch functions.
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+// The boost::parameter::aux::forward wrapper is necessary to transmit the
+// target type to the next dispatch function.  Otherwise, the argument will
+// retain its original type. -- Cromwell D. Enage
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_OPT_ARG_CAST(arg, tag_ns)          \
-    BOOST_PARAMETER_FUNCTION_CAST(                                           \
+    boost::parameter::aux::forward<                                          \
+        BOOST_PARAMETER_FUNCTION_CAST_T(                                     \
+            tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                         \
+          , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
+          , Args                                                             \
+        )                                                                    \
+      , BOOST_PARAMETER_FUNCTION_CAST_B(                                     \
+            tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                         \
+          , BOOST_PARAMETER_FN_ARG_PRED(arg)                                 \
+          , Args                                                             \
+        )                                                                    \
+    >(                                                                       \
+        args[                                                                \
+            boost::parameter::keyword<                                       \
+                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
+            >::instance || boost::parameter::aux::use_default_tag()          \
+        ]                                                                    \
+    )
+/**/
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_OPT_ARG_CAST(arg, tag_ns)          \
+    BOOST_PARAMETER_FUNCTION_CAST_B(                                         \
         args[                                                                \
             boost::parameter::keyword<                                       \
                 tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
@@ -1299,6 +1321,7 @@ namespace boost { namespace parameter { namespace aux {
       , Args                                                                 \
     )
 /**/
+#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 // Expands to two dispatch functions that take in all required parameters and
 // the first n optional parameters.  The second dispatch function takes in

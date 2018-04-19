@@ -52,7 +52,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
 #include <boost/type_traits/is_const.hpp>
 #endif
 
@@ -76,7 +76,9 @@ namespace boost { namespace parameter { namespace aux {
                 std::is_lvalue_reference<R>
 #endif
               , boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+                    // MSVC 11.0 on AppVeyor reports error C2039:
+                    // '_Is_const': is not a member of 'std::_Ptr_traits<_Ty>'
                     boost::is_const<V>
 #else
                     std::is_const<V>

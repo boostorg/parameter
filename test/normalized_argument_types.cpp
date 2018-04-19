@@ -64,7 +64,9 @@ namespace test {
     BOOST_PARAMETER_FUNCTION((int), f, tag,
         (required
             (x, (long))
-            (y, (long))
+        )
+        (optional
+            (y, (long), 2L)
         )
     )
     {
@@ -148,7 +150,7 @@ int main()
 {
     test::f(1, 2);
     test::f(1., 2.f);
-    test::f(1U, 2L);
+    test::f(1U);
     test::g(0);
     test::h(0);
     return boost::report_errors();
