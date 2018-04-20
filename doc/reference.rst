@@ -1003,7 +1003,8 @@ which the keywords used by the function resides.  ``arguments`` is a
 * ``default-value`` is any valid C++ expression; if necessary, user code can
 compute it in terms of ``previous-name ## _type``, where ``previous-name`` is
 the ``argument-name`` in a previous ``specifier-group0`` or
-``specifier-group1``.
+``specifier-group1``.  *Beware: this expression may be invoked more than
+once.*
 * ``mfc`` is an `MPL Binary Metafunction Class`_ whose first argument will be
 the type of the corresponding ``argument-name``, whose second argument will be
 the entire |ArgumentPack|_, and whose return type is a `Boolean Integral

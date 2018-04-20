@@ -89,8 +89,12 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_function.hpp>
+#if defined(BOOST_MSVC)
+#include <boost/type_traits/remove_pointer.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+#endif
 #endif
 
 #if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
@@ -105,13 +109,38 @@ namespace boost { namespace parameter {
     struct template_keyword : boost::parameter::aux::template_keyword_base
     {
         typedef Tag key_type;
+#if defined(BOOST_MSVC)
 
+     private:
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        typedef typename boost::remove_reference<
+            typename boost::remove_pointer<T>::type
+#else
+        typedef typename std::remove_reference<
+            typename std::remove_pointer<T>::type
+#endif
+        >::type _maybe_function;
+
+     public:
+#endif // BOOST_MSVC
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
         typedef typename mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+#if defined(BOOST_MSVC)
             // MSVC 11.0 on AppVeyor reports error C2528:
             // 'abstract declarator': pointer to reference is illegal
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            boost::is_function<_maybe_function>
+#else
+            std::is_function<_maybe_function>
+#endif
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+          , boost::function<_maybe_function>
+#else
+          , std::function<_maybe_function>
+#endif
+#else // !defined(BOOST_MSVC)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_function<T>
 #else
             std::is_function<T>
@@ -121,6 +150,7 @@ namespace boost { namespace parameter {
 #else
           , std::function<T>
 #endif
+#endif // BOOST_MSVC
           , T
         >::type value_type;
 

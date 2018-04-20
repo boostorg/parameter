@@ -62,11 +62,14 @@ namespace boost { namespace parameter { namespace aux {
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
 #include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/is_function.hpp>
 #endif
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/remove_reference.hpp>
+#if defined(BOOST_MSVC)
+#include <boost/type_traits/remove_pointer.hpp>
+#endif
 #endif
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
@@ -117,6 +120,16 @@ namespace boost { namespace parameter { namespace aux {
         typedef typename std::remove_const<Arg>::type arg_type;
 #endif
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#if defined(BOOST_MSVC)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+        typedef typename boost::remove_reference<
+            typename boost::remove_pointer<arg_type>::type
+#else
+        typedef typename std::remove_reference<
+            typename std::remove_pointer<arg_type>::type
+#endif
+        >::type _maybe_function;
+#endif // BOOST_MSVC
 
      public:
         typedef Keyword key_type;
@@ -124,9 +137,21 @@ namespace boost { namespace parameter { namespace aux {
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
         typedef typename boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+#if defined(BOOST_MSVC)
             // MSVC 11.0 on AppVeyor reports error C2528:
             // 'abstract declarator': pointer to reference is illegal
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            boost::is_function<_maybe_function>
+#else
+            std::is_function<_maybe_function>
+#endif
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+          , boost::function<_maybe_function>
+#else
+          , std::function<_maybe_function>
+#endif
+#else // !defined(BOOST_MSVC)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_function<arg_type>
 #else
             std::is_function<arg_type>
@@ -136,6 +161,7 @@ namespace boost { namespace parameter { namespace aux {
 #else
           , std::function<arg_type>
 #endif
+#endif // BOOST_MSVC
           , Arg
         >::type value_type;
 
@@ -145,11 +171,21 @@ namespace boost { namespace parameter { namespace aux {
         // argument is an lvalue, then Arg will be deduced to the lvalue
         // reference. -- Cromwell D. Enage
         typedef typename boost::mpl::if_<
+#if defined(BOOST_MSVC)
+            // MSVC 11.0 on AppVeyor reports error C2528:
+            // 'abstract declarator': pointer to reference is illegal
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            boost::is_function<_maybe_function>
+#else
+            std::is_function<_maybe_function>
+#endif
+#else // !defined(BOOST_MSVC)
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_function<arg_type>
 #else
             std::is_function<arg_type>
 #endif
+#endif // BOOST_MSVC
           , value_type const&
           , Arg&
         >::type reference;
@@ -158,11 +194,21 @@ namespace boost { namespace parameter { namespace aux {
         // Store plain functions by value, everything else by reference.
         // -- Cromwell D. Enage
         typename boost::mpl::if_<
+#if defined(BOOST_MSVC)
+            // MSVC 11.0 on AppVeyor reports error C2528:
+            // 'abstract declarator': pointer to reference is illegal
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            boost::is_function<_maybe_function>
+#else
+            std::is_function<_maybe_function>
+#endif
+#else // !defined(BOOST_MSVC)
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             boost::is_function<arg_type>
 #else
             std::is_function<arg_type>
 #endif
+#endif // BOOST_MSVC
           , value_type
           , reference
         >::type value;
