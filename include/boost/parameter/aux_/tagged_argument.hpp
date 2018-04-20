@@ -62,10 +62,10 @@ namespace boost { namespace parameter { namespace aux {
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
 #include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/is_function.hpp>
 #endif
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-#include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #endif
 
@@ -124,7 +124,9 @@ namespace boost { namespace parameter { namespace aux {
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
         typedef typename boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+            // MSVC 11.0 on AppVeyor reports error C2528:
+            // 'abstract declarator': pointer to reference is illegal
             boost::is_function<arg_type>
 #else
             std::is_function<arg_type>
