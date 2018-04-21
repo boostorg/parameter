@@ -16,9 +16,9 @@
 // implementation of boost::fusion::deque, needed by parameters.
 // -- Cromwell D. Enage
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    !defined(BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING) && \
     !defined(BOOST_NO_SFINAE) && \
     !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
-    !defined(BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING) && \
     defined(BOOST_FUSION_HAS_VARIADIC_DEQUE) && \
     defined(BOOST_MOVE_PERFECT_FORWARDING)
 #define BOOST_PARAMETER_HAS_PERFECT_FORWARDING

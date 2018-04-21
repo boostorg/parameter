@@ -109,10 +109,16 @@ namespace test {
 } // namespace test
 
 #include <boost/core/lightweight_test.hpp>
+#include <boost/config/workaround.hpp>
 
 int main()
 {
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1800) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1900)
+    test::A a((param::_a0 = 1, param::_a1 = 13));
+#else
     test::A a((param::_a0 = 1, param::_a1 = 13, param::_a2 = test::D));
+#endif
     BOOST_TEST_EQ(1, a.i);
     BOOST_TEST_EQ(13, a.j);
     test::B b0((param::_a1 = 13, param::_a2 = test::F));
