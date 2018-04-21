@@ -13,7 +13,7 @@ project boost/parameter
     ;
 
 build-project literate ;
-  
+
 test-suite "parameter"
     :
     [ run basics.cpp ]

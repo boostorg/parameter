@@ -2025,14 +2025,19 @@ preservation of parameter value categories.  Users can manually disable this
 macro by ``#defining`` the ``BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING``
 macro.  Otherwise, the library will ``#define`` this macro if and only if it
 and the configuration macros |BOOST_NO_FUNCTION_TEMPLATE_ORDERING|_ and
-|BOOST_NO_SFINAE|_ are not already ``#defined`` but the configuration macro
-``BOOST_MOVE_PERFECT_FORWARDING`` is already defined.
+|BOOST_NO_SFINAE|_ are not already ``#defined`` but the configuration macros
+|BOOST_MOVE_PERFECT_FORWARDING|_ and |BOOST_FUSION_HAS_VARIADIC_DEQUE|_ are
+already defined.
 
 .. |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| replace:: ``BOOST_PARAMETER_HAS_PERFECT_FORWARDING``
 .. |BOOST_NO_FUNCTION_TEMPLATE_ORDERING| replace:: ``BOOST_NO_FUNCTION_TEMPLATE_ORDERING``
 .. _BOOST_NO_FUNCTION_TEMPLATE_ORDERING: ../../../config/doc/html/boost_config/boost_macro_reference.html
 .. |BOOST_NO_SFINAE| replace:: ``BOOST_NO_SFINAE``
 .. _BOOST_NO_SFINAE: ../../../config/doc/html/boost_config/boost_macro_reference.html
+.. |BOOST_MOVE_PERFECT_FORWARDING| replace:: ``BOOST_MOVE_PERFECT_FORWARDING``
+.. _BOOST_MOVE_PERFECT_FORWARDING: ../../../../boost/move/detail/workaround.hpp
+.. |BOOST_FUSION_HAS_VARIADIC_DEQUE| replace:: ``BOOST_FUSION_HAS_VARIADIC_DEQUE``
+.. _BOOST_FUSION_HAS_VARIADIC_DEQUE: ../../../../boost/fusion/container/deque/deque_fwd.hpp
 
 :Defined in: `boost/parameter/config.hpp`__
 
