@@ -122,12 +122,15 @@ namespace boost { namespace parameter { namespace aux {
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #if defined(BOOST_MSVC)
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::remove_reference<
-            typename boost::remove_pointer<arg_type>::type
+        typedef typename boost::remove_pointer<
+            typename boost::remove_const<
+                typename boost::remove_reference<arg_type>::type
 #else
-        typedef typename std::remove_reference<
-            typename std::remove_pointer<arg_type>::type
+        typedef typename std::remove_pointer<
+            typename std::remove_const<
+                typename std::remove_reference<arg_type>::type
 #endif
+            >::type
         >::type _maybe_function;
 #endif // BOOST_MSVC
 

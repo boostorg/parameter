@@ -13,12 +13,12 @@
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #else
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/is_lvalue_reference.hpp>
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#include <boost/type_traits/remove_const.hpp>
 #else
 #include <type_traits>
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
@@ -113,12 +113,15 @@ namespace boost { namespace parameter {
 
      private:
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::remove_reference<
-            typename boost::remove_pointer<T>::type
+        typedef typename boost::remove_pointer<
+            typename boost::remove_const<
+                typename boost::remove_reference<arg_type>::type
 #else
-        typedef typename std::remove_reference<
-            typename std::remove_pointer<T>::type
+        typedef typename std::remove_pointer<
+            typename std::remove_const<
+                typename std::remove_reference<arg_type>::type
 #endif
+            >::type
         >::type _maybe_function;
 
      public:
