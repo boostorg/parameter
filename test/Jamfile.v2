@@ -48,7 +48,12 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : macros_no_perfect_fwd
     ]
-    [ run macros_eval_category.cpp ]
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+    ]
     [ run macros_eval_category.cpp
         :
         :
@@ -97,7 +102,12 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : eval_cat_no_perfect_fwd
     ]
-    [ run evaluate_category_10.cpp ]
+    [ run evaluate_category_10.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+    ]
     [ run evaluate_category_10.cpp
         :
         :
@@ -106,7 +116,12 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=10
         : eval_cat_10_no_perfect_fwd
     ]
-    [ run evaluate_category_16.cpp ]
+    [ run evaluate_category_16.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_MAX_ARITY=16
+    ]
     [ run evaluate_category_16.cpp
         :
         :
