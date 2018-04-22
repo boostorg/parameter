@@ -1464,11 +1464,11 @@ __ ../../../../boost/parameter/preprocessor.hpp
 Same as ``BOOST_PARAMETER_FUNCTION_CALL_OPERATOR``, except that the overloaded
 function call operators and their helper methods are ``const``-qualified.
 
-The |preprocessor_eval_cat|_ test program demonstrates proper usage of this
+The |preprocessor_eval_cat_8|_ test program demonstrates proper usage of this
 macro.
 
-.. |preprocessor_eval_cat| replace:: preprocessor_eval_category.cpp
-.. _preprocessor_eval_cat: ../../test/preprocessor_eval_category.cpp
+.. |preprocessor_eval_cat_8| replace:: preprocessor_eval_cat_8.cpp
+.. _preprocessor_eval_cat_8: ../../test/preprocessor_eval_cat_8.cpp
 
 ``BOOST_PARAMETER_CONSTRUCTOR(cls, impl, tag_namespace, arguments)``
 --------------------------------------------------------------------
@@ -1952,12 +1952,15 @@ Expands to:
         return **name**\ _with_named_params(pk(a1, a2, …, a ## **h**));
     }
 
-The |macros_cpp|_ test program demonstrates proper usage of this macro.
+The |macros_cpp|_ and |macros_eval_cat_cpp|_ test programs demonstrate proper
+usage of this macro.
 
 .. _`BOOST_PP_INC`: ../../../preprocessor/doc/ref/inc.html
 .. _`forward`: ../../../../doc/html/boost/forward.html
 .. |macros_cpp| replace:: macros.cpp
 .. _macros_cpp: ../../test/macros.cpp
+.. |macros_eval_cat_cpp| replace:: macros_eval_category.cpp
+.. _macros_eval_cat_cpp: ../../test/macros_eval_category.cpp
 
 ``BOOST_PARAMETER_KEYWORD(n, k)``
 ---------------------------------

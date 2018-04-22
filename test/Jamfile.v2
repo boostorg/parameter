@@ -46,8 +46,16 @@ test-suite "parameter"
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-#        <define>BOOST_PARAMETER_MAX_ARITY=10
         : macros_no_perfect_fwd
+    ]
+    [ run macros_eval_category.cpp ]
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+        : macros_eval_cat_no_perfect_fwd
     ]
     [ run earwicker.cpp ]
     [ run earwicker.cpp
@@ -87,8 +95,25 @@ test-suite "parameter"
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-#        <define>BOOST_PARAMETER_MAX_ARITY=16
         : eval_cat_no_perfect_fwd
+    ]
+    [ run evaluate_category_10.cpp ]
+    [ run evaluate_category_10.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+        : eval_cat_10_no_perfect_fwd
+    ]
+    [ run evaluate_category_16.cpp ]
+    [ run evaluate_category_16.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=16
+        : eval_cat_16_no_perfect_fwd
     ]
     [ run preprocessor.cpp ]
     [ run preprocessor.cpp
@@ -113,6 +138,14 @@ test-suite "parameter"
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : preproc_eval_cat_no_perfect_fwd
+    ]
+    [ run preprocessor_eval_cat_8.cpp ]
+    [ run preprocessor_eval_cat_8.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : preproc_eval_cat_8_no_perfect_fwd
     ]
     [ run efficiency.cpp : : : : : <variant>release ]
     [ run efficiency.cpp
@@ -183,21 +216,21 @@ test-suite "parameter"
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         : compose_fail
     ]
-#    [ compile-fail evaluate_category.cpp
-#        :
-#        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
-#        : evaluate_category_fail
-#    ]
+    [ compile-fail evaluate_category.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : evaluate_category_fail
+    ]
     [ compile-fail deduced.cpp
         :
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         : deduced_fail
     ]
-#    [ compile-fail preprocessor_eval_category.cpp
-#        :
-#        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
-#        : preproc_eval_cat_fail
-#    ]
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        : preproc_eval_cat_fail
+    ]
     [ bpl-test python_test ]
     ;
 

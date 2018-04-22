@@ -181,42 +181,42 @@ MPL_TEST_CASE()
     BOOST_MPL_ASSERT((boost::is_same<c2::copyable,void>));
 #else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c1::class_type,B>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
     ));
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c1::base_list,boost::python::bases<> >
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
     ));
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c1::held_type,B>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
     ));
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c1::copyable,boost::noncopyable>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
     ));
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c2::class_type,D>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
     ));
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c2::base_list,boost::python::bases<B> >
           , boost::mpl::true_
           , boost::mpl::false_
@@ -224,7 +224,7 @@ MPL_TEST_CASE()
     ));
 #if defined(BOOST_NO_CXX11_SMART_PTR)
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c2::held_type,std::auto_ptr<D> >
           , boost::mpl::true_
           , boost::mpl::false_
@@ -232,7 +232,7 @@ MPL_TEST_CASE()
     ));
 #else
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c2::held_type,std::unique_ptr<D> >
           , boost::mpl::true_
           , boost::mpl::false_
@@ -240,7 +240,7 @@ MPL_TEST_CASE()
     ));
 #endif // BOOST_NO_CXX11_SMART_PTR
     BOOST_MPL_ASSERT((
-        typename boost::mpl::if_<
+        boost::mpl::if_<
             std::is_same<c2::copyable,void>
           , boost::mpl::true_
           , boost::mpl::false_
