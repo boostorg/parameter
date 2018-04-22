@@ -113,8 +113,10 @@ namespace test {
 
 int main()
 {
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1800) && \
-    BOOST_WORKAROUND(BOOST_MSVC, < 1900)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    // MSVC 11.0 on AppVeyor reports error C2528:
+    // 'abstract declarator': pointer to reference is illegal
     test::A a((param::_a0 = 1, param::_a1 = 13));
 #else
     test::A a((param::_a0 = 1, param::_a1 = 13, param::_a2 = test::D));
