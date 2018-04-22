@@ -22,8 +22,12 @@ namespace param {
 }
 
 #include <boost/config.hpp>
+#include <boost/config/workaround.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
+        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
+    )
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -75,7 +79,10 @@ namespace test {
 
     struct B : A
     {
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
+        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
+    )
         boost::function<float()> k;
         boost::function<double()> l;
 #else
@@ -109,7 +116,6 @@ namespace test {
 } // namespace test
 
 #include <boost/core/lightweight_test.hpp>
-#include <boost/config/workaround.hpp>
 
 int main()
 {
@@ -117,18 +123,42 @@ int main()
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor reports error C2528:
     // 'abstract declarator': pointer to reference is illegal
-    test::A a((param::_a0 = 1, param::_a1 = 13));
+    test::A a((
+        param::_a0 = 1
+      , param::_a1 = 13
+      , param::_a2 = boost::function<double()>(test::D)
+    ));
 #else
     test::A a((param::_a0 = 1, param::_a1 = 13, param::_a2 = test::D));
 #endif
     BOOST_TEST_EQ(1, a.i);
     BOOST_TEST_EQ(13, a.j);
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    // MSVC 11.0 on AppVeyor reports error C2528:
+    // 'abstract declarator': pointer to reference is illegal
+    test::B b0((
+        param::_a1 = 13
+      , param::_a2 = boost::function<float()>(test::F)
+    ));
+#else
     test::B b0((param::_a1 = 13, param::_a2 = test::F));
+#endif
     BOOST_TEST_EQ(1, b0.i);
     BOOST_TEST_EQ(13, b0.j);
     BOOST_TEST_EQ(4.0f, b0.k());
     BOOST_TEST_EQ(2.5, b0.l());
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    // MSVC 11.0 on AppVeyor reports error C2528:
+    // 'abstract declarator': pointer to reference is illegal
+    test::B b1((
+        param::_a3 = boost::function<double()>(test::D)
+      , param::_a1 = 13
+    ));
+#else
     test::B b1((param::_a3 = test::D, param::_a1 = 13));
+#endif
     BOOST_TEST_EQ(1, b1.i);
     BOOST_TEST_EQ(13, b1.j);
     BOOST_TEST_EQ(4.625f, b1.k());
