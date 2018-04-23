@@ -258,6 +258,8 @@ namespace test {
 
 int main()
 {
+    // Check to make sure the compiler won't ICE.
+#if !defined(__MINGW32__)
     test::B<float>::evaluate(
         test::f_parameters()(
             test::lvalue_const_float()
@@ -349,7 +351,7 @@ int main()
           , test::lvalue_char_ptr()
         )
     );
-
+#endif // Don't ICE.
     return boost::report_errors();
 }
 

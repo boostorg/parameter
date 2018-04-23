@@ -174,6 +174,8 @@ namespace test {
 
 int main()
 {
+    // Check to make sure the compiler won't ICE.
+#if !defined(__MINGW32__) || (5 < __GNUC__)
     test::C cp0;
     test::C cp1;
 
@@ -202,7 +204,7 @@ int main()
       , test::rvalue_bitset<7>()
       , test::lvalue_const_bitset<0>()
     );
-
+#endif
     return boost::report_errors();
 }
 

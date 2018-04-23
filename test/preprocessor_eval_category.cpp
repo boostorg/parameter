@@ -365,6 +365,13 @@ namespace test {
 
     struct B
     {
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1910) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1920)
+        B()
+        {
+        }
+#endif
+
         template <class Args>
         explicit B(
             Args const& args
@@ -660,6 +667,13 @@ namespace test {
 
     struct C : B
     {
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1910) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1920)
+        C() : B()
+        {
+        }
+#endif
+
         BOOST_PARAMETER_CONSTRUCTOR(C, (B), kw,
             (required
                 (lrc0, *)
@@ -675,6 +689,8 @@ namespace test {
 
 int main()
 {
+    // Check to make sure the compiler won't ICE.
+#if !defined(__MINGW32__)
     test::evaluate(
         test::lvalue_const_float()
       , test::lvalue_float()
@@ -829,7 +845,7 @@ int main()
       , test::rvalue_const_float()
       , test::lvalue_char_ptr()
     );
-
+#endif // Don't ICE.
     return boost::report_errors();
 }
 
