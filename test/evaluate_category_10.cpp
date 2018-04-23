@@ -134,8 +134,7 @@ namespace test {
 int main()
 {
     // Check to make sure the compiler won't ICE.
-#if (!defined(__clang_major__) || (7 < __clang_major__)) && \
-    !defined(__MINGW32__)
+#if !defined(__MINGW32__)
     test::C::evaluate(
         test::g_parameters()(
             test::lvalue_const_bitset<0>()
