@@ -10,10 +10,9 @@ BOOST_PARAMETER_FUNCTION(
     return foo + 1;
 }
 
-int x = f(pass_foo = 41);
-
 int main()
 {
+    int x = f(pass_foo = 41);
     return 0;
 }
 

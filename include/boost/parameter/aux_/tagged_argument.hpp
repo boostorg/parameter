@@ -435,12 +435,12 @@ namespace boost { namespace parameter { namespace aux {
 
      public:
         inline explicit tagged_argument_rref(reference x)
-          : value(static_cast<reference>(x))
+          : value(boost::forward<Arg>(x))
         {
         }
 
         inline tagged_argument_rref(tagged_argument_rref const& copy)
-          : value(static_cast<reference>(copy.value))
+          : value(boost::forward<Arg>(copy.value))
         {
         }
 
@@ -515,7 +515,7 @@ namespace boost { namespace parameter { namespace aux {
         // Accessor interface.
         inline reference get_value() const
         {
-            return boost::move(this->value);
+            return boost::forward<Arg>(this->value);
         }
 
         inline reference
