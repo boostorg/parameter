@@ -26,12 +26,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC) || \
-    defined(__MINGW32__)
 #include <boost/type_traits/aligned_storage.hpp>
-#else
-#include <type_traits>
-#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -39,14 +34,7 @@ namespace boost { namespace parameter { namespace aux {
     // If T is not a reference type, returns a POD which can store T.
     template <class T>
     struct referent_storage
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC) || \
-    defined(__MINGW32__)
-        // Some versions of MSVC and MinGW report that the address() function
-        // is not a member of std::aligned_storage. -- Cromwell D. Enage
       : boost::aligned_storage<
-#else
-      : std::aligned_storage<
-#endif
             boost::parameter::aux::referent_size<T>::value
         >
     {
@@ -65,6 +53,8 @@ namespace boost { namespace parameter { namespace aux {
 #endif
 #include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/type_traits/remove_cv.hpp>
+#else
+#include <type_traits>
 #endif
 
 namespace boost { namespace parameter { namespace aux {
