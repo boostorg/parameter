@@ -2163,9 +2163,9 @@ name</tt></li>
 <li><tt class="docutils literal">boost_param_parameters_ ## __LINE__ ##
 name</tt></li>
 <li><tt class="docutils literal">boost_param_impl ## name</tt></li>
-<li><tt class="docutils literal">boost_param_dispatch_0_ ## __LINE__ ##
+<li><tt class="docutils literal">boost_param_dispatch_0boost_ ## __LINE__ ##
 name</tt></li>
-<li><tt class="docutils literal">boost_param_dispatch_1_ ## __LINE__ ##
+<li><tt class="docutils literal">boost_param_dispatch_1boost_ ## __LINE__ ##
 name</tt></li>
 </ul>
 </td>
@@ -2270,7 +2270,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>n</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp;&amp; <em
@@ -2290,7 +2290,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>m</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp;&amp; <em
@@ -2305,7 +2305,7 @@ typename boost_param_result_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
     boost_param_impl ## <strong>name</strong>(Args const& args)
 {
-    return boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    return boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         static_cast&lt;ResultType(*)()&gt;(std::nullptr)
       , args
       , boost::<a class="reference external"
@@ -2340,7 +2340,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>n</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp;&amp; <em
@@ -2350,7 +2350,7 @@ ResultType
 >argument name</em> ## <strong>n</strong>
     )
 {
-    return boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    return boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         static_cast&lt;ResultType(*)()&gt;(std::nullptr)
       , (args, <em>keyword object of optional parameter</em> ## <strong
 >n + 1</strong> =
@@ -2393,7 +2393,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>m</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp;&amp; <em
@@ -2519,7 +2519,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>n</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp; <em
@@ -2539,7 +2539,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>m</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp; <em
@@ -2554,7 +2554,7 @@ typename boost_param_result_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
     boost_param_impl ## <strong>name</strong>(Args const& args)
 {
-    return boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    return boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         static_cast&lt;ResultType(*)()&gt;(std::nullptr)
       , args
       , args[ <em>keyword object of required parameter</em> ## <strong
@@ -2573,7 +2573,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>n</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp; <em
@@ -2583,7 +2583,7 @@ ResultType
 >argument name</em> ## <strong>n</strong>
     )
 {
-    return boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    return boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         static_cast&lt;ResultType(*)()&gt;(std::nullptr)
       , (args, <em>keyword object of optional parameter</em> ## <strong
 >n + 1</strong> =
@@ -2608,7 +2608,7 @@ template &lt;
   , typename <em>argument name</em> ## <strong>m</strong> ## _type
 &gt;
 ResultType
-    boost_param_dispatch_0_ ## __LINE__ ## <strong>name</strong>(
+    boost_param_dispatch_0boost_ ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
       , Args const&amp; args
       , <em>argument name</em> ## <strong>0</strong> ## _type&amp; <em
@@ -2726,9 +2726,9 @@ operator</tt></li>
 <li><tt class="docutils literal">boost_param_parameters_ ## __LINE__ ##
 operator</tt></li>
 <li><tt class="docutils literal">boost_param_impl ## operator</tt></li>
-<li><tt class="docutils literal">boost_param_dispatch_0_ ## __LINE__ ##
+<li><tt class="docutils literal">boost_param_dispatch_0boost_ ## __LINE__ ##
 operator</tt></li>
-<li><tt class="docutils literal">boost_param_dispatch_1_ ## __LINE__ ##
+<li><tt class="docutils literal">boost_param_dispatch_1boost_ ## __LINE__ ##
 operator</tt></li>
 </ul>
 </td>
@@ -2968,18 +2968,18 @@ href="#boost-parameter-function-result-name-tag-namespace-arguments"
 includes <em>default-value</em>.  It is up to the function body to determine
 the default value of all optional arguments.</li>
 <li>Generated names in the enclosing scope no longer include
-<tt class="docutils literal">boost_param_dispatch_0_ ## __LINE__ ## name</tt>
-or <tt class="docutils literal">boost_param_dispatch_1_ ## __LINE__ ##
-name</tt>.</li>
+<tt class="docutils literal">boost_param_dispatch_0boost_ ## __LINE__ ##
+name</tt> or <tt class="docutils literal">boost_param_dispatch_1boost_ ##
+__LINE__ ## name</tt>.</li>
 <li>Expansion of this macro omits all overloads of <tt
-class="docutils literal">boost_param_dispatch_0_ ## __LINE__ ## name</tt> and
-<tt class="docutils literal">boost_param_dispatch_1_ ## __LINE__ ## name</tt>
-and stops at the header of <tt class="docutils literal">boost_param_impl ##
-name</tt>.  Therefore, only the <a class="reference internal"
-href="#argumentpack"><span class="concept">ArgumentPack</span></a> type <tt
-class="docutils literal">Args</tt> and its object instance <tt
-class="docutils literal">args</tt> are available for use within the function
-body.</li>
+class="docutils literal">boost_param_dispatch_0boost_ ## __LINE__ ## name</tt>
+and <tt class="docutils literal">boost_param_dispatch_1boost_ ## __LINE__ ##
+name</tt> and stops at the header of <tt class="docutils literal"
+>boost_param_impl ## name</tt>.  Therefore, only the <a
+class="reference internal" href="#argumentpack"><span class="concept"
+>ArgumentPack</span></a> type <tt class="docutils literal">Args</tt> and its
+object instance <tt class="docutils literal">args</tt> are available for use
+within the function body.</li>
 </ul>
 <p>The <a class="reference external" href="../../test/preprocessor.cpp"
 >test/preprocessor.cpp</a> test program demonstrates proper usage of this

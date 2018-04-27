@@ -343,7 +343,7 @@ namespace boost { namespace parameter { namespace aux {
     BOOST_PP_CAT(                                                            \
         BOOST_PP_CAT(                                                        \
             BOOST_PP_CAT(boost_param_dispatch_, n)                           \
-          , BOOST_PP_CAT(_, __LINE__)                                        \
+          , BOOST_PP_CAT(boost_, __LINE__)                                   \
         )                                                                    \
       , BOOST_PARAMETER_MEMBER_FUNCTION_NAME(                                \
             BOOST_PARAMETER_FUNCTION_DISPATCH_BASE_NAME(x)                   \

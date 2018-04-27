@@ -1318,7 +1318,7 @@ namespace boost { namespace parameter {
 #include <boost/preprocessor/repetition/enum_trailing_params.hpp>
 
 #define BOOST_PARAMETER_function_call_op_overload_Z(z, n, prefix)            \
-    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class A)>                         \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename A)>                      \
     inline typename ::boost::mpl::first<                                     \
         typename BOOST_PARAMETER_function_call_arg_list_Z(                   \
             z, n, prefix                                                     \

@@ -1159,8 +1159,8 @@ in ``args``) will be cast to that type.
 * ``boost_param_params_ ## __LINE__ ## name``
 * ``boost_param_parameters_ ## __LINE__ ## name``
 * ``boost_param_impl ## name``
-* ``boost_param_dispatch_0_ ## __LINE__ ## name``
-* ``boost_param_dispatch_1_ ## __LINE__ ## name``
+* ``boost_param_dispatch_0boost_ ## __LINE__ ## name``
+* ``boost_param_dispatch_1boost_ ## __LINE__ ## name``
 
 Approximate expansion:
 **Where**:
@@ -1236,7 +1236,7 @@ Approximate expansion:
       , typename *argument name* ## **n** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type&& *argument name* ## **0**
@@ -1254,7 +1254,7 @@ Approximate expansion:
       , typename *argument name* ## **m** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type&& *argument name* ## **0**
@@ -1266,7 +1266,7 @@ Approximate expansion:
     typename boost_param_result\_ ## __LINE__ ## **name**\ <Args>::type
         boost_param_impl ## **name**\ (Args const& args)
     {
-        return boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        return boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             static_cast<ResultType(\ *)()>(std::nullptr)
           , args
           , boost::`forward`_<
@@ -1293,7 +1293,7 @@ Approximate expansion:
       , typename *argument name* ## **n** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type&& *argument name* ## **0**
@@ -1301,7 +1301,7 @@ Approximate expansion:
           , *argument name* ## **n** ## _type&& *argument name* ## **n**
         )
     {
-        return boost_param_dispatch\_ ## __LINE__ ## **name**\ (
+        return boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             static_cast<ResultType(\ *)()>(std::nullptr)
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
@@ -1332,7 +1332,7 @@ Approximate expansion:
       , typename *argument name* ## **m** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type&& *argument name* ## **0**
@@ -1445,7 +1445,7 @@ Approximate expansion:
       , typename *argument name* ## **n** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type& *argument name* ## **0**
@@ -1463,7 +1463,7 @@ Approximate expansion:
       , typename *argument name* ## **m** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type& *argument name* ## **0**
@@ -1475,7 +1475,7 @@ Approximate expansion:
     typename boost_param_result\_ ## __LINE__ ## **name**\ <Args>::type
         boost_param_impl ## **name**\ (Args const& args)
     {
-        return boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        return boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             static_cast<ResultType(\ *)()>(std::nullptr)
           , args
           , args[ *keyword object of required parameter* ## **0**]
@@ -1492,7 +1492,7 @@ Approximate expansion:
       , typename *argument name* ## **n** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type& *argument name* ## **0**
@@ -1500,7 +1500,7 @@ Approximate expansion:
           , *argument name* ## **n** ## _type& *argument name* ## **m**
         )
     {
-        return boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        return boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             static_cast<ResultType(\ *)()>(std::nullptr)
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
@@ -1522,7 +1522,7 @@ Approximate expansion:
       , typename *argument name* ## **m** ## _type
     >
     ResultType
-        boost_param_dispatch_0\_ ## __LINE__ ## **name**\ (
+        boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
             (ResultType(\ *)())
           , Args const& args
           , *argument name* ## **0** ## _type& *argument name* ## **0**
@@ -1595,8 +1595,8 @@ forwarding member function overloads is ``operator()``.
 * ``boost_param_params_ ## __LINE__ ## operator``
 * ``boost_param_parameters_ ## __LINE__ ## operator``
 * ``boost_param_impl ## operator``
-* ``boost_param_dispatch_0_ ## __LINE__ ## operator``
-* ``boost_param_dispatch_1_ ## __LINE__ ## operator``
+* ``boost_param_dispatch_0boost_ ## __LINE__ ## operator``
+* ``boost_param_dispatch_1boost_ ## __LINE__ ## operator``
 
 ``BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR(result, tag_ns, arguments)``
 ---------------------------------------------------------------------------
@@ -1749,13 +1749,13 @@ includes *default-value*.  It is up to the function body to determine the
 default value of all optional arguments.
 
 \*. Generated names in the enclosing scope no longer include
-``boost_param_dispatch_0_ ## __LINE__ ## name`` or
-``boost_param_dispatch_1_ ## __LINE__ ## name``.
+``boost_param_dispatch_0boost_ ## __LINE__ ## name`` or
+``boost_param_dispatch_1boost_ ## __LINE__ ## name``.
 
 \*. Expansion of this macro omits all overloads of
-``boost_param_dispatch_0_ ## __LINE__ ## name`` and
-``boost_param_dispatch_1_ ## __LINE__ ## name`` and stops at the header of
-``boost_param_impl ## name``.  Therefore, only the |ArgumentPack|_ type
+``boost_param_dispatch_0boost_ ## __LINE__ ## name`` and
+``boost_param_dispatch_1boost_ ## __LINE__ ## name`` and stops at the header
+of ``boost_param_impl ## name``.  Therefore, only the |ArgumentPack|_ type
 ``Args`` and its object instance ``args`` are available for use within the
 function body.
 
