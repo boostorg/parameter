@@ -6,7 +6,7 @@
 #ifndef BOOST_PARAMETER_PREPROCESSOR_060206_HPP
 #define BOOST_PARAMETER_PREPROCESSOR_060206_HPP
 
-#include <boost/parameter/aux_/void.hpp>
+#include <boost/parameter/aux_/result_of0.hpp>
 #include <boost/parameter/config.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/bool.hpp>
@@ -1209,33 +1209,13 @@ namespace boost { namespace parameter { namespace aux {
 // Expands to the assignment portion which binds the default value to the
 // (n + 1)th optional parameter before composing it with the argument-pack
 // parameter passed in to the n-th dispatch function.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DFLT(n, s_args, tag_ns)        \
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT(n, s_args, tag_ns)         \
     ::boost::parameter::keyword<                                             \
         tag_ns::BOOST_PARAMETER_FN_ARG_NAME(                                 \
             BOOST_PP_SEQ_ELEM(n, BOOST_PARAMETER_SPLIT_ARG_OPT_SEQ(s_args))  \
         )                                                                    \
     >::instance = BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT_AUX(n, s_args)
 /**/
-
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-
-// Each dispatch function passes the default value of the (n + 1)th optional
-// parameter to the next dispatch function.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT(n, s_args)                 \
-    BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT_AUX(n, s_args)
-/**/
-
-#else
-
-// Default values are often rvalues, which cannot be implicitly bound to
-// non-const lvalue references.
-#define BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT(n, s_args)                 \
-    ::boost::parameter::aux::as_lvalue(                                      \
-        BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT_AUX(n, s_args), 0L         \
-    )
-/**/
-
-#endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 #include <boost/parameter/aux_/cast.hpp>
 
@@ -1414,7 +1394,7 @@ namespace boost { namespace parameter { namespace aux {
         return BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 1)(                 \
             static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
           , (args                                                            \
-              , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DFLT(                  \
+              , BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT(                   \
                     n                                                        \
                   , BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)          \
                   , BOOST_PARAMETER_FUNCTION_DISPATCH_TAG_NAMESPACE(x)       \
