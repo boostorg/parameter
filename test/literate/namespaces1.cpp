@@ -16,13 +16,15 @@ namespace lib {
     }
 }
 
+#include <boost/core/lightweight_test.hpp>
+
 using lib::_name;
 using lib::_index;
 
-int x = lib::f(_name = "jill", _index = 1);
-
 int main()
 {
-    return 0;
+    int x = lib::f(_name = "jill", _index = 1);
+    BOOST_TEST_EQ(x, 1);
+    return boost::report_errors();
 }
 

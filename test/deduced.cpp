@@ -26,10 +26,10 @@ namespace test {
     BOOST_PARAMETER_NAME(y)
     BOOST_PARAMETER_NAME(z)
 
-    template <class To>
+    template <typename To>
     struct predicate
     {
-        template <class From, class Args>
+        template <typename From, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<From,To>

@@ -9,7 +9,7 @@ BOOST_PARAMETER_NAME(color_map)
 
 namespace boost {
 
-    template <class T = int>
+    template <typename T = int>
     struct dfs_visitor
     {
     };

@@ -208,7 +208,7 @@ namespace test {
         float f;
         int i;
 
-        template <class Args>
+        template <typename Args>
         explicit base_0(
             Args const& args
 #if !defined(BOOST_NO_SFINAE)
@@ -241,7 +241,7 @@ namespace test {
 
     struct base_1
     {
-        template <class Args>
+        template <typename Args>
         explicit base_1(
             Args const& args
 #if !defined(BOOST_NO_SFINAE)
@@ -381,7 +381,7 @@ namespace test {
     // when the others are not.  This tests that the SFINAE is actually
     // working.  On all other compilers we're just checking that everything
     // about SFINAE-enabled code will work, except of course the SFINAE.
-    template <class A0>
+    template <typename A0>
     typename boost::enable_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         boost::is_same<int,A0>
@@ -394,7 +394,7 @@ namespace test {
 #endif
       , int
     >::type
-    sfinae(A0 const& a0)
+        sfinae(A0 const& a0)
     {
         return 0;
     }
@@ -402,7 +402,7 @@ namespace test {
 
     struct predicate
     {
-        template <class T, class Args>
+        template <typename T, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<T,std::string>
@@ -432,7 +432,7 @@ namespace test {
     // when the others are not.  This tests that the SFINAE is actually
     // working.  On all other compilers we're just checking that everything
     // about SFINAE-enabled code will work, except of course the SFINAE.
-    template <class A0>
+    template <typename A0>
     typename boost::enable_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         boost::is_same<int,A0>
@@ -445,13 +445,13 @@ namespace test {
 #endif
       , int
     >::type
-    sfinae1(A0 const& a0)
+        sfinae1(A0 const& a0)
     {
         return 0;
     }
 #endif // BOOST_NO_SFINAE
 
-    template <class T>
+    template <typename T>
     T const& as_lvalue(T const& x)
     {
         return x;
@@ -483,8 +483,6 @@ namespace test {
 
 int main()
 {
-    using namespace test;
-
     test::f(test::values(S("foo"), 1.f, 2), S("foo"));
     test::f(
         test::_tester = test::values(S("foo"), 1.f, 2), test::_name = S("foo")
@@ -529,7 +527,7 @@ int main()
     );
 
     test::h2(
-        test::_tester = values(S("foo"), 1.f, 2)
+        test::_tester = test::values(S("foo"), 1.f, 2)
       , test::_name = S("foo")
       , test::_value = 1.f
     );

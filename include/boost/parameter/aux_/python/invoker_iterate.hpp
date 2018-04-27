@@ -11,44 +11,44 @@
 #define N BOOST_PP_ITERATION()
 
 #define BOOST_PARAMETER_PY_ARG_TYPES(z, n, _) \
-    typedef typename boost::mpl::next< \
+    typedef typename ::boost::mpl::next< \
         BOOST_PP_CAT(iter,BOOST_PP_DEC(n)) \
     >::type BOOST_PP_CAT(iter,n); \
-    typedef typename boost::mpl::deref< \
+    typedef typename ::boost::mpl::deref< \
         BOOST_PP_CAT(iter,n) \
     >::type BOOST_PP_CAT(spec,n); \
-    typedef typename boost::mpl::if_< \
-        boost::mpl::and_< \
-            boost::mpl::not_<typename BOOST_PP_CAT(spec,n)::required> \
+    typedef typename ::boost::mpl::if_< \
+        ::boost::mpl::and_< \
+            ::boost::mpl::not_<typename BOOST_PP_CAT(spec,n)::required> \
           , typename BOOST_PP_CAT(spec,n)::optimized_default \
         > \
-      , boost::parameter::aux::maybe<typename BOOST_PP_CAT(spec,n)::type> \
+      , ::boost::parameter::aux::maybe<typename BOOST_PP_CAT(spec,n)::type> \
       , typename BOOST_PP_CAT(spec,n)::type \
     >::type BOOST_PP_CAT(arg,n); \
     typedef typename BOOST_PP_CAT(spec,n)::keyword BOOST_PP_CAT(kw,n);
 
 #if (BOOST_PP_ITERATION_FLAGS() == 1)
-template <class M, class R, class Args>
+template <typename M, typename R, typename Args>
 struct invoker<N,M,R,Args>
 #elif (BOOST_PP_ITERATION_FLAGS() == 2)
-template <class T, class R, class Args>
+template <typename T, typename R, typename Args>
 struct call_invoker<N,T,R,Args>
 #elif (BOOST_PP_ITERATION_FLAGS() == 3)
-template <class T, class Args>
+template <typename T, typename Args>
 struct init_invoker<N,T,Args>
 #elif (BOOST_PP_ITERATION_FLAGS() == 4)
-template <class M, class R, class T, class Args>
+template <typename M, typename R, typename T, typename Args>
 struct member_invoker<N,M,R,T,Args>
 #endif
 {
-    typedef typename boost::mpl::begin<Args>::type iter0;
-    typedef typename boost::mpl::deref<iter0>::type spec0;
-    typedef typename boost::mpl::if_<
-        boost::mpl::and_<
-            boost::mpl::not_<typename spec0::required>
+    typedef typename ::boost::mpl::begin<Args>::type iter0;
+    typedef typename ::boost::mpl::deref<iter0>::type spec0;
+    typedef typename ::boost::mpl::if_<
+        ::boost::mpl::and_<
+            ::boost::mpl::not_<typename spec0::required>
           , typename spec0::optimized_default
         >
-      , boost::parameter::aux::maybe<typename spec0::type>
+      , ::boost::parameter::aux::maybe<typename spec0::type>
       , typename spec0::type
     >::type arg0;
     typedef typename spec0::keyword kw0;
@@ -72,13 +72,13 @@ struct member_invoker<N,M,R,T,Args>
         return
 #if (BOOST_PP_ITERATION_FLAGS() == 1) || (BOOST_PP_ITERATION_FLAGS() == 4)
         M()(
-            boost::type<R>()
+            ::boost::type<R>()
 #if (BOOST_PP_ITERATION_FLAGS() == 4)
           , self
 #endif
           , BOOST_PP_ENUM_BINARY_PARAMS(
                 N
-              , boost::parameter::keyword<kw
+              , ::boost::parameter::keyword<kw
               , >::instance = a
             )
         );
@@ -86,7 +86,7 @@ struct member_invoker<N,M,R,T,Args>
         self(
             BOOST_PP_ENUM_BINARY_PARAMS(
                 N
-              , boost::parameter::keyword<kw
+              , ::boost::parameter::keyword<kw
               , >::instance = a
             )
         );
@@ -94,7 +94,7 @@ struct member_invoker<N,M,R,T,Args>
         new T(
             BOOST_PP_ENUM_BINARY_PARAMS(
                 N
-              , boost::parameter::keyword<kw
+              , ::boost::parameter::keyword<kw
               , >::instance = a
             )
         );

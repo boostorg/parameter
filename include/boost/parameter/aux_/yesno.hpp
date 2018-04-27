@@ -17,8 +17,8 @@ namespace boost { namespace parameter { namespace aux {
 
     // mpl::true_ and mpl::false_ are not distinguishable by sizeof(),
     // so we pass them through these functions to get a type that is.
-    yes_tag to_yesno(boost::mpl::true_);
-    no_tag to_yesno(boost::mpl::false_);
+    yes_tag to_yesno(::boost::mpl::true_);
+    no_tag to_yesno(::boost::mpl::false_);
 }}} // namespace boost::parameter::aux
 
 #endif // YESNO_050328_HPP

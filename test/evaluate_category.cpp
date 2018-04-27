@@ -70,8 +70,12 @@ namespace test {
 #endif
             {
                 BOOST_TEST_EQ(
-                    test::passed_by_rvalue_reference
+                    test::passed_by_lvalue_reference_to_const
                   , A<T>::evaluate_category(args[test::_rrc0])
+                );
+                BOOST_TEST_EQ(
+                    test::passed_by_lvalue_reference_to_const
+                  , A<T>::evaluate_category(args[test::_rr0])
                 );
             }
             else
@@ -80,12 +84,11 @@ namespace test {
                     test::passed_by_rvalue_reference_to_const
                   , A<T>::evaluate_category(args[test::_rrc0])
                 );
+                BOOST_TEST_EQ(
+                    test::passed_by_rvalue_reference
+                  , A<T>::evaluate_category(args[test::_rr0])
+                );
             }
-
-            BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference
-              , A<T>::evaluate_category(args[test::_rr0])
-            );
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
@@ -154,7 +157,7 @@ namespace test {
 
     struct E
     {
-        template <class Args>
+        template <typename Args>
         static void evaluate(Args const& args)
         {
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
@@ -258,8 +261,6 @@ namespace test {
 
 int main()
 {
-    // Check to make sure the compiler won't ICE.
-#if !defined(__MINGW32__)
     test::B<float>::evaluate(
         test::f_parameters()(
             test::lvalue_const_float()
@@ -351,7 +352,6 @@ int main()
           , test::lvalue_char_ptr()
         )
     );
-#endif // Don't ICE.
     return boost::report_errors();
 }
 

@@ -15,7 +15,7 @@ namespace boost { namespace parameter { namespace aux {
     {
     };
 
-    template <class Tag>
+    template <typename Tag>
     struct name_tag
     {
     };
@@ -25,8 +25,8 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T>
-    struct is_name_tag : boost::mpl::false_
+    template <typename T>
+    struct is_name_tag : ::boost::mpl::false_
     {
     };
 }}} // namespace boost::parameter::aux
@@ -46,19 +46,19 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace mpl {
 
-    template <class T>
+    template <typename T>
     struct lambda<
         T
-      , typename boost::enable_if<
-            boost::parameter::aux::is_name_tag<T>
-          , boost::parameter::aux::lambda_tag
+      , typename ::boost::enable_if<
+            ::boost::parameter::aux::is_name_tag<T>
+          , ::boost::parameter::aux::lambda_tag
         >::type
     >
     {
-        typedef boost::mpl::true_ is_le;
-        typedef boost::mpl::bind3<
-            boost::mpl::quote3<boost::parameter::value_type>
-          , boost::mpl::arg<2>
+        typedef ::boost::mpl::true_ is_le;
+        typedef ::boost::mpl::bind3<
+            ::boost::mpl::quote3< ::boost::parameter::value_type>
+          , ::boost::mpl::arg<2>
           , T
           , void
         > result_;
@@ -146,8 +146,8 @@ namespace boost { namespace mpl {
 /**/
 
 #define BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(tag)                            \
-    boost::parameter::value_type<                                            \
-        boost::mpl::_2,tag,boost::parameter::void_                           \
+    ::boost::parameter::value_type<                                          \
+        ::boost::mpl::_2,tag,::boost::parameter::void_                       \
     >
 /**/
 
@@ -164,7 +164,7 @@ namespace boost { namespace mpl {
             }                                                                \
             typedef BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(tag) _;             \
             typedef BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(tag) _1;            \
-            typedef boost::parameter::q qualifier;                           \
+            typedef ::boost::parameter::q qualifier;                         \
         };                                                                   \
     }
 /**/
@@ -240,7 +240,7 @@ namespace boost { namespace mpl {
         struct name;                                                         \
     }                                                                        \
     template <class T>                                                       \
-    struct name : boost::parameter::template_keyword<tag::name,T>            \
+    struct name : ::boost::parameter::template_keyword<tag::name,T>          \
     {                                                                        \
     };
 /**/

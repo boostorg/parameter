@@ -15,85 +15,85 @@
 
 namespace boost { namespace parameter { namespace python { namespace aux {
 
-    template <long Arity, class M, class R, class Args>
+    template <long Arity, typename M, typename R, typename Args>
     struct invoker;
 
-    template <class M, class R>
+    template <typename M, typename R>
     struct make_invoker
     {
-        template <class Args>
+        template <typename Args>
         struct apply
         {
-            typedef invoker<
-                boost::mpl::size<Args>::value,M,R,Args
+            typedef ::boost::parameter::python::aux::invoker<
+                ::boost::mpl::size<Args>::value,M,R,Args
             > type;
         };
     };
 
-    template <long Arity, class M, class R, class T, class Args>
+    template <long Arity, typename M, typename R, typename T, typename Args>
     struct member_invoker;
 
-    template <class M, class R, class T>
+    template <typename M, typename R, typename T>
     struct make_member_invoker
     {
-        template <class Args>
+        template <typename Args>
         struct apply
         {
-            typedef member_invoker<
-                boost::mpl::size<Args>::value,M,R,T,Args
+            typedef ::boost::parameter::python::aux::member_invoker<
+                ::boost::mpl::size<Args>::value,M,R,T,Args
             > type;
         };
     };
 
-    template <long Arity, class T, class R, class Args>
+    template <long Arity, typename T, typename R, typename Args>
     struct call_invoker;
 
-    template <class T, class R>
+    template <typename T, typename R>
     struct make_call_invoker
     {
-        template <class Args>
+        template <typename Args>
         struct apply
         {
-            typedef call_invoker<
-                boost::mpl::size<Args>::value,T,R,Args
+            typedef ::boost::parameter::python::aux::call_invoker<
+                ::boost::mpl::size<Args>::value,T,R,Args
             > type;
         };
     };
 
-    template <long Arity, class T, class Args>
+    template <long Arity, typename T, typename Args>
     struct init_invoker;
 
-    template <class T>
+    template <typename T>
     struct make_init_invoker
     {
-        template <class Args>
+        template <typename Args>
         struct apply
         {
-            typedef init_invoker<
-                boost::mpl::size<Args>::value,T,Args
+            typedef ::boost::parameter::python::aux::init_invoker<
+                ::boost::mpl::size<Args>::value,T,Args
             > type;
         };
     };
 
-    template <class M, class R, class Args>
+    template <typename M, typename R, typename Args>
     struct invoker<0,M,R,Args>
     {
         static R execute()
         {
-            return M()(boost::type<R>());
+            return M()(::boost::type<R>());
         }
     };
 
-    template <class M, class R, class T, class Args>
+    template <typename M, typename R, typename T, typename Args>
     struct member_invoker<0,M,R,T,Args>
     {
         static R execute(T& self)
         {
-            return M()(boost::type<R>(), self);
+            return M()(::boost::type<R>(), self);
         }
     };
 
-    template <class T, class R, class Args>
+    template <typename T, typename R, typename Args>
     struct call_invoker<0,T,R,Args>
     {
         static R execute(T& self)
@@ -102,7 +102,7 @@ namespace boost { namespace parameter { namespace python { namespace aux {
         }
     };
 
-    template <class T, class Args>
+    template <typename T, typename Args>
     struct init_invoker<0,T,Args>
     {
         static T* execute(T& self)

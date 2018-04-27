@@ -21,7 +21,7 @@ struct keywords
 
 #include <boost/mpl/bool.hpp>
 
-template <class T>
+template <typename T>
 struct is_keyword_expression
   : boost::mpl::false_
 {

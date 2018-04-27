@@ -11,7 +11,7 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T>
+    template <typename T>
     struct referent_size;
 }}} // namespace boost::parameter::aux
 
@@ -19,10 +19,10 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T>
+    template <typename T>
     struct referent_size<T&>
     {
-        BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(T));
+        BOOST_STATIC_CONSTANT(::std::size_t, value = sizeof(T));
     };
 }}} // namespace boost::parameter::aux
 
@@ -32,10 +32,10 @@ namespace boost { namespace parameter { namespace aux {
 
     // A metafunction returning a POD type which can store U, where T == U&.
     // If T is not a reference type, returns a POD which can store T.
-    template <class T>
+    template <typename T>
     struct referent_storage
-      : boost::aligned_storage<
-            boost::parameter::aux::referent_size<T>::value
+      : ::boost::aligned_storage<
+            ::boost::parameter::aux::referent_size<T>::value
         >
     {
     };
@@ -59,30 +59,30 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T>
-    struct maybe : boost::parameter::aux::maybe_base
+    template <typename T>
+    struct maybe : ::boost::parameter::aux::maybe_base
     {
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::add_lvalue_reference<
+        typedef typename ::boost::add_lvalue_reference<
 #else
-        typedef typename std::add_lvalue_reference<
+        typedef typename ::std::add_lvalue_reference<
 #endif
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
             T const
 #elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            typename boost::add_const<T>::type
+            typename ::boost::add_const<T>::type
 #else
-            typename std::add_const<T>::type
+            typename ::std::add_const<T>::type
 #endif
         >::type reference;
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::remove_cv<
-            BOOST_DEDUCED_TYPENAME boost::remove_reference<reference>::type
+        typedef typename ::boost::remove_cv<
+            BOOST_DEDUCED_TYPENAME ::boost::remove_reference<reference>::type
         >::type non_cv_value;
 #else
-        typedef typename std::remove_cv<
-            BOOST_DEDUCED_TYPENAME std::remove_reference<reference>::type
+        typedef typename ::std::remove_cv<
+            BOOST_DEDUCED_TYPENAME ::std::remove_reference<reference>::type
         >::type non_cv_value;
 #endif
 
@@ -107,7 +107,7 @@ namespace boost { namespace parameter { namespace aux {
             return value_;
         }
 
-        template <class U>
+        template <typename U>
         reference construct2(U const& value_) const
         {
             new (this->m_storage.address()) non_cv_value(value_);
@@ -117,7 +117,7 @@ namespace boost { namespace parameter { namespace aux {
             );
         }
 
-        template <class U>
+        template <typename U>
         inline reference construct(U const& value_) const
         {
             return this->construct2(value_);
@@ -130,11 +130,13 @@ namespace boost { namespace parameter { namespace aux {
             )->~non_cv_value();
         }
 
-        typedef reference(maybe<T>::*safe_bool)() const;
+        typedef reference(
+            ::boost::parameter::aux::maybe<T>::*safe_bool
+        )() const;
 
         inline operator safe_bool() const
         {
-            return this->value ? &maybe<T>::get : 0;
+            return this->value ? &::boost::parameter::aux::maybe<T>::get : 0;
         }
 
         inline reference get() const
@@ -143,9 +145,9 @@ namespace boost { namespace parameter { namespace aux {
         }
 
      private:
-        boost::optional<T> value;
+        ::boost::optional<T> value;
         mutable bool constructed;
-        mutable typename boost::parameter::aux::referent_storage<
+        mutable typename ::boost::parameter::aux::referent_storage<
             reference
         >::type m_storage;
     };

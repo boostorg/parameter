@@ -17,6 +17,7 @@
 #include <boost/mpl/identity.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/is_lvalue_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -34,10 +35,10 @@
 namespace boost { namespace parameter { namespace aux { 
 
     template <
-        class Keyword
-      , class ActualArg
+        typename Keyword
+      , typename ActualArg
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-      , class = typename boost::parameter::aux::is_cv_reference_wrapper<
+      , typename = typename ::boost::parameter::aux::is_cv_reference_wrapper<
             ActualArg
         >::type
 #endif
@@ -46,89 +47,89 @@ namespace boost { namespace parameter { namespace aux {
     {
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) || \
     !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        typedef boost::parameter::aux::tagged_argument<
+        typedef ::boost::parameter::aux::tagged_argument<
             Keyword
-          , typename boost::parameter::aux::unwrap_cv_reference<
+          , typename ::boost::parameter::aux::unwrap_cv_reference<
                 ActualArg
             >::type
         > type;
 #else
-        typedef typename boost::parameter::aux::unwrap_cv_reference<
+        typedef typename ::boost::parameter::aux::unwrap_cv_reference<
             ActualArg
         >::type Arg;
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::remove_const<Arg>::type MutArg;
+        typedef typename ::boost::add_const<Arg>::type ConstArg;
+        typedef typename ::boost::remove_const<Arg>::type MutArg;
 #else
-        typedef typename std::remove_const<Arg>::type MutArg;
+        typedef typename ::std::add_const<Arg>::type ConstArg;
+        typedef typename ::std::remove_const<Arg>::type MutArg;
 #endif
-        typedef typename boost::mpl::eval_if<
-            typename boost::mpl::if_<
-                boost::parameter::aux::is_cv_reference_wrapper<ActualArg>
-              , boost::mpl::true_
+        typedef typename ::boost::mpl::eval_if<
+            typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-              , boost::is_lvalue_reference<ActualArg>
+                ::boost::is_lvalue_reference<ActualArg>
 #else
-              , std::is_lvalue_reference<ActualArg>
+                ::std::is_lvalue_reference<ActualArg>
 #endif
+              , ::boost::mpl::true_
+              , ::boost::parameter::aux::is_cv_reference_wrapper<ActualArg>
             >::type
-          , boost::mpl::identity<
-                boost::parameter::aux::tagged_argument<Keyword,Arg>
+          , ::boost::mpl::identity<
+                ::boost::parameter::aux::tagged_argument<Keyword,Arg>
             >
-          , boost::mpl::if_<
+          , ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                boost::is_scalar<MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                std::is_scalar<MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+                ::boost::is_scalar<MutArg>
+#else
+                ::std::is_scalar<MutArg>
+#endif
+              , ::boost::parameter::aux::tagged_argument<Keyword,ConstArg>
+              , ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
             >
         >::type type;
 #endif // Borland/forwarding workarounds needed.
     };
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-    template <class Keyword, class ActualArg>
-    struct tag<Keyword,ActualArg,boost::mpl::false_>
+    template <typename Keyword, typename ActualArg>
+    struct tag<Keyword,ActualArg,::boost::mpl::false_>
     {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::remove_reference<ActualArg>::type Arg;
-        typedef typename boost::remove_const<Arg>::type MutArg;
+        typedef typename ::boost::remove_reference<ActualArg>::type Arg;
+        typedef typename ::boost::add_const<Arg>::type ConstArg;
+        typedef typename ::boost::remove_const<Arg>::type MutArg;
 #else
-        typedef typename std::remove_reference<ActualArg>::type Arg;
-        typedef typename std::remove_const<Arg>::type MutArg;
+        typedef typename ::std::remove_reference<ActualArg>::type Arg;
+        typedef typename ::std::add_const<Arg>::type ConstArg;
+        typedef typename ::std::remove_const<Arg>::type MutArg;
 #endif
-        typedef typename boost::mpl::eval_if<
+        typedef typename ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_lvalue_reference<ActualArg>
+            ::boost::is_lvalue_reference<ActualArg>
 #else
-            std::is_lvalue_reference<ActualArg>
+            ::std::is_lvalue_reference<ActualArg>
 #endif
-          , boost::mpl::identity<
-                boost::parameter::aux::tagged_argument<Keyword,Arg>
+          , ::boost::mpl::identity<
+                ::boost::parameter::aux::tagged_argument<Keyword,Arg>
             >
-          , boost::mpl::if_<
+          , ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                boost::is_scalar<MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                std::is_scalar<MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,MutArg>
-              , boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+                ::boost::is_scalar<MutArg>
+#else
+                ::std::is_scalar<MutArg>
+#endif
+              , ::boost::parameter::aux::tagged_argument<Keyword,ConstArg>
+              , ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
             >
         >::type type;
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        typedef boost::parameter::aux::tagged_argument<
+        typedef ::boost::parameter::aux::tagged_argument<
             Keyword
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , typename boost::remove_reference<ActualArg>::type
+          , typename ::boost::remove_reference<ActualArg>::type
 #else
-          , typename std::remove_reference<ActualArg>::type
+          , typename ::std::remove_reference<ActualArg>::type
 #endif
         > type;
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING

@@ -7,7 +7,7 @@ BOOST_PARAMETER_NAME(index)
 
 struct myclass_impl
 {
-    template <class ArgumentPack>
+    template <typename ArgumentPack>
     myclass_impl(ArgumentPack const& args)
     {
         std::cout << "name = " << args[_name];

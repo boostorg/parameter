@@ -28,10 +28,10 @@ namespace test {
 
 namespace test {
 
-    template <class To>
+    template <typename To>
     struct f_predicate
     {
-        template <class From, class Args>
+        template <typename From, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<From,To>
@@ -77,7 +77,7 @@ namespace test {
         BOOST_TEST(x == y);
     }
 
-    template<class P>
+    template <typename P>
     void f_impl(P const& p)
     {
         float v = p[test::value | 3.f];
@@ -95,20 +95,23 @@ namespace test {
 
 namespace test {
 
-    template <class A0>
-    void f(
-        A0 const& a0
-      , BOOST_PARAMETER_MATCH(f_parameters, (A0), args)
-    )
+    template <typename A0>
+    void
+        f(
+            A0 const& a0
+          , BOOST_PARAMETER_MATCH(f_parameters, (A0), args)
+        )
     {
         f_impl(args(a0));
     }
 
-    template <class A0, class A1>
-    void f(
-        A0 const& a0, A1 const& a1
-      , BOOST_PARAMETER_MATCH(f_parameters, (A0)(A1), args)
-    )
+    template <typename A0, typename A1>
+    void
+        f(
+            A0 const& a0
+          , A1 const& a1
+          , BOOST_PARAMETER_MATCH(f_parameters, (A0)(A1), args)
+        )
     {
         f_impl(args(a0, a1));
     }
@@ -132,7 +135,7 @@ namespace test {
     // others are not.  This tests that the SFINAE is actually working.  On
     // all other compilers we're just checking that everything about
     // SFINAE-enabled code will work, except of course the SFINAE.
-    template <class A0, class A1>
+    template <typename A0, typename A1>
     typename boost::enable_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         boost::is_same<int,A0>
@@ -145,7 +148,7 @@ namespace test {
 #endif
       , int
     >::type
-    f(A0 const& a0, A1 const& a1)
+        f(A0 const& a0, A1 const& a1)
     {
         return 0;
     }

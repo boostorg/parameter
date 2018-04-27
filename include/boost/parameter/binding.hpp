@@ -29,74 +29,78 @@ namespace boost { namespace parameter {
     // parameter has been specified, returns Default
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-    template <class Parameters, class Keyword, class Default>
+    template <typename Parameters, typename Keyword, typename Default>
     struct binding0
     {
-        typedef typename boost::mpl::apply_wrap3<
+        typedef typename ::boost::mpl::apply_wrap3<
             typename Parameters::binding
           , Keyword
           , Default
-          , boost::mpl::true_
+          , ::boost::mpl::true_
         >::type type;
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_MPL_ASSERT_NOT((
-            typename boost::mpl::if_<
-                boost::is_same<Default,boost::parameter::void_>
-              , boost::is_same<type,boost::parameter::void_>
-              , boost::mpl::false_
+            typename ::boost::mpl::if_<
+                ::boost::is_same<Default,::boost::parameter::void_>
+              , ::boost::is_same<type,::boost::parameter::void_>
+              , ::boost::mpl::false_
             >::type
         ));
 #else
         BOOST_MPL_ASSERT_NOT((
-            typename boost::mpl::eval_if<
-                std::is_same<Default,boost::parameter::void_>
-              , boost::mpl::if_<
-                    std::is_same<type,boost::parameter::void_>
-                  , boost::mpl::true_
-                  , boost::mpl::false_
+            typename ::boost::mpl::eval_if<
+                ::std::is_same<Default,::boost::parameter::void_>
+              , ::boost::mpl::if_<
+                    ::std::is_same<type,::boost::parameter::void_>
+                  , ::boost::mpl::true_
+                  , ::boost::mpl::false_
                 >
-              , boost::mpl::false_
+              , ::boost::mpl::false_
             >::type
         ));
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
     };
 #endif // Borland workarounds needed.
 
-    template <class Parameters, class Keyword, class Default = void_>
+    template <
+        typename Parameters
+      , typename Keyword
+      , typename Default = ::boost::parameter::void_
+    >
     struct binding
     {
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        typedef typename boost::mpl::eval_if<
-            boost::mpl::is_placeholder<Parameters>
-          , boost::mpl::identity<int>
-          , binding0<Parameters,Keyword,Default>
+        typedef typename ::boost::mpl::eval_if<
+            ::boost::mpl::is_placeholder<Parameters>
+          , ::boost::mpl::identity<int>
+          , ::boost::parameter::binding0<Parameters,Keyword,Default>
         >::type type;
 #else
-        typedef typename boost::mpl::apply_wrap3<
+        typedef typename ::boost::mpl::apply_wrap3<
             typename Parameters::binding
           , Keyword
           , Default
-          , boost::mpl::true_
+          , ::boost::mpl::true_
         >::type type;
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_MPL_ASSERT_NOT((
-            typename boost::mpl::if_<
-                boost::is_same<Default,boost::parameter::void_>
-              , boost::is_same<type,boost::parameter::void_>
-              , boost::mpl::false_
+            typename ::boost::mpl::if_<
+                ::boost::is_same<Default,::boost::parameter::void_>
+              , ::boost::is_same<type,::boost::parameter::void_>
+              , ::boost::mpl::false_
             >::type
         ));
 #else
         BOOST_MPL_ASSERT_NOT((
-            typename boost::mpl::eval_if<
-                std::is_same<Default,boost::parameter::void_>
-              , boost::mpl::if_<
-                    std::is_same<type,boost::parameter::void_>
-                  , boost::mpl::true_
-                  , boost::mpl::false_
+            typename ::boost::mpl::eval_if<
+                ::std::is_same<Default,::boost::parameter::void_>
+              , ::boost::mpl::if_<
+                    ::std::is_same<type,::boost::parameter::void_>
+                  , ::boost::mpl::true_
+                  , ::boost::mpl::false_
                 >
-              , boost::mpl::false_
+              , ::boost::mpl::false_
             >::type
         ));
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
@@ -113,14 +117,14 @@ namespace boost { namespace parameter {
     // the parameter identified by the given keyword.  If no such
     // parameter has been specified, returns the type returned by invoking
     // DefaultFn
-    template <class Parameters, class Keyword, class DefaultFn>
+    template <typename Parameters, typename Keyword, typename DefaultFn>
     struct lazy_binding
     {
-        typedef typename boost::mpl::apply_wrap3<
+        typedef typename ::boost::mpl::apply_wrap3<
             typename Parameters::binding
           , Keyword
-          , typename boost::parameter::aux::result_of0<DefaultFn>::type
-          , boost::mpl::true_
+          , typename ::boost::parameter::aux::result_of0<DefaultFn>::type
+          , ::boost::mpl::true_
         >::type type;
     };
 }} // namespace boost::parameter

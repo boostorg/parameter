@@ -26,25 +26,25 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-    typedef boost::mpl::list0<> set0;
+    typedef ::boost::mpl::list0<> set0;
 
-    template <class Set, class K>
-    struct insert_ : boost::mpl::push_front<Set,K>
+    template <typename Set, typename K>
+    struct insert_ : ::boost::mpl::push_front<Set,K>
     {
     };
 
-    template <class Set, class K>
+    template <typename Set, typename K>
     struct has_key_
     {
-        typedef typename boost::mpl::find<Set,K>::type iter;
-        typedef typename boost::mpl::if_<
+        typedef typename ::boost::mpl::find<Set,K>::type iter;
+        typedef typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_same<iter,typename boost::mpl::end<Set>::type>
+            ::boost::is_same<iter,typename ::boost::mpl::end<Set>::type>
 #else
-            std::is_same<iter,typename boost::mpl::end<Set>::type>
+            ::std::is_same<iter,typename ::boost::mpl::end<Set>::type>
 #endif
-          , boost::mpl::false_
-          , boost::mpl::true_
+          , ::boost::mpl::false_
+          , ::boost::mpl::true_
         >::type type;
     };
 }}} // namespace boost::parameter::aux
@@ -57,15 +57,15 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    typedef boost::mpl::set0<> set0;
+    typedef ::boost::mpl::set0<> set0;
 
-    template <class Set, class K>
-    struct insert_ : boost::mpl::insert<Set,K>
+    template <typename Set, typename K>
+    struct insert_ : ::boost::mpl::insert<Set,K>
     {
     };
 
-    template <class Set, class K>
-    struct has_key_ : boost::mpl::has_key<Set,K>
+    template <typename Set, typename K>
+    struct has_key_ : ::boost::mpl::has_key<Set,K>
     {
     };
 }}} // namespace boost::parameter::aux

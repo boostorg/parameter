@@ -17,7 +17,8 @@ namespace test {
     BOOST_PARAMETER_TEMPLATE_KEYWORD(deleter)
     BOOST_PARAMETER_TEMPLATE_KEYWORD(copy_policy)
 
-    template <class T> struct Deallocate
+    template <typename T>
+    struct Deallocate
     {
     };
 
@@ -31,7 +32,7 @@ namespace test {
     {
     };
 
-    template <class T, class A0, class A1>
+    template <typename T, typename A0, typename A1>
     struct smart_ptr
     {
         smart_ptr(Foo*);

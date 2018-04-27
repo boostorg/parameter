@@ -17,7 +17,7 @@ namespace test {
 
     not_present_tag not_present;
 
-    template <class E, class ArgPack>
+    template <typename E, typename ArgPack>
     struct assert_expected
     {
         assert_expected(E const& e, ArgPack const& args_)
@@ -25,7 +25,7 @@ namespace test {
         {
         }
 
-        template <class T>
+        template <typename T>
         bool check_not_present(T const&) const
         {
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
@@ -42,19 +42,19 @@ namespace test {
             return true;
         }
 
-        template <class K>
+        template <typename K>
         bool check1(K const& k, test::not_present_tag const& t, long) const
         {
             return check_not_present(args[k | t]);
         }
 
-        template <class K, class Expected>
+        template <typename K, typename Expected>
         bool check1(K const& k, Expected const& expected, int) const
         {
             return test::equal(args[k], expected);
         }
 
-        template <class K>
+        template <typename K>
         void operator()(K) const
         {
             boost::parameter::keyword<K> const&
@@ -66,32 +66,32 @@ namespace test {
         ArgPack const& args;
     };
 
-    template <class E, class ArgPack>
+    template <typename E, typename ArgPack>
     void check0(E const& e, ArgPack const& args)
     {
         boost::mpl::for_each<E>(test::assert_expected<E,ArgPack>(e, args));
     }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-    template <class P, class E, class ...Args>
+    template <typename P, typename E, typename ...Args>
     void check(E const& e, Args const&... args)
     {
         test::check0(e, P()(args...));
     }
 #else
-    template <class P, class E, class A0>
+    template <typename P, typename E, typename A0>
     void check(E const& e, A0 const& a0)
     {
         test::check0(e, P()(a0));
     }
 
-    template <class P, class E, class A0, class A1>
+    template <typename P, typename E, typename A0, typename A1>
     void check(E const& e, A0 const& a0, A1 const& a1)
     {
         test::check0(e, P()(a0, a1));
     }
 
-    template <class P, class E, class A0, class A1, class A2>
+    template <typename P, typename E, typename A0, typename A1, typename A2>
     void check(E const& e, A0 const& a0, A1 const& a1, A2 const& a2)
     {
         test::check0(e, P()(a0, a1, a2));

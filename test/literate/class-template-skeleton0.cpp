@@ -4,10 +4,10 @@
 namespace boost { namespace python {
 
     template <
-        class A0
-      , class A1 = parameter::void_
-      , class A2 = parameter::void_
-      , class A3 = parameter::void_
+        typename A0
+      , typename A1 = boost::parameter::void_
+      , typename A2 = boost::parameter::void_
+      , typename A3 = boost::parameter::void_
     >
     struct class_
     {

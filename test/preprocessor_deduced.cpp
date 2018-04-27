@@ -36,7 +36,7 @@ namespace test {
     // Workaround: factor template2<x> into separate typedefs
     struct predicate1
     {
-        template <class From, class Args>
+        template <typename From, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<From,int>
@@ -53,7 +53,7 @@ namespace test {
 
     struct predicate2
     {
-        template <class From, class Args>
+        template <typename From, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<From,std::string>
@@ -80,10 +80,10 @@ namespace test {
         )
     )
 #else // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    template <class To>
+    template <typename To>
     struct predicate
     {
-        template <class From, class Args>
+        template <typename From, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<From,To>
@@ -134,7 +134,7 @@ namespace test {
     // SunPro workaround; see above
     struct predicate3
     {
-        template <class From, class Args>
+        template <typename From, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<From,test::X>
@@ -213,7 +213,7 @@ namespace test {
     // when the others are not.  This tests that the SFINAE is actually
     // working.  On all other compilers we're just checking that everything
     // about SFINAE-enabled code will work, except of course the SFINAE.
-    template <class A0>
+    template <typename A0>
     typename boost::enable_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         boost::is_same<int,A0>
@@ -226,7 +226,7 @@ namespace test {
 #endif
       , int
     >::type
-    sfinae(A0 const& a0)
+        sfinae(A0 const& a0)
     {
         return 0;
     }

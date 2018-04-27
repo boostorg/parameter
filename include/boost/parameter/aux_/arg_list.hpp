@@ -21,7 +21,7 @@ namespace boost { namespace parameter { namespace aux {
     // MPL sequence support
     struct arg_list_tag;
 
-    template <class T>
+    template <typename T>
     struct get_reference
     {
         typedef typename T::reference type;
@@ -62,11 +62,11 @@ namespace boost { namespace parameter { namespace aux {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         struct tagged_arg
         {
-            typedef boost::parameter::void_ value_type;
+            typedef ::boost::parameter::void_ value_type;
         };
 
         // Variadic constructor also serves as default constructor.
-        template <class ...Args>
+        template <typename ...Args>
         inline empty_arg_list(Args&&...)
         {
         }
@@ -80,7 +80,7 @@ namespace boost { namespace parameter { namespace aux {
         inline empty_arg_list(
             BOOST_PP_ENUM_PARAMS(
                 BOOST_PARAMETER_MAX_ARITY
-              , boost::parameter::void_ BOOST_PP_INTERCEPT
+              , ::boost::parameter::void_ BOOST_PP_INTERCEPT
             )
         )
         {
@@ -92,7 +92,7 @@ namespace boost { namespace parameter { namespace aux {
         // that default.
         struct binding
         {
-            template <class KW, class Default, class Reference>
+            template <typename KW, typename Default, typename Reference>
             struct apply
             {
                 typedef Default type;
@@ -100,8 +100,8 @@ namespace boost { namespace parameter { namespace aux {
         };
 
         // Terminator for has_key, indicating that the keyword is unique.
-        template <class KW>
-        static no_tag has_key(KW*);
+        template <typename KW>
+        static ::boost::parameter::aux::no_tag has_key(KW*);
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         // The overload set technique doesn't work with these older compilers,
@@ -111,30 +111,31 @@ namespace boost { namespace parameter { namespace aux {
         // base sublist whose get() function can produce the value for that key.
         struct key_owner
         {
-            template <class KW>
+            template <typename KW>
             struct apply
             {
-                typedef empty_arg_list type;
+                typedef ::boost::parameter::aux::empty_arg_list type;
             };
         };
 
-        template <class K, class T>
-        inline T& get(boost::parameter::aux::default_<K,T> const& x) const
+        template <typename K, typename T>
+        inline T& get(::boost::parameter::aux::default_<K,T> const& x) const
         {
             return x.value;
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class K, class T>
-        inline T&& get(boost::parameter::aux::default_r_<K,T> const& x) const
+        template <typename K, typename T>
+        inline T&&
+            get(::boost::parameter::aux::default_r_<K,T> const& x) const
         {
-            return boost::forward<T>(x.value);
+            return ::boost::forward<T>(x.value);
         }
 #endif
 
-        template <class K, class F>
-        inline typename boost::parameter::aux::result_of0<F>::type
-        get(boost::parameter::aux::lazy_default<K,F> const& x) const
+        template <typename K, typename F>
+        inline typename ::boost::parameter::aux::result_of0<F>::type
+            get(::boost::parameter::aux::lazy_default<K,F> const& x) const
         {
             return x.compute_default();
         }
@@ -143,28 +144,28 @@ namespace boost { namespace parameter { namespace aux {
         // If either of these operators are called, it means there is no
         // argument in the list that matches the supplied keyword.  Just
         // return the default value.
-        template <class K, class Default>
+        template <typename K, typename Default>
         inline Default&
-        operator[](boost::parameter::aux::default_<K,Default> x) const
+            operator[](::boost::parameter::aux::default_<K,Default> x) const
         {
             return x.value;
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class K, class Default>
+        template <typename K, typename Default>
         inline Default&&
-        operator[](boost::parameter::aux::default_r_<K,Default> x) const
+            operator[](::boost::parameter::aux::default_r_<K,Default> x) const
         {
-            return boost::forward<Default>(x.value);
+            return ::boost::forward<Default>(x.value);
         }
 #endif
 
         // If this operator is called, it means there is no argument in the
         // list that matches the supplied keyword.  Just evaluate and return
         // the default value.
-        template <class K, class F>
-        inline typename boost::parameter::aux::result_of0<F>::type
-        operator[](BOOST_PARAMETER_lazy_default_fallback<K,F> x) const
+        template <typename K, typename F>
+        inline typename ::boost::parameter::aux::result_of0<F>::type
+            operator[](BOOST_PARAMETER_lazy_default_fallback<K,F> x) const
         {
             return x.compute_default();
         }
@@ -173,14 +174,14 @@ namespace boost { namespace parameter { namespace aux {
         // was found if we match this overload, so unless that parameter
         // has a default, we indicate that the actual arguments don't
         // match the function's requirements.
-        template <class ParameterRequirements, class ArgPack>
+        template <typename ParameterRequirements, typename ArgPack>
         static typename ParameterRequirements::has_default
-        satisfies(ParameterRequirements*, ArgPack*);
+            satisfies(ParameterRequirements*, ArgPack*);
 
         // MPL sequence support
-        typedef empty_arg_list type; // convenience
+        typedef ::boost::parameter::aux::empty_arg_list type; // convenience
         // For dispatching to sequence intrinsics
-        typedef boost::parameter::aux::arg_list_tag tag;
+        typedef ::boost::parameter::aux::arg_list_tag tag;
     };
 }}} // namespace boost::parameter::aux
 
@@ -219,28 +220,28 @@ namespace boost { namespace parameter { namespace aux {
     // TaggedArg is an instance of tagged_argument<> or
     // tagged_argument_rref<>.
     template <
-        class TaggedArg
-      , class Next = boost::parameter::aux::empty_arg_list
+        typename TaggedArg
+      , typename Next = ::boost::parameter::aux::empty_arg_list
     >
     struct arg_list : Next
     {
         typedef TaggedArg tagged_arg;
-        typedef arg_list<TaggedArg,Next> self;
+        typedef ::boost::parameter::aux::arg_list<TaggedArg,Next> self;
         typedef typename TaggedArg::key_type key_type;
 
-        typedef typename boost::parameter::aux::is_maybe<
+        typedef typename ::boost::parameter::aux::is_maybe<
             typename TaggedArg::value_type
         >::type holds_maybe;
 
-        typedef typename boost::mpl::eval_if<
+        typedef typename ::boost::mpl::eval_if<
             holds_maybe
-          , boost::parameter::aux::get_reference<
+          , ::boost::parameter::aux::get_reference<
                 typename TaggedArg::value_type
             >
-          , boost::parameter::aux::get_reference<TaggedArg>
+          , ::boost::parameter::aux::get_reference<TaggedArg>
         >::type reference;
 
-        typedef typename boost::mpl::if_<
+        typedef typename ::boost::mpl::if_<
             holds_maybe
           , reference
           , typename TaggedArg::value_type
@@ -260,80 +261,80 @@ namespace boost { namespace parameter { namespace aux {
         // Use tag dispatching to determine whether to forward all arguments
         // to the Next constructor, or store the first argument and forward
         // the rest. -- Cromwell D. Enage
-        template <class A0>
+        template <typename A0>
         inline arg_list(
-            boost::parameter::aux::value_type_is_not_void
+            ::boost::parameter::aux::value_type_is_not_void
           , A0&& a0
         ) : Next(
-                typename boost::mpl::if_<
+                typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<
+                    ::boost::is_same<
 #else
-                    std::is_same<
+                    ::std::is_same<
 #endif
                         typename Next::tagged_arg::value_type
-                      , boost::parameter::void_
+                      , ::boost::parameter::void_
                     >
-                  , boost::parameter::aux::value_type_is_void
-                  , boost::parameter::aux::value_type_is_not_void
+                  , ::boost::parameter::aux::value_type_is_void
+                  , ::boost::parameter::aux::value_type_is_not_void
                 >::type()
             )
-          , arg(boost::forward<A0>(a0))
+          , arg(::boost::forward<A0>(a0))
         {
         }
 
-        template <class ...Args>
+        template <typename ...Args>
         inline arg_list(
-            boost::parameter::aux::value_type_is_void
+            ::boost::parameter::aux::value_type_is_void
           , Args&&... args
         ) : Next(
-                typename boost::mpl::if_<
+                typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<
+                    ::boost::is_same<
 #else
-                    std::is_same<
+                    ::std::is_same<
 #endif
                         typename Next::tagged_arg::value_type
-                      , boost::parameter::void_
+                      , ::boost::parameter::void_
                     >
-                  , boost::parameter::aux::value_type_is_void
-                  , boost::parameter::aux::value_type_is_not_void
+                  , ::boost::parameter::aux::value_type_is_void
+                  , ::boost::parameter::aux::value_type_is_not_void
                 >::type()
-              , boost::forward<Args>(args)...
+              , ::boost::forward<Args>(args)...
             )
-          , arg(boost::parameter::aux::void_reference())
+          , arg(::boost::parameter::aux::void_reference())
         {
         }
 
-        template <class A0, class A1, class ...Args>
+        template <typename A0, typename A1, typename ...Args>
         inline arg_list(
-            boost::parameter::aux::value_type_is_not_void
+            ::boost::parameter::aux::value_type_is_not_void
           , A0&& a0
           , A1&& a1
           , Args&&... args
         ) : Next(
-                typename boost::mpl::if_<
+                typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<
+                    ::boost::is_same<
 #else
-                    std::is_same<
+                    ::std::is_same<
 #endif
                         typename Next::tagged_arg::value_type
-                      , boost::parameter::void_
+                      , ::boost::parameter::void_
                     >
-                  , boost::parameter::aux::value_type_is_void
-                  , boost::parameter::aux::value_type_is_not_void
+                  , ::boost::parameter::aux::value_type_is_void
+                  , ::boost::parameter::aux::value_type_is_not_void
                 >::type()
-              , boost::forward<A1>(a1)
-              , boost::forward<Args>(args)...
+              , ::boost::forward<A1>(a1)
+              , ::boost::forward<Args>(args)...
             )
-          , arg(boost::forward<A0>(a0))
+          , arg(::boost::forward<A0>(a0))
         {
         }
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <
-            // class A0, class A1, ...
-            BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, class A)
+            // typename A0, typename A1, ...
+            BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, typename A)
         >
         inline arg_list(
             // A0& a0, A1& a1, ...
@@ -341,7 +342,7 @@ namespace boost { namespace parameter { namespace aux {
         ) : Next(
                 // a1, a2, ...
                 BOOST_PP_ENUM_SHIFTED_PARAMS(BOOST_PARAMETER_MAX_ARITY, a)
-              , boost::parameter::aux::void_reference()
+              , ::boost::parameter::aux::void_reference()
             )
           , arg(a0)
         {
@@ -355,17 +356,17 @@ namespace boost { namespace parameter { namespace aux {
         {
             typedef typename Next::binding next_binding;
 
-            template <class KW, class Default, class Reference>
+            template <typename KW, typename Default, typename Reference>
             struct apply
             {
-                typedef typename boost::mpl::eval_if<
+                typedef typename ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<KW,key_type>
+                    ::boost::is_same<KW,key_type>
 #else
-                    std::is_same<KW,key_type>
+                    ::std::is_same<KW,key_type>
 #endif
-                  , boost::mpl::if_<Reference,reference,value_type>
-                  , boost::mpl::apply_wrap3<
+                  , ::boost::mpl::if_<Reference,reference,value_type>
+                  , ::boost::mpl::apply_wrap3<
                         next_binding
                       , KW
                       , Default
@@ -378,7 +379,7 @@ namespace boost { namespace parameter { namespace aux {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         // Overload for key_type, so the assert below will fire
         // if the same keyword is used again.
-        static boost::parameter::aux::yes_tag has_key(key_type*);
+        static ::boost::parameter::aux::yes_tag has_key(key_type*);
         using Next::has_key;
 
         BOOST_MPL_ASSERT_MSG(
@@ -386,7 +387,7 @@ namespace boost { namespace parameter { namespace aux {
                 Next::has_key(
                     static_cast<key_type*>(BOOST_TTI_DETAIL_NULLPTR)
                 )
-            ) == sizeof(boost::parameter::aux::no_tag)
+            ) == sizeof(::boost::parameter::aux::no_tag)
           , duplicate_keyword
           , (key_type)
         );
@@ -399,13 +400,13 @@ namespace boost { namespace parameter { namespace aux {
 
         // Helpers that handle the case when TaggedArg is empty<T>.
         template <class D>
-        inline reference get_default(D const&, boost::mpl::false_) const
+        inline reference get_default(D const&, ::boost::mpl::false_) const
         {
             return this->arg.get_value();
         }
 
         template <class D>
-        inline reference get_default(D const& d, boost::mpl::true_) const
+        inline reference get_default(D const& d, ::boost::mpl::true_) const
         {
             return (
                 this->arg.get_value()
@@ -425,79 +426,85 @@ namespace boost { namespace parameter { namespace aux {
         {
             typedef typename Next::key_owner next_key_owner;
 
-            template <class KW>
+            template <typename KW>
             struct apply
             {
-                typedef typename boost::mpl::eval_if<
+                typedef typename ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<KW,key_type>
+                    ::boost::is_same<KW,key_type>
 #else
-                    std::is_same<KW,key_type>
+                    ::std::is_same<KW,key_type>
 #endif
-                  , boost::mpl::identity<arg_list<TaggedArg,Next> >
-                  , boost::mpl::apply_wrap1<next_key_owner,KW>
+                  , ::boost::mpl::identity<
+                        ::boost::parameter::aux::arg_list<TaggedArg,Next>
+                    >
+                  , ::boost::mpl::apply_wrap1<next_key_owner,KW>
                 >::type type;
             };
         };
 
         // Outer indexing operators that dispatch to the right node's
         // get() function.
-        template <class KW>
-        inline typename boost::mpl::apply_wrap3<
+        template <typename KW>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
-          , boost::parameter::void_
-          , boost::mpl::true_
+          , ::boost::parameter::void_
+          , ::boost::mpl::true_
         >::type
-        operator[](boost::parameter::keyword<KW> const& x) const
+            operator[](::boost::parameter::keyword<KW> const& x) const
         {
-            typename boost::mpl::apply_wrap1<key_owner,KW>::type const&
+            typename ::boost::mpl::apply_wrap1<key_owner,KW>::type const&
                 sublist = *this;
             return sublist.get(x);
         }
 
-        template <class KW, class Default>
-        inline typename mpl::apply_wrap3<
+        template <typename KW, typename Default>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , Default&
-          , mpl::true_
+          , ::boost::mpl::true_
         >::type
-        operator[](boost::parameter::aux::default_<KW,Default> const& x) const
+            operator[](
+                ::boost::parameter::aux::default_<KW,Default> const& x
+            ) const
         {
-            typename boost::mpl::apply_wrap1<key_owner,KW>::type const&
+            typename ::boost::mpl::apply_wrap1<key_owner,KW>::type const&
                 sublist = *this;
             return sublist.get(x);
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class KW, class Default>
-        inline typename boost::mpl::apply_wrap3<
+        template <typename KW, typename Default>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , Default&&
-          , boost::mpl::true_
+          , ::boost::mpl::true_
         >::type
-        operator[](
-            boost::parameter::aux::default_r_<KW,Default> const& x
-        ) const
+            operator[](
+                ::boost::parameter::aux::default_r_<KW,Default> const& x
+            ) const
         {
-            typename boost::mpl::apply_wrap1<key_owner,KW>::type const&
+            typename ::boost::mpl::apply_wrap1<key_owner,KW>::type const&
                 sublist = *this;
             return sublist.get(x);
         }
 #endif
 
-        template <class KW, class F>
-        inline typename boost::mpl::apply_wrap3<
+        template <typename KW, typename F>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
-          , typename boost::parameter::aux::result_of0<F>::type
-          , boost::mpl::true_
+          , typename ::boost::parameter::aux::result_of0<F>::type
+          , ::boost::mpl::true_
         >::type
-        operator[](boost::parameter::aux::lazy_default<KW,F> const& x) const
+            operator[](
+                ::boost::parameter::aux::lazy_default<KW,F> const& x
+            ) const
         {
-            typename boost::mpl::apply_wrap1<key_owner,KW>::type const&
+            typename ::boost::mpl::apply_wrap1<key_owner,KW>::type const&
                 sublist = *this;
             return sublist.get(x);
         }
@@ -506,71 +513,74 @@ namespace boost { namespace parameter { namespace aux {
         // indicating no matching argument was passed, the default is
         // returned, or if no default_ or lazy_default was passed, compilation
         // fails.
-        inline reference get(boost::parameter::keyword<key_type> const&) const
+        inline reference
+            get(::boost::parameter::keyword<key_type> const&) const
         {
             BOOST_MPL_ASSERT_NOT((holds_maybe));
             return this->arg.get_value();
         }
 
-        template <class Default>
+        template <typename Default>
         inline reference
-        get(boost::parameter::aux::default_<key_type,Default> const& d) const
+            get(
+                ::boost::parameter::aux::default_<key_type,Default> const& d
+            ) const
         {
             return this->get_default(d, holds_maybe());
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class Default>
+        template <typename Default>
         inline reference
-        get(
-            boost::parameter::aux::default_r_<key_type,Default> const& d
-        ) const
+            get(
+                ::boost::parameter::aux::default_r_<key_type,Default> const& d
+            ) const
         {
             return this->get_default(d, holds_maybe());
         }
 #endif
 
-        template <class Default>
+        template <typename Default>
         inline reference
-        get(
-            boost::parameter::aux::lazy_default<key_type,Default> const&
-        ) const
+            get(
+                ::boost::parameter::aux::lazy_default<key_type,Default> const&
+            ) const
         {
             return this->arg.get_value();
         }
 #else // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         inline reference
-        operator[](boost::parameter::keyword<key_type> const&) const
+            operator[](::boost::parameter::keyword<key_type> const&) const
         {
             BOOST_MPL_ASSERT_NOT((holds_maybe));
             return this->arg.get_value();
         }
 
-        template <class Default>
+        template <typename Default>
         inline reference
-        operator[](
-            boost::parameter::aux::default_<key_type,Default> const& d
-        ) const
+            operator[](
+                ::boost::parameter::aux::default_<key_type,Default> const& d
+            ) const
         {
             return this->get_default(d, holds_maybe());
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class Default>
+        template <typename Default>
         inline reference
-        operator[](
-            boost::parameter::aux::default_r_<key_type,Default> const& d
-        ) const
+            operator[](
+                ::boost::parameter::aux::default_r_<key_type,Default> const& d
+            ) const
         {
             return this->get_default(d, holds_maybe());
         }
 #endif
 
-        template <class Default>
+        template <typename Default>
         inline reference
-        operator[](
-            boost::parameter::aux::lazy_default<key_type,Default> const&
-        ) const
+            operator[](
+                ::boost::parameter::aux::lazy_default<key_type,Default> const&
+            ) const
         {
             BOOST_MPL_ASSERT_NOT((holds_maybe));
             return this->arg.get_value();
@@ -588,9 +598,9 @@ namespace boost { namespace parameter { namespace aux {
         // a bool constant wrapper indicating whether the requirements are
         // satisfied by TaggedArg.  Used only for compile-time computation
         // and never really called, so a declaration is enough.
-        template <class HasDefault, class Predicate, class ArgPack>
-        static typename boost::mpl::apply_wrap2<
-            boost::parameter::aux::augment_predicate<
+        template <typename HasDefault, typename Predicate, typename ArgPack>
+        static typename ::boost::mpl::apply_wrap2<
+            ::boost::parameter::aux::augment_predicate<
                 Predicate
               , reference
               , key_type
@@ -598,14 +608,14 @@ namespace boost { namespace parameter { namespace aux {
           , value_type
           , ArgPack
         >::type
-        satisfies(
-            boost::parameter::aux::parameter_requirements<
-                key_type
-              , Predicate
-              , HasDefault
-            >*
-          , ArgPack*
-        );
+            satisfies(
+                ::boost::parameter::aux::parameter_requirements<
+                    key_type
+                  , Predicate
+                  , HasDefault
+                >*
+              , ArgPack*
+            );
 
         // Builds an overload set including satisfies functions defined
         // in base classes.
@@ -614,30 +624,33 @@ namespace boost { namespace parameter { namespace aux {
 
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
-        template <class KW, class T2>
-        inline arg_list<boost::parameter::aux::tagged_argument<KW,T2>,self>
-        operator,(
-            boost::parameter::aux::tagged_argument<KW,T2> const& x
-        ) const
+        template <typename KW, typename T2>
+        inline ::boost::parameter::aux::arg_list<
+            ::boost::parameter::aux::tagged_argument<KW,T2>
+          , self
+        >
+            operator,(
+                ::boost::parameter::aux::tagged_argument<KW,T2> const& x
+            ) const
         {
-            return arg_list<
-                boost::parameter::aux::tagged_argument<KW,T2>
+            return ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument<KW,T2>
               , self
             >(x, *this);
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class KW, class T2>
-        inline arg_list<
-            boost::parameter::aux::tagged_argument_rref<KW,T2>
+        template <typename KW, typename T2>
+        inline ::boost::parameter::aux::arg_list<
+            ::boost::parameter::aux::tagged_argument_rref<KW,T2>
           , self
         >
-        operator,(
-            boost::parameter::aux::tagged_argument_rref<KW,T2> const& x
-        ) const
+            operator,(
+                ::boost::parameter::aux::tagged_argument_rref<KW,T2> const& x
+            ) const
         {
-            return arg_list<
-                boost::parameter::aux::tagged_argument_rref<KW,T2>
+            return ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument_rref<KW,T2>
               , self
             >(x, *this);
         }
@@ -647,7 +660,7 @@ namespace boost { namespace parameter { namespace aux {
         typedef self type;        // Convenience for users
         typedef Next tail_type;   // For the benefit of iterators
         // For dispatching to sequence intrinsics
-        typedef boost::parameter::aux::arg_list_tag tag;
+        typedef ::boost::parameter::aux::arg_list_tag tag;
     };
 }}} // namespace boost::parameter::aux
 
@@ -656,10 +669,10 @@ namespace boost { namespace parameter { namespace aux {
 namespace boost { namespace parameter { namespace aux {
 
     // MPL sequence support
-    template <class ArgumentPack>
+    template <typename ArgumentPack>
     struct arg_list_iterator
     {
-        typedef boost::mpl::forward_iterator_tag category;
+        typedef ::boost::mpl::forward_iterator_tag category;
 
         // The incremented iterator
         typedef arg_list_iterator<typename ArgumentPack::tail_type> next;
@@ -669,7 +682,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 
     template <>
-    struct arg_list_iterator<boost::parameter::aux::empty_arg_list>
+    struct arg_list_iterator< ::boost::parameter::aux::empty_arg_list>
     {
     };
 }}} // namespace boost::parameter::aux
@@ -680,12 +693,12 @@ namespace boost { namespace parameter { namespace aux {
 namespace boost { namespace mpl {
 
     template <>
-    struct begin_impl<boost::parameter::aux::arg_list_tag>
+    struct begin_impl< ::boost::parameter::aux::arg_list_tag>
     {
         template <class S>
         struct apply
         {
-            typedef boost::parameter::aux::arg_list_iterator<S> type;
+            typedef ::boost::parameter::aux::arg_list_iterator<S> type;
         };
     };
 }} // namespace boost::mpl
@@ -695,13 +708,13 @@ namespace boost { namespace mpl {
 namespace boost { namespace mpl {
 
     template <>
-    struct end_impl<boost::parameter::aux::arg_list_tag>
+    struct end_impl< ::boost::parameter::aux::arg_list_tag>
     {
         template <class>
         struct apply
         {
-            typedef boost::parameter::aux::arg_list_iterator<
-                boost::parameter::aux::empty_arg_list
+            typedef ::boost::parameter::aux::arg_list_iterator<
+                ::boost::parameter::aux::empty_arg_list
             > type;
         };
     };

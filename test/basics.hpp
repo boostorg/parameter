@@ -48,7 +48,7 @@ namespace test {
         return 666.222;
     }
 
-    template <class T>
+    template <typename T>
     inline bool equal(T const& x, T const& y)
     {
         return x == y;
@@ -68,7 +68,7 @@ namespace test {
     }
 #endif 
 
-    template <class Name, class Value, class Index>
+    template <typename Name, typename Value, typename Index>
     struct values_t
     {
         values_t(Name const& n_, Value const& v_, Index const& i_)
@@ -76,9 +76,13 @@ namespace test {
         {
         }
 
-        template <class Name_, class Value_, class Index_>
+        template <typename Name_, typename Value_, typename Index_>
         void
-        operator()(Name_ const& n_, Value_ const& v_, Index_ const& i_) const
+            operator()(
+                Name_ const& n_
+              , Value_ const& v_
+              , Index_ const& i_
+            ) const
         {
 #if defined(_MSC_VER) && (                                                   \
         BOOST_WORKAROUND(BOOST_INTEL_CXX_VERSION, <= 700) ||                 \
@@ -124,9 +128,9 @@ namespace test {
         Index const& i;
     };
 
-    template <class Name, class Value, class Index>
+    template <typename Name, typename Value, typename Index>
     inline test::values_t<Name,Value,Index>
-    values(Name const& n, Value const& v, Index const& i)
+        values(Name const& n, Value const& v, Index const& i)
     {
         return test::values_t<Name,Value,Index>(n, v, i);
     }

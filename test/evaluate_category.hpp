@@ -237,10 +237,10 @@ namespace test {
 
 namespace test {
 
-    template <class CharConstPtrParamTag>
+    template <typename CharConstPtrParamTag>
     struct string_predicate
     {
-        template <class Arg, class Args>
+        template <typename Arg, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<

@@ -4,7 +4,7 @@
 
 BOOST_PARAMETER_NAME(index)
 
-template <class ArgumentPack>
+template <typename ArgumentPack>
 int print_index(ArgumentPack const& args)
 {
     std::cout << "index = " << args[_index] << std::endl;
@@ -13,7 +13,7 @@ int print_index(ArgumentPack const& args)
 
 BOOST_PARAMETER_NAME(name)
 
-template <class ArgumentPack>
+template <typename ArgumentPack>
 int print_name_and_index(ArgumentPack const& args)
 {
     std::cout << "name = " << args[_name] << "; ";

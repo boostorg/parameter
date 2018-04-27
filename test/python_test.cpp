@@ -30,7 +30,7 @@ namespace test {
 
     struct Xbase
     {
-        template <class Args>
+        template <typename Args>
         Xbase(
             Args const& args
 #if !defined(BOOST_NO_SFINAE)
@@ -107,14 +107,15 @@ namespace test {
 
 struct f_fwd
 {
-    template <class R, class T, class A0, class A1, class A2>
-    R operator()(
-        boost::type<R>
-      , T& self
-      , A0 const& a0
-      , A1 const& a1
-      , A2 const& a2
-    )
+    template <typename R, typename T, typename A0, typename A1, typename A2>
+    R
+        operator()(
+            boost::type<R>
+          , T& self
+          , A0 const& a0
+          , A1 const& a1
+          , A2 const& a2
+        )
     {
         return self.f(a0, a1, a2);
     }
@@ -122,7 +123,7 @@ struct f_fwd
 
 struct g_fwd
 {
-    template <class R, class T, class A0, class A1>
+    template <typename R, typename T, typename A0, typename A1>
     R operator()(boost::type<R>, T& self, A0 const& a0, A1 const& a1)
     {
         return self.g(a0, a1);
@@ -131,19 +132,19 @@ struct g_fwd
 
 struct h_fwd
 {
-    template <class R, class T>
+    template <typename R, typename T>
     R operator()(boost::type<R>, T& self)
     {
         return self.h();
     }
 
-    template <class R, class T, class A0>
+    template <typename R, typename T, typename A0>
     R operator()(boost::type<R>, T& self, A0 const& a0)
     {
         return self.h(a0);
     }
 
-    template <class R, class T, class A0, class A1>
+    template <typename R, typename T, typename A0, typename A1>
     R operator()(boost::type<R>, T& self, A0 const& a0, A1 const& a1)
     {
         return self.h(a0, a1);

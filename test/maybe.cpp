@@ -10,7 +10,7 @@ namespace test {
     BOOST_PARAMETER_NAME(kw)
     BOOST_PARAMETER_NAME(unused)
 
-    template <class Args>
+    template <typename Args>
     int f(Args const& args)
     {
         return args[test::_kw | 1.f];

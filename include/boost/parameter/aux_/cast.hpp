@@ -17,16 +17,16 @@
 #include <boost/mpl/bool.hpp>
 
 #define BOOST_PARAMETER_FUNCTION_CAST_B(value_t, predicate, args) \
-    boost::mpl::true_
+    ::boost::mpl::true_
 
 #include <boost/move/utility_core.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T, class B>
+    template <typename T, typename B>
     inline T&& forward(T&& t)
     {
-        return boost::forward<T>(t);
+        return ::boost::forward<T>(t);
     }
 }}} // namespace boost::parameter::aux
 
@@ -55,7 +55,7 @@ namespace boost { namespace parameter { namespace aux {
     //     X(something, *)
     //     X(something, *(predicate))
     //     X(something, (int))
-    template <class VoidExpr, class Args>
+    template <typename VoidExpr, typename Args>
     struct cast;
 }}} // namespace boost::parameter::aux
 
@@ -64,11 +64,11 @@ namespace boost { namespace parameter { namespace aux {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T, class B>
-    inline boost::parameter::aux::use_default_tag
-    forward(boost::parameter::aux::use_default_tag)
+    template <typename T, typename B>
+    inline ::boost::parameter::aux::use_default_tag
+        forward(::boost::parameter::aux::use_default_tag)
     {
-        return boost::parameter::aux::use_default_tag();
+        return ::boost::parameter::aux::use_default_tag();
     }
 }}} // namespace boost::parameter::aux
 #endif
@@ -82,33 +82,33 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Args>
+    template <typename Args>
     struct cast<void*,Args>
     {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class T, class B>
+        template <typename T, typename B>
         struct apply
         {
-            typedef typename boost::mpl::if_<
+            typedef typename ::boost::mpl::if_<
                 B
               , T
-              , boost::mpl::true_
+              , ::boost::mpl::true_
             >::type type;
         };
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class T>
+        template <typename T>
         struct apply
         {
             typedef T& type;
         };
 
-        inline static boost::parameter::aux::use_default_tag
-        execute(boost::parameter::aux::use_default_tag)
+        inline static ::boost::parameter::aux::use_default_tag
+            execute(::boost::parameter::aux::use_default_tag)
         {
-            return boost::parameter::aux::use_default_tag();
+            return ::boost::parameter::aux::use_default_tag();
         }
 
-        template <class U>
+        template <typename U>
         inline static U& execute(U& value)
         {
             return value;
@@ -121,13 +121,13 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Predicate, class Args>
+    template <typename Predicate, typename Args>
 #if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    struct cast<boost::parameter::aux::voidstar(Predicate),Args>
+    struct cast< ::boost::parameter::aux::voidstar(Predicate),Args>
 #else
     struct cast<void*(Predicate),Args>
 #endif
-      : boost::parameter::aux::cast<void*,Args>
+      : ::boost::parameter::aux::cast<void*,Args>
     {
     };
 }}} // namespace boost::parameter::aux
@@ -139,7 +139,7 @@ namespace boost { namespace parameter { namespace aux {
     // This is a hack used in cast<> to turn the user supplied type,
     // which may or may not be a placeholder expression, into one,
     // so that it will be properly evaluated by mpl::apply.
-    template <class T, class Dummy = boost::mpl::_1>
+    template <typename T, typename Dummy = ::boost::mpl::_1>
     struct as_placeholder_expr
     {
         typedef T type;
@@ -158,34 +158,36 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Target, class Source, class Args>
+    template <typename Target, typename Source, typename Args>
     struct is_target_same_as_source
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-      : boost::is_same<
-            typename boost::remove_const<
-                typename boost::remove_reference<
+      : ::boost::is_same<
+            typename ::boost::remove_const<
+                typename ::boost::remove_reference<
 #else
-      : boost::mpl::if_<
-            std::is_same<
-                typename std::remove_const<
-                    typename std::remove_reference<
+      : ::boost::mpl::if_<
+            ::std::is_same<
+                typename ::std::remove_const<
+                    typename ::std::remove_reference<
 #endif
-                        typename boost::mpl::apply2<
-                            boost::parameter::aux::as_placeholder_expr<Target>
+                        typename ::boost::mpl::apply2<
+                            ::boost::parameter::aux::as_placeholder_expr<
+                                Target
+                            >
                           , Source
                           , Args
                         >::type
                     >::type
                 >::type
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-              , typename boost::remove_const<Source>::type
+              , typename ::boost::remove_const<Source>::type
 #else
-              , typename std::remove_const<Source>::type
+              , typename ::std::remove_const<Source>::type
 #endif
             >
 #if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , boost::mpl::true_
-          , boost::mpl::false_
+          , ::boost::mpl::true_
+          , ::boost::mpl::false_
         >::type
 #endif
     {
@@ -193,10 +195,10 @@ namespace boost { namespace parameter { namespace aux {
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     template <
-        class Target
-      , class Source
-      , class Args
-      , class Enable = boost::parameter::aux::is_target_same_as_source<
+        typename Target
+      , typename Source
+      , typename Args
+      , typename Enable = ::boost::parameter::aux::is_target_same_as_source<
             Target
           , Source
           , Args
@@ -222,7 +224,10 @@ namespace boost { namespace parameter { namespace aux {
 #endif
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
+    )
 #include <boost/type_traits/is_const.hpp>
 #endif
 #endif
@@ -232,38 +237,38 @@ namespace boost { namespace parameter { namespace aux {
     // Covers the case where is_convertible<Source,Target> but not
     // is_same<Source,Target>.  Use cases are covered
     // by test/normalize_argument_types.cpp
-    template <class Source, class Target>
+    template <typename Source, typename Target>
     class cast_convert
     {
-        typedef boost::parameter::aux::cast_convert<Source,Target> _self;
+        typedef ::boost::parameter::aux::cast_convert<Source,Target> _self;
 
      public:
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         typedef typename boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
-            boost::is_const<Source>
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
+    )
+            // MSVC 11.0 on AppVeyor reports error C2039:
+            // '_Is_const': is not a member of 'std::_Ptr_traits<_Ty>'
+            ::boost::is_const<Source>
 #else
-            std::is_const<Source>
+            ::std::is_const<Source>
 #endif
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , boost::add_const<Target>
-          , boost::remove_const<Target>
+          , ::boost::add_const<Target>
+          , ::boost::remove_const<Target>
 #else
-          , std::add_const<Target>
-          , std::remove_const<Target>
+          , ::std::add_const<Target>
+          , ::std::remove_const<Target>
 #endif
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::add_lvalue_reference<
+        typedef typename ::boost::add_lvalue_reference<
+            typename ::boost::add_const<Target>::type
 #else
-        typedef typename std::add_lvalue_reference<
-#endif
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-            typename _self::_target
-#elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            typename boost::add_const<Target>::type
-#else
-            typename std::add_const<Target>::type
+        typedef typename ::std::add_lvalue_reference<
+            typename ::std::add_const<Target>::type
 #endif
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         >::type type;
@@ -272,15 +277,15 @@ namespace boost { namespace parameter { namespace aux {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         inline static typename _self::type
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        _copy(typename boost::remove_const<Target>::type value)
+            _copy(typename ::boost::remove_const<Target>::type value)
 #else
-        _copy(typename std::remove_const<Target>::type value)
+            _copy(typename ::std::remove_const<Target>::type value)
 #endif
         {
             return value;
         }
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class U>
+        template <typename U>
         inline static typename _self::type _mod_const(U const& u)
         {
             return u;
@@ -306,21 +311,21 @@ namespace boost { namespace parameter { namespace aux {
 #endif
     };
 
-    template <class Target, class Source, class Args>
+    template <typename Target, typename Source, typename Args>
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     struct cast_impl
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-      : boost::remove_reference<
+      : ::boost::remove_reference<
 #else
-      : std::remove_reference<
+      : ::std::remove_reference<
 #endif
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-    struct cast_impl<Target,Source,Args,boost::mpl::false_>
-      : boost::parameter::aux::cast_convert<
+    struct cast_impl<Target,Source,Args,::boost::mpl::false_>
+      : ::boost::parameter::aux::cast_convert<
             Source,
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-            typename boost::mpl::apply2<
-                boost::parameter::aux::as_placeholder_expr<Target>
+            typename ::boost::mpl::apply2<
+                ::boost::parameter::aux::as_placeholder_expr<Target>
               , Source
               , Args
             >::type
@@ -337,79 +342,77 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Target, class Args>
+    template <typename Target, typename Args>
     struct cast<void(Target),Args>
     {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class T, class B>
+        template <typename T, typename B>
 #else
-        template <class T>
+        template <typename T>
 #endif
         struct apply
         {
-            typedef typename boost::mpl::eval_if<
+            typedef typename ::boost::mpl::eval_if<
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
                 B
-              , boost::mpl::eval_if<
+              , ::boost::mpl::eval_if<
 #endif
-                    boost::parameter::aux::is_target_same_as_source<
-                        Target
-                      , T
-                      , Args
-                    >
+                    ::boost::parameter::aux
+                    ::is_target_same_as_source<Target,T,Args>
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-                  , boost::mpl::identity<T>
+                  , ::boost::mpl::identity<T>
 #elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                  , boost::add_lvalue_reference<T>
+                  , ::boost::add_lvalue_reference<T>
 #else
-                  , std::add_lvalue_reference<T>
+                  , ::std::add_lvalue_reference<T>
 #endif
-                  , boost::parameter::aux::cast_impl<
+                  , ::boost::parameter::aux::cast_impl<
                         Target
                       , T
                       , Args
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-                      , boost::mpl::false_
+                      , ::boost::mpl::false_
 #endif
                     >
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
                 >
-              , boost::parameter::aux::is_target_same_as_source<Target,T,Args>
+              , ::boost::parameter::aux
+                ::is_target_same_as_source<Target,T,Args>
 #endif
             >::type type;
         };
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        inline static boost::parameter::aux::use_default_tag
-        execute(boost::parameter::aux::use_default_tag)
+        inline static ::boost::parameter::aux::use_default_tag
+            execute(::boost::parameter::aux::use_default_tag)
         {
-            return boost::parameter::aux::use_default_tag();
+            return ::boost::parameter::aux::use_default_tag();
         }
 
-        template <class U>
-        inline static typename boost::parameter::aux::cast_impl<
+        template <typename U>
+        inline static typename ::boost::parameter::aux::cast_impl<
             Target
           , U const
           , Args
         >::type
-        execute(U const& value)
+            execute(U const& value)
         {
-            return boost::parameter::aux::cast_impl<
+            return ::boost::parameter::aux::cast_impl<
                 Target
               , U const
               , Args
             >::evaluate(value);
         }
 
-        template <class U>
-        inline static typename boost::parameter::aux::cast_impl<
+        template <typename U>
+        inline static typename ::boost::parameter::aux::cast_impl<
             Target
           , U
           , Args
         >::type
-        execute(U& value)
+            execute(U& value)
         {
-            return boost::parameter::aux::cast_impl<
+            return ::boost::parameter::aux::cast_impl<
                 Target
               , U
               , Args
@@ -426,28 +429,28 @@ namespace boost { namespace parameter { namespace aux {
 
 // Expands to the target type of the argument as indicated by the predicate.
 #define BOOST_PARAMETER_FUNCTION_CAST_T(tag, predicate, args)                \
-    typename boost::mpl::apply_wrap2<                                        \
-        boost::parameter::aux::cast<void predicate, args>                    \
-      , typename boost::parameter::value_type<                               \
+    typename ::boost::mpl::apply_wrap2<                                      \
+        ::boost::parameter::aux::cast<void predicate, args>                  \
+      , typename ::boost::parameter::value_type<                             \
             args                                                             \
           , tag                                                              \
-          , boost::parameter::aux::use_default_tag                           \
+          , ::boost::parameter::aux::use_default_tag                         \
         >::type                                                              \
-      , boost::mpl::true_                                                    \
+      , ::boost::mpl::true_                                                  \
     >::type
 /**/
 
 // Expands to boost::mpl::true_ if and only if the argument's source and
 // target types are the same.
 #define BOOST_PARAMETER_FUNCTION_CAST_B(tag, predicate, args)                \
-    typename boost::mpl::apply_wrap2<                                        \
-        boost::parameter::aux::cast<void predicate, args>                    \
-      , typename boost::parameter::value_type<                               \
+    typename ::boost::mpl::apply_wrap2<                                      \
+        ::boost::parameter::aux::cast<void predicate, args>                  \
+      , typename ::boost::parameter::value_type<                             \
             args                                                             \
           , tag                                                              \
-          , boost::parameter::aux::use_default_tag                           \
+          , ::boost::parameter::aux::use_default_tag                         \
         >::type                                                              \
-      , boost::mpl::false_                                                   \
+      , ::boost::mpl::false_                                                 \
     >::type
 /**/
 
@@ -455,80 +458,106 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
+    // If the source and target types are not the same,
+    // then perform an implicit conversion.
+    template <typename Target, typename B, typename Source>
+    inline typename ::boost::lazy_disable_if<
+        B
+      , ::boost::parameter::aux::cast_convert<Source,Target>
+    >::type
+        forward(Source&& source)
+    {
+        return ::boost::parameter::aux::cast_convert<
+            Source
+          , Target
+        >::evaluate(::boost::forward<Source>(source));
+    }
+
     // If the source and target types are the same,
     // then simply forward the argument.
-    template <class T, class B>
+    // However, treat rvalue references to scalars as const lvalue references.
+    template <typename T, typename B>
     inline typename boost::enable_if<B,T const&>::type forward(T const& t)
     {
         return t;
     }
 
-    template <class T, class B>
-    inline typename boost::enable_if<B,T&>::type forward(T& t)
+    template <typename T, typename B>
+    inline typename boost::enable_if<
+        typename ::boost::mpl::eval_if<
+            B
+          , ::boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
+    )
+                // MSVC 11.0 on AppVeyor reports error C2039:
+                // '_Is_const': is not a member of 'std::_Ptr_traits<_Ty>'
+                ::boost::is_const<T>
+#else
+                ::std::is_const<T>
+#endif
+              , ::boost::mpl::false_
+              , ::boost::mpl::true_
+            >
+          , ::boost::mpl::false_
+        >::type
+      , T&
+    >::type
+        forward(T& t)
     {
         return t;
-    }
-
-    template <class T, class B>
-    inline typename boost::enable_if<B,T&&>::type forward(T&& t)
-    {
-        return boost::forward<T>(t);
-    }
-
-    // Otherwise, perform an implicit conversion.
-    template <class Target, class B, class Source>
-    inline typename boost::lazy_disable_if<
-        B
-      , boost::parameter::aux::cast_convert<Source,Target>
-    >::type
-    forward(Source&& source)
-    {
-        return boost::parameter::aux::cast_convert<
-            Source
-          , Target
-        >::evaluate(boost::forward<Source>(source));
     }
 }}} // namespace boost::parameter::aux
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-#include <boost/type_traits/is_class.hpp>
-#if !defined(BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION) || \
-    !(1 == BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION)
 #include <boost/type_traits/is_scalar.hpp>
-#endif
 #endif
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class T, class B>
+    template <typename T, typename B>
     inline typename boost::enable_if<
-        typename boost::mpl::eval_if<
+        typename ::boost::mpl::eval_if<
             B
+          , ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-#if defined(BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION) && \
-    (1 == BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION)
-          , boost::is_class<T>
+                ::boost::is_scalar<T>
 #else
-          , boost::mpl::if_<
-                boost::is_scalar<T>
-              , boost::mpl::false_
-              , boost::mpl::true_
-            >
+                ::std::is_scalar<T>
 #endif
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , boost::mpl::if_<
-                std::is_class<T>
-              , boost::mpl::true_
-              , boost::mpl::false_
+              , ::boost::mpl::false_
+              , ::boost::mpl::true_
             >
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
-          , boost::mpl::false_
+          , ::boost::mpl::false_
         >::type
       , T const&&
     >::type
-    forward(T const&& t)
+        forward(T const&& t)
     {
         return static_cast<T const&&>(t);
+    }
+
+    template <typename T, typename B>
+    inline typename boost::enable_if<
+        typename ::boost::mpl::eval_if<
+            B
+          , ::boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+                ::boost::is_scalar<T>
+#else
+                ::std::is_scalar<T>
+#endif
+              , ::boost::mpl::false_
+              , ::boost::mpl::true_
+            >
+          , ::boost::mpl::false_
+        >::type
+      , T&&
+    >::type
+        forward(T&& t)
+    {
+        return ::boost::forward<T>(t);
     }
 }}} // namespace boost::parameter::aux
 
@@ -537,16 +566,16 @@ namespace boost { namespace parameter { namespace aux {
 // Expands to the reference-qualified target type of the argument
 // as indicated by the predicate.
 #define BOOST_PARAMETER_FUNCTION_CAST_T(tag, predicate, args)                \
-    typename boost::mpl::apply_wrap1<                                        \
-        boost::parameter::aux::cast<void predicate, args>                    \
-      , typename boost::parameter::value_type<args, tag>::type               \
+    typename ::boost::mpl::apply_wrap1<                                      \
+        ::boost::parameter::aux::cast<void predicate, args>                  \
+      , typename ::boost::parameter::value_type<args, tag>::type             \
     >::type
 /**/
 
 // Expands to the converted or passed-through value
 // as indicated by the predicate.
 #define BOOST_PARAMETER_FUNCTION_CAST_B(value, predicate, args)              \
-    boost::parameter::aux::cast<void predicate, args>::execute(value)
+    ::boost::parameter::aux::cast<void predicate, args>::execute(value)
 /**/
 
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING

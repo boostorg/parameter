@@ -8,7 +8,7 @@
 
 namespace boost {
 
-    template <class T>
+    template <typename T>
     class reference_wrapper;
 } // namespace boost
 
@@ -22,13 +22,13 @@ namespace boost { namespace parameter { namespace aux {
     // we ask users of named parameter interfaces to use ref(x) to wrap them.
     //
 
-    template <class U>
-    boost::parameter::aux::yes_tag
-    is_cv_reference_wrapper_check(
-        boost::reference_wrapper<U> const volatile*
-    );
+    template <typename U>
+    ::boost::parameter::aux::yes_tag
+        is_cv_reference_wrapper_check(
+            ::boost::reference_wrapper<U> const volatile*
+        );
 
-    boost::parameter::aux::no_tag is_cv_reference_wrapper_check(...);
+    ::boost::parameter::aux::no_tag is_cv_reference_wrapper_check(...);
 }}} // namespace boost::parameter::aux
 
 #include <boost/config.hpp>
@@ -39,9 +39,11 @@ namespace boost { namespace parameter { namespace aux {
 namespace boost { namespace parameter { namespace aux {
 
     // Support for std::ref(x) -- Cromwell D. Enage
-    template <class U>
-    boost::parameter::aux::yes_tag
-    is_cv_reference_wrapper_check(std::reference_wrapper<U> const volatile*);
+    template <typename U>
+    ::boost::parameter::aux::yes_tag
+        is_cv_reference_wrapper_check(
+            ::std::reference_wrapper<U> const volatile*
+        );
 }}} // namespace boost::parameter::aux
 #endif
 
@@ -63,31 +65,31 @@ namespace boost { namespace parameter { namespace aux {
 
     // This metafunction returns mpl::true_ if T is of type
     // reference_wrapper<U> cv.
-    template <class T>
+    template <typename T>
     struct is_cv_reference_wrapper
     {
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_STATIC_CONSTANT(
             bool, value = (
                 sizeof(
-                    boost::parameter::aux::is_cv_reference_wrapper_check(
+                    ::boost::parameter::aux::is_cv_reference_wrapper_check(
                         static_cast<
-                            typename boost::remove_reference<T>::type*
+                            typename ::boost::remove_reference<T>::type*
                         >(BOOST_TTI_DETAIL_NULLPTR)
                     )
-                ) == sizeof(boost::parameter::aux::yes_tag)
+                ) == sizeof(::boost::parameter::aux::yes_tag)
             )
         );
 #else
         BOOST_STATIC_CONSTANT(
             bool, value = (
                 sizeof(
-                    boost::parameter::aux::is_cv_reference_wrapper_check(
+                    ::boost::parameter::aux::is_cv_reference_wrapper_check(
                         static_cast<
-                            typename std::remove_reference<T>::type*
+                            typename ::std::remove_reference<T>::type*
                         >(BOOST_TTI_DETAIL_NULLPTR)
                     )
-                ) == sizeof(boost::parameter::aux::yes_tag)
+                ) == sizeof(::boost::parameter::aux::yes_tag)
             )
         );
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
@@ -101,37 +103,37 @@ namespace boost { namespace parameter { namespace aux {
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
     template <
-        class T
-      , class = typename boost::parameter::aux::is_cv_reference_wrapper<
+        typename T
+      , typename = typename ::boost::parameter::aux::is_cv_reference_wrapper<
             T
         >::type
     >
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-    struct unwrap_cv_reference : boost::remove_reference<T>
+    struct unwrap_cv_reference : ::boost::remove_reference<T>
 #else
-    struct unwrap_cv_reference : std::remove_reference<T>
+    struct unwrap_cv_reference : ::std::remove_reference<T>
 #endif
     {
     };
 
-    template <class T>
-    struct unwrap_cv_reference<T const,boost::mpl::false_>
+    template <typename T>
+    struct unwrap_cv_reference<T const,::boost::mpl::false_>
     {
         typedef T const type;
     };
 
-    template <class T>
-    struct unwrap_cv_reference<T,boost::mpl::true_> : T
+    template <typename T>
+    struct unwrap_cv_reference<T,::boost::mpl::true_> : T
     {
     };
 #else // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
     // Needed for unwrap_cv_reference below. T might be const, so
     // eval_if<> might fail because of deriving from T const on EDG.
-    template <class T>
+    template <typename T>
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-    struct get_type : boost::remove_reference<T>::type
+    struct get_type : ::boost::remove_reference<T>::type
 #else
-    struct get_type : std::remove_reference<T>::type
+    struct get_type : ::std::remove_reference<T>::type
 #endif
     {
     };
@@ -139,15 +141,15 @@ namespace boost { namespace parameter { namespace aux {
     // Produces the unwrapped type to hold a reference to in
     // tagged_argument<>.  Can't use boost::unwrap_reference<> here
     // because it doesn't handle the case where T = reference_wrapper<U> cv.
-    template <class T>
+    template <typename T>
     struct unwrap_cv_reference
-      : boost::mpl::eval_if<
-            boost::parameter::aux::is_cv_reference_wrapper<T>
-          , boost::parameter::aux::get_type<T>
+      : ::boost::mpl::eval_if<
+            ::boost::parameter::aux::is_cv_reference_wrapper<T>
+          , ::boost::parameter::aux::get_type<T>
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , boost::remove_reference<T>
+          , ::boost::remove_reference<T>
 #else
-          , std::remove_reference<T>
+          , ::std::remove_reference<T>
 #endif
         >
     {

@@ -21,7 +21,7 @@ namespace boost { namespace python {
         };
     }
 
-    template <class A0 = void, class A1 = void, class A2 = void>
+    template <typename A0 = void, typename A1 = void, typename A2 = void>
     struct bases : detail::bases_base
     {
     };
@@ -109,10 +109,10 @@ namespace boost { namespace python {
     > class_signature;
 
     template <
-        class A0
-      , class A1 = boost::parameter::void_
-      , class A2 = boost::parameter::void_
-      , class A3 = boost::parameter::void_
+        typename A0
+      , typename A1 = boost::parameter::void_
+      , typename A2 = boost::parameter::void_
+      , typename A3 = boost::parameter::void_
     >
     struct class_
     {

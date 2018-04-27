@@ -16,17 +16,17 @@
 
 namespace test {
 
-    template <class Set>
+    template <typename Set>
     struct assert_in_set
     {
-        template <class T>
+        template <typename T>
         void operator()(T*)
         {
             BOOST_MPL_ASSERT((boost::mpl::contains<Set,T>));
         }
     };
 
-    template <class Expected, class Params>
+    template <typename Expected, typename Params>
     void f_impl(Params const& p BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected))
     {
         BOOST_MPL_ASSERT_RELATION(
@@ -48,11 +48,18 @@ namespace test {
     }
 
     template <
-        class Expected, class Tester, class Name, class Value, class Index
+        typename Expected
+      , typename Tester
+      , typename Name
+      , typename Value
+      , typename Index
     >
     void f(
-        Tester const& t, Name const& name_, Value const& value_
-      , const Index& index_ BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)
+        Tester const& t
+      , Name const& name_
+      , Value const& value_
+      , Index const& index_
+        BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)
     )
     {
         test::f_impl<Expected>(
@@ -60,16 +67,23 @@ namespace test {
         );
     }
 
-    template <class Expected, class Tester, class Name, class Value>
+    template <
+        typename Expected
+      , typename Tester
+      , typename Name
+      , typename Value
+    >
     void f(
-        Tester const& t, const Name& name_
-      , Value const& value_ BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)
+        Tester const& t
+      , const Name& name_
+      , Value const& value_
+        BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)
     )
     {
         test::f_impl<Expected>(test::f_parameters()(t, name_, value_));
     }
 
-    template <class Expected, class Tester, class Name>
+    template <typename Expected, typename Tester, typename Name>
     void f(
         Tester const& t
       , Name const& name_ BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected)

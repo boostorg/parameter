@@ -13,9 +13,9 @@ namespace test {
 
     // A separate function for getting the "value" key, so we can deduce F
     // and use lazy_binding on it.
-    template <class Params, class F>
+    template <typename Params, typename F>
     typename boost::parameter::lazy_binding<Params,tag::value,F>::type
-    extract_value(Params const& p, F const& f)
+        extract_value(Params const& p, F const& f)
     {
         typename boost::parameter::lazy_binding<
             Params,test::tag::value,F
@@ -23,7 +23,7 @@ namespace test {
         return v;
     }
 
-    template <class Params>
+    template <typename Params>
     int f_impl(Params const& p)
     {
         typename boost::parameter::binding<Params,test::tag::name>::type
@@ -42,25 +42,25 @@ namespace test {
     }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-    template <class ...Args>
+    template <typename ...Args>
     int f(Args const&... args)
     {
         return test::f_impl(test::f_parameters()(args...));
     }
 #else
-    template <class A0, class A1, class A2, class A3>
+    template <typename A0, typename A1, typename A2, typename A3>
     int f(A0 const& a0, A1 const& a1, A2 const& a2, A3 const& a3)
     {
         return test::f_impl(test::f_parameters()(a0, a1, a2, a3));
     }
 
-    template <class A0, class A1, class A2>
+    template <typename A0, typename A1, typename A2>
     int f(A0 const& a0, A1 const& a1, A2 const& a2)
     {
         return test::f_impl(test::f_parameters()(a0, a1, a2));
     }
 
-    template <class A0, class A1>
+    template <typename A0, typename A1>
     int f(A0 const& a0, A1 const& a1)
     {
         return test::f_impl(test::f_parameters()(a0, a1));

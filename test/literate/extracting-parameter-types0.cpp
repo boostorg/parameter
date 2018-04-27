@@ -13,7 +13,7 @@ void noop(T&)
 {
 }
 
-template <class Name, class Index>
+template <typename Name, typename Index>
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 int deduce_arg_types_impl(Name&& name, Index&& index)
 {
@@ -32,7 +32,7 @@ int deduce_arg_types_impl(Name& name, Index& index)
 }
 #endif
 
-template <class ArgumentPack>
+template <typename ArgumentPack>
 int deduce_arg_types(ArgumentPack const& args)
 {
     return deduce_arg_types_impl(args[_name], args[_index|42]);

@@ -12,7 +12,7 @@ namespace boost { namespace parameter { namespace aux {
 
     // A wrapper for the default value passed by the user when resolving
     // the value of the parameter with the given Keyword
-    template <class Keyword, class Value>
+    template <typename Keyword, typename Value>
     struct default_
     {
         inline default_(Value& x) : value(x)
@@ -29,46 +29,46 @@ namespace boost { namespace parameter { namespace aux {
     // These compilers need a little extra help with overload resolution;
     // we have empty_arg_list's operator[] accept a base class
     // to make that overload less preferable.
-    template <class KW, class DefaultComputer>
+    template <typename KW, typename DefaultComputer>
     struct lazy_default_base
     {
-        inline lazy_default_base(DefaultComputer const& x)
+        inline lazy_default_base(DefaultComputer& x)
           : compute_default(x)
         {
         }
 
-        DefaultComputer const& compute_default;
+        DefaultComputer& compute_default;
     };
 
-    template <class KW, class DefaultComputer>
+    template <typename KW, typename DefaultComputer>
     struct lazy_default
-      : boost::parameter::aux::lazy_default_base<KW,DefaultComputer>
+      : ::boost::parameter::aux::lazy_default_base<KW,DefaultComputer>
     {
-        inline lazy_default(DefaultComputer const& x)
-          : boost::parameter::aux::lazy_default_base<KW,DefaultComputer>(x)
+        inline lazy_default(DefaultComputer& x)
+          : ::boost::parameter::aux::lazy_default_base<KW,DefaultComputer>(x)
         {
         }
     };
 #else // !BOOST_WORKAROUND(__EDG_VERSION__, <= 300)
-    template <class KW, class DefaultComputer>
+    template <typename KW, typename DefaultComputer>
     struct lazy_default
     {
-        inline lazy_default(DefaultComputer const& x) : compute_default(x)
+        inline lazy_default(DefaultComputer& x) : compute_default(x)
         {
         }
 
-        DefaultComputer const& compute_default;
+        DefaultComputer& compute_default;
     };
 #endif // EDG workarounds needed.
 }}} // namespace boost::parameter::aux
 
 #if BOOST_WORKAROUND(__EDG_VERSION__, <= 300)
 #define BOOST_PARAMETER_lazy_default_fallback \
-    boost::parameter::aux::lazy_default_base
+    ::boost::parameter::aux::lazy_default_base
 /**/
 #else
 #define BOOST_PARAMETER_lazy_default_fallback \
-    boost::parameter::aux::lazy_default
+    ::boost::parameter::aux::lazy_default
 /**/
 #endif
 
@@ -78,10 +78,10 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Keyword, class Value>
+    template <typename Keyword, typename Value>
     struct default_r_
     {
-        inline default_r_(Value&& x) : value(boost::forward<Value>(x))
+        inline default_r_(Value&& x) : value(::boost::forward<Value>(x))
         {
         }
 

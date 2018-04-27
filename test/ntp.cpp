@@ -35,7 +35,7 @@ namespace test {
 
     struct Z
     {
-        template <class T, class Args>
+        template <typename T, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_base_of<
@@ -65,31 +65,31 @@ namespace test {
 
 namespace test {
 
-    template <class T = int>
+    template <typename T = int>
     struct a0_is : boost::parameter::template_keyword<a0_is<>,T>
     {
     };
 
-    template <class T = int>
+    template <typename T = int>
     struct a1_is : boost::parameter::template_keyword<a1_is<>,T>
     {
     };
 
-    template <class T = int>
+    template <typename T = int>
     struct a2_is : boost::parameter::template_keyword<a2_is<>,T>
     {
     };
 
-    template <class T = int>
+    template <typename T = int>
     struct a3_is : boost::parameter::template_keyword<a3_is<>,T>
     {
     };
 
     template <
-        class A0 = boost::parameter::void_
-      , class A1 = boost::parameter::void_
-      , class A2 = boost::parameter::void_
-      , class A3 = boost::parameter::void_
+        typename A0 = boost::parameter::void_
+      , typename A1 = boost::parameter::void_
+      , typename A2 = boost::parameter::void_
+      , typename A3 = boost::parameter::void_
     >
     struct with_ntp
     {

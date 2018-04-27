@@ -6,6 +6,13 @@
 #ifndef BOOST_PARAMETER_TEMPLATE_KEYWORD_060203_HPP
 #define BOOST_PARAMETER_TEMPLATE_KEYWORD_060203_HPP
 
+namespace boost { namespace parameter { namespace aux {
+
+    struct template_keyword_base
+    {
+    };
+}}} // namespace boost::parameter::aux
+
 #include <boost/parameter/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
@@ -25,64 +32,60 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-    struct template_keyword_base
-    {
-    };
-
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-    template <class T>
+    template <typename T>
     struct is_template_keyword_aux
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-      : boost::is_convertible<
+      : ::boost::is_convertible<
 #else
-      : boost::mpl::if_<
-            std::is_convertible<
+      : ::boost::mpl::if_<
+            ::std::is_convertible<
 #endif
                 T*
-              , boost::parameter::aux::template_keyword_base const*
+              , ::boost::parameter::aux::template_keyword_base const*
             >
 #if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , boost::mpl::true_
-          , boost::mpl::false_
+          , ::boost::mpl::true_
+          , ::boost::mpl::false_
         >::type
 #endif
     {
     };
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
-    template <class T>
+    template <typename T>
     struct is_template_keyword
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         // Cannot use is_convertible<> to check if T is derived from
         // template_keyword_base. -- Cromwell D. Enage
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-      : boost::is_base_of<
-            boost::parameter::aux::template_keyword_base
-          , typename boost::remove_const<
-                typename boost::remove_reference<T>::type
+      : ::boost::is_base_of<
+            ::boost::parameter::aux::template_keyword_base
+          , typename ::boost::remove_const<
+                typename ::boost::remove_reference<T>::type
             >::type
         >
 #else
-      : boost::mpl::if_<
-            std::is_base_of<
-                boost::parameter::aux::template_keyword_base
-              , typename std::remove_const<
-                    typename std::remove_reference<T>::type
+      : ::boost::mpl::if_<
+            ::std::is_base_of<
+                ::boost::parameter::aux::template_keyword_base
+              , typename ::std::remove_const<
+                    typename ::std::remove_reference<T>::type
                 >::type
             >
-          , boost::mpl::true_
-          , boost::mpl::false_
+          , ::boost::mpl::true_
+          , ::boost::mpl::false_
         >::type
 #endif
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-      : boost::mpl::if_<
+      : ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_lvalue_reference<T>
+            ::boost::is_lvalue_reference<T>
 #else
-            std::is_lvalue_reference<T>
+            ::std::is_lvalue_reference<T>
 #endif
-          , boost::mpl::false_
-          , boost::parameter::aux::is_template_keyword_aux<T>
+          , ::boost::mpl::false_
+          , ::boost::parameter::aux::is_template_keyword_aux<T>
         >::type
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
     {
@@ -101,23 +104,23 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { 
 
-    template <class Tag, class T>
-    struct template_keyword : boost::parameter::aux::template_keyword_base
+    template <typename Tag, typename T>
+    struct template_keyword : ::boost::parameter::aux::template_keyword_base
     {
         typedef Tag key_type;
 
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
-        typedef typename mpl::if_<
+        typedef typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_function<T>
+            ::boost::is_function<T>
 #else
-            std::is_function<T>
+            ::std::is_function<T>
 #endif
 #if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-          , boost::function<T>
+          , ::boost::function<T>
 #else
-          , std::function<T>
+          , ::std::function<T>
 #endif
           , T
         >::type value_type;

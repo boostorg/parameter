@@ -22,7 +22,7 @@ BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 
 struct vertex_descriptor_predicate
 {
-    template <class T, class Args>
+    template <typename T, typename Args>
     struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::is_convertible<
@@ -53,7 +53,7 @@ struct vertex_descriptor_predicate
 
 struct graph_predicate
 {
-    template <class T, class Args>
+    template <typename T, typename Args>
     struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::mpl::if_<
@@ -93,7 +93,7 @@ struct graph_predicate
 
 struct color_map_predicate
 {
-    template <class T, class Args>
+    template <typename T, typename Args>
     struct apply
       : boost::is_same<
             typename boost::property_traits<T>::key_type
@@ -114,7 +114,7 @@ struct color_map_predicate
 
 struct index_map_predicate
 {
-    template <class T, class Args>
+    template <typename T, typename Args>
     struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
       : boost::mpl::if_<
@@ -153,14 +153,14 @@ struct index_map_predicate
 #include <boost/graph/properties.hpp>
 #include <vector>
 
-template <class Size, class IndexMap>
+template <typename Size, typename IndexMap>
 boost::iterator_property_map<
     std::vector<boost::default_color_type>::iterator
   , IndexMap
   , boost::default_color_type
   , boost::default_color_type&
 >&
-default_color_map(Size num_vertices, IndexMap const& index_map)
+    default_color_map(Size num_vertices, IndexMap const& index_map)
 {
     static std::vector<boost::default_color_type> colors(num_vertices);
     static boost::iterator_property_map<

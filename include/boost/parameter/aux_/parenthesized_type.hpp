@@ -9,10 +9,10 @@
 namespace boost { namespace parameter { namespace aux { 
 
     // A metafunction that transforms void(*)(T) -> T
-    template <class UnaryFunctionPointer>
+    template <typename UnaryFunctionPointer>
     struct unaryfunptr_arg_type;
 
-    template <class Arg>
+    template <typename Arg>
     struct unaryfunptr_arg_type<void(*)(Arg)>
     {
         typedef Arg type;
@@ -28,7 +28,7 @@ namespace boost { namespace parameter { namespace aux {
 // A macro that takes a parenthesized C++ type name (T) and transforms it
 // into an un-parenthesized type expression equivalent to T.
 #define BOOST_PARAMETER_PARENTHESIZED_TYPE(x)                                \
-    boost::parameter::aux::unaryfunptr_arg_type< void(*)x >::type
+    ::boost::parameter::aux::unaryfunptr_arg_type< void(*)x >::type
 
 #endif // BOOST_PARAMETER_AUX_PARENTHESIZED_TYPE_DWA2006414_HPP
 

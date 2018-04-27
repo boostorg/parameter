@@ -32,7 +32,7 @@ namespace test {
 
     struct f_predicate
     {
-        template <class T, class Args>
+        template <typename T, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<T,int>

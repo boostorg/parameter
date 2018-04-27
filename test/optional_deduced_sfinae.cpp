@@ -25,7 +25,7 @@ namespace test {
 
     struct predicate
     {
-        template <class T, class Args>
+        template <typename T, typename Args>
         struct apply
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
           : boost::is_convertible<T,char const*>
@@ -49,7 +49,7 @@ namespace test {
         return 1;
     }
 
-    template <class A0>
+    template <typename A0>
     typename boost::enable_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         boost::is_same<int,A0>
@@ -62,7 +62,7 @@ namespace test {
 #endif
       , int
     >::type
-    sfinae(A0 const& a0)
+        sfinae(A0 const& a0)
     {
         return 0;
     }

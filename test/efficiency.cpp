@@ -47,7 +47,7 @@ namespace test {
     //      interfere by causing caches to be flushed.
 
     // Accumulator function object with plain C++ interface 
-    template <class T>
+    template <typename T>
     struct plain_weight_running_total
     {
         plain_weight_running_total()
@@ -71,7 +71,7 @@ namespace test {
     BOOST_PARAMETER_NAME(value)
 
     // Accumulator function object with named parameter interface
-    template <class T>
+    template <typename T>
     struct named_param_weight_running_total
     {
         named_param_weight_running_total()
@@ -99,7 +99,7 @@ namespace test {
 
     // Call objects of the given Accumulator type repeatedly
     // with x an argument.
-    template <class Accumulator, class Arg>
+    template <typename Accumulator, typename Arg>
     void hammer(Arg const& x, long const repeats)
     {
         // Strategy: because the sum in an accumulator after each call
@@ -142,7 +142,7 @@ namespace test {
 
     // Measure the time required to hammer accumulators of the given
     // type with the argument x.
-    template <class Accumulator, class T>
+    template <typename Accumulator, typename T>
     double measure(T const& x, long const repeats)
     {
         // Hammer accumulators a couple of times to ensure the instruction

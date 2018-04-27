@@ -26,22 +26,22 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Keyword, class Arg>
+    template <typename Keyword, typename Arg>
     struct tagged_argument_type
-      : boost::mpl::eval_if<
+      : ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_same<
+            ::boost::is_same<
 #else
-            std::is_same<
+            ::std::is_same<
 #endif
                 typename Keyword::qualifier
-              , boost::parameter::out_reference
+              , ::boost::parameter::out_reference
             >
-          , boost::parameter::aux::error_const_lvalue_bound_to_out_parameter
+          , ::boost::parameter::aux::error_const_lvalue_bound_to_out_parameter
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , boost::remove_const<Arg>
+          , ::boost::remove_const<Arg>
 #else
-          , std::remove_const<Arg>
+          , ::std::remove_const<Arg>
 #endif
         >
     {
@@ -60,12 +60,16 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
+    )
 #include <boost/type_traits/is_const.hpp>
 #endif
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_function.hpp>
+#include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #endif
 
@@ -84,37 +88,48 @@ namespace boost { namespace parameter { namespace aux {
 
     // Holds an lvalue reference to an argument of type Arg associated with
     // keyword Keyword
-    template <class Keyword, class Arg>
-    class tagged_argument : boost::parameter::aux::tagged_argument_base
+    template <typename Keyword, typename Arg>
+    class tagged_argument : ::boost::parameter::aux::tagged_argument_base
     {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        typedef typename boost::mpl::eval_if<
+        typedef typename ::boost::mpl::eval_if<
+            typename ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_same<
+                ::boost::is_scalar<Arg>
 #else
-            std::is_same<
+                ::std::is_scalar<Arg>
 #endif
-                typename Keyword::qualifier
-              , boost::parameter::consume_reference
-            >
-          , boost::parameter::aux::error_lvalue_bound_to_consume_parameter
-          , boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || defined(BOOST_MSVC)
+              , ::boost::mpl::false_
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+              , ::boost::is_same<
+#else
+              , ::std::is_same<
+#endif
+                    typename Keyword::qualifier
+                  , ::boost::parameter::consume_reference
+                >
+            >::type
+          , ::boost::parameter::aux::error_lvalue_bound_to_consume_parameter
+          , ::boost::mpl::eval_if<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
+    )
                 // MSVC 11.0 on AppVeyor reports error C2039:
                 // '_Is_const': is not a member of 'std::_Ptr_traits<_Ty>'
-                boost::is_const<Arg>
+                ::boost::is_const<Arg>
 #else
-                std::is_const<Arg>
+                ::std::is_const<Arg>
 #endif
-              , boost::parameter::aux::tagged_argument_type<Keyword,Arg>
-              , boost::mpl::identity<Arg>
+              , ::boost::parameter::aux::tagged_argument_type<Keyword,Arg>
+              , ::boost::mpl::identity<Arg>
             >
         >::type arg_type;
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        typedef typename boost::remove_const<Arg>::type arg_type;
+        typedef typename ::boost::remove_const<Arg>::type arg_type;
 #else
-        typedef typename std::remove_const<Arg>::type arg_type;
+        typedef typename ::std::remove_const<Arg>::type arg_type;
 #endif
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
@@ -123,16 +138,16 @@ namespace boost { namespace parameter { namespace aux {
 
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
-        typedef typename boost::mpl::if_<
+        typedef typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_function<arg_type>
+            ::boost::is_function<arg_type>
 #else
-            std::is_function<arg_type>
+            ::std::is_function<arg_type>
 #endif
 #if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-          , boost::function<arg_type>
+          , ::boost::function<arg_type>
 #else
-          , std::function<arg_type>
+          , ::std::function<arg_type>
 #endif
           , Arg
         >::type value_type;
@@ -142,11 +157,11 @@ namespace boost { namespace parameter { namespace aux {
         // to a reference-to-const function wrapper type.  If the supplied
         // argument is an lvalue, then Arg will be deduced to the lvalue
         // reference. -- Cromwell D. Enage
-        typedef typename boost::mpl::if_<
+        typedef typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_function<arg_type>
+            ::boost::is_function<arg_type>
 #else
-            std::is_function<arg_type>
+            ::std::is_function<arg_type>
 #endif
           , value_type const&
           , Arg&
@@ -155,19 +170,18 @@ namespace boost { namespace parameter { namespace aux {
      private:
         // Store plain functions by value, everything else by reference.
         // -- Cromwell D. Enage
-        typename boost::mpl::if_<
+        typename ::boost::mpl::if_<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_function<arg_type>
+            ::boost::is_function<arg_type>
 #else
-            std::is_function<arg_type>
+            ::std::is_function<arg_type>
 #endif
           , value_type
           , reference
         >::type value;
 
      public:
-        template <typename A>
-        inline explicit tagged_argument(A& x) : value(x)
+        inline explicit tagged_argument(reference x) : value(x)
         {
         }
 
@@ -181,66 +195,78 @@ namespace boost { namespace parameter { namespace aux {
         // that default.
         struct binding
         {
-            template <class KW, class Default, class Reference>
+            template <typename KW, typename Default, typename Reference>
             struct apply
             {
-                typedef typename boost::mpl::eval_if<
+                typedef typename ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<KW,key_type>
+                    ::boost::is_same<KW,key_type>
 #else
-                    std::is_same<KW,key_type>
+                    ::std::is_same<KW,key_type>
 #endif
-                  , boost::mpl::if_<Reference,reference,value_type>
-                  , boost::mpl::identity<Default>
+                  , ::boost::mpl::if_<Reference,reference,value_type>
+                  , ::boost::mpl::identity<Default>
                 >::type type;
             };
         };
 
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
-        template <class Keyword2, class Arg2>
-        inline boost::parameter::aux::arg_list<
-            tagged_argument<Keyword,Arg>
-          , boost::parameter::aux::arg_list<tagged_argument<Keyword2,Arg2> > 
+        template <typename Keyword2, typename Arg2>
+        inline ::boost::parameter::aux::arg_list<
+            ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+          , ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
+            > 
         >
-        operator,(tagged_argument<Keyword2,Arg2> const& x) const
+            operator,(
+                ::boost::parameter::aux::tagged_argument<
+                    Keyword2
+                  , Arg2
+                > const& x
+            ) const
         {
-            return boost::parameter::aux::arg_list<
-                tagged_argument<Keyword,Arg>
-              , boost::parameter::aux::arg_list<tagged_argument<Keyword2,Arg2> > 
+            return ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+              , ::boost::parameter::aux::arg_list<
+                    ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
+                > 
             >(
                 *this
-              , boost::parameter::aux::arg_list<
-                    tagged_argument<Keyword2,Arg2>
-                >(x, boost::parameter::aux::empty_arg_list())
+              , ::boost::parameter::aux::arg_list<
+                    ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
+                >(x, ::boost::parameter::aux::empty_arg_list())
             );
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class Keyword2, class Arg2>
-        inline boost::parameter::aux::arg_list<
-            tagged_argument<Keyword,Arg>
-          , boost::parameter::aux::arg_list<
-                boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
+        template <typename Keyword2, typename Arg2>
+        inline ::boost::parameter::aux::arg_list<
+            ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+          , ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
             > 
         >
-        operator,(
-            boost::parameter::aux::tagged_argument_rref<
-                Keyword2
-              , Arg2
-            > const& x
-        ) const
+            operator,(
+                ::boost::parameter::aux::tagged_argument_rref<
+                    Keyword2
+                  , Arg2
+                > const& x
+            ) const
         {
-            return boost::parameter::aux::arg_list<
-                tagged_argument<Keyword,Arg>
+            return ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument<Keyword,Arg>
               , boost::parameter::aux::arg_list<
                     boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
                 > 
             >(
                 *this
-              , boost::parameter::aux::arg_list<
-                    boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
-                >(x, boost::parameter::aux::empty_arg_list())
+              , ::boost::parameter::aux::arg_list<
+                    ::boost::parameter::aux::tagged_argument_rref<
+                        Keyword2
+                      , Arg2
+                    >
+                >(x, ::boost::parameter::aux::empty_arg_list())
             );
         }
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
@@ -252,180 +278,190 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         inline reference
-        operator[](boost::parameter::keyword<Keyword> const&) const
+            operator[](::boost::parameter::keyword<Keyword> const&) const
         {
             return this->get_value();
         }
 
 #if defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) || \
     BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        template <class KW, class Default>
+        template <typename KW, typename Default>
         inline Default&
-        get_with_default(
-            boost::parameter::aux::default_<KW,Default> const& x
-          , int
-        ) const
+            get_with_default(
+                ::boost::parameter::aux::default_<KW,Default> const& x
+              , int
+            ) const
         {
             return x.value;
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class KW, class Default>
+        template <typename KW, typename Default>
         inline Default&&
-        get_with_default(
-            boost::parameter::aux::default_r_<KW,Default> const& x
-          , int
-        ) const
+            get_with_default(
+                ::boost::parameter::aux::default_r_<KW,Default> const& x
+              , int
+            ) const
         {
-            return boost::forward<Default>(x.value);
+            return ::boost::forward<Default>(x.value);
         }
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
-        template <class Default>
+        template <typename Default>
         inline reference
-        get_with_default(
-            boost::parameter::aux::default_<key_type,Default> const&
-          , long
-        ) const
+            get_with_default(
+                ::boost::parameter::aux::default_<key_type,Default> const&
+              , long
+            ) const
         {
             return this->get_value();
         }
 
-        template <class KW, class Default>
-        inline typename boost::mpl::apply_wrap3<
+        template <typename KW, typename Default>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , Default&
-          , boost::mpl::true_
+          , ::boost::mpl::true_
         >::type
-        operator[](boost::parameter::aux::default_<KW,Default> const& x) const
+            operator[](
+                ::boost::parameter::aux::default_<KW,Default> const& x
+            ) const
         {
             return this->get_with_default(x, 0L);
         }
 
-        template <class KW, class F>
-        inline typename boost::parameter::aux::result_of0<F>::type 
-        get_with_lazy_default(
-            boost::parameter::aux::lazy_default<KW,F> const& x
-          , int
-        ) const
+        template <typename KW, typename F>
+        inline typename ::boost::parameter::aux::result_of0<F>::type
+            get_with_lazy_default(
+                ::boost::parameter::aux::lazy_default<KW,F> const& x
+              , int
+            ) const
         {
             return x.compute_default();
         }
 
-        template <class F>
+        template <typename F>
         inline reference
-        get_with_lazy_default(
-            boost::parameter::aux::lazy_default<key_type,F> const&
-          , long
-        ) const
+            get_with_lazy_default(
+                ::boost::parameter::aux::lazy_default<key_type,F> const&
+              , long
+            ) const
         {
             return this->get_value();
         }
 
-        template <class KW, class F>
-        inline typename boost::mpl::apply_wrap3<
+        template <typename KW, typename F>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
-          , typename boost::parameter::aux::result_of0<F>::type
-          , boost::mpl::true_
+          , typename ::boost::parameter::aux::result_of0<F>::type
+          , ::boost::mpl::true_
         >::type
-        operator[](boost::parameter::aux::lazy_default<KW,F> const& x) const
+            operator[](
+                ::boost::parameter::aux::lazy_default<KW,F> const& x
+            ) const
         {
             return this->get_with_lazy_default(x, 0L);
         }
 #else
 //#if !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
 //    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        template <class Default>
+        template <typename Default>
         inline reference
-        operator[](
-            boost::parameter::aux::default_<key_type,Default> const&
-        ) const
+            operator[](
+                ::boost::parameter::aux::default_<key_type,Default> const&
+            ) const
         {
             return this->get_value();
         }
 
-        template <class F>
+        template <typename F>
         inline reference
-        operator[](
-            boost::parameter::aux::lazy_default<key_type,F> const&
-        ) const
+            operator[](
+                ::boost::parameter::aux::lazy_default<key_type,F> const&
+            ) const
         {
             return this->get_value();
         }
 
-        template <class KW, class Default>
+        template <typename KW, typename Default>
         inline Default&
-        operator[](boost::parameter::aux::default_<KW,Default> const& x) const
+            operator[](
+                ::boost::parameter::aux::default_<KW,Default> const& x
+            ) const
         {
             return x.value;
         }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <class KW, class Default>
+        template <typename KW, typename Default>
         inline Default&&
-        operator[](boost::parameter::aux::default_r_<KW,Default> const& x) const
+            operator[](
+                ::boost::parameter::aux::default_r_<KW,Default> const& x
+            ) const
         {
-            return boost::forward<Default>(x.value);
+            return ::boost::forward<Default>(x.value);
         }
 #endif
 
-        template <class KW, class F>
-        inline typename boost::parameter::aux::result_of0<F>::type
-        operator[](boost::parameter::aux::lazy_default<KW,F> const& x) const
+        template <typename KW, typename F>
+        inline typename ::boost::parameter::aux::result_of0<F>::type
+            operator[](
+                ::boost::parameter::aux::lazy_default<KW,F> const& x
+            ) const
         {
             return x.compute_default();
         }
 
-        template <class ParameterRequirements>
+        template <typename ParameterRequirements>
         static typename ParameterRequirements::has_default
-        satisfies(ParameterRequirements*);
+            satisfies(ParameterRequirements*);
 
-        template <class HasDefault, class Predicate>
-        static typename boost::mpl::apply_wrap1<Predicate,value_type>::type
-        satisfies(
-            boost::parameter::aux::parameter_requirements<
-                key_type
-              , Predicate
-              , HasDefault
-            >*
-        );
+        template <typename HasDefault, typename Predicate>
+        static typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
+            satisfies(
+                ::boost::parameter::aux::parameter_requirements<
+                    key_type
+                  , Predicate
+                  , HasDefault
+                >*
+            );
 #endif // Function template ordering, Borland workarounds needed.
+
+        // MPL sequence support
+        // Convenience for users
+        typedef ::boost::parameter::aux::tagged_argument<Keyword,Arg> type;
+        // For the benefit of iterators
+        typedef ::boost::parameter::aux::empty_arg_list tail_type;
+        // For dispatching to sequence intrinsics
+        typedef ::boost::parameter::aux::arg_list_tag tag;
 
 #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1310))
         // warning suppression
      private:
-        void operator=(tagged_argument const&);
-
-     public:    
+        void operator=(type const&);
 #endif
-        // MPL sequence support
-        // Convenience for users
-        typedef tagged_argument type;
-        // For the benefit of iterators
-        typedef boost::parameter::aux::empty_arg_list tail_type;
-        // For dispatching to sequence intrinsics
-        typedef boost::parameter::aux::arg_list_tag tag;
     };
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     // Holds an rvalue reference to an argument of type Arg associated with
     // keyword Keyword
-    template <class Keyword, class Arg>
-    struct tagged_argument_rref : boost::parameter::aux::tagged_argument_base
+    template <typename Keyword, typename Arg>
+    struct tagged_argument_rref
+      : ::boost::parameter::aux::tagged_argument_base
     {
-        typedef typename boost::mpl::eval_if<
+        typedef typename ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            boost::is_same<
+            ::boost::is_same<
 #else
-            std::is_same<
+            ::std::is_same<
 #endif
                 typename Keyword::qualifier
-              , boost::parameter::out_reference
+              , ::boost::parameter::out_reference
             >
-          , boost::parameter::aux::error_rvalue_bound_to_out_parameter
-          , boost::mpl::identity<Keyword>
+          , ::boost::parameter::aux::error_rvalue_bound_to_out_parameter
+          , ::boost::mpl::identity<Keyword>
         >::type key_type;
         typedef Arg value_type;
         typedef Arg&& reference;
@@ -435,12 +471,12 @@ namespace boost { namespace parameter { namespace aux {
 
      public:
         inline explicit tagged_argument_rref(reference x)
-          : value(boost::forward<Arg>(x))
+          : value(::boost::forward<Arg>(x))
         {
         }
 
         inline tagged_argument_rref(tagged_argument_rref const& copy)
-          : value(boost::forward<Arg>(copy.value))
+          : value(::boost::forward<Arg>(copy.value))
         {
         }
 
@@ -449,211 +485,231 @@ namespace boost { namespace parameter { namespace aux {
         // that default.
         struct binding
         {
-            template <class KW, class Default, class Reference>
+            template <typename KW, typename Default, typename Reference>
             struct apply
             {
-                typedef typename boost::mpl::eval_if<
+                typedef typename ::boost::mpl::eval_if<
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<KW,key_type>
+                    ::boost::is_same<KW,key_type>
 #else
-                    std::is_same<KW,key_type>
+                    ::std::is_same<KW,key_type>
 #endif
-                  , boost::mpl::if_<Reference,reference,value_type>
-                  , boost::mpl::identity<Default>
+                  , ::boost::mpl::if_<Reference,reference,value_type>
+                  , ::boost::mpl::identity<Default>
                 >::type type;
             };
         };
 
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
-        template <class Keyword2, class Arg2>
-        inline boost::parameter::aux::arg_list<
-            boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
-          , boost::parameter::aux::arg_list<
-                boost::parameter::aux::tagged_argument<Keyword2,Arg2>
+        template <typename Keyword2, typename Arg2>
+        inline ::boost::parameter::aux::arg_list<
+            ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+          , ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
             > 
         >
-        operator,(
-            boost::parameter::aux::tagged_argument<Keyword2,Arg2> const& x
-        ) const
+            operator,(
+                ::boost::parameter::aux::tagged_argument<
+                    Keyword2
+                  , Arg2
+                > const& x
+            ) const
         {
             return boost::parameter::aux::arg_list<
-                tagged_argument_rref<Keyword,Arg>
-              , boost::parameter::aux::arg_list<
-                    boost::parameter::aux::tagged_argument<Keyword2,Arg2>
+                ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+              , ::boost::parameter::aux::arg_list<
+                    ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
                 > 
             >(
                 *this
-              , boost::parameter::aux::arg_list<
-                    boost::parameter::aux::tagged_argument<Keyword2,Arg2>
-                >(x, boost::parameter::aux::empty_arg_list())
+              , ::boost::parameter::aux::arg_list<
+                    ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
+                >(x, ::boost::parameter::aux::empty_arg_list())
             );
         }
 
-        template <class Keyword2, class Arg2>
-        inline boost::parameter::aux::arg_list<
-            tagged_argument_rref<Keyword,Arg>
-          , boost::parameter::aux::arg_list<
-                tagged_argument_rref<Keyword2,Arg2>
+        template <typename Keyword2, typename Arg2>
+        inline ::boost::parameter::aux::arg_list<
+            ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+          , ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
             > 
         >
-        operator,(tagged_argument_rref<Keyword2,Arg2> const& x) const
+            operator,(
+                ::boost::parameter::aux::tagged_argument_rref<
+                    Keyword2
+                  , Arg2
+                > const& x
+            ) const
         {
-            return boost::parameter::aux::arg_list<
-                tagged_argument_rref<Keyword,Arg>
-              , boost::parameter::aux::arg_list<
-                    tagged_argument_rref<Keyword2,Arg2>
+            return ::boost::parameter::aux::arg_list<
+                ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+              , ::boost::parameter::aux::arg_list<
+                    ::boost::parameter::aux::tagged_argument_rref<
+                        Keyword2
+                      , Arg2
+                    >
                 > 
             >(
                 *this
-              , boost::parameter::aux::arg_list<
-                    tagged_argument_rref<Keyword2,Arg2>
-                >(x, boost::parameter::aux::empty_arg_list())
+              , ::boost::parameter::aux::arg_list<
+                    ::boost::parameter::aux::tagged_argument_rref<
+                        Keyword2
+                      , Arg2
+                    >
+                >(x, ::boost::parameter::aux::empty_arg_list())
             );
         }
 
         // Accessor interface.
         inline reference get_value() const
         {
-            return boost::forward<Arg>(this->value);
+            return ::boost::forward<Arg>(this->value);
         }
 
         inline reference
-        operator[](boost::parameter::keyword<Keyword> const&) const
+            operator[](::boost::parameter::keyword<Keyword> const&) const
         {
             return this->get_value();
         }
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        template <class KW, class Default>
+        template <typename KW, typename Default>
         inline Default&&
-        get_with_default(
-            boost::parameter::aux::default_r_<KW,Default> const& x
-          , int
-        ) const
+            get_with_default(
+                ::boost::parameter::aux::default_r_<KW,Default> const& x
+              , int
+            ) const
         {
-            return boost::forward<Default>(x.value);
+            return ::boost::forward<Default>(x.value);
         }
 
-        template <class Default>
+        template <typename Default>
         inline reference
-        get_with_default(
-            boost::parameter::aux::default_r_<key_type,Default> const&
-          , long
-        ) const
+            get_with_default(
+                ::boost::parameter::aux::default_r_<key_type,Default> const&
+              , long
+            ) const
         {
             return this->get_value();
         }
 
-        template <class KW, class Default>
-        inline typename boost::mpl::apply_wrap3<
+        template <typename KW, typename Default>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , Default&&
-          , boost::mpl::true_
+          , ::boost::mpl::true_
         >::type
-        operator[](
-            boost::parameter::aux::default_r_<KW,Default> const& x
-        ) const
+            operator[](
+                ::boost::parameter::aux::default_r_<KW,Default> const& x
+            ) const
         {
             return this->get_with_default(x, 0L);
         }
 
-        template <class KW, class F>
-        inline typename boost::parameter::aux::result_of0<F>::type 
-        get_with_lazy_default(
-            boost::parameter::aux::lazy_default<KW,F> const& x
-          , int
-        ) const
+        template <typename KW, typename F>
+        inline typename ::boost::parameter::aux::result_of0<F>::type
+            get_with_lazy_default(
+                ::boost::parameter::aux::lazy_default<KW,F> const& x
+              , int
+            ) const
         {
             return x.compute_default();
         }
 
-        template <class F>
+        template <typename F>
         inline reference
-        get_with_lazy_default(
-            boost::parameter::aux::lazy_default<key_type,F> const&
-          , long
-        ) const
+            get_with_lazy_default(
+                ::boost::parameter::aux::lazy_default<key_type,F> const&
+              , long
+            ) const
         {
             return this->get_value();
         }
 
-        template <class KW, class F>
-        inline typename boost::mpl::apply_wrap3<
+        template <typename KW, typename F>
+        inline typename ::boost::mpl::apply_wrap3<
             binding
           , KW
-          , typename boost::parameter::aux::result_of0<F>::type
-          , boost::mpl::true_
+          , typename ::boost::parameter::aux::result_of0<F>::type
+          , ::boost::mpl::true_
         >::type
-        operator[](boost::parameter::aux::lazy_default<KW,F> const& x) const
+            operator[](
+                ::boost::parameter::aux::lazy_default<KW,F> const& x
+            ) const
         {
             return this->get_with_lazy_default(x, 0L);
         }
 #else // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        template <class Default>
+        template <typename Default>
         inline reference
-        operator[](
-            boost::parameter::aux::default_r_<key_type,Default> const&
-        ) const
+            operator[](
+                ::boost::parameter::aux::default_r_<key_type,Default> const&
+            ) const
         {
             return this->get_value();
         }
 
-        template <class F>
+        template <typename F>
         inline reference
-        operator[](
-            boost::parameter::aux::lazy_default<key_type,F> const&
-        ) const
+            operator[](
+                ::boost::parameter::aux::lazy_default<key_type,F> const&
+            ) const
         {
             return this->get_value();
         }
 
-        template <class KW, class Default>
+        template <typename KW, typename Default>
         inline Default&&
-        operator[](
-            boost::parameter::aux::default_r_<KW,Default> const& x
-        ) const
+            operator[](
+                ::boost::parameter::aux::default_r_<KW,Default> const& x
+            ) const
         {
-            return boost::forward<Default>(x.value);
+            return ::boost::forward<Default>(x.value);
         }
 
-        template <class KW, class F>
-        inline typename result_of0<F>::type
-        operator[](boost::parameter::aux::lazy_default<KW,F> const& x) const
+        template <typename KW, typename F>
+        inline typename ::boost::parameter::aux::result_of0<F>::type
+            operator[](
+                ::boost::parameter::aux::lazy_default<KW,F> const& x
+            ) const
         {
             return x.compute_default();
         }
 
-        template <class ParameterRequirements>
+        template <typename ParameterRequirements>
         static typename ParameterRequirements::has_default
-        satisfies(ParameterRequirements*);
+            satisfies(ParameterRequirements*);
 
-        template <class HasDefault, class Predicate>
-        static typename boost::mpl::apply_wrap1<Predicate,value_type>::type
-        satisfies(
-            boost::parameter::aux::parameter_requirements<
-                key_type
-              , Predicate
-              , HasDefault
-            >*
-        );
+        template <typename HasDefault, typename Predicate>
+        static typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
+            satisfies(
+                ::boost::parameter::aux::parameter_requirements<
+                    key_type
+                  , Predicate
+                  , HasDefault
+                >*
+            );
 #endif // Borland workarounds needed.
+
+        // MPL sequence support
+        // Convenience for users
+        typedef ::boost::parameter::aux::tagged_argument_rref<
+            Keyword
+          , Arg
+        > type;
+        // For the benefit of iterators
+        typedef ::boost::parameter::aux::empty_arg_list tail_type;
+        // For dispatching to sequence intrinsics
+        typedef ::boost::parameter::aux::arg_list_tag tag;
 
 #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1310))
         // warning suppression
      private:
-        void operator=(tagged_argument_rref const&);
-
-     public:    
+        void operator=(type const&);
 #endif
-        // MPL sequence support
-        // Convenience for users
-        typedef tagged_argument_rref type;
-        // For the benefit of iterators
-        typedef boost::parameter::aux::empty_arg_list tail_type;
-        // For dispatching to sequence intrinsics
-        typedef boost::parameter::aux::arg_list_tag tag;
     };
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 }}} // namespace boost::parameter::aux

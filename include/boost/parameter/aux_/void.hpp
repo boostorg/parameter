@@ -17,9 +17,9 @@ namespace boost { namespace parameter {
 
 namespace boost { namespace parameter { namespace aux {
 
-    inline boost::parameter::void_& void_reference()
+    inline ::boost::parameter::void_& void_reference()
     {
-        static boost::parameter::void_ instance;
+        static ::boost::parameter::void_ instance;
         return instance;
     }
 }}} // namespace boost::parameter::aux

@@ -24,7 +24,7 @@ namespace test {
             ++count_instances::count;
         }
 
-        template <class T>
+        template <typename T>
         count_instances(T const&)
         {
             ++count_instances::count;

@@ -10,9 +10,12 @@ BOOST_PARAMETER_FUNCTION(
     return foo + 1;
 }
 
+#include <boost/core/lightweight_test.hpp>
+
 int main()
 {
     int x = f(pass_foo = 41);
-    return 0;
+    BOOST_TEST_EQ(x, 42);
+    return boost::report_errors();
 }
 

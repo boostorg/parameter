@@ -28,7 +28,7 @@ namespace test {
 
 namespace test {
 
-    template <class ArgumentPack, class K, class T>
+    template <typename ArgumentPack, typename K, typename T>
     void check(ArgumentPack const& p, K const& kw, T const& value)
     {
         BOOST_TEST_EQ(p[kw], value);
@@ -43,8 +43,8 @@ int main()
     test::check(test::_x = 20, test::_x | 0, 20);
     test::check(test::_y = 20, test::_y | 0, 20);
 
-    test::check(test::_x = 20, test::_x | test::default_src(), 20);
-    test::check(test::_y = 20, test::_y | test::default_src(), 20);
+    test::check(test::_x = 20, test::_x || test::default_src(), 20);
+    test::check(test::_y = 20, test::_y || test::default_src(), 20);
 
     test::check(test::_y = 20, test::_x | 0, 0);
     test::check(test::_y = 20, test::_x || test::default_src(), 0);

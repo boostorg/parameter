@@ -39,5 +39,7 @@ int main()
 #endif
         >
     >()("foo");
+
+    return 0;
 }
 

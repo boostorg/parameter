@@ -6,6 +6,13 @@
 #ifndef BOOST_PARAMETER_IS_MAYBE_050329_HPP
 #define BOOST_PARAMETER_IS_MAYBE_050329_HPP
 
+namespace boost { namespace parameter { namespace aux {
+
+    struct maybe_base
+    {
+    };
+}}} // namespace boost::parameter::aux
+
 #include <boost/config.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
@@ -19,19 +26,21 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-    struct maybe_base
-    {
-    };
-
-    template <class T>
+    template <typename T>
     struct is_maybe
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-      : boost::is_base_of<maybe_base,typename boost::remove_const<T>::type>
+      : ::boost::is_base_of<
+            ::boost::parameter::aux::maybe_base
+          , typename ::boost::remove_const<T>::type
+        >
 #else
-      : boost::mpl::if_<
-            std::is_base_of<maybe_base,typename std::remove_const<T>::type>
-          , boost::mpl::true_
-          , boost::mpl::false_
+      : ::boost::mpl::if_<
+            ::std::is_base_of<
+                ::boost::parameter::aux::maybe_base
+              , typename ::std::remove_const<T>::type
+            >
+          , ::boost::mpl::true_
+          , ::boost::mpl::false_
         >::type
 #endif
     {

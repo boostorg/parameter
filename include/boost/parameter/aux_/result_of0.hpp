@@ -14,14 +14,14 @@
 namespace boost { namespace parameter { namespace aux {
 
 #if defined(BOOST_NO_RESULT_OF)
-    template <class F>
+    template <typename F>
     struct result_of0
     {
         typedef typename F::result_type type;
     };
 #else
-    template <class F>
-    struct result_of0 : result_of<F()>
+    template <typename F>
+    struct result_of0 : ::boost::result_of<F()>
     {
     };
 #endif 
@@ -33,9 +33,9 @@ namespace boost { namespace parameter { namespace aux {
 namespace boost { namespace parameter { namespace aux {
 
     template <>
-    struct result_of0<boost::parameter::aux::use_default_tag>
+    struct result_of0< ::boost::parameter::aux::use_default_tag>
     {
-        typedef boost::parameter::aux::use_default_tag type;
+        typedef ::boost::parameter::aux::use_default_tag type;
     };
 }}} // namespace boost::parameter::aux
 

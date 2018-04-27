@@ -3,13 +3,12 @@
 
 BOOST_PARAMETER_NAME(index)
 
-template <class ArgumentPack>
+template <typename ArgumentPack>
 typename boost::parameter::value_type<ArgumentPack,tag::index,int>::type
-twice_index(ArgumentPack const& args)
+    twice_index(ArgumentPack const& args)
 {
     return 2 * args[_index|42];
 }
-
 
 #include <boost/core/lightweight_test.hpp>
 

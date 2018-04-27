@@ -18,7 +18,7 @@ namespace graphs {
 
 namespace graphs { namespace core {
 
-    template <class ArgumentPack>
+    template <typename ArgumentPack>
     void depth_first_search(ArgumentPack const& args)
     {
         BOOST_TEST_EQ(false, args[_color_map]);

@@ -205,8 +205,6 @@ namespace test {
 
 int main()
 {
-    // Check to make sure the compiler won't ICE.
-#if !defined(__MINGW32__)
     test::D::evaluate(
         test::h_parameters()(
             test::lvalue_const_bitset<0>()
@@ -239,7 +237,6 @@ int main()
           , test::rvalue_const_bitset<7>()
         )
     );
-#endif
     return boost::report_errors();
 }
 

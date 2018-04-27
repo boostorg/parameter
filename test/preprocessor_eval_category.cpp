@@ -143,7 +143,7 @@ namespace test {
         {
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_TEST((
-                test::passed_by_rvalue_reference == test::A<
+                test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
@@ -153,16 +153,34 @@ namespace test {
                 >::evaluate_category(args[test::_rrc0])
             ));
             BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference
+                test::passed_by_lvalue_reference_to_const
               , test::A<
                     typename boost::remove_const<
                         typename boost::remove_reference<rrc0_type>::type
                     >::type
                 >::evaluate_category(boost::forward<rrc0_type>(rrc0))
             );
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::kw::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::A<
+                    typename boost::remove_const<
+                        typename boost::remove_reference<rr0_type>::type
+                    >::type
+                >::evaluate_category(boost::forward<rr0_type>(rr0))
+            );
 #else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_TEST((
-                test::passed_by_rvalue_reference == test::A<
+                test::passed_by_lvalue_reference_to_const == test::A<
                     typename std::remove_const<
                         typename boost::parameter::value_type<
                             Args
@@ -172,12 +190,30 @@ namespace test {
                 >::evaluate_category(args[test::_rrc0])
             ));
             BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference
+                test::passed_by_lvalue_reference_to_const
               , test::A<
                     typename std::remove_const<
                         typename std::remove_reference<rrc0_type>::type
                     >::type
                 >::evaluate_category(boost::forward<rrc0_type>(rrc0))
+            );
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::kw::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::A<
+                    typename std::remove_const<
+                        typename std::remove_reference<rr0_type>::type
+                    >::type
+                >::evaluate_category(boost::forward<rr0_type>(rr0))
             );
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
         }
@@ -202,6 +238,24 @@ namespace test {
                     >::type
                 >::evaluate_category(boost::forward<rrc0_type>(rrc0))
             );
+            BOOST_TEST((
+                test::passed_by_rvalue_reference == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::kw::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , test::A<
+                    typename boost::remove_const<
+                        typename boost::remove_reference<rr0_type>::type
+                    >::type
+                >::evaluate_category(boost::forward<rr0_type>(rr0))
+            );
 #else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_TEST((
                 test::passed_by_rvalue_reference_to_const == test::A<
@@ -221,48 +275,26 @@ namespace test {
                     >::type
                 >::evaluate_category(boost::forward<rrc0_type>(rrc0))
             );
+            BOOST_TEST((
+                test::passed_by_rvalue_reference == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::kw::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , test::A<
+                    typename std::remove_const<
+                        typename std::remove_reference<rr0_type>::type
+                    >::type
+                >::evaluate_category(boost::forward<rr0_type>(rr0))
+            );
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
         }
-
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        BOOST_TEST((
-            test::passed_by_rvalue_reference == test::A<
-                typename boost::remove_const<
-                    typename boost::parameter::value_type<
-                        Args
-                      , test::kw::rr0
-                    >::type
-                >::type
-            >::evaluate_category(args[test::_rr0])
-        ));
-        BOOST_TEST_EQ(
-            test::passed_by_rvalue_reference
-          , test::A<
-                typename boost::remove_const<
-                    typename boost::remove_reference<rr0_type>::type
-                >::type
-            >::evaluate_category(boost::forward<rr0_type>(rr0))
-        );
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-        BOOST_TEST((
-            test::passed_by_rvalue_reference == test::A<
-                typename std::remove_const<
-                    typename boost::parameter::value_type<
-                        Args
-                      , test::kw::rr0
-                    >::type
-                >::type
-            >::evaluate_category(args[test::_rr0])
-        ));
-        BOOST_TEST_EQ(
-            test::passed_by_rvalue_reference
-          , test::A<
-                typename std::remove_const<
-                    typename std::remove_reference<rr0_type>::type
-                >::type
-            >::evaluate_category(boost::forward<rr0_type>(rr0))
-        );
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
         BOOST_TEST((
@@ -372,7 +404,7 @@ namespace test {
         }
 #endif
 
-        template <class Args>
+        template <typename Args>
         explicit B(
             Args const& args
 #if !defined(BOOST_NO_SFINAE)
@@ -468,6 +500,24 @@ namespace test {
                     >::type
                 >::evaluate_category(lr0)
             );
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::kw::rrc0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rrc0])
+            ));
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::A<
+                    typename boost::remove_const<
+                        typename boost::remove_reference<rrc0_type>::type
+                    >::type
+                >::evaluate_category(rrc0)
+            );
 #else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
@@ -505,13 +555,9 @@ namespace test {
                     >::type
                 >::evaluate_category(lr0)
             );
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
-
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_TEST((
-                test::passed_by_rvalue_reference == test::A<
-                    typename boost::remove_const<
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename std::remove_const<
                         typename boost::parameter::value_type<
                             Args
                           , test::kw::rrc0
@@ -520,13 +566,17 @@ namespace test {
                 >::evaluate_category(args[test::_rrc0])
             ));
             BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference
+                test::passed_by_lvalue_reference_to_const
               , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rrc0_type>::type
+                    typename std::remove_const<
+                        typename std::remove_reference<rrc0_type>::type
                     >::type
-                >::evaluate_category(boost::forward<rrc0_type>(rrc0))
+                >::evaluate_category(rrc0)
             );
+#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename boost::remove_const<
@@ -546,24 +596,6 @@ namespace test {
                 >::evaluate_category(boost::forward<rr0_type>(rr0))
             );
 #else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            BOOST_TEST((
-                test::passed_by_rvalue_reference == test::A<
-                    typename std::remove_const<
-                        typename boost::parameter::value_type<
-                            Args
-                          , test::kw::rrc0
-                        >::type
-                    >::type
-                >::evaluate_category(args[test::_rrc0])
-            ));
-            BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference
-              , test::A<
-                    typename std::remove_const<
-                        typename std::remove_reference<rrc0_type>::type
-                    >::type
-                >::evaluate_category(boost::forward<rrc0_type>(rrc0))
-            );
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename std::remove_const<
@@ -590,24 +622,6 @@ namespace test {
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rrc0
-                        >::type
-                    >::type
-                >::evaluate_category(args[test::_rrc0])
-            ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rrc0_type>::type
-                    >::type
-                >::evaluate_category(rrc0)
-            );
-            BOOST_TEST((
-                test::passed_by_lvalue_reference_to_const == test::A<
-                    typename boost::remove_const<
-                        typename boost::parameter::value_type<
-                            Args
                           , test::kw::rr0
                         >::type
                     >::type
@@ -622,24 +636,6 @@ namespace test {
                 >::evaluate_category(rr0)
             );
 #else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-            BOOST_TEST((
-                test::passed_by_lvalue_reference_to_const == test::A<
-                    typename std::remove_const<
-                        typename boost::parameter::value_type<
-                            Args
-                          , test::kw::rrc0
-                        >::type
-                    >::type
-                >::evaluate_category(args[test::_rrc0])
-            ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , test::A<
-                    typename std::remove_const<
-                        typename std::remove_reference<rrc0_type>::type
-                    >::type
-                >::evaluate_category(rrc0)
-            );
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename std::remove_const<
@@ -672,8 +668,7 @@ namespace test {
         C() : B()
         {
         }
-#endif
-
+#else
         BOOST_PARAMETER_CONSTRUCTOR(C, (B), kw,
             (required
                 (lrc0, *)
@@ -682,6 +677,7 @@ namespace test {
                 (rr0, *)
             )
         )
+#endif
     };
 } // namespace test
 
@@ -689,8 +685,6 @@ namespace test {
 
 int main()
 {
-    // Check to make sure the compiler won't ICE.
-#if !defined(__MINGW32__)
     test::evaluate(
         test::lvalue_const_float()
       , test::lvalue_float()
@@ -845,7 +839,6 @@ int main()
       , test::rvalue_const_float()
       , test::lvalue_char_ptr()
     );
-#endif // Don't ICE.
     return boost::report_errors();
 }
 

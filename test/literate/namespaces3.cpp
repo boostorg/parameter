@@ -18,12 +18,14 @@ namespace lib {
     }
 }
 
-using namespace lib::keywords;
+#include <boost/core/lightweight_test.hpp>
 
-int y = lib::f(_name = "bob", _index = 2);
+using namespace lib::keywords;
 
 int main()
 {
-    return 0;
+    int y = lib::f(_name = "bob", _index = 2);
+    BOOST_TEST_EQ(x, 2);
+    return boost::report_errors();
 }
 

@@ -68,7 +68,7 @@ namespace test
     BOOST_PARAMETER_TEMPLATE_KEYWORD(deleter)
     BOOST_PARAMETER_TEMPLATE_KEYWORD(copy_policy)
 
-    template <class T>
+    template <typename T>
     struct Deallocate
     {
     };
@@ -83,7 +83,7 @@ namespace test
     {
     };
 
-    template <class T, class A0, class A1>
+    template <typename T, typename A0, typename A1>
     struct smart_ptr
     {
         smart_ptr(Foo*);
@@ -399,15 +399,19 @@ reference.  If all arguments were required, its signature might be as
 follows:</p>
 <pre class="literal-block">
 template &lt;
-    class Graph, class DFSVisitor, class Index, class ColorMap
+    typename Graph
+  , typename DFSVisitor
+  , typename Index
+  , typename ColorMap
 &gt;
-void depth_first_search(
-    Graph const&amp; graph
-  , DFSVisitor visitor
-  , typename graph_traits&lt;Graph&gt;::vertex_descriptor root_vertex
-  , IndexMap index_map
-  , ColorMap&amp; color
-);
+void
+    depth_first_search(
+        Graph const&amp; graph
+      , DFSVisitor visitor
+      , typename graph_traits&lt;Graph&gt;::vertex_descriptor root_vertex
+      , IndexMap index_map
+      , ColorMap&amp; color
+    );
 </pre>
 <!-- @ignore() -->
 <p>However, most of the parameters have a useful default value, as shown in
@@ -598,7 +602,7 @@ BOOST_PARAMETER_NAME(in_out(color_map))
 
 namespace boost {
 
-    template <class T = int>
+    template <typename T = int>
     struct dfs_visitor
     {
     };
@@ -686,7 +690,7 @@ namespace boost {
 
     int vertex_index = 0;
 
-    template <class T = int>
+    template <typename T = int>
     struct dfs_visitor
     {
     };
@@ -776,7 +780,7 @@ namespace boost {
 
     int vertex_index = 0;
 
-    template <class T = int>
+    template <typename T = int>
     struct dfs_visitor
     {
     };
@@ -974,7 +978,7 @@ overload out of contention, we first encode this requirement as follows:</p>
 <pre class="literal-block">
 struct vertex_descriptor_predicate
 {
-    template &lt;class T, class Args&gt;
+    template &lt;typename T, typename Args&gt;
     struct apply
       : boost::is_convertible&lt;
             T
@@ -1028,7 +1032,7 @@ that the next few metafunction classes provide the necessary checks.</p>
 <pre class="literal-block">
 struct graph_predicate
 {
-    template &lt;class T, class Args&gt;
+    template &lt;typename T, typename Args&gt;
     struct apply
       : boost::mpl::and_&lt;
             boost::is_convertible&lt;
@@ -1046,7 +1050,7 @@ struct graph_predicate
 
 struct index_map_predicate
 {
-    template &lt;class T, class Args&gt;
+    template &lt;typename T, typename Args&gt;
     struct apply
       : boost::mpl::and_&lt;
             boost::is_integral&lt;
@@ -1068,7 +1072,7 @@ struct index_map_predicate
 
 struct color_map_predicate
 {
-    template &lt;class T, class Args&gt;
+    template &lt;typename T, typename Args&gt;
     struct apply
       : boost::is_same&lt;
             typename boost::property_traits&lt;T&gt;::key_type
@@ -1087,14 +1091,14 @@ struct color_map_predicate
 >color_map</tt> parameter is no trivial matter, so it's best to factor the
 computation out to a separate function template.</p>
 <pre class="literal-block">
-template &lt;class Size, class IndexMap&gt;
+template &lt;typename Size, typename IndexMap&gt;
 boost::iterator_property_map&lt;
     std::vector&lt;boost::default_color_type&gt;::iterator
   , IndexMap
   , boost::default_color_type
   , boost::default_color_type&amp;
 &gt;&amp;
-default_color_map(Size num_vertices, IndexMap const&amp; index_map)
+    default_color_map(Size num_vertices, IndexMap const&amp; index_map)
 {
     static std::vector&lt;boost::default_color_type&gt; colors(num_vertices);
     static boost::iterator_property_map&lt;
@@ -1238,17 +1242,20 @@ class="reference external" href="../../../python/doc/index.html"
 >Boost.Python</a>.  Its signature is roughly as follows:</p>
 <pre class="literal-block">
 template &lt;
-    class Function, Class KeywordExpression, class CallPolicies
+    typename Function
+  , typename KeywordExpression
+  , typename CallPolicies
 &gt;
-void def(
-    // Required parameters
-    char const* name, Function func
+void
+    def(
+        // Required parameters
+        char const* name, Function func
 
-    // Optional, deduced parameters
-  , char const* docstring = &quot;&quot;
-  , KeywordExpression keywords = no_keywords()
-  , CallPolicies policies = default_call_policies()
-);
+        // Optional, deduced parameters
+      , char const* docstring = &quot;&quot;
+      , KeywordExpression keywords = no_keywords()
+      , CallPolicies policies = default_call_policies()
+    );
 </pre>
 <!-- @ignore() -->
 <p>Try not to be too distracted by the use of the term “keywords” in
@@ -1322,7 +1329,7 @@ struct keywords
 {
 };
 
-template <class T>
+template <typename T>
 struct is_keyword_expression
   : boost::mpl::false_
 {
@@ -1523,7 +1530,7 @@ BOOST_PARAMETER_NAME(index)
 
 struct myclass_impl
 {
-    template &lt;class ArgumentPack&gt;
+    template &lt;typename ArgumentPack&gt;
     myclass_impl(ArgumentPack const&amp; args)
     {
         std::cout &lt;&lt; &quot;name = &quot; &lt;&lt; args[_name];
@@ -1637,7 +1644,7 @@ namespace boost { namespace python {
         struct class_type;  // keyword tag type
     }
 
-    template &lt;class T&gt;
+    template &lt;typename T&gt;
     struct class_type
       : parameter::template_keyword&lt;tag::class_type,T&gt;
     {
@@ -1663,10 +1670,10 @@ any of them.  Instead, we'll give them generic names and use the special type
 namespace boost { namespace python {
 
     template &lt;
-        class A0
-      , class A1 = parameter::void_
-      , class A2 = parameter::void_
-      , class A3 = parameter::void_
+        typename A0
+      , typename A1 = boost::parameter::void_
+      , typename A2 = boost::parameter::void_
+      , typename A3 = boost::parameter::void_
     &gt;
     struct class_
     {
@@ -1718,7 +1725,7 @@ namespace boost { namespace python {
     BOOST_PARAMETER_TEMPLATE_KEYWORD(held_type)
     BOOST_PARAMETER_TEMPLATE_KEYWORD(copyable)
 
-    template <class B = int>
+    template <typename B = int>
     struct bases
     {
     };
@@ -1743,15 +1750,17 @@ specified by passing it an optional third argument:</p>
 namespace boost { namespace python {
 
     template &lt;
-        class A0
-      , class A1 = parameter::void_
-      , class A2 = parameter::void_
-      , class A3 = parameter::void_
+        typename A0
+      , typename A1 = boost::parameter::void_
+      , typename A2 = boost::parameter::void_
+      , typename A3 = boost::parameter::void_
     &gt;
     struct class_
     {
         // Create ArgumentPack
-        typedef typename class_signature::bind&lt;A0,A1,A2,A3&gt;::type args;
+        typedef typename class_signature::template bind&lt;
+            A0, A1, A2, A3
+        &gt;::type args;
 
         // Extract first logical parameter.
         typedef typename parameter::value_type&lt;
@@ -1849,7 +1858,7 @@ namespace boost { namespace python {
     }
 
     template &lt;
-        class A0 = void, class A1 = void, class A2 = void <em>…</em>
+        typename A0 = void, typename A1 = void, typename A2 = void <em>…</em>
     &gt;
     struct bases <strong>: detail::bases_base</strong>
     {
@@ -1908,15 +1917,17 @@ namespace boost { namespace python {
 ''') -->
 <!-- @example.append('''
     template <
-        class A0
-      , class A1 = parameter::void_
-      , class A2 = parameter::void_
-      , class A3 = parameter::void_
+        typename A0
+      , typename A1 = boost::parameter::void_
+      , typename A2 = boost::parameter::void_
+      , typename A3 = boost::parameter::void_
     >
     struct class_
     {
         // Create ArgumentPack
-        typedef typename class_signature::bind<A0,A1,A2,A3>::type args;
+        typedef typename class_signature::template bind<
+            A0, A1, A2, A3
+        >::type args;
 
         // Extract first logical parameter.
         typedef typename parameter::value_type<
@@ -2052,7 +2063,7 @@ assigning into a keyword object:</p>
 <pre class="literal-block">
 BOOST_PARAMETER_NAME(index)
 
-template &lt;class ArgumentPack&gt;
+template &lt;typename ArgumentPack&gt;
 int print_index(ArgumentPack const&amp; args)
 {
     std::cout &lt;&lt; &quot;index = &quot; &lt;&lt; args[_index];
@@ -2073,7 +2084,7 @@ from seeing two separate arguments to
 <pre class="literal-block">
 BOOST_PARAMETER_NAME(name)
 
-template &lt;class ArgumentPack&gt;
+template &lt;typename ArgumentPack&gt;
 int print_name_and_index(ArgumentPack const&amp; args)
 {
     std::cout &lt;&lt; &quot;name = &quot; &lt;&lt; args[_name];
@@ -2138,7 +2149,7 @@ function template and allow <em>it</em> to do type deduction:</p>
 BOOST_PARAMETER_NAME(name)
 BOOST_PARAMETER_NAME(index)
 
-template &lt;class Name, class Index&gt;
+template &lt;typename Name, typename Index&gt;
 int deduce_arg_types_impl(Name&amp;&amp; name, Index&amp;&amp; index)
 {
     // we know the types
@@ -2147,7 +2158,7 @@ int deduce_arg_types_impl(Name&amp;&amp; name, Index&amp;&amp; index)
     return index;
 }
 
-template &lt;class ArgumentPack&gt;
+template &lt;typename ArgumentPack&gt;
 int deduce_arg_types(ArgumentPack const&amp; args)
 {
     return deduce_arg_types_impl(args[_name], args[_index | 42]);
@@ -2178,9 +2189,9 @@ introduced
 <pre class="literal-block">
 BOOST_PARAMETER_NAME(index)
 
-template &lt;class ArgumentPack&gt;
+template &lt;typename ArgumentPack&gt;
 typename boost::parameter::value_type&lt;ArgumentPack,tag::index,int&gt;::type
-twice_index(ArgumentPack const&amp; args)
+    twice_index(ArgumentPack const&amp; args)
 {
     return 2 * args[_index | 42];
 }
@@ -2218,7 +2229,7 @@ BOOST_PARAMETER_NAME(s1)
 BOOST_PARAMETER_NAME(s2)
 BOOST_PARAMETER_NAME(s3)
 
-template &lt;class ArgumentPack&gt;
+template &lt;typename ArgumentPack&gt;
 std::string f(ArgumentPack const&amp; args)
 {
     std::string const&amp; s1 = args[_s1];
@@ -2279,7 +2290,7 @@ BOOST_PARAMETER_NAME(s1)
 BOOST_PARAMETER_NAME(s2)
 BOOST_PARAMETER_NAME(s3)
 
-template <class ArgumentPack>
+template <typename ArgumentPack>
 std::string f(ArgumentPack const& args)
 {
     std::string const& s1 = args[_s1];
@@ -2336,7 +2347,18 @@ following usually-silent bug:</p>
 <pre class="literal-block">
 namespace people
 {
-    namespace tag { struct name; struct age; }
+    namespace tag
+    {
+        struct name
+        {
+            typedef boost::parameter::forward_reference qualifier;
+        };
+
+        struct age
+        {
+            typedef boost::parameter::forward_reference qualifier;
+        };
+    }
 
     namespace // unnamed
     {

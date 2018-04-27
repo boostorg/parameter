@@ -5,7 +5,7 @@ namespace boost {
 
     int vertex_index = 0;
 
-    template <class T = int>
+    template <typename T = int>
     struct dfs_visitor
     {
     };

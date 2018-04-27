@@ -50,13 +50,13 @@
 #include <boost/move/utility_core.hpp>
 
 #define BOOST_PARAMETER_FUN_DECL_PARAM(z, n, p)                              \
-    boost::forward<BOOST_PP_CAT(T, n)>(BOOST_PP_CAT(p, n))
+    ::boost::forward<BOOST_PP_CAT(T, n)>(BOOST_PP_CAT(p, n))
 /**/
 
 #include <boost/preprocessor/repetition/enum.hpp>
 
 #define BOOST_PARAMETER_FUN_DEFN_1(z, n, params)                             \
-    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class T)>                         \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename T)>                      \
     BOOST_PP_TUPLE_ELEM(3, 0, params)                                        \
         BOOST_PP_TUPLE_ELEM(3, 1, params)(                                   \
             BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, T, && p)                     \
@@ -89,7 +89,7 @@
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 #define BOOST_PARAMETER_FUN_DEFN_0(z, n, params)                             \
-    template <BOOST_PP_ENUM_PARAMS_Z(z, n, class T)>                         \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename T)>                      \
     BOOST_PP_TUPLE_ELEM(3, 0, params)                                        \
         BOOST_PP_TUPLE_ELEM(3, 1, params)(                                   \
             BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, T, const& p)                 \
@@ -128,7 +128,10 @@
 
 #define BOOST_PARAMETER_FUN_DEFN_R(r, seq)                                   \
     template <                                                               \
-    BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), class T) \
+        BOOST_PP_ENUM_PARAMS(                                                \
+            BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                        \
+          , typename T                                                       \
+        )                                                                    \
     > BOOST_PP_TUPLE_ELEM(3, 0, BOOST_PP_SEQ_HEAD(seq))                      \
         BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))(                   \
             BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                       \
@@ -180,10 +183,10 @@
 
 // Generates:
 //
-// template <class Params>
+// template <typename Params>
 // ret name ## _with_named_params(Params const&);
 //
-// template <class T0>
+// template <typename T0>
 // ret name(
 //     T0 && p0
 //   , typename parameters::match<T0>::type kw = parameters()
@@ -192,7 +195,7 @@
 //     return name ## _with_named_params(kw(p0));
 // }
 //
-// template <class T0, ..., class T ## N>
+// template <typename T0, ..., typename T ## N>
 // ret name(
 //     T0 && p0, ..., TN && p ## N
 //   , typename parameters::match<T0, ..., T ## N>::type kw = parameters()
@@ -201,7 +204,7 @@
 //     return name ## _with_named_params(kw(p0, ..., p ## N));
 // }
 //
-// template <class Params>
+// template <typename Params>
 // ret name ## _with_named_params(Params const&)
 //
 // lo and hi determine the min and max arities of the generated functions.
@@ -211,12 +214,12 @@
         lo, BOOST_PP_INC(hi), BOOST_PARAMETER_FUN_DECL                       \
       , (ret, name, parameters)                                              \
     )                                                                        \
-    template <class Params>                                                  \
+    template <typename Params>                                               \
     ret BOOST_PP_CAT(name, _with_named_params)(Params const& p)
 /**/
 
 #define BOOST_PARAMETER_FUN(ret, name, lo, hi, parameters)                   \
-    template <class Params>                                                  \
+    template <typename Params>                                               \
     ret BOOST_PP_CAT(name, _with_named_params)(Params const& p);             \
     BOOST_PARAMETER_MEMFUN(ret, name, lo, hi, parameters)
 /**/
