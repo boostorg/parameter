@@ -1294,7 +1294,21 @@ namespace boost { namespace parameter { namespace aux {
         ]                                                                    \
     )
 /**/
-#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#elif defined(BOOST_GCC_VERSION)
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_OPT_ARG_CAST(arg, tag_ns)          \
+    BOOST_PARAMETER_FUNCTION_CAST_T(                                         \
+        tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                             \
+      , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
+      , Args                                                                 \
+    )(                                                                       \
+        args[                                                                \
+            ::boost::parameter::keyword<                                     \
+                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
+            >::instance || ::boost::parameter::aux::use_default_tag()        \
+        ]                                                                    \
+    )
+/**/
+#else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING, BOOST_GCC_VERSION)
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_OPT_ARG_CAST(arg, tag_ns)          \
     BOOST_PARAMETER_FUNCTION_CAST_B(                                         \
         args[                                                                \

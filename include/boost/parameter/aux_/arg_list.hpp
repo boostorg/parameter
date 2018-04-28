@@ -117,28 +117,6 @@ namespace boost { namespace parameter { namespace aux {
                 typedef ::boost::parameter::aux::empty_arg_list type;
             };
         };
-
-        template <typename K, typename T>
-        inline T& get(::boost::parameter::aux::default_<K,T> const& x) const
-        {
-            return x.value;
-        }
-
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        template <typename K, typename T>
-        inline T&&
-            get(::boost::parameter::aux::default_r_<K,T> const& x) const
-        {
-            return ::boost::forward<T>(x.value);
-        }
-#endif
-
-        template <typename K, typename F>
-        inline typename ::boost::parameter::aux::result_of0<F>::type
-            get(::boost::parameter::aux::lazy_default<K,F> const& x) const
-        {
-            return x.compute_default();
-        }
 #endif // Borland workarounds needed.
 
         // If either of these operators are called, it means there is no
@@ -501,7 +479,7 @@ namespace boost { namespace parameter { namespace aux {
           , ::boost::mpl::true_
         >::type
             operator[](
-                ::boost::parameter::aux::lazy_default<KW,F> const& x
+                BOOST_PARAMETER_lazy_default_fallback<KW,F> const& x
             ) const
         {
             typename ::boost::mpl::apply_wrap1<key_owner,KW>::type const&
@@ -543,7 +521,7 @@ namespace boost { namespace parameter { namespace aux {
         template <typename Default>
         inline reference
             get(
-                ::boost::parameter::aux::lazy_default<key_type,Default> const&
+                BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
         {
             return this->arg.get_value();
@@ -579,7 +557,7 @@ namespace boost { namespace parameter { namespace aux {
         template <typename Default>
         inline reference
             operator[](
-                ::boost::parameter::aux::lazy_default<key_type,Default> const&
+                BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
         {
             BOOST_MPL_ASSERT_NOT((holds_maybe));
@@ -695,7 +673,7 @@ namespace boost { namespace mpl {
     template <>
     struct begin_impl< ::boost::parameter::aux::arg_list_tag>
     {
-        template <class S>
+        template <typename S>
         struct apply
         {
             typedef ::boost::parameter::aux::arg_list_iterator<S> type;
@@ -710,7 +688,7 @@ namespace boost { namespace mpl {
     template <>
     struct end_impl< ::boost::parameter::aux::arg_list_tag>
     {
-        template <class>
+        template <typename>
         struct apply
         {
             typedef ::boost::parameter::aux::arg_list_iterator<
