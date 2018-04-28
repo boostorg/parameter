@@ -465,6 +465,22 @@ namespace boost { namespace parameter { namespace python { namespace aux {
       , typename Keywords
     >
     void
+        def_combination_aux(
+            Def def
+          , F f
+          , Iter
+          , End
+          , Keywords const& keywords
+        );
+
+    template <
+        typename Def
+      , typename F
+      , typename Iter
+      , typename End
+      , typename Keywords
+    >
+    void
         def_combination_aux0(
             Def def
           , F f
