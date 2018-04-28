@@ -6,36 +6,39 @@
 #ifndef BOOST_PARAMETER_AUX_RESULT_OF0_DWA2005511_HPP
 #define BOOST_PARAMETER_AUX_RESULT_OF0_DWA2005511_HPP
 
+#include <boost/parameter/aux_/use_default_tag.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/utility/result_of.hpp>
+#include <boost/config.hpp>
+
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#include <boost/type_traits/is_void.hpp>
+#else
+#include <type_traits>
+#endif
 
 // A metafunction returning the result of invoking a nullary function object
 // of the given type.
 
 namespace boost { namespace parameter { namespace aux {
 
-#if defined(BOOST_NO_RESULT_OF)
     template <typename F>
     struct result_of0
     {
-        typedef typename F::result_type type;
-    };
+#if defined(BOOST_NO_RESULT_OF)
+        typedef typename F::result_type result_of_F;
 #else
-    template <typename F>
-    struct result_of0 : ::boost::result_of<F()>
-    {
-    };
-#endif 
-
-}}} // namespace boost::parameter::aux
-
-#include <boost/parameter/aux_/use_default_tag.hpp>
-
-namespace boost { namespace parameter { namespace aux {
-
-    template <>
-    struct result_of0< ::boost::parameter::aux::use_default_tag>
-    {
-        typedef ::boost::parameter::aux::use_default_tag type;
+        typedef typename ::boost::result_of<F()>::type result_of_F;
+#endif
+        typedef typename ::boost::mpl::if_<
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+            ::boost::is_void<result_of_F>
+#else
+            ::std::is_void<result_of_F>
+#endif
+          , ::boost::parameter::aux::use_default_tag
+          , result_of_F
+        >::type type;
     };
 }}} // namespace boost::parameter::aux
 

@@ -23,9 +23,6 @@
 #include <boost/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#include <boost/mpl/is_placeholder.hpp>
-#include <boost/mpl/identity.hpp>
-
 namespace boost { namespace parameter {
 
     template <typename Parameters, typename Keyword, typename Default>
@@ -60,6 +57,9 @@ namespace boost { namespace parameter {
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
     };
 }} // namespace boost::parameter
+
+#include <boost/mpl/is_placeholder.hpp>
+#include <boost/mpl/identity.hpp>
 #endif // Borland workarounds needed.
 
 #include <boost/mpl/aux_/lambda_support.hpp>

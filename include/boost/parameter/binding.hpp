@@ -6,29 +6,25 @@
 #ifndef BOOST_PARAMETER_BINDING_DWA200558_HPP
 #define BOOST_PARAMETER_BINDING_DWA200558_HPP
 
-#include <boost/parameter/aux_/result_of0.hpp>
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/apply.hpp>
+#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/config.hpp>
-#include <boost/config/workaround.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
-#include <boost/mpl/eval_if.hpp>
 #include <type_traits>
 #endif
 
-namespace boost { namespace parameter { 
-
-    // A metafunction that, given an argument pack, returns the type of
-    // the parameter identified by the given keyword.  If no such
-    // parameter has been specified, returns Default
+#include <boost/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+namespace boost { namespace parameter { 
+
     template <typename Parameters, typename Keyword, typename Default>
     struct binding0
     {
@@ -61,8 +57,19 @@ namespace boost { namespace parameter {
         ));
 #endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
     };
+}} // namespace boost::parameter
+
+#include <boost/mpl/is_placeholder.hpp>
+#include <boost/mpl/identity.hpp>
 #endif // Borland workarounds needed.
 
+#include <boost/mpl/aux_/lambda_support.hpp>
+
+namespace boost { namespace parameter { 
+
+    // A metafunction that, given an argument pack, returns the type of the
+    // parameter identified by the given keyword.  If no such parameter has
+    // been specified, returns Default.
     template <
         typename Parameters
       , typename Keyword
@@ -112,6 +119,11 @@ namespace boost { namespace parameter {
           , (Parameters, Keyword, Default)
         )
     };
+}} // namespace boost::parameter
+
+#include <boost/parameter/aux_/result_of0.hpp>
+
+namespace boost { namespace parameter { 
 
     // A metafunction that, given an argument pack, returns the type of
     // the parameter identified by the given keyword.  If no such
