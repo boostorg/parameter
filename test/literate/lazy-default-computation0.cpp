@@ -22,7 +22,7 @@ std::string f(ArgumentPack const& args)
 int main()
 {
     std::string x = f((_s1="hello,", _s2=" world", _s3="hi world"));
-    BOOST_TEST_EQ(x, std::string("hello, world"));
+    BOOST_TEST_EQ(x, std::string("hi world"));
     return boost::report_errors();
 }
 
