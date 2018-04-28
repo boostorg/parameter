@@ -668,7 +668,8 @@ namespace test {
         C() : B()
         {
         }
-#else
+#endif
+
         BOOST_PARAMETER_CONSTRUCTOR(C, (B), kw,
             (required
                 (lrc0, *)
@@ -677,7 +678,6 @@ namespace test {
                 (rr0, *)
             )
         )
-#endif
     };
 } // namespace test
 
