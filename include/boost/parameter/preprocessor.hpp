@@ -6,6 +6,7 @@
 #ifndef BOOST_PARAMETER_PREPROCESSOR_060206_HPP
 #define BOOST_PARAMETER_PREPROCESSOR_060206_HPP
 
+#include <boost/parameter/aux_/void.hpp>
 #include <boost/parameter/aux_/result_of0.hpp>
 #include <boost/parameter/config.hpp>
 #include <boost/mpl/placeholders.hpp>
