@@ -42,7 +42,12 @@ namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
         (deduced
-            (optional (x, *(test::predicate), BOOST_TTI_DETAIL_NULLPTR))
+            (optional
+                (x
+                  , *(test::predicate)
+                  , static_cast<char const*>(BOOST_TTI_DETAIL_NULLPTR)
+                )
+            )
         )
     )
     {

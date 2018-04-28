@@ -82,12 +82,12 @@ namespace test {
     {
         float v = p[test::value | 3.f];
         BOOST_TEST_EQ(v, 3.f);
-        assert_equal_string(p[test::name | "bar"], "foo");
+        test::assert_equal_string(p[test::name | "bar"], "foo");
     }
 
     void f()
     {
-        f_impl(f_parameters()());
+        test::f_impl(f_parameters()());
     }
 } // namespace test
 
@@ -102,7 +102,7 @@ namespace test {
           , BOOST_PARAMETER_MATCH(f_parameters, (A0), args)
         )
     {
-        f_impl(args(a0));
+        test::f_impl(args(a0));
     }
 
     template <typename A0, typename A1>
@@ -113,7 +113,7 @@ namespace test {
           , BOOST_PARAMETER_MATCH(f_parameters, (A0)(A1), args)
         )
     {
-        f_impl(args(a0, a1));
+        test::f_impl(args(a0, a1));
     }
 } // namespace test
 

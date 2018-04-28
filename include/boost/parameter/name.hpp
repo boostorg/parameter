@@ -239,7 +239,7 @@ namespace boost { namespace mpl {
     {                                                                        \
         struct name;                                                         \
     }                                                                        \
-    template <class T>                                                       \
+    template <typename T>                                                    \
     struct name : ::boost::parameter::template_keyword<tag::name,T>          \
     {                                                                        \
     };

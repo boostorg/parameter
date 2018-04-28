@@ -258,19 +258,6 @@ namespace boost { namespace parameter { namespace python { namespace aux {
     };
 }}}} // namespace boost::parameter::python::aux
 
-#include <boost/python/to_python_converter.hpp>
-
-namespace boost { namespace parameter { namespace python { namespace aux {
-
-    inline void initialize_converter()
-    {
-        static ::boost::python::to_python_converter<
-            ::boost::parameter::python::aux::empty_tag
-          , ::boost::parameter::python::aux::empty_tag_to_python
-        > x;
-    }
-}}}} // namespace boost::parameter::python::aux
-
 #include <boost/python/def.hpp>
 
 namespace boost { namespace parameter { namespace python { namespace aux {
@@ -390,6 +377,19 @@ namespace boost { namespace parameter { namespace python { namespace aux {
             );
         }
     };
+}}}} // namespace boost::parameter::python::aux
+
+#include <boost/python/to_python_converter.hpp>
+
+namespace boost { namespace parameter { namespace python { namespace aux {
+
+    inline void initialize_converter()
+    {
+        static ::boost::python::to_python_converter<
+            ::boost::parameter::python::aux::empty_tag
+          , ::boost::parameter::python::aux::empty_tag_to_python
+        > x;
+    }
 }}}} // namespace boost::parameter::python::aux
 
 #include <boost/parameter/aux_/maybe.hpp>
