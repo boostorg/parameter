@@ -568,7 +568,11 @@ namespace boost { namespace parameter { namespace aux {
 #define BOOST_PARAMETER_FUNCTION_CAST_T(tag, predicate, args)                \
     typename ::boost::mpl::apply_wrap1<                                      \
         ::boost::parameter::aux::cast<void predicate, args>                  \
-      , typename ::boost::parameter::value_type<args, tag>::type             \
+      , typename ::boost::parameter::value_type<                             \
+            args                                                             \
+          , tag                                                              \
+          , ::boost::parameter::aux::use_default_tag                         \
+        >::type                                                              \
     >::type
 /**/
 

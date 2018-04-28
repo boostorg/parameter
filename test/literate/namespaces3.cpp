@@ -24,7 +24,7 @@ using namespace lib::keywords;
 
 int main()
 {
-    int y = lib::f(_name = "bob", _index = 2);
+    int x = lib::f(_name = "bob", _index = 2);
     BOOST_TEST_EQ(x, 2);
     return boost::report_errors();
 }
