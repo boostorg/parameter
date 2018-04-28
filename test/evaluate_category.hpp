@@ -268,7 +268,7 @@ namespace test {
                         >::type
                     >
                 >
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , boost::mpl::true_
               , boost::mpl::false_
             >

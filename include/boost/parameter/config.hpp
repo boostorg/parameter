@@ -28,8 +28,8 @@
 #define BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif
 
-#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-#if !defined BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if !defined(BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY)
 #define BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY 11
 #endif
 #endif
@@ -37,19 +37,33 @@
 // Only in the absence of perfect forwarding should client code be limited
 // by BOOST_PARAMETER_MAX_ARITY.  However, BOOST_PARAMETER_MAX_ARITY will
 // remain defined for code that still needs it. -- Cromwell D. Enage
-//#if !defined BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-#if !defined BOOST_PARAMETER_MAX_ARITY
+//#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if !defined(BOOST_PARAMETER_MAX_ARITY)
 #define BOOST_PARAMETER_MAX_ARITY 8
 #endif
 //#endif
 
 #if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-#define BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
-#elif !defined(BOOST_MSVC) && \
-    !(defined(BOOST_CLANG) && (1 == BOOST_CLANG) && defined(__APPLE_CC__))
-// Most other compilers have ICEd on certain tests due to
-// using Cxx11 type traits instead of the Boost versions.
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+        !defined(BOOST_MSVC) && ( \
+            ( \
+                defined(BOOST_CLANG) && (1 == BOOST_CLANG) && \
+                !defined(__APPLE_CC__) \
+            ) || ( \
+                BOOST_WORKAROUND(BOOST_GCC_VERSION, < 40800) && \
+                defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+            ) || ( \
+                BOOST_WORKAROUND(BOOST_GCC_VERSION, >= 40800) && \
+                BOOST_WORKAROUND(BOOST_GCC_VERSION, < 40900) \
+            ) || ( \
+                BOOST_WORKAROUND(BOOST_GCC_VERSION, >= 40900) && \
+                !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+            ) \
+        ) \
+    )
+// Most other compilers fulfulling the condition above have ICEd on certain
+// tests due to using Cxx11 type traits instead of the Boost versions.
+// -- Cromwell D. Enage
 #define BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 #endif
 #endif
