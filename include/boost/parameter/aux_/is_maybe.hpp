@@ -13,9 +13,9 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/config.hpp>
+#include <boost/parameter/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #else
@@ -28,7 +28,7 @@ namespace boost { namespace parameter { namespace aux {
 
     template <typename T>
     struct is_maybe
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : ::boost::is_base_of<
             ::boost::parameter::aux::maybe_base
           , typename ::boost::remove_const<T>::type

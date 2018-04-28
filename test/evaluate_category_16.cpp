@@ -201,8 +201,6 @@ namespace test {
     };
 } // namespace test
 
-#include <boost/config.hpp>
-
 int main()
 {
     test::D::evaluate(

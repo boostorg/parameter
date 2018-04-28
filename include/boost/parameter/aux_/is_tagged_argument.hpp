@@ -16,7 +16,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/config.hpp>
 
 #if 1//defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
@@ -50,7 +50,7 @@ namespace boost { namespace parameter { namespace aux {
 #if 1//defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         // Cannot use is_convertible<> to check if T is derived from
         // tagged_argument_base. -- Cromwell D. Enage
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : ::boost::is_base_of<
             ::boost::parameter::aux::tagged_argument_base
           , typename ::boost::remove_const<

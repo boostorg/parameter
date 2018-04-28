@@ -49,9 +49,8 @@ namespace test {
 } // namespace test
 
 #include <boost/mpl/assert.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -70,7 +69,7 @@ namespace test {
         )
     )
     {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT((boost::is_convertible<x_type,long>));
         BOOST_MPL_ASSERT((boost::is_convertible<y_type,long>));
 #else
@@ -88,7 +87,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
         return 0;
     }
 } // namespace test
@@ -103,7 +102,7 @@ namespace test {
         )
     )
     {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT((
             boost::is_convertible<x_type,test::count_instances>
         ));
@@ -115,7 +114,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif
         x.noop();
         BOOST_TEST_LT(0, test::count_instances::count);
         return 0;
@@ -127,7 +126,7 @@ namespace test {
         )
     )
     {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT((
             boost::is_convertible<x_type,test::count_instances const>
         ));

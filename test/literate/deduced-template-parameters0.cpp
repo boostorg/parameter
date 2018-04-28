@@ -1,9 +1,5 @@
 
 #include <boost/parameter.hpp>
-#include <boost/mpl/is_sequence.hpp>
-#include <boost/noncopyable.hpp>
-#include <memory>
-#include <boost/config.hpp>
 
 namespace boost { namespace python {
 
@@ -31,8 +27,10 @@ namespace boost { namespace python {
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits.hpp>
 #else
 #include <type_traits>
@@ -43,7 +41,7 @@ namespace boost { namespace python {
     typedef boost::parameter::parameters<
         boost::parameter::required<
             tag::class_type
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #if defined(BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION) && \
     (1 == BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION)
           , boost::is_class<boost::mpl::_>
@@ -54,17 +52,17 @@ namespace boost { namespace python {
               , boost::mpl::true_
             >
 #endif
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::mpl::if_<
                 std::is_class<boost::mpl::_>
               , boost::mpl::true_
               , boost::mpl::false_
             >
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
         >
       , boost::parameter::optional<
             boost::parameter::deduced<tag::base_list>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::is_base_of<detail::bases_base,boost::mpl::_>
 #else
           , boost::mpl::if_<
@@ -77,17 +75,17 @@ namespace boost { namespace python {
       , boost::parameter::optional<
             boost::parameter::deduced<tag::held_type>
           , boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 boost::is_base_of<detail::bases_base,boost::mpl::_>
 #else
                 std::is_base_of<detail::bases_base,boost::mpl::_>
 #endif
               , boost::mpl::false_
               , boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-                    boost::is_same<noncopyable,boost::mpl::_>
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+                    boost::is_same<boost::noncopyable,boost::mpl::_>
 #else
-                    std::is_same<noncopyable,boost::mpl::_>
+                    std::is_same<boost::noncopyable,boost::mpl::_>
 #endif
                   , boost::mpl::false_
                   , boost::mpl::true_
@@ -96,11 +94,11 @@ namespace boost { namespace python {
         >
       , boost::parameter::optional<
             boost::parameter::deduced<tag::copyable>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
-          , boost::is_same<noncopyable,boost::mpl::_>
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+          , boost::is_same<boost::noncopyable,boost::mpl::_>
 #else
           , boost::mpl::if_<
-                std::is_same<noncopyable,boost::mpl::_>
+                std::is_same<boost::noncopyable,boost::mpl::_>
               , boost::mpl::true_
               , boost::mpl::false_
             >
@@ -149,6 +147,8 @@ struct D
 
 typedef boost::python::class_<B,boost::noncopyable> c1;
 
+#include <memory>
+
 #if defined(BOOST_NO_CXX11_SMART_PTR)
 typedef boost::python::class_<D,std::auto_ptr<D>,boost::python::bases<B> > c2;
 #else
@@ -162,7 +162,7 @@ typedef boost::python::class_<
 
 MPL_TEST_CASE()
 {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((boost::is_same<c1::class_type,B>));
     BOOST_MPL_ASSERT((boost::is_same<c1::base_list,boost::python::bases<> >));
     BOOST_MPL_ASSERT((boost::is_same<c1::held_type,B>));
@@ -179,7 +179,7 @@ MPL_TEST_CASE()
     ));
 #endif
     BOOST_MPL_ASSERT((boost::is_same<c2::copyable,void>));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::mpl::if_<
             std::is_same<c1::class_type,B>
@@ -246,6 +246,6 @@ MPL_TEST_CASE()
           , boost::mpl::false_
         >::type
     ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 }
 

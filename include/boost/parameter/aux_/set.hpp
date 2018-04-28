@@ -6,7 +6,7 @@
 #ifndef BOOST_PARAMETER_SET_060912_HPP
 #define BOOST_PARAMETER_SET_060912_HPP
 
-#include <boost/config/workaround.hpp>
+#include <boost/parameter/config.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 
@@ -16,9 +16,8 @@
 #include <boost/mpl/end.hpp>
 #include <boost/mpl/find.hpp>
 #include <boost/mpl/push_front.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
 #include <type_traits>
@@ -38,7 +37,7 @@ namespace boost { namespace parameter { namespace aux {
     {
         typedef typename ::boost::mpl::find<Set,K>::type iter;
         typedef typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_same<iter,typename ::boost::mpl::end<Set>::type>
 #else
             ::std::is_same<iter,typename ::boost::mpl::end<Set>::type>

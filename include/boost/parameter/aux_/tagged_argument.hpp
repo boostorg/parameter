@@ -17,7 +17,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/config.hpp>
 #include <boost/mpl/eval_if.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #else
@@ -29,7 +29,7 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Keyword, typename Arg>
     struct tagged_argument_type
       : ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_same<
 #else
             ::std::is_same<
@@ -38,7 +38,7 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::parameter::out_reference
             >
           , ::boost::parameter::aux::error_const_lvalue_bound_to_out_parameter
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , ::boost::remove_const<Arg>
 #else
           , ::std::remove_const<Arg>
@@ -60,14 +60,14 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
 #include <boost/type_traits/is_const.hpp>
 #endif
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/remove_reference.hpp>
@@ -94,13 +94,13 @@ namespace boost { namespace parameter { namespace aux {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         typedef typename ::boost::mpl::eval_if<
             typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<Arg>
 #else
                 ::std::is_scalar<Arg>
 #endif
               , ::boost::mpl::false_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , ::boost::is_same<
 #else
               , ::std::is_same<
@@ -111,7 +111,7 @@ namespace boost { namespace parameter { namespace aux {
             >::type
           , ::boost::parameter::aux::error_lvalue_bound_to_consume_parameter
           , ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -126,7 +126,7 @@ namespace boost { namespace parameter { namespace aux {
             >
         >::type arg_type;
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef typename ::boost::remove_const<Arg>::type arg_type;
 #else
         typedef typename ::std::remove_const<Arg>::type arg_type;
@@ -139,7 +139,7 @@ namespace boost { namespace parameter { namespace aux {
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
         typedef typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_function<arg_type>
 #else
             ::std::is_function<arg_type>
@@ -158,7 +158,7 @@ namespace boost { namespace parameter { namespace aux {
         // argument is an lvalue, then Arg will be deduced to the lvalue
         // reference. -- Cromwell D. Enage
         typedef typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_function<arg_type>
 #else
             ::std::is_function<arg_type>
@@ -171,7 +171,7 @@ namespace boost { namespace parameter { namespace aux {
         // Store plain functions by value, everything else by reference.
         // -- Cromwell D. Enage
         typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_function<arg_type>
 #else
             ::std::is_function<arg_type>
@@ -199,7 +199,7 @@ namespace boost { namespace parameter { namespace aux {
             struct apply
             {
                 typedef typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<KW,key_type>
 #else
                     ::std::is_same<KW,key_type>
@@ -452,7 +452,7 @@ namespace boost { namespace parameter { namespace aux {
       : ::boost::parameter::aux::tagged_argument_base
     {
         typedef typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_same<
 #else
             ::std::is_same<
@@ -489,7 +489,7 @@ namespace boost { namespace parameter { namespace aux {
             struct apply
             {
                 typedef typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<KW,key_type>
 #else
                     ::std::is_same<KW,key_type>

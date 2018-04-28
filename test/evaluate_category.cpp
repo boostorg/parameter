@@ -36,7 +36,7 @@ namespace test {
     };
 } // namespace test
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_scalar.hpp>
 #else
 #include <type_traits>
@@ -63,7 +63,7 @@ namespace test {
             );
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             if (boost::is_scalar<T>::value)
 #else
             if (std::is_scalar<T>::value)
@@ -105,7 +105,7 @@ namespace test {
 
 #include <boost/mpl/placeholders.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -118,7 +118,7 @@ namespace test {
       : boost::parameter::parameters<
             boost::parameter::required<
                 boost::parameter::deduced<test::keywords::lrc0>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , boost::is_convertible<boost::mpl::_1,float>
 #else
               , boost::mpl::if_<
@@ -130,7 +130,7 @@ namespace test {
             >
           , boost::parameter::required<
                 boost::parameter::deduced<test::keywords::lr0>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , boost::is_convertible<boost::mpl::_1,char const*>
 #else
               , boost::mpl::if_<
@@ -149,7 +149,7 @@ namespace test {
     };
 } // namespace test
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/remove_const.hpp>
 #endif
 
@@ -160,7 +160,7 @@ namespace test {
         template <typename Args>
         static void evaluate(Args const& args)
         {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
@@ -181,7 +181,7 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_lr0])
             ));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename std::remove_const<
@@ -202,10 +202,10 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_lr0])
             ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename boost::remove_const<
@@ -216,7 +216,7 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename std::remove_const<
@@ -227,9 +227,9 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
@@ -240,7 +240,7 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename std::remove_const<
@@ -251,7 +251,7 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         }
     };

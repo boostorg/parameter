@@ -9,7 +9,7 @@
 #include <boost/mpl/placeholders.hpp>
 #include "deduced.hpp"
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -31,7 +31,7 @@ int main()
             test::tag::x
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::y>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , boost::is_same<
 #else
               , boost::mpl::if_<
@@ -39,7 +39,7 @@ int main()
 #endif
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
                         boost::mpl::_1
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                       , boost::remove_reference<
 #else
                       , std::remove_reference<
@@ -50,7 +50,7 @@ int main()
                             >
                         >
 #else // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         boost::add_lvalue_reference<boost::mpl::_1>
 #else
                         std::add_lvalue_reference<boost::mpl::_1>
@@ -58,7 +58,7 @@ int main()
                       , boost::parameter::binding<boost::mpl::_2,test::tag::x>
 #endif // Borland workarounds needed.
                     >
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , boost::mpl::true_
                   , boost::mpl::false_
                 >
@@ -72,7 +72,7 @@ int main()
             test::tag::x
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::y>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , boost::is_same<
 #else
               , boost::mpl::if_<
@@ -80,7 +80,7 @@ int main()
 #endif
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
                         boost::mpl::_1
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                       , boost::remove_reference<
 #else
                       , std::remove_reference<
@@ -91,7 +91,7 @@ int main()
                             >
                         >
 #else // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         boost::add_lvalue_reference<boost::mpl::_1>
 #else
                         std::add_lvalue_reference<boost::mpl::_1>
@@ -99,7 +99,7 @@ int main()
                       , boost::parameter::binding<boost::mpl::_2,test::tag::x>
 #endif // Borland workarounds needed.
                     >
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , boost::mpl::true_
                   , boost::mpl::false_
                 >
@@ -113,7 +113,7 @@ int main()
             test::tag::x
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::y>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , boost::is_convertible<boost::mpl::_1,test::tag::x::_>
 #else
               , boost::mpl::if_<
@@ -131,7 +131,7 @@ int main()
             test::tag::x
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::y>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , boost::is_convertible<boost::mpl::_1,test::tag::x::_1>
 #else
               , boost::mpl::if_<

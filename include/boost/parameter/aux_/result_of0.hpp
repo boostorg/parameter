@@ -7,11 +7,11 @@
 #define BOOST_PARAMETER_AUX_RESULT_OF0_DWA2005511_HPP
 
 #include <boost/parameter/aux_/use_default_tag.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/utility/result_of.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_void.hpp>
 #else
 #include <type_traits>
@@ -31,7 +31,7 @@ namespace boost { namespace parameter { namespace aux {
         typedef typename ::boost::result_of<F()>::type result_of_F;
 #endif
         typedef typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_void<result_of_F>
 #else
             ::std::is_void<result_of_F>

@@ -10,9 +10,8 @@ BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 #include <boost/graph/graph_traits.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -24,7 +23,7 @@ struct vertex_descriptor_predicate
 {
     template <typename T, typename Args>
     struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : boost::is_convertible<
 #else
       : boost::mpl::if_<
@@ -38,7 +37,7 @@ struct vertex_descriptor_predicate
                     >::type
                 >::vertex_descriptor
             >
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::mpl::true_
           , boost::mpl::false_
         >
@@ -47,7 +46,7 @@ struct vertex_descriptor_predicate
     };
 };
 
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/mpl/eval_if.hpp>
 #endif
 
@@ -55,7 +54,7 @@ struct graph_predicate
 {
     template <typename T, typename Args>
     struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : boost::mpl::if_<
             boost::is_convertible<
 #else
@@ -65,7 +64,7 @@ struct graph_predicate
                 typename boost::graph_traits<T>::traversal_category
               , boost::incidence_graph_tag
             >
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::is_convertible<
 #else
           , boost::mpl::if_<
@@ -73,7 +72,7 @@ struct graph_predicate
 #endif
                     typename boost::graph_traits<T>::traversal_category
                   , boost::vertex_list_graph_tag
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 >
               , boost::mpl::true_
               , boost::mpl::false_
@@ -87,7 +86,7 @@ struct graph_predicate
 
 #include <boost/property_map/property_map.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #endif
 
@@ -108,7 +107,7 @@ struct color_map_predicate
     };
 };
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_integral.hpp>
 #endif
 
@@ -116,7 +115,7 @@ struct index_map_predicate
 {
     template <typename T, typename Args>
     struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : boost::mpl::if_<
             boost::is_integral<
 #else
@@ -125,7 +124,7 @@ struct index_map_predicate
 #endif
                 typename boost::property_traits<T>::value_type
             >
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::is_same<
 #else
           , boost::mpl::if_<
@@ -138,7 +137,7 @@ struct index_map_predicate
                           , graphs::graph
                         >::type
                     >::vertex_descriptor
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 >
               , boost::mpl::true_
               , boost::mpl::false_

@@ -7,13 +7,13 @@
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/parameter/python.hpp>
-#include <boost/config.hpp>
+#include <boost/parameter/config.hpp>
 #include <cmath>
 
 #if !defined(BOOST_NO_SFINAE)
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_base_of.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -36,7 +36,7 @@ namespace test {
 #if !defined(BOOST_NO_SFINAE)
             // We need the disable_if part for VC7.1/8.0.
           , typename boost::disable_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 boost::is_base_of<Xbase,Args>
 #else
                 typename boost::mpl::if_<

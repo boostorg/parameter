@@ -225,7 +225,7 @@ namespace test {
 
 #include <boost/parameter/value_type.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
@@ -242,7 +242,7 @@ namespace test {
     {
         template <typename Arg, typename Args>
         struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           : boost::is_convertible<
 #else
           : boost::mpl::if_<
@@ -250,7 +250,7 @@ namespace test {
 #endif
                     Arg
                   , std::basic_string<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         typename boost::remove_const<
                             typename boost::remove_pointer<
 #else

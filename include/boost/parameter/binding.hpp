@@ -7,14 +7,14 @@
 #define BOOST_PARAMETER_BINDING_DWA200558_HPP
 
 #include <boost/parameter/aux_/void.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
 #include <type_traits>
@@ -35,7 +35,7 @@ namespace boost { namespace parameter {
           , ::boost::mpl::true_
         >::type type;
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT_NOT((
             typename ::boost::mpl::if_<
                 ::boost::is_same<Default,::boost::parameter::void_>
@@ -55,7 +55,7 @@ namespace boost { namespace parameter {
               , ::boost::mpl::false_
             >::type
         ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
     };
 }} // namespace boost::parameter
 
@@ -90,7 +90,7 @@ namespace boost { namespace parameter {
           , Default
           , ::boost::mpl::true_
         >::type type;
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT_NOT((
             typename ::boost::mpl::if_<
                 ::boost::is_same<Default,::boost::parameter::void_>
@@ -110,7 +110,7 @@ namespace boost { namespace parameter {
               , ::boost::mpl::false_
             >::type
         ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 #endif // Borland workarounds needed.
 
         BOOST_MPL_AUX_LAMBDA_SUPPORT(

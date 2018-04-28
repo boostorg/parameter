@@ -11,7 +11,7 @@
 #include "basics.hpp"
 #include <string>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -27,7 +27,7 @@ namespace test {
     {
         template <typename T, typename Args>
         struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           : boost::is_convertible<T,char const*>
 #else
           : boost::mpl::if_<
@@ -56,7 +56,7 @@ namespace test {
 
     template <typename A0>
     typename boost::enable_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         boost::is_same<int,A0>
 #else
         typename boost::mpl::if_<

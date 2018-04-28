@@ -16,9 +16,7 @@ namespace test {
     BOOST_PARAMETER_NAME((value, keywords) in(value))
 } // namespace test
 
-#include <boost/config.hpp>
-
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -33,7 +31,7 @@ namespace test {
     {
         template <typename From, typename Args>
         struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           : boost::is_convertible<From,To>
 #else
           : boost::mpl::if_<
@@ -117,14 +115,12 @@ namespace test {
     }
 } // namespace test
 
-#include <boost/config/workaround.hpp>
-
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
 
 #include <boost/core/enable_if.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #endif
 
@@ -137,7 +133,7 @@ namespace test {
     // SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0, typename A1>
     typename boost::enable_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         boost::is_same<int,A0>
 #else
         typename boost::mpl::if_<

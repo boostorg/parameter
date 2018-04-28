@@ -6,9 +6,8 @@
 
 #include <boost/mpl/assert.hpp>
 #include <boost/parameter.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -43,7 +42,7 @@ namespace test {
 
     template <typename T>
     struct Y
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : boost::is_same<
 #else
       : boost::mpl::if_<
@@ -59,7 +58,7 @@ namespace test {
               , std::function<T>
 #endif
             >
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::mpl::true_
           , boost::mpl::false_
         >::type

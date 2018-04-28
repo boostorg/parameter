@@ -4,11 +4,11 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/aux_/unwrap_cv_reference.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/mpl/aux_/test.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -18,7 +18,7 @@
 
 MPL_TEST_CASE()
 {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::is_same<
             boost::parameter::aux::unwrap_cv_reference<int>::type
@@ -45,7 +45,7 @@ MPL_TEST_CASE()
           , int const volatile
         >
     ));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::mpl::if_<
             std::is_same<
@@ -88,7 +88,7 @@ MPL_TEST_CASE()
           , boost::mpl::false_
         >::type
     ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 }
 
 namespace test {
@@ -100,7 +100,7 @@ namespace test {
 
 MPL_TEST_CASE()
 {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::is_same<
             boost::parameter::aux::unwrap_cv_reference<test::foo>::type
@@ -129,7 +129,7 @@ MPL_TEST_CASE()
           , test::foo const volatile
         >
     ));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::mpl::if_<
             std::is_same<
@@ -176,14 +176,14 @@ MPL_TEST_CASE()
           , boost::mpl::false_
         >::type
     ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 }
 
 #include <boost/ref.hpp>
 
 MPL_TEST_CASE()
 {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::is_same<
             boost::parameter::aux::unwrap_cv_reference<
@@ -216,7 +216,7 @@ MPL_TEST_CASE()
           , test::foo
         >
     ));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::mpl::if_<
             std::is_same<
@@ -265,6 +265,6 @@ MPL_TEST_CASE()
           , boost::mpl::false_
         >::type
     ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 }
 

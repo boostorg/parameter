@@ -8,7 +8,7 @@
 #include <string>
 #include "basics.hpp"
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -33,7 +33,7 @@ namespace test {
             Args,test::tag::index,int&
         >::type index_type;
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT((boost::is_same<index_type,int&>));
 #else
         BOOST_MPL_ASSERT((
@@ -55,7 +55,7 @@ namespace test {
     }
 } // namespace test
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/remove_const.hpp>
 #endif
 
@@ -76,7 +76,7 @@ namespace test {
             Args,test::tag::index,int
         >::type index_type;
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT((
             boost::is_same<typename boost::remove_const<index_type>::type,int>
         ));
@@ -100,7 +100,7 @@ namespace test {
     }
 } // namespace test
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/remove_reference.hpp>
 #endif
 
@@ -119,7 +119,7 @@ namespace test {
     {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT((
             boost::is_same<
                 typename boost::remove_const<
@@ -141,7 +141,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 #endif // Borland/MSVC workarounds not needed.
 
         tester(name, value, index);
@@ -162,7 +162,7 @@ namespace test {
     {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         BOOST_MPL_ASSERT((
             boost::is_same<
                 typename boost::remove_const<
@@ -184,7 +184,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 #endif // Borland/MSVC workarounds not needed.
 
         tester(name, value, index);
@@ -196,7 +196,7 @@ namespace test {
 #if !defined(BOOST_NO_SFINAE)
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_base_of.hpp>
 #endif
 #endif
@@ -213,7 +213,7 @@ namespace test {
             Args const& args
 #if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 boost::is_base_of<base_0,Args>
 #else
                 typename boost::mpl::if_<
@@ -246,7 +246,7 @@ namespace test {
             Args const& args
 #if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 boost::is_base_of<base_1,Args>
 #else
                 typename boost::mpl::if_<
@@ -383,7 +383,7 @@ namespace test {
     // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         boost::is_same<int,A0>
 #else
         typename boost::mpl::if_<
@@ -404,7 +404,7 @@ namespace test {
     {
         template <typename T, typename Args>
         struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           : boost::is_convertible<T,std::string>
 #else
           : boost::mpl::if_<
@@ -434,7 +434,7 @@ namespace test {
     // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         boost::is_same<int,A0>
 #else
         typename boost::mpl::if_<

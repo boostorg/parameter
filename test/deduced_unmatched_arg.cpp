@@ -8,10 +8,10 @@
 BOOST_PARAMETER_NAME(x)
 
 #include <boost/parameter/parameters.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/placeholders.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -28,7 +28,7 @@ int main()
     boost::parameter::parameters<
         boost::parameter::optional<
             boost::parameter::deduced<tag::x>
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::is_convertible<boost::mpl::_,int>
 #else
           , boost::mpl::if_<

@@ -43,13 +43,13 @@ void f()
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <type_traits>
 #endif
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 BOOST_PARAMETER_FUNCTION(
     (void), def, tag,
     (required (name,(char const*)) (func,*) )  // nondeduced
@@ -77,7 +77,7 @@ BOOST_PARAMETER_FUNCTION(
         )
     )
 )
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 BOOST_PARAMETER_FUNCTION(
     (void), def, tag,
     (required (name,(char const*)) (func,*) )  // nondeduced
@@ -105,7 +105,7 @@ BOOST_PARAMETER_FUNCTION(
         )
     )
 )
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 {
 }
 

@@ -16,7 +16,7 @@
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/is_lvalue_reference.hpp>
@@ -26,7 +26,7 @@
 #endif
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/remove_reference.hpp>
 #endif
 #endif
@@ -57,7 +57,7 @@ namespace boost { namespace parameter { namespace aux {
         typedef typename ::boost::parameter::aux::unwrap_cv_reference<
             ActualArg
         >::type Arg;
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef typename ::boost::add_const<Arg>::type ConstArg;
         typedef typename ::boost::remove_const<Arg>::type MutArg;
 #else
@@ -66,7 +66,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif
         typedef typename ::boost::mpl::eval_if<
             typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_lvalue_reference<ActualArg>
 #else
                 ::std::is_lvalue_reference<ActualArg>
@@ -78,7 +78,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::tagged_argument<Keyword,Arg>
             >
           , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<MutArg>
 #else
                 ::std::is_scalar<MutArg>
@@ -95,7 +95,7 @@ namespace boost { namespace parameter { namespace aux {
     struct tag<Keyword,ActualArg,::boost::mpl::false_>
     {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef typename ::boost::remove_reference<ActualArg>::type Arg;
         typedef typename ::boost::add_const<Arg>::type ConstArg;
         typedef typename ::boost::remove_const<Arg>::type MutArg;
@@ -105,7 +105,7 @@ namespace boost { namespace parameter { namespace aux {
         typedef typename ::std::remove_const<Arg>::type MutArg;
 #endif
         typedef typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_lvalue_reference<ActualArg>
 #else
             ::std::is_lvalue_reference<ActualArg>
@@ -114,7 +114,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::tagged_argument<Keyword,Arg>
             >
           , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<MutArg>
 #else
                 ::std::is_scalar<MutArg>
@@ -126,7 +126,7 @@ namespace boost { namespace parameter { namespace aux {
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         typedef ::boost::parameter::aux::tagged_argument<
             Keyword
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , typename ::boost::remove_reference<ActualArg>::type
 #else
           , typename ::std::remove_reference<ActualArg>::type

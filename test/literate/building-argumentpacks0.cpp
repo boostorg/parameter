@@ -22,9 +22,8 @@ int print_name_and_index(ArgumentPack const& args)
 
 #include <boost/core/lightweight_test.hpp>
 #include <boost/mpl/placeholders.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -39,7 +38,7 @@ int main()
     boost::parameter::parameters<
         boost::parameter::required<
             tag::name
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::is_convertible<boost::mpl::_,char const*>
 #else
           , boost::mpl::if_<
@@ -51,7 +50,7 @@ int main()
         >
       , boost::parameter::optional<
             tag::index
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::is_convertible<boost::mpl::_,int>
 #else
           , boost::mpl::if_<

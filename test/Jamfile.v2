@@ -16,67 +16,31 @@ build-project literate ;
 
 test-suite "parameter"
     :
-    [ run basics.cpp ]
-    [ run basics.cpp
+    [ compile unwrap_cv_reference.cpp ]
+    [ compile unwrap_cv_reference.cpp
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : unwrap_cv_ref_no_perfect_fwd
+    ]
+    [ compile function_type_tpl_param.cpp ]
+    [ compile function_type_tpl_param.cpp
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : func_type_tpl_prm_no_perfect_fwd
+    ]
+    [ compile ntp.cpp ]
+    [ compile ntp.cpp
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : ntp_no_perfect_fwd
+    ]
+    [ run maybe.cpp ]
+    [ run maybe.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : basics_no_perfect_fwd
-    ]
-    [ run sfinae.cpp ]
-    [ run sfinae.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : sfinae_no_perfect_fwd
-    ]
-    [ run compose.cpp ]
-    [ run compose.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : compose_no_perfect_fwd
-    ]
-    [ run macros.cpp ]
-    [ run macros.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : macros_no_perfect_fwd
-    ]
-    [ run macros_eval_category.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_MAX_ARITY=10
-    ]
-    [ run macros_eval_category.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        <define>BOOST_PARAMETER_MAX_ARITY=10
-        : macros_eval_cat_no_perfect_fwd
-    ]
-    [ run earwicker.cpp ]
-    [ run earwicker.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : earwicker_no_perfect_fwd
-    ]
-    [ run tutorial.cpp ]
-    [ run tutorial.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : tutorial_no_perfect_fwd
+        : maybe_no_perfect_fwd
     ]
     [ run singular.cpp ]
     [ run singular.cpp
@@ -86,13 +50,39 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : singular_no_perfect_fwd
     ]
-    [ run mpl.cpp ]
-    [ run mpl.cpp
+    [ run tutorial.cpp ]
+    [ run tutorial.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : mpl_no_perfect_fwd
+        : tutorial_no_perfect_fwd
+    ]
+    [ run compose.cpp ]
+    [ run compose.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : compose_no_perfect_fwd
+    ]
+    [ run sfinae.cpp ]
+    [ run sfinae.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : sfinae_no_perfect_fwd
+    ]
+    [ run efficiency.cpp : : : : : <variant>release ]
+    [ run efficiency.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : efficiency_no_perfect_fwd
+        :
+        <variant>release
     ]
     [ run evaluate_category.cpp ]
     [ run evaluate_category.cpp
@@ -130,6 +120,60 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=16
         : eval_cat_16_no_perfect_fwd
     ]
+    [ run normalized_argument_types.cpp ]
+    [ run normalized_argument_types.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : norm_arg_types_no_perfect_fwd
+    ]
+    [ run basics.cpp ]
+    [ run basics.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : basics_no_perfect_fwd
+    ]
+    [ run mpl.cpp ]
+    [ run mpl.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : mpl_no_perfect_fwd
+    ]
+    [ run earwicker.cpp ]
+    [ run earwicker.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : earwicker_no_perfect_fwd
+    ]
+    [ run macros.cpp ]
+    [ run macros.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : macros_no_perfect_fwd
+    ]
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+    ]
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        <define>BOOST_PARAMETER_MAX_ARITY=10
+        : macros_eval_cat_no_perfect_fwd
+    ]
     [ run preprocessor.cpp ]
     [ run preprocessor.cpp
         :
@@ -162,17 +206,6 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : preproc_eval_cat_8_no_perfect_fwd
     ]
-    [ run efficiency.cpp : : : : : <variant>release ]
-    [ run efficiency.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : efficiency_no_perfect_fwd
-        :
-        <variant>release
-    ]
-    [ run maybe.cpp ]
     [ run deduced.cpp ]
     [ run deduced.cpp
         :
@@ -197,22 +230,6 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : ded_dep_pred_no_perfect_fwd
     ]
-    [ run normalized_argument_types.cpp ]
-    [ run normalized_argument_types.cpp
-        :
-        :
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : norm_arg_types_no_perfect_fwd
-    ]
-    [ compile ntp.cpp ]
-    [ compile ntp.cpp
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : ntp_no_perfect_fwd
-    ]
-    [ compile unwrap_cv_reference.cpp ]
-    [ compile function_type_tpl_param.cpp ]
     [ compile-fail duplicates.cpp
         :
         : duplicates_fail
@@ -241,11 +258,11 @@ test-suite "parameter"
         <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         : deduced_fail
     ]
-    [ compile-fail preprocessor_eval_category.cpp
-        :
-        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
-        : preproc_eval_cat_fail
-    ]
+#    [ compile-fail preprocessor_eval_category.cpp
+#        :
+#        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+#        : preproc_eval_cat_fail
+#    ]
     [ bpl-test python_test ]
     ;
 

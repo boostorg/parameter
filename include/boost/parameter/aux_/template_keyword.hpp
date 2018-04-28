@@ -17,7 +17,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_reference.hpp>
@@ -28,14 +28,14 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/type_traits/remove_const.hpp>
 #else
 #include <type_traits>
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 
 namespace boost { namespace parameter { namespace aux {
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     template <typename T>
     struct is_template_keyword_aux
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : ::boost::is_convertible<
 #else
       : ::boost::mpl::if_<
@@ -44,7 +44,7 @@ namespace boost { namespace parameter { namespace aux {
                 T*
               , ::boost::parameter::aux::template_keyword_base const*
             >
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , ::boost::mpl::true_
           , ::boost::mpl::false_
         >::type
@@ -58,7 +58,7 @@ namespace boost { namespace parameter { namespace aux {
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         // Cannot use is_convertible<> to check if T is derived from
         // template_keyword_base. -- Cromwell D. Enage
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : ::boost::is_base_of<
             ::boost::parameter::aux::template_keyword_base
           , typename ::boost::remove_const<
@@ -79,7 +79,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       : ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_lvalue_reference<T>
 #else
             ::std::is_lvalue_reference<T>
@@ -92,7 +92,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_function.hpp>
 #endif
 
@@ -112,7 +112,7 @@ namespace boost { namespace parameter {
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
         typedef typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_function<T>
 #else
             ::std::is_function<T>

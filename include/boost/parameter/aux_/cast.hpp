@@ -148,7 +148,7 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <boost/mpl/apply.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
@@ -160,7 +160,7 @@ namespace boost { namespace parameter { namespace aux {
 
     template <typename Target, typename Source, typename Args>
     struct is_target_same_as_source
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : ::boost::is_same<
             typename ::boost::remove_const<
                 typename ::boost::remove_reference<
@@ -179,13 +179,13 @@ namespace boost { namespace parameter { namespace aux {
                         >::type
                     >::type
                 >::type
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , typename ::boost::remove_const<Source>::type
 #else
               , typename ::std::remove_const<Source>::type
 #endif
             >
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , ::boost::mpl::true_
           , ::boost::mpl::false_
         >::type
@@ -216,7 +216,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/add_const.hpp>
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/type_traits/add_lvalue_reference.hpp>
@@ -224,7 +224,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -245,7 +245,7 @@ namespace boost { namespace parameter { namespace aux {
      public:
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         typedef typename boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -255,7 +255,7 @@ namespace boost { namespace parameter { namespace aux {
 #else
             ::std::is_const<Source>
 #endif
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , ::boost::add_const<Target>
           , ::boost::remove_const<Target>
 #else
@@ -263,7 +263,7 @@ namespace boost { namespace parameter { namespace aux {
           , ::std::remove_const<Target>
 #endif
 #else // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef typename ::boost::add_lvalue_reference<
             typename ::boost::add_const<Target>::type
 #else
@@ -276,7 +276,7 @@ namespace boost { namespace parameter { namespace aux {
      private:
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         inline static typename _self::type
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             _copy(typename ::boost::remove_const<Target>::type value)
 #else
             _copy(typename ::std::remove_const<Target>::type value)
@@ -314,7 +314,7 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Target, typename Source, typename Args>
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     struct cast_impl
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : ::boost::remove_reference<
 #else
       : ::std::remove_reference<
@@ -361,7 +361,7 @@ namespace boost { namespace parameter { namespace aux {
                     ::is_target_same_as_source<Target,T,Args>
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
                   , ::boost::mpl::identity<T>
-#elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#elif defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::add_lvalue_reference<T>
 #else
                   , ::std::add_lvalue_reference<T>
@@ -487,7 +487,7 @@ namespace boost { namespace parameter { namespace aux {
         typename ::boost::mpl::eval_if<
             B
           , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -510,7 +510,7 @@ namespace boost { namespace parameter { namespace aux {
     }
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_scalar.hpp>
 #endif
 
@@ -521,7 +521,7 @@ namespace boost { namespace parameter { namespace aux {
         typename ::boost::mpl::eval_if<
             B
           , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<T>
 #else
                 ::std::is_scalar<T>

@@ -175,7 +175,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/assert.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
 #include <type_traits>
@@ -245,7 +245,7 @@ namespace boost { namespace parameter { namespace aux {
           , A0&& a0
         ) : Next(
                 typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -267,7 +267,7 @@ namespace boost { namespace parameter { namespace aux {
           , Args&&... args
         ) : Next(
                 typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -292,7 +292,7 @@ namespace boost { namespace parameter { namespace aux {
           , Args&&... args
         ) : Next(
                 typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -338,7 +338,7 @@ namespace boost { namespace parameter { namespace aux {
             struct apply
             {
                 typedef typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<KW,key_type>
 #else
                     ::std::is_same<KW,key_type>
@@ -408,7 +408,7 @@ namespace boost { namespace parameter { namespace aux {
             struct apply
             {
                 typedef typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<KW,key_type>
 #else
                     ::std::is_same<KW,key_type>

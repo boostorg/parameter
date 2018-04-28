@@ -13,7 +13,7 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -91,7 +91,7 @@ namespace test {
     )
             // Only VC and its emulators fail this; they seem to have problems
             // with deducing the constness of string literal arrays.
-#elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#elif defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             BOOST_MPL_ASSERT((boost::is_same<Index,Index_>));
             BOOST_MPL_ASSERT((boost::is_same<Value,Value_>));
             BOOST_MPL_ASSERT((boost::is_same<Name,Name_>));

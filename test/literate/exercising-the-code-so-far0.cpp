@@ -1,10 +1,5 @@
 
 #include <boost/parameter.hpp>
-#include <boost/mpl/is_sequence.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/type_traits/is_class.hpp>
-#include <memory>
-#include <boost/config.hpp>
 
 using namespace boost::parameter;
 
@@ -21,12 +16,43 @@ namespace boost { namespace python {
     };
 }}
 
+#include <boost/mpl/placeholders.hpp>
+#include <boost/mpl/is_sequence.hpp>
+#include <boost/config.hpp>
+
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+#include <boost/type_traits/is_class.hpp>
+#if !defined(BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION) || \
+    !(1 == BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION)
+#include <boost/type_traits/is_scalar.hpp>
+#endif
+#else
+#include <type_traits>
+#endif
+
 namespace boost { namespace python {
 
     typedef boost::parameter::parameters<
         boost::parameter::required<
             tag::class_type
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+#if defined(BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION) && \
+    (1 == BOOST_TT_HAS_CONFORMING_IS_CLASS_IMPLEMENTATION)
           , boost::is_class<boost::mpl::_>
+#else
+          , boost::mpl::if_<
+                boost::is_scalar<boost::mpl::_>
+              , boost::mpl::false_
+              , boost::mpl::true_
+            >
+#endif
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+          , boost::mpl::if_<
+                std::is_class<boost::mpl::_>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
         >
       , boost::parameter::optional<
             tag::base_list
@@ -79,6 +105,9 @@ struct D
 {
 };
 
+#include <boost/noncopyable.hpp>
+#include <memory>
+
 typedef boost::python::class_<
     boost::python::class_type<B>
   , boost::python::copyable<boost::noncopyable>
@@ -98,32 +127,97 @@ typedef boost::python::class_<
 
 #include <boost/mpl/aux_/test.hpp>
 #include <boost/mpl/assert.hpp>
+
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
+#endif
 
 MPL_TEST_CASE()
 {
-    BOOST_MPL_ASSERT((boost::is_same<c1::class_type, B>));
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+    BOOST_MPL_ASSERT((boost::is_same<c1::class_type,B>));
     BOOST_MPL_ASSERT((
-        boost::is_same<c1::base_list, boost::python::bases<> >
+        boost::is_same<c1::base_list,boost::python::bases<> >
     ));
-    BOOST_MPL_ASSERT((boost::is_same<c1::held_type, B>));
-    BOOST_MPL_ASSERT((boost::is_same<c1::copyable, boost::noncopyable>));
-
-    BOOST_MPL_ASSERT((boost::is_same<c2::class_type, D>));
+    BOOST_MPL_ASSERT((boost::is_same<c1::held_type,B>));
+    BOOST_MPL_ASSERT((boost::is_same<c1::copyable,boost::noncopyable>));
+    BOOST_MPL_ASSERT((boost::is_same<c2::class_type,D>));
     BOOST_MPL_ASSERT((
-        boost::is_same<c2::base_list, boost::python::bases<B> >
+        boost::is_same<c2::base_list,boost::python::bases<B> >
     ));
-
+#if defined(BOOST_NO_CXX11_SMART_PTR)
+    BOOST_MPL_ASSERT((boost::is_same<c2::held_type,std::auto_ptr<D> >));
+#else
+    BOOST_MPL_ASSERT((boost::is_same<c2::held_type,std::unique_ptr<D> >));
+#endif
+    BOOST_MPL_ASSERT((boost::is_same<c2::copyable,void>));
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            std::is_same<c1::class_type,B>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            std::is_same<c1::base_list,boost::python::bases<> >
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            std::is_same<c1::held_type,B>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            std::is_same<c1::copyable,boost::noncopyable>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            std::is_same<c2::class_type,D>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            std::is_same<c2::base_list,boost::python::bases<B> >
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
 #if defined(BOOST_NO_CXX11_SMART_PTR)
     BOOST_MPL_ASSERT((
-        boost::is_same<c2::held_type, std::auto_ptr<D> >
+        boost::mpl::if_<
+            std::is_sameis_same<c2::held_type,std::auto_ptr<D> >
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
     ));
 #else
     BOOST_MPL_ASSERT((
-        boost::is_same<c2::held_type, std::unique_ptr<D> >
+        boost::mpl::if_<
+            std::is_same<c2::held_type,std::unique_ptr<D> >
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
     ));
 #endif
-
-    BOOST_MPL_ASSERT((boost::is_same<c2::copyable, void>));
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            std::is_same<c2::copyable,void>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 }
 

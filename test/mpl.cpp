@@ -10,7 +10,7 @@
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/assert.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/add_pointer.hpp>
 #endif
 
@@ -37,7 +37,7 @@ namespace test {
 
         boost::mpl::for_each<
             Params
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::add_pointer<boost::mpl::_1>
 #else
           , std::add_pointer<boost::mpl::_1>

@@ -17,7 +17,7 @@
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <type_traits>
@@ -60,7 +60,7 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Target>
     struct unwrap_predicate<void (Target)>
     {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef ::boost::is_convertible< ::boost::mpl::_,Target> type;
 #else
         typedef ::boost::mpl::if_<
@@ -185,7 +185,7 @@ namespace boost { namespace parameter { namespace aux {
 
         template <typename T, typename Args, typename P0>
         static typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_convertible<T,P0>
 #else
             ::std::is_convertible<T,P0>

@@ -15,7 +15,7 @@ namespace boost { namespace parameter { namespace aux {
     struct referent_size;
 }}} // namespace boost::parameter::aux
 
-#include <boost/config.hpp>
+#include <boost/parameter/config.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -45,9 +45,8 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/optional/optional.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
-#include <boost/config/workaround.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 #include <boost/type_traits/add_const.hpp>
 #endif
@@ -62,21 +61,21 @@ namespace boost { namespace parameter { namespace aux {
     template <typename T>
     struct maybe : ::boost::parameter::aux::maybe_base
     {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef typename ::boost::add_lvalue_reference<
 #else
         typedef typename ::std::add_lvalue_reference<
 #endif
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
             T const
-#elif defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#elif defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             typename ::boost::add_const<T>::type
 #else
             typename ::std::add_const<T>::type
 #endif
         >::type reference;
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef typename ::boost::remove_cv<
             BOOST_DEDUCED_TYPENAME ::boost::remove_reference<reference>::type
         >::type non_cv_value;

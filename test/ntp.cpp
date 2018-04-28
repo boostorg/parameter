@@ -21,7 +21,7 @@ namespace test {
     };
 } // namespace test
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
@@ -37,7 +37,7 @@ namespace test {
     {
         template <typename T, typename Args>
         struct apply
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           : boost::is_base_of<
                 X
               , typename boost::remove_const<
@@ -137,13 +137,13 @@ namespace test {
 #include <boost/mpl/assert.hpp>
 #include <boost/mpl/aux_/test.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #endif
 
 MPL_TEST_CASE()
 {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::is_same<
             test::with_ntp<>::type
@@ -198,7 +198,7 @@ MPL_TEST_CASE()
           , void(*)(int&, void*, char, test::Y)
         >
     ));
-#else // !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#else // !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::mpl::if_<
             std::is_same<
@@ -292,6 +292,6 @@ MPL_TEST_CASE()
           , boost::mpl::false_
         >::type
     ));
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 }
 

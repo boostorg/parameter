@@ -12,12 +12,12 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #include <boost/parameter/keyword_fwd.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
-#include <boost/config.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_lvalue_reference.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -30,14 +30,14 @@ namespace boost { namespace parameter { namespace aux {
     template <typename V, typename R, typename Tag>
     struct augment_predicate_check_consume_ref
       : ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_scalar<V>
 #else
             ::std::is_scalar<V>
 #endif
           , ::boost::mpl::true_
           , ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_same<
 #else
                 ::std::is_same<
@@ -46,7 +46,7 @@ namespace boost { namespace parameter { namespace aux {
                   , ::boost::parameter::consume_reference
                 >
               , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_lvalue_reference<R>
 #else
                     ::std::is_lvalue_reference<R>
@@ -63,7 +63,7 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <boost/config/workaround.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -75,7 +75,7 @@ namespace boost { namespace parameter { namespace aux {
     template <typename V, typename R, typename Tag>
     struct augment_predicate_check_out_ref
       : ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             ::boost::is_same<
 #else
             ::std::is_same<
@@ -84,13 +84,13 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::parameter::out_reference
             >
           , ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_lvalue_reference<R>
 #else
                 ::std::is_lvalue_reference<R>
 #endif
               , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )

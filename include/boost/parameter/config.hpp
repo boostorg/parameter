@@ -43,5 +43,16 @@
 #endif
 //#endif
 
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#define BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
+#elif !defined(BOOST_MSVC) && \
+    !(defined(BOOST_CLANG) && (1 == BOOST_CLANG) && defined(__APPLE_CC__))
+// Most other compilers have ICEd on certain tests due to
+// using Cxx11 type traits instead of the Boost versions.
+#define BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
+#endif
+#endif
+
 #endif // BOOST_PARAMETER_CONFIG_050403_HPP
 

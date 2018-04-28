@@ -28,7 +28,7 @@ namespace test {
         template <typename T>
         bool check_not_present(T const&) const
         {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
             BOOST_MPL_ASSERT((boost::is_same<T,test::not_present_tag>));
 #else
             BOOST_MPL_ASSERT((

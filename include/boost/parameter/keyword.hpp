@@ -6,9 +6,9 @@
 #ifndef KEYWORD_050328_HPP
 #define KEYWORD_050328_HPP
 
-#include <boost/parameter/keyword_fwd.hpp>
 #include <boost/parameter/aux_/tag.hpp>
 #include <boost/parameter/aux_/default.hpp>
+#include <boost/parameter/keyword_fwd.hpp>
 #include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_NO_SFINAE)
@@ -16,7 +16,7 @@
 #include <boost/mpl/eval_if.hpp>
 #include <boost/core/enable_if.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #else
@@ -24,7 +24,7 @@
 #endif
 #endif // BOOST_NO_SFINAE
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -61,14 +61,14 @@ namespace boost { namespace parameter {
 #else
         inline typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<T>
 #else
                 ::std::is_scalar<T>
 #endif
               , ::boost::mpl::true_
               , ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -77,7 +77,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::in_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::boost::mpl::if_<
@@ -85,7 +85,7 @@ namespace boost { namespace parameter {
 #endif
                             typename Tag::qualifier
                           , ::boost::parameter::forward_reference
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         >
                       , ::boost::mpl::true_
                       , ::boost::mpl::false_
@@ -111,14 +111,14 @@ namespace boost { namespace parameter {
 #else
         inline typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<Default>
 #else
                 ::std::is_scalar<Default>
 #endif
               , ::boost::mpl::true_
               , ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -127,7 +127,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::in_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::boost::mpl::if_<
@@ -135,7 +135,7 @@ namespace boost { namespace parameter {
 #endif
                             typename Tag::qualifier
                           , ::boost::parameter::forward_reference
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         >
                       , ::boost::mpl::true_
                       , ::boost::mpl::false_
@@ -158,7 +158,7 @@ namespace boost { namespace parameter {
         inline typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
                 typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -167,7 +167,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::out_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::std::is_same<
@@ -177,7 +177,7 @@ namespace boost { namespace parameter {
                     >
                 >::type
               , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -211,7 +211,7 @@ namespace boost { namespace parameter {
         inline typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
                 typename ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -220,7 +220,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::out_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::std::is_same<
@@ -230,7 +230,7 @@ namespace boost { namespace parameter {
                     >
                 >::type
               , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -273,14 +273,14 @@ namespace boost { namespace parameter {
         template <typename T>
         inline typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<T>
 #else
                 ::std::is_scalar<T>
 #endif
               , ::boost::mpl::false_
               , ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -289,7 +289,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::in_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::boost::mpl::if_<
@@ -297,7 +297,7 @@ namespace boost { namespace parameter {
 #endif
                             typename Tag::qualifier
                           , ::boost::parameter::forward_reference
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         >
                       , ::boost::mpl::true_
                       , ::boost::mpl::false_
@@ -319,14 +319,14 @@ namespace boost { namespace parameter {
         template <typename T>
         inline typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<T>
 #else
                 ::std::is_scalar<T>
 #endif
               , ::boost::mpl::false_
               , ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                     ::boost::is_same<
 #else
                     ::std::is_same<
@@ -335,7 +335,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::consume_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::boost::mpl::if_<
@@ -343,7 +343,7 @@ namespace boost { namespace parameter {
 #endif
                             typename Tag::qualifier
                           , ::boost::parameter::forward_reference
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         >
                       , ::boost::mpl::true_
                       , ::boost::mpl::false_
@@ -362,13 +362,13 @@ namespace boost { namespace parameter {
         template <typename Default>
         inline typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<Default>
 #else
                 ::std::is_scalar<Default>
 #endif
               , ::boost::mpl::false_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , ::boost::mpl::if_<
                     ::boost::is_same<
 #else
@@ -379,7 +379,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::in_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::boost::mpl::if_<
@@ -387,7 +387,7 @@ namespace boost { namespace parameter {
 #endif
                             typename Tag::qualifier
                           , ::boost::parameter::forward_reference
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         >
                       , ::boost::mpl::true_
                       , ::boost::mpl::false_
@@ -407,13 +407,13 @@ namespace boost { namespace parameter {
         template <typename Default>
         inline typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<Default>
 #else
                 ::std::is_scalar<Default>
 #endif
               , ::boost::mpl::false_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
               , ::boost::mpl::if_<
                     ::boost::is_same<
 #else
@@ -424,7 +424,7 @@ namespace boost { namespace parameter {
                       , ::boost::parameter::consume_reference
                     >
                   , ::boost::mpl::true_
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                   , ::boost::is_same<
 #else
                   , ::boost::mpl::if_<
@@ -432,7 +432,7 @@ namespace boost { namespace parameter {
 #endif
                             typename Tag::qualifier
                           , ::boost::parameter::forward_reference
-#if !defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                         >
                       , ::boost::mpl::true_
                       , ::boost::mpl::false_

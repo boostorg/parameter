@@ -34,7 +34,7 @@ namespace test {
 #include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_convertible.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -46,7 +46,7 @@ namespace test {
 
     struct C
     {
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
         typedef boost::is_convertible<boost::mpl::_,std::bitset<1> > bs0_pred;
         typedef boost::is_convertible<boost::mpl::_,std::bitset<2> > bs1_pred;
         typedef boost::is_convertible<boost::mpl::_,std::bitset<3> > bs2_pred;
@@ -96,7 +96,7 @@ namespace test {
           , boost::mpl::true_
           , boost::mpl::false_
         > bs7_pred;
-#endif // BOOST_NO_CXX11_HDR_TYPE_TRAITS
+#endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
 
         BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR((bool), kw,
             (deduced
