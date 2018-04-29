@@ -15,7 +15,7 @@
 #include <type_traits>
 #endif
 
-#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -52,7 +52,7 @@ namespace test {
                     test::keywords::tag::function_type
                   , test::keywords::function_type<T>
                 >::type
-#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
               , boost::function<T>
 #else
               , std::function<T>

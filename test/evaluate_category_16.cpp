@@ -201,8 +201,14 @@ namespace test {
     };
 } // namespace test
 
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     test::D::evaluate(
         test::h_parameters()(
             test::lvalue_const_bitset<0>()
@@ -235,6 +241,7 @@ int main()
           , test::rvalue_const_bitset<7>()
         )
     );
+#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

@@ -78,7 +78,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/core/enable_if.hpp>
 #endif
 
-#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -144,7 +144,7 @@ namespace boost { namespace parameter { namespace aux {
 #else
             ::std::is_function<arg_type>
 #endif
-#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
           , ::boost::function<arg_type>
 #else
           , ::std::function<arg_type>

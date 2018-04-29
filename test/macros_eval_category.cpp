@@ -127,10 +127,14 @@ namespace test {
     };
 } // namespace test
 
-#include <boost/config.hpp>
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
 
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     test::C::evaluate(
         test::lvalue_const_bitset<0>()
       , test::lvalue_bitset<0>()
@@ -152,6 +156,7 @@ int main()
       , test::lvalue_bitset<2>()
       , test::rvalue_bitset<2>()
     );
+#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

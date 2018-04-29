@@ -22,7 +22,7 @@
     !defined(BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING) && \
     !defined(BOOST_NO_SFINAE) && \
     !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
-    !BOOST_WORKAROUND(BOOST_GCC_VERSION, < 40900) && \
+    !BOOST_WORKAROUND(BOOST_GCC, < 40900) && \
     defined(BOOST_FUSION_HAS_VARIADIC_DEQUE) && \
     defined(BOOST_MOVE_PERFECT_FORWARDING)
 #define BOOST_PARAMETER_HAS_PERFECT_FORWARDING
@@ -50,9 +50,9 @@
                     defined(BOOST_CLANG) && (1 == BOOST_CLANG) && \
                     !defined(__APPLE_CC__) \
                 ) || ( \
-                    BOOST_WORKAROUND(BOOST_GCC_VERSION, < 40900) \
+                    BOOST_WORKAROUND(BOOST_GCC, < 40900) \
                 ) || ( \
-                    BOOST_WORKAROUND(BOOST_GCC_VERSION, >= 40900) && \
+                    BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
                     !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
                 ) \
             ) \
@@ -62,27 +62,6 @@
 // tests due to using Cxx11 type traits instead of the Boost versions.
 // -- Cromwell D. Enage
 #define BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
-#endif
-
-#if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL) && ( \
-        defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
-            !defined(BOOST_MSVC) && ( \
-                ( \
-                    defined(BOOST_CLANG) && (1 == BOOST_CLANG) && \
-                    !defined(__APPLE_CC__) \
-                ) || ( \
-                    BOOST_WORKAROUND(BOOST_GCC_VERSION, < 40900) \
-                ) || ( \
-                    BOOST_WORKAROUND(BOOST_GCC_VERSION, >= 40900) && \
-                    !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
-                ) \
-            ) \
-        ) \
-    )
-// Most other compilers fulfulling the condition above have ICEd on certain
-// tests due to using std::function instead of boost::function.
-// -- Cromwell D. Enage
-#define BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL
 #endif
 
 #endif // BOOST_PARAMETER_CONFIG_050403_HPP
