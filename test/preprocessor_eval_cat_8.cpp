@@ -3,7 +3,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if (BOOST_PARAMETER_MAX_ARITY < 8)
@@ -13,6 +13,19 @@
 #error Define BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY as 9 or greater.
 #endif
 #endif
+
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/core/lightweight_test.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
+#include <boost/parameter.hpp>
 
 namespace test {
 
@@ -31,7 +44,6 @@ namespace test {
 } // namespace test
 
 #include <boost/mpl/placeholders.hpp>
-#include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
@@ -172,8 +184,13 @@ namespace test {
     };
 } // namespace test
 
+#endif // Compiler won't ICE.
+
+#include <iostream>
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     test::C cp0;
     test::C cp1;
 
@@ -202,6 +219,11 @@ int main()
       , test::rvalue_bitset<7>()
       , test::lvalue_const_bitset<0>()
     );
+
+    std::cout << "Test successful." << std::endl;
+#else
+    std::cout << "Test not run." << std::endl;
+#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

@@ -5,21 +5,28 @@
 
 #include <boost/parameter/config.hpp>
 
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_MAX_ARITY < 16)
+#error Define BOOST_PARAMETER_MAX_ARITY as 16 or greater.
+#endif
+
+#if defined(BOOST_GCC)
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    BOOST_WORKAROUND(BOOST_GCC, < 40900)
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+#else // !defined(BOOST_GCC)
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
     !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
+#endif // BOOST_GCC
 
 #include <boost/core/lightweight_test.hpp>
 
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 
 #include <boost/parameter.hpp>
-
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-    (BOOST_PARAMETER_MAX_ARITY < 16)
-#error Define BOOST_PARAMETER_MAX_ARITY as 16 or greater.
-#endif
 
 namespace test {
 
@@ -214,6 +221,8 @@ namespace test {
 
 #endif // Compiler won't ICE.
 
+#include <iostream>
+
 int main()
 {
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
@@ -249,6 +258,9 @@ int main()
           , test::rvalue_const_bitset<7>()
         )
     );
+    std::cout << "Test successful." << std::endl;
+#else
+    std::cout << "Test not run." << std::endl;
 #endif // Compiler won't ICE.
     return boost::report_errors();
 }

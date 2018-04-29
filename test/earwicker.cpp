@@ -10,6 +10,17 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
 
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/core/lightweight_test.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 #include <boost/parameter/name.hpp>
 
 namespace test {
@@ -64,7 +75,6 @@ namespace test {
 } // namespace test
 
 #include <boost/parameter/macros.hpp>
-#include <boost/core/lightweight_test.hpp>
 
 namespace test {
 
@@ -83,8 +93,13 @@ namespace test {
     }
 } // namespace test
 
+#endif // Compiler won't ICE.
+
+#include <iostream>
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     int a[3];
     a[0] = 1;
     a[1] = 2;
@@ -101,6 +116,10 @@ int main()
     test::f(test::_z = 3, test::_w = a);
     a[0] = 1;
     test::f(test::_z = 3, test::_x = 1, test::_w = a);
+    std::cout << "Test successful." << std::endl;
+#else
+    std::cout << "Test not run." << std::endl;
+#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

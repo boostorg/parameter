@@ -5,17 +5,6 @@
 
 #include <boost/parameter/config.hpp>
 
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
-    !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
-
-#include <boost/parameter.hpp>
-
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if (BOOST_PARAMETER_MAX_ARITY < 10)
 #error Define BOOST_PARAMETER_MAX_ARITY as 10 or greater.
@@ -24,6 +13,26 @@
 #error Define BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY as 11 or greater.
 #endif
 #endif
+
+#if defined(BOOST_GCC)
+#if BOOST_WORKAROUND(BOOST_GCC, < 40700) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+#else // !defined(BOOST_GCC)
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+#endif // BOOST_GCC
+
+#include <boost/core/lightweight_test.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
+#include <boost/parameter.hpp>
 
 namespace test {
 
@@ -140,6 +149,8 @@ namespace test {
 
 #endif // Compiler won't ICE.
 
+#include <iostream>
+
 int main()
 {
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
@@ -164,6 +175,9 @@ int main()
       , test::lvalue_bitset<2>()
       , test::rvalue_bitset<2>()
     );
+    std::cout << "Test successful." << std::endl;
+#else
+    std::cout << "Test not run." << std::endl;
 #endif // Compiler won't ICE.
     return boost::report_errors();
 }

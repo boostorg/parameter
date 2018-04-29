@@ -2244,6 +2244,21 @@ __ ../../../../boost/parameter/config.hpp
 
 :Default Value: ``11``
 
+``BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS``
+-----------------------------------------------------
+
+Determines whether or not the library uses |Boost.TypeTraits|_ internally
+instead of the corresponding C++ standard utilities.  Users can manually
+``#define`` this macro if they suspect that their compilers are reporting
+internal errors otherwise.
+
+.. |Boost.TypeTraits| replace:: **Boost.TypeTraits**
+.. _Boost.TypeTraits: ../../../type_traits/doc/html/index.html
+
+:Defined in: `boost/parameter/config.hpp`__
+
+__ ../../../../boost/parameter/config.hpp
+
 Tutorial
 ========
 

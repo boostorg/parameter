@@ -3,12 +3,25 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
     (BOOST_PARAMETER_MAX_ARITY < 2)
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
+
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 50000) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/core/lightweight_test.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
+#include <boost/parameter.hpp>
 
 namespace test {
 
@@ -90,11 +103,6 @@ namespace test {
 #endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
         return 0;
     }
-} // namespace test
-
-#include <boost/core/lightweight_test.hpp>
-
-namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), g, tag,
         (required
@@ -145,13 +153,22 @@ namespace test {
     }
 } // namespace test
 
+#endif // Compiler won't ICE.
+
+#include <iostream>
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     test::f(1, 2);
     test::f(1., 2.f);
     test::f(1U);
     test::g(0);
     test::h(0);
+    std::cout << "Test successful." << std::endl;
+#else
+    std::cout << "Test not run." << std::endl;
+#endif
     return boost::report_errors();
 }
 
