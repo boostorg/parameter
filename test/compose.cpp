@@ -24,7 +24,7 @@ namespace param {
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )
@@ -79,7 +79,7 @@ namespace test {
 
     struct B : A
     {
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL) || ( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
         BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
     )

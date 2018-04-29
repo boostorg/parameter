@@ -543,7 +543,7 @@ namespace boost { namespace parameter { namespace aux {
         typename ::boost::mpl::eval_if<
             B
           , ::boost::mpl::if_<
-#if defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
                 ::boost::is_scalar<T>
 #else
                 ::std::is_scalar<T>

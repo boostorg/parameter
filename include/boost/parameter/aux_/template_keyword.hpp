@@ -96,7 +96,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/type_traits/is_function.hpp>
 #endif
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -117,7 +117,7 @@ namespace boost { namespace parameter {
 #else
             ::std::is_function<T>
 #endif
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_FUNCTIONAL)
           , ::boost::function<T>
 #else
           , ::std::function<T>
