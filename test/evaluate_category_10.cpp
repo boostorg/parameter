@@ -3,6 +3,20 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_GCC) && ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+        !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || \
+        defined(__APPLE_CC__) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/core/lightweight_test.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 #include <boost/parameter.hpp>
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
@@ -48,7 +62,6 @@ namespace test {
     };
 } // namespace test
 
-#include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
 namespace test {
@@ -129,12 +142,7 @@ namespace test {
     };
 } // namespace test
 
-#if !defined(BOOST_GCC) && ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
-        defined(BOOST_CLANG) && (1 == BOOST_CLANG) && !defined(__APPLE_CC__) \
-    )
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
+#endif // Compiler won't ICE.
 
 int main()
 {
