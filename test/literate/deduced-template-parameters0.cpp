@@ -1,4 +1,15 @@
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || \
+    defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/config/pragma_message.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 #include <boost/parameter.hpp>
 
 namespace boost { namespace python {
@@ -158,10 +169,17 @@ typedef boost::python::class_<
 #endif
 
 #include <boost/mpl/assert.hpp>
+
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
+#endif // Compiler won't ICE.
+
 #include <boost/mpl/aux_/test.hpp>
 
 MPL_TEST_CASE()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((boost::is_same<c1::class_type,B>));
     BOOST_MPL_ASSERT((boost::is_same<c1::base_list,boost::python::bases<> >));
@@ -247,5 +265,6 @@ MPL_TEST_CASE()
         >::type
     ));
 #endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
+#endif // Compiler won't ICE.
 }
 

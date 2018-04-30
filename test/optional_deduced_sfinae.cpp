@@ -3,6 +3,23 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40800) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 40900) \
+    ) || ( \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 50000) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/config/pragma_message.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -73,11 +90,19 @@ namespace test {
     }
 } // namespace test
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
+#include <boost/core/lightweight_test.hpp>
+#endif // Compiler won't ICE.
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     BOOST_TEST_EQ(1, test::sfinae());
     BOOST_TEST_EQ(1, test::sfinae("foo"));
     BOOST_TEST_EQ(0, test::sfinae(1));
+#endif
     return boost::report_errors();
 }
 

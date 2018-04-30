@@ -3,13 +3,25 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
     (BOOST_PARAMETER_MAX_ARITY < 1)
 #error Define BOOST_PARAMETER_MAX_ARITY as 1 or greater.
 #endif
 
+#if !defined(BOOST_GCC) || !( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 60000) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/config/pragma_message.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
+#include <boost/parameter.hpp>
 #include <boost/config/workaround.hpp>
 #include <boost/timer.hpp>
 #include <iostream>
@@ -159,8 +171,14 @@ namespace test {
     }
 }
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
+#endif // Compiler won't ICE.
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     // First decide how many repetitions to measure.
     long repeats = 100;
     double measured = 0;
@@ -197,5 +215,8 @@ int main()
     // from being optimized away.  Change this to return 0 and you
     // unplug the whole test's life support system.
     return test::live_code < 0.;
+#else
+    return 0;
+#endif // Compiler won't ICE.
 }
 

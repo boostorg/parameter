@@ -29,6 +29,7 @@
 #endif // BOOST_GCC
 
 #include <boost/core/lightweight_test.hpp>
+#include <boost/config/pragma_message.hpp>
 
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 
@@ -147,9 +148,10 @@ namespace test {
     };
 } // namespace test
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.
-
-#include <iostream>
 
 int main()
 {
@@ -175,9 +177,6 @@ int main()
       , test::lvalue_bitset<2>()
       , test::rvalue_bitset<2>()
     );
-    std::cout << "Test successful." << std::endl;
-#else
-    std::cout << "Test not run." << std::endl;
 #endif // Compiler won't ICE.
     return boost::report_errors();
 }

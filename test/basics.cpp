@@ -5,7 +5,11 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 50000) || ( \
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40900) || ( \
+        !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 50000) \
+    ) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
     )
@@ -13,6 +17,7 @@
 #endif
 
 #include <boost/core/lightweight_test.hpp>
+#include <boost/config/pragma_message.hpp>
 
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 
@@ -89,9 +94,10 @@ namespace test {
 
 #include <boost/ref.hpp>
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.
-
-#include <iostream>
 
 int main()
 {
@@ -126,10 +132,6 @@ int main()
     test::f(test::_index = 56, test::_name = 55); // won't compile
 #endif
 #endif
-
-    std::cout << "Test successful." << std::endl;
-#else
-    std::cout << "Test not run." << std::endl;
 #endif // Compiler won't ICE.
     return boost::report_errors();
 }

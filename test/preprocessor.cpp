@@ -12,6 +12,8 @@
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
 
+#include <boost/config/pragma_message.hpp>
+
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 
 #include <boost/parameter/preprocessor.hpp>
@@ -492,11 +494,11 @@ namespace test {
     }
 } // namespace test
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #include <boost/core/lightweight_test.hpp>
 #endif // Compiler won't ICE.
-
-#include <iostream>
 
 int main()
 {
@@ -600,11 +602,8 @@ int main()
 
     test::lazy_defaults(test::_name = test::udt(0,1));
     test::lazy_defaults(test::_name = 0, test::_value = 1, test::_index = 2);
-
-    std::cout << "Test successful." << std::endl;
-#else
-    std::cout << "Test not run." << std::endl;
 #endif // Compiler won't ICE.
+
     return boost::report_errors();
 }
 

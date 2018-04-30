@@ -7,16 +7,19 @@
 #include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_GCC) || ( \
-        BOOST_WORKAROUND(BOOST_GCC, < 40900) \
+        BOOST_WORKAROUND(BOOST_GCC, < 40800) \
     ) || ( \
         !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40800) && \
         BOOST_WORKAROUND(BOOST_GCC, < 50000) \
     ) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
     )
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
+
+#include <boost/config/pragma_message.hpp>
 
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 
@@ -83,6 +86,9 @@ namespace test {
     };
 } // namespace test
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.
 
 #include <boost/mpl/aux_/test.hpp>

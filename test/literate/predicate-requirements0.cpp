@@ -1,4 +1,16 @@
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || \
+    defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/core/lightweight_test.hpp>
+#include <boost/config/pragma_message.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 #include <boost/parameter.hpp>
 
 BOOST_PARAMETER_NAME((_graph, graphs) graph)
@@ -202,8 +214,14 @@ BOOST_PARAMETER_FUNCTION((void), depth_first_search, graphs,
 #include <boost/graph/adjacency_list.hpp>
 #include <utility>
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
+#endif // Compiler won't ICE.
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     typedef boost::adjacency_list<
         boost::vecS
       , boost::vecS
@@ -219,7 +237,7 @@ int main()
 
     ::depth_first_search(g);
     ::depth_first_search(g, _root_vertex = static_cast<std::size_t>(x));
-
-    return 0;
+#endif
+    return boost::report_errors();
 }
 

@@ -12,7 +12,7 @@
 
 #if !defined(BOOST_GCC) || ( \
         !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, < 60000) \
+        BOOST_WORKAROUND(BOOST_GCC, < 40800) \
     ) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, >= 60000) \
@@ -21,6 +21,7 @@
 #endif
 
 #include <boost/core/lightweight_test.hpp>
+#include <boost/config/pragma_message.hpp>
 
 #if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 
@@ -163,9 +164,10 @@ namespace test {
 
 #endif // SFINAE enabled, no Borland workarounds needed.
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.
-
-#include <iostream>
 
 int main()
 {
@@ -177,9 +179,6 @@ int main()
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
     BOOST_TEST_EQ(0, test::f(3, 4));
 #endif
-    std::cout << "Test successful." << std::endl;
-#else
-    std::cout << "Test not run." << std::endl;
 #endif // Compiler won't ICE.
     return boost::report_errors();
 }
