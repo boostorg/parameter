@@ -11,6 +11,8 @@
 #endif
 
 #if !defined(BOOST_GCC) || ( \
+        defined(__MINGW32__) && (1 == __MINGW32__) \
+    ) || ( \
         !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, < 40800) \
     ) || ( \

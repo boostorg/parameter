@@ -5,7 +5,9 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 50000) || ( \
+#if !defined(BOOST_GCC) || ( \
+        defined(__MINGW32__) && (1 == __MINGW32__) \
+    ) || BOOST_WORKAROUND(BOOST_GCC, < 50000) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
     )

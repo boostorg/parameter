@@ -10,6 +10,19 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
 
+#if !defined(BOOST_GCC) || ( \
+        defined(__MINGW32__) && (1 == __MINGW32__) \
+    ) || !( \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40800) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 40900) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/config/pragma_message.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 namespace test {
 
     struct X
@@ -135,14 +148,21 @@ namespace test {
 } // namespace test
 
 #include <boost/mpl/assert.hpp>
-#include <boost/mpl/aux_/test.hpp>
 
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/is_same.hpp>
 #endif
 
+BOOST_PRAGMA_MESSAGE("Test should compile.");
+#else
+BOOST_PRAGMA_MESSAGE("Test not compiled.");
+#endif // Compiler won't ICE.
+
+#include <boost/mpl/aux_/test.hpp>
+
 MPL_TEST_CASE()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((
         boost::is_same<
@@ -293,5 +313,6 @@ MPL_TEST_CASE()
         >::type
     ));
 #endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
+#endif // Compiler won't ICE.
 }
 

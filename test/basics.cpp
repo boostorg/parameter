@@ -5,7 +5,9 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40900) || ( \
+#if !defined(BOOST_GCC) || ( \
+        defined(__MINGW32__) && (1 == __MINGW32__) \
+    ) || BOOST_WORKAROUND(BOOST_GCC, < 40900) || ( \
         !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
         BOOST_WORKAROUND(BOOST_GCC, < 50000) \
@@ -126,11 +128,11 @@ int main()
 #endif // No comma operator available on Borland.
 
 #if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
-#if defined(__MINGW32__) && (1 == __MINGW32__)
-#error test::f(test::_index = 56, test::_name = 55) should not compile.
-#else
+//#if defined(__MINGW32__) && (1 == __MINGW32__)
+//#error test::f(test::_index = 56, test::_name = 55) should not compile.
+//#else
     test::f(test::_index = 56, test::_name = 55); // won't compile
-#endif
+//#endif
 #endif
 #endif // Compiler won't ICE.
     return boost::report_errors();
