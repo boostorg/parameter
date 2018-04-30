@@ -4,6 +4,22 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_GCC) || ( \
+        BOOST_WORKAROUND(BOOST_GCC, < 40900) \
+    ) || ( \
+        !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 50000) \
+    ) || ( \
+        BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 #include <boost/mpl/assert.hpp>
 #include <boost/parameter.hpp>
 
@@ -67,12 +83,16 @@ namespace test {
     };
 } // namespace test
 
+#endif // Compiler won't ICE.
+
 #include <boost/mpl/aux_/test.hpp>
 
 MPL_TEST_CASE()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     BOOST_MPL_ASSERT((test::Y<void()>));
     BOOST_MPL_ASSERT_NOT((test::Y<int>));
     BOOST_MPL_ASSERT((test::Y<double(double)>));
+#endif
 }
 

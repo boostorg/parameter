@@ -21,10 +21,6 @@ BOOST_PARAMETER_NAME(x)
 
 int main()
 {
-    using namespace parameter;
-    using boost::is_convertible;
-    using mpl::_;
-
     boost::parameter::parameters<
         boost::parameter::optional<
             boost::parameter::deduced<tag::x>

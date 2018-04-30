@@ -120,7 +120,11 @@ int main()
 #endif // No comma operator available on Borland.
 
 #if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
+#if defined(__MINGW32__) && (1 == __MINGW32__)
+#error test::f(test::_index = 56, test::_name = 55) should not compile.
+#else
     test::f(test::_index = 56, test::_name = 55); // won't compile
+#endif
 #endif
 
     std::cout << "Test successful." << std::endl;

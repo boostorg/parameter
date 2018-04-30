@@ -3,12 +3,28 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
     (BOOST_PARAMETER_MAX_ARITY < 2)
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
+
+#if !defined(BOOST_GCC) || ( \
+        !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 60000) \
+    ) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 60000) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#include <boost/core/lightweight_test.hpp>
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
+#include <boost/parameter.hpp>
 
 namespace test {
 
@@ -62,11 +78,6 @@ namespace test {
         >
     {
     };
-} // namespace test
-
-#include <boost/core/lightweight_test.hpp>
-
-namespace test {
 
     // The use of assert_equal_string is just a nasty workaround for a
     // vc++ 6 ICE.
@@ -152,8 +163,13 @@ namespace test {
 
 #endif // SFINAE enabled, no Borland workarounds needed.
 
+#endif // Compiler won't ICE.
+
+#include <iostream>
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     test::f("foo");
     test::f("foo", 3.f);
     test::f(test::value = 3.f, test::name = "foo");
@@ -161,6 +177,10 @@ int main()
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
     BOOST_TEST_EQ(0, test::f(3, 4));
 #endif
+    std::cout << "Test successful." << std::endl;
+#else
+    std::cout << "Test not run." << std::endl;
+#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

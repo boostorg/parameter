@@ -10,9 +10,9 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
 
-#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 50000) || ( \
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40900) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
     )
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif

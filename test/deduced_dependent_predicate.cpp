@@ -3,6 +3,17 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40900) || ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
+    )
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
+
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+
 #include <boost/parameter/parameters.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/parameter/binding.hpp>
@@ -24,8 +35,15 @@ namespace test {
     BOOST_PARAMETER_NAME(z)
 } // namespace test
 
+#else
+#include <boost/core/lightweight_test.hpp>
+#endif // Compiler won't ICE.
+
+#include <iostream>
+
 int main()
 {
+#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     test::check<
         boost::parameter::parameters<
             test::tag::x
@@ -144,6 +162,10 @@ int main()
         >
     >((test::_x = 0U, test::_y = 1U), 0U, 1U);
 
+    std::cout << "Test successful." << std::endl;
+#else
+    std::cout << "Test not run." << std::endl;
+#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 
