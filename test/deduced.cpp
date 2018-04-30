@@ -5,9 +5,9 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 60000) || ( \
+#if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40900) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 60000) \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
     )
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
