@@ -2,7 +2,7 @@
 #include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 60000) || \
-    defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) ||
+    defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
 
