@@ -14,7 +14,7 @@
 #endif
 #endif
 
-#if !defined(BOOST_GCC) || ( \
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE) || !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
     ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \

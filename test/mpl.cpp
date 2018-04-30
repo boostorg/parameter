@@ -7,7 +7,7 @@
 
 #if !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || BOOST_WORKAROUND(BOOST_GCC, < 50000) || ( \
+    ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
     )

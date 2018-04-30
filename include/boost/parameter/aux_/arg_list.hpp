@@ -377,13 +377,13 @@ namespace boost { namespace parameter { namespace aux {
         //
 
         // Helpers that handle the case when TaggedArg is empty<T>.
-        template <class D>
+        template <typename D>
         inline reference get_default(D const&, ::boost::mpl::false_) const
         {
             return this->arg.get_value();
         }
 
-        template <class D>
+        template <typename D>
         inline reference get_default(D const& d, ::boost::mpl::true_) const
         {
             return (
