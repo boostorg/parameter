@@ -2,6 +2,7 @@
 #include <boost/parameter/config.hpp>
 
 #if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+/*
 #if !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
     ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || \
@@ -9,10 +10,12 @@
         BOOST_WORKAROUND(BOOST_GCC, >= 60000) && \
         BOOST_WORKAROUND(BOOST_GCC, < 70000) \
     )
+*/
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
+//#endif
 #endif
 
+#include <boost/core/lightweight_test.hpp>
 #include <boost/config/pragma_message.hpp>
 
 #if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
@@ -59,16 +62,20 @@ namespace test {
 
 using namespace test;
 
-int x = new_window("alert", _width=10, _titlebar=false);
-
-smart_ptr<
-    Foo
-  , deleter<Deallocate<Foo> >
-  , copy_policy<DeepCopy>
-> p(new Foo);
-
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.
+
+int main()
+{
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+    int x = new_window("alert", _width=10, _titlebar=false);
+    smart_ptr<
+        Foo
+      , deleter<Deallocate<Foo> >
+      , copy_policy<DeepCopy>
+    > p(new Foo);
+#endif
+    return boost::report_errors();
+}
 

@@ -15,14 +15,17 @@
 #endif
 
 #if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-#if !defined(BOOST_GCC) && ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
-        !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || \
-        defined(__APPLE_CC__) \
-    )
+#if defined(BOOST_GCC)
+#if (defined(__MINGW32__) && (1 == __MINGW32__))
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
+#else // !defined(BOOST_GCC)
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
+#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
+#endif // BOOST_GCC
+#endif // !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/core/lightweight_test.hpp>
 #include <boost/config/pragma_message.hpp>
@@ -145,7 +148,6 @@ namespace test {
     };
 } // namespace test
 
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.

@@ -2,11 +2,13 @@
 #include <boost/parameter/config.hpp>
 
 #if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+/*
 #if !defined(BOOST_GCC) || (defined(__MINGW32__) && (1 == __MINGW32__)) || \
     BOOST_WORKAROUND(BOOST_GCC, < 40800) || \
     defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+*/
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
+//#endif
 #endif
 
 #include <boost/config/pragma_message.hpp>
@@ -173,7 +175,6 @@ typedef boost::python::class_<
 
 #include <boost/mpl/assert.hpp>
 
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.

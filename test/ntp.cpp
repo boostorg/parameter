@@ -160,7 +160,6 @@ namespace test {
 #include <boost/type_traits/is_same.hpp>
 #endif
 
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.

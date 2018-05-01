@@ -16,7 +16,12 @@
 
 #if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 #if defined(BOOST_GCC)
-#if BOOST_WORKAROUND(BOOST_GCC, < 40700) || ( \
+#if (defined(__MINGW32__) && (1 == __MINGW32__)) || ( \
+        BOOST_WORKAROUND(BOOST_GCC, < 40700) && ( \
+            BOOST_WORKAROUND(BOOST_GCC, >= 40500) || \
+            !defined(__GXX_EXPERIMENTAL_CXX0X__) \
+        ) \
+    ) || ( \
         BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
     )
@@ -150,7 +155,6 @@ namespace test {
     };
 } // namespace test
 
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.

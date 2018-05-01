@@ -43,7 +43,6 @@ namespace test {
     BOOST_PARAMETER_NAME(z)
 } // namespace test
 
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #include <boost/core/lightweight_test.hpp>

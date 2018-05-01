@@ -170,7 +170,6 @@ namespace test {
 
 #endif // SFINAE enabled, no Borland workarounds needed.
 
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.

@@ -16,28 +16,6 @@ build-project literate ;
 
 test-suite "parameter"
     :
-    [ compile unwrap_cv_reference.cpp ]
-    [ compile unwrap_cv_reference.cpp
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : unwrap_cv_ref_no_perfect_fwd
-    ]
-    [ compile function_type_tpl_param.cpp ]
-    [ compile function_type_tpl_param.cpp
-        :
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : func_type_tpl_prm_no_perfect_fwd
-    ]
-    [ compile ntp.cpp
-        :
-        <define>BOOST_PARAMETER_MAX_ARITY=4
-    ]
-    [ compile ntp.cpp
-        :
-        <define>BOOST_PARAMETER_MAX_ARITY=4
-        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        : ntp_no_perfect_fwd
-    ]
     [ run maybe.cpp
         :
         :
@@ -496,6 +474,28 @@ test-suite "parameter"
 #        <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
 #        : preproc_eval_cat_fail
 #    ]
+    [ compile unwrap_cv_reference.cpp ]
+    [ compile unwrap_cv_reference.cpp
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : unwrap_cv_ref_no_perfect_fwd
+    ]
+    [ compile function_type_tpl_param.cpp ]
+    [ compile function_type_tpl_param.cpp
+        :
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : func_type_tpl_prm_no_perfect_fwd
+    ]
+    [ compile ntp.cpp
+        :
+        <define>BOOST_PARAMETER_MAX_ARITY=4
+    ]
+    [ compile ntp.cpp
+        :
+        <define>BOOST_PARAMETER_MAX_ARITY=4
+        <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        : ntp_no_perfect_fwd
+    ]
     [ bpl-test python_test ]
     ;
 

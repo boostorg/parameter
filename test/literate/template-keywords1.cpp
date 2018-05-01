@@ -1,6 +1,8 @@
 
 #include <boost/parameter/config.hpp>
 
+#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+/*
 #if !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
     ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
@@ -13,12 +15,14 @@
         BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
         BOOST_WORKAROUND(BOOST_GCC, < 70000) \
     )
+*/
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+//#endif
 #endif
 
 #include <boost/config/pragma_message.hpp>
 
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/parameter.hpp>
 
@@ -36,7 +40,6 @@ namespace boost { namespace python {
     };
 }}
 
-BOOST_PRAGMA_MESSAGE("Test should compile.");
 #else
 BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #endif // Compiler won't ICE.
