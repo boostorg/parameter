@@ -131,6 +131,7 @@ test-suite "parameter"
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=16
+        <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
     ]
     [ run evaluate_category_16.cpp
         :
