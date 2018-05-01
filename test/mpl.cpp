@@ -3,32 +3,13 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/config.hpp>
-
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
-    )
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
-#include "basics.hpp"
 #include <boost/mpl/list.hpp>
 #include <boost/mpl/for_each.hpp>
 #include <boost/mpl/size.hpp>
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/assert.hpp>
+#include <boost/parameter/config.hpp>
+#include "basics.hpp"
 
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
 #include <boost/type_traits/add_pointer.hpp>
@@ -135,15 +116,11 @@ namespace test {
     }
 }
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
+#include <boost/core/lightweight_test.hpp>
 
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::run();
-#endif
     return boost::report_errors();
 }
 

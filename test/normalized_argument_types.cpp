@@ -10,24 +10,6 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
-        BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
-    )
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -110,6 +92,11 @@ namespace test {
 #endif // BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS
         return 0;
     }
+} // namespace test
+
+#include <boost/core/lightweight_test.hpp>
+
+namespace test {
 
     BOOST_PARAMETER_FUNCTION((int), g, tag,
         (required
@@ -160,19 +147,13 @@ namespace test {
     }
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::f(1, 2);
     test::f(1., 2.f);
     test::f(1U);
     test::g(0);
     test::h(0);
-#endif
     return boost::report_errors();
 }
 

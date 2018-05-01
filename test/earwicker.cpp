@@ -10,24 +10,6 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
-    )
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter/name.hpp>
 
 namespace test {
@@ -82,6 +64,7 @@ namespace test {
 } // namespace test
 
 #include <boost/parameter/macros.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 namespace test {
 
@@ -100,13 +83,8 @@ namespace test {
     }
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
 int main()
 {
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
     int a[3];
     a[0] = 1;
     a[1] = 2;
@@ -123,7 +101,6 @@ int main()
     test::f(test::_z = 3, test::_w = a);
     a[0] = 1;
     test::f(test::_z = 3, test::_x = 1, test::_w = a);
-#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

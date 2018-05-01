@@ -43,6 +43,19 @@
 #endif
 //#endif
 
+#if !defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES) && \
+    !defined(BOOST_PARAMETER_DISABLE_TEMPLATE_KEYWORD_FUNCTION_TYPE_SUPPORT)
+#if !defined(BOOST_GCC) || (defined(__MINGW32__) && (1 == __MINGW32__)) || \
+    BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
+        BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+    )
+// Most compilers not fulfilling the condition above have ICEd on the
+// function_type_tpl_param test. -- Cromwell D. Enage
+#define BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES
+#endif
+#endif
+
 #if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS) && ( \
         defined(BOOST_NO_CXX11_HDR_TYPE_TRAITS) || ( \
             !defined(BOOST_MSVC) && ( \

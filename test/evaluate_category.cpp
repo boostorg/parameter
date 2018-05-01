@@ -14,31 +14,6 @@
 #endif
 #endif
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE) || !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || !( \
-        ( \
-            BOOST_WORKAROUND(BOOST_GCC, >= 40800) && \
-            BOOST_WORKAROUND(BOOST_GCC, < 40900) && \
-            !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
-        ) || ( \
-            BOOST_WORKAROUND(BOOST_GCC, >= 70000) && \
-            !defined(__STRICT_ANSI__) && \
-            defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
-        ) \
-    )
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -69,6 +44,7 @@ namespace test {
 #include <type_traits>
 #endif
 
+#include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
 namespace test {
@@ -283,13 +259,8 @@ namespace test {
     };
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::B<float>::evaluate(
         test::f_parameters()(
             test::lvalue_const_float()
@@ -381,7 +352,6 @@ int main()
           , test::lvalue_char_ptr()
         )
     );
-#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

@@ -4,34 +4,25 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/name.hpp>
+#include <boost/parameter/parameters.hpp>
+#include <boost/parameter/value_type.hpp>
 #include <boost/parameter/config.hpp>
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-#if !defined(BOOST_GCC) || (defined(__MINGW32__) && (1 == __MINGW32__)) || \
-    BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
-        BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
-    )
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
-#endif
-
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
-#include <boost/mpl/assert.hpp>
-#include <boost/parameter.hpp>
-
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+#if defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
 #include <boost/type_traits/is_same.hpp>
+#else
+#include <boost/type_traits/is_base_of.hpp>
+#endif
 #else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <type_traits>
 #endif
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || \
+    !defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -58,21 +49,31 @@ namespace test {
 
     template <typename T>
     struct Y
+#if defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : boost::is_same<
 #else
       : boost::mpl::if_<
             std::is_same<
 #endif
-                typename X<
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+                boost::function<T>
+#else
+                std::function<T>
+#endif
+#else // !defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+      : boost::is_base_of<
+#else
+      : boost::mpl::if_<
+            std::is_base_of<
+#endif
+                boost::function_base
+#endif // BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES
+              , typename X<
                     test::keywords::tag::function_type
                   , test::keywords::function_type<T>
                 >::type
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-              , boost::function<T>
-#else
-              , std::function<T>
-#endif
             >
 #if !defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
           , boost::mpl::true_
@@ -83,18 +84,18 @@ namespace test {
     };
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
+#include <boost/mpl/assert.hpp>
 #include <boost/mpl/aux_/test.hpp>
 
 MPL_TEST_CASE()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-    BOOST_MPL_ASSERT((test::Y<void()>));
     BOOST_MPL_ASSERT_NOT((test::Y<int>));
+#if defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
+    BOOST_MPL_ASSERT((test::Y<void()>));
     BOOST_MPL_ASSERT((test::Y<double(double)>));
+#else
+    BOOST_MPL_ASSERT((test::Y<boost::function<void()> >));
+    BOOST_MPL_ASSERT((test::Y<boost::function<double(double)> >));
 #endif
 }
 

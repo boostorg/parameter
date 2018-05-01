@@ -4,24 +4,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/config.hpp>
-
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
-    )
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -258,14 +240,10 @@ namespace test {
     }
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #include <boost/core/lightweight_test.hpp>
-#endif // Compiler won't ICE.
 
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::f(
         boost::make_tuple(0, test::str("foo")), test::_x = 0, test::_y = "foo"
     );
@@ -312,7 +290,6 @@ int main()
     BOOST_TEST(test::sfinae("foo") == 1);
     BOOST_TEST(test::sfinae(0) == 0);
 #endif
-#endif // Compiler won't ICE.
 
     return boost::report_errors();
 }

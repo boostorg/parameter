@@ -4,24 +4,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/config.hpp>
-
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
-    )
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/keyword.hpp>
 #include <string>
@@ -500,14 +482,10 @@ namespace test {
     }
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
 #include <boost/core/lightweight_test.hpp>
-#endif // Compiler won't ICE.
 
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::f(test::values(S("foo"), 1.f, 2), S("foo"));
     test::f(
         test::_tester = test::values(S("foo"), 1.f, 2), test::_name = S("foo")
@@ -607,7 +585,6 @@ int main()
 
     test::lazy_defaults(test::_name = test::udt(0,1));
     test::lazy_defaults(test::_name = 0, test::_value = 1, test::_index = 2);
-#endif // Compiler won't ICE.
 
     return boost::report_errors();
 }

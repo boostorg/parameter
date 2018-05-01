@@ -1,21 +1,4 @@
 
-#include <boost/parameter/config.hpp>
-
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if !defined(BOOST_GCC) || (defined(__MINGW32__) && (1 == __MINGW32__)) || \
-    BOOST_WORKAROUND(BOOST_GCC, < 40800) || \
-    defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter.hpp>
 
 BOOST_PARAMETER_NAME(name)
@@ -126,13 +109,10 @@ BOOST_PARAMETER_FUNCTION(
 {
 }
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
+#include <boost/core/lightweight_test.hpp>
 
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     def("f", &f, some_policies, "Documentation for f");
     def("f", &f, "Documentation for f", some_policies);
     def(
@@ -141,7 +121,6 @@ int main()
       , _policies = some_policies
       , "Documentation for f"
     );
-#endif
     return boost::report_errors();
 }
 

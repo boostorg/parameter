@@ -10,27 +10,6 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-/*
-#if !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || ( \
-        !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, < 40800) \
-    ) || ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 60000) \
-    )
-*/
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-//#endif
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -85,6 +64,11 @@ namespace test {
         >
     {
     };
+} // namespace test
+
+#include <boost/core/lightweight_test.hpp>
+
+namespace test {
 
     // The use of assert_equal_string is just a nasty workaround for a
     // vc++ 6 ICE.
@@ -170,13 +154,8 @@ namespace test {
 
 #endif // SFINAE enabled, no Borland workarounds needed.
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::f("foo");
     test::f("foo", 3.f);
     test::f(test::value = 3.f, test::name = "foo");
@@ -184,7 +163,6 @@ int main()
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
     BOOST_TEST_EQ(0, test::f(3, 4));
 #endif
-#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 
