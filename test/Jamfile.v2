@@ -131,14 +131,13 @@ test-suite "parameter"
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=16
-        <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=0
     ]
     [ run evaluate_category_16.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=16
-        <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=0
+        <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : eval_cat_16_no_perfect_fwd
     ]
