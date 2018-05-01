@@ -10,7 +10,7 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 1 or greater.
 #endif
 
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 /*
 #if !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
