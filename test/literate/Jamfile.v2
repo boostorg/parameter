@@ -297,13 +297,13 @@ run fine-grained-name-control0.cpp
     :
         <preserve-target-tests>off
     ;
-compile template-keywords0.cpp ;
+# compile template-keywords0.cpp ;
 compile template-keywords0.cpp
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
     : tk0-no_perf_fwd
     ;
-compile template-keywords1.cpp ;
+# compile template-keywords1.cpp ;
 compile template-keywords1.cpp
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
