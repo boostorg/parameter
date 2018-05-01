@@ -9,7 +9,7 @@ import python ;
 
 project boost/parameter
     :
-    default-build <warnings>off
+    default-build <warnings>off <preserve-target-tests>off
     ;
 
 build-project literate ;
