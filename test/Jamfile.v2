@@ -9,7 +9,7 @@ import python ;
 
 project boost/parameter
     :
-    default-build <warnings>off <preserve-target-tests>off
+    default-build <warnings>off
     ;
 
 build-project literate ;
@@ -38,43 +38,82 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : ntp_no_perfect_fwd
     ]
-    [ run maybe.cpp ]
+    [ run maybe.cpp
+        :
+        :
+        :
+        :
+        :
+        <preserve-target-tests>off
+    ]
     [ run maybe.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : maybe_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
-    [ run singular.cpp ]
+    [ run singular.cpp
+        :
+        :
+        :
+        :
+        :
+        <preserve-target-tests>off
+    ]
     [ run singular.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : singular_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
-    [ run tutorial.cpp ]
+    [ run tutorial.cpp
+        :
+        :
+        :
+        :
+        :
+        <preserve-target-tests>off
+    ]
     [ run tutorial.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : tutorial_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
-    [ run compose.cpp ]
+    [ run compose.cpp
+        :
+        :
+        :
+        :
+        :
+        <preserve-target-tests>off
+    ]
     [ run compose.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : compose_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run sfinae.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run sfinae.cpp
         :
@@ -83,8 +122,18 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : sfinae_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
-    [ run efficiency.cpp : : : : : <variant>release ]
+    [ run efficiency.cpp
+        :
+        :
+        :
+        :
+        :
+        <variant>release
+        <preserve-target-tests>off
+    ]
     [ run efficiency.cpp
         :
         :
@@ -93,6 +142,7 @@ test-suite "parameter"
         : efficiency_no_perfect_fwd
         :
         <variant>release
+        <preserve-target-tests>off
     ]
     [ run evaluate_category.cpp
         :
@@ -100,6 +150,9 @@ test-suite "parameter"
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=5
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run evaluate_category.cpp
         :
@@ -109,6 +162,8 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : eval_cat_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run evaluate_category_10.cpp
         :
@@ -116,6 +171,9 @@ test-suite "parameter"
         :
         <define>BOOST_PARAMETER_MAX_ARITY=10
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=11
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run evaluate_category_10.cpp
         :
@@ -125,6 +183,8 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=11
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : eval_cat_10_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run evaluate_category_16.cpp
         :
@@ -132,6 +192,9 @@ test-suite "parameter"
         :
         <define>BOOST_PARAMETER_MAX_ARITY=16
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run evaluate_category_16.cpp
         :
@@ -141,12 +204,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : eval_cat_16_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run normalized_argument_types.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run normalized_argument_types.cpp
         :
@@ -155,12 +223,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : norm_arg_types_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run basics.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run basics.cpp
         :
@@ -169,12 +242,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : basics_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run mpl.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run mpl.cpp
         :
@@ -183,12 +261,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : mpl_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run earwicker.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run earwicker.cpp
         :
@@ -197,12 +280,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : earwicker_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run macros.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run macros.cpp
         :
@@ -211,12 +299,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : macros_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run macros_eval_category.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=10
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run macros_eval_category.cpp
         :
@@ -225,12 +318,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=10
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : macros_eval_cat_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor.cpp
         :
@@ -239,12 +337,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : preproc_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor_deduced.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor_deduced.cpp
         :
@@ -253,6 +356,8 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : preproc_ded_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor_eval_category.cpp
         :
@@ -260,6 +365,9 @@ test-suite "parameter"
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=5
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor_eval_category.cpp
         :
@@ -269,6 +377,8 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : preproc_eval_cat_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor_eval_cat_8.cpp
         :
@@ -276,6 +386,9 @@ test-suite "parameter"
         :
         <define>BOOST_PARAMETER_MAX_ARITY=8
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=9
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run preprocessor_eval_cat_8.cpp
         :
@@ -285,12 +398,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=9
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : preproc_eval_cat_8_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run deduced.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run deduced.cpp
         :
@@ -299,12 +417,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : deduced_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run optional_deduced_sfinae.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run optional_deduced_sfinae.cpp
         :
@@ -313,12 +436,17 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : opt_ded_sfinae_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ run deduced_dependent_predicate.cpp
         :
         :
         :
         <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+        <preserve-target-tests>off
     ]
     [ run deduced_dependent_predicate.cpp
         :
@@ -327,6 +455,8 @@ test-suite "parameter"
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         : ded_dep_pred_no_perfect_fwd
+        :
+        <preserve-target-tests>off
     ]
     [ compile-fail duplicates.cpp
         :
