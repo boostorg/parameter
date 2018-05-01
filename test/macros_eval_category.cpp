@@ -16,7 +16,7 @@
 
 #if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 #if defined(BOOST_GCC)
-#if (defined(__MINGW32__) && (1 == __MINGW32__)) || ( \
+#if ( \
         BOOST_WORKAROUND(BOOST_GCC, < 40700) && ( \
             BOOST_WORKAROUND(BOOST_GCC, >= 40500) || \
             !defined(__GXX_EXPERIMENTAL_CXX0X__) \
