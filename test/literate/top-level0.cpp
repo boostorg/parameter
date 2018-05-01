@@ -56,7 +56,9 @@ namespace test {
     template <typename T, typename A0, typename A1>
     struct smart_ptr
     {
-        smart_ptr(Foo*);
+        smart_ptr(Foo*)
+        {
+        }
     };
 }
 
@@ -69,12 +71,14 @@ BOOST_PRAGMA_MESSAGE("Test not compiled.");
 int main()
 {
 #if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-    int x = new_window("alert", _width=10, _titlebar=false);
-    smart_ptr<
+    int x = test::new_window("alert", test::_width=10, test::_titlebar=false);
+    Foo* foo = new Foo();
+    test::smart_ptr<
         Foo
-      , deleter<Deallocate<Foo> >
-      , copy_policy<DeepCopy>
-    > p(new Foo);
+      , test::deleter<test::Deallocate<Foo> >
+      , test::copy_policy<test::DeepCopy>
+    > p(foo);
+    delete foo;
 #endif
     return boost::report_errors();
 }

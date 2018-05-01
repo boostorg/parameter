@@ -244,7 +244,7 @@ run deduced-parameters0.cpp
     :
     :
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=4
+        <define>BOOST_PARAMETER_MAX_ARITY=5
     :
     :
         <preserve-target-tests>off
@@ -253,7 +253,7 @@ run deduced-parameters0.cpp
     :
     :
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=4
+        <define>BOOST_PARAMETER_MAX_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
     : dp0-no_perf_fwd
     :
@@ -282,7 +282,7 @@ run fine-grained-name-control0.cpp
     :
     :
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=1
+        <define>BOOST_PARAMETER_MAX_ARITY=2
     :
     :
         <preserve-target-tests>off
@@ -291,7 +291,7 @@ run fine-grained-name-control0.cpp
     :
     :
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=1
+        <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
     : fgnc0-no_perf_fwd
     :
@@ -364,21 +364,21 @@ compile optional-parameters0.cpp
     ;
 compile static-member-functions0.cpp
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=1
+        <define>BOOST_PARAMETER_MAX_ARITY=2
     ;
 compile static-member-functions0.cpp
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=1
+        <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
     : smf0-no_perf_fwd
     ;
 compile required-parameters0.cpp
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=1
+        <define>BOOST_PARAMETER_MAX_ARITY=2
     ;
 compile required-parameters0.cpp
     :
-        <define>BOOST_PARAMETER_MAX_ARITY=1
+        <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
     : rp0-no_perf_fwd
     ;
