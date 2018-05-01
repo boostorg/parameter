@@ -14,17 +14,19 @@
 #endif
 #endif
 
+#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 #if !defined(BOOST_GCC) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
     )
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
 #endif
 
 #include <boost/core/lightweight_test.hpp>
 #include <boost/config/pragma_message.hpp>
 
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/parameter.hpp>
 
@@ -192,7 +194,7 @@ BOOST_PRAGMA_MESSAGE("Test not compiled.");
 
 int main()
 {
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::C cp0;
     test::C cp1;
 

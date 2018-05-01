@@ -5,18 +5,22 @@
 
 #include <boost/parameter/config.hpp>
 
+#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+/*
 #if !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
     ) || BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
         defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
         BOOST_WORKAROUND(BOOST_GCC, >= 40900) \
     )
+*/
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+//#endif
 #endif
 
 #include <boost/config/pragma_message.hpp>
 
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/keyword.hpp>
@@ -504,7 +508,7 @@ BOOST_PRAGMA_MESSAGE("Test not compiled.");
 
 int main()
 {
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::f(test::values(S("foo"), 1.f, 2), S("foo"));
     test::f(
         test::_tester = test::values(S("foo"), 1.f, 2), test::_name = S("foo")

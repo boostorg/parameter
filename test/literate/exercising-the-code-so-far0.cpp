@@ -1,16 +1,18 @@
 
 #include <boost/parameter/config.hpp>
 
+#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 #if !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
     ) || BOOST_WORKAROUND(BOOST_GCC, < 60000) || \
     defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
+#endif
 
 #include <boost/config/pragma_message.hpp>
 
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/parameter.hpp>
 
@@ -152,7 +154,7 @@ BOOST_PRAGMA_MESSAGE("Test not compiled.");
 
 MPL_TEST_CASE()
 {
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
     BOOST_MPL_ASSERT((boost::is_same<c1::class_type,B>));
     BOOST_MPL_ASSERT((

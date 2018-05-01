@@ -10,6 +10,7 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 16 or greater.
 #endif
 
+#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 #if defined(BOOST_GCC)
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
     BOOST_WORKAROUND(BOOST_GCC, < 40800)
@@ -21,11 +22,12 @@
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
 #endif
 #endif // BOOST_GCC
+#endif // !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/core/lightweight_test.hpp>
 #include <boost/config/pragma_message.hpp>
 
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/parameter.hpp>
 
@@ -227,7 +229,7 @@ BOOST_PRAGMA_MESSAGE("Test not compiled.");
 
 int main()
 {
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::D::evaluate(
         test::h_parameters()(
             test::lvalue_const_bitset<0>()

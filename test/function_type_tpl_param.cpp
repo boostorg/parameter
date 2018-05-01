@@ -6,20 +6,19 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_GCC) || ( \
-        defined(__MINGW32__) && (1 == __MINGW32__) \
-    ) || ( \
-        BOOST_WORKAROUND(BOOST_GCC, < 40800) \
-    ) || ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-        BOOST_WORKAROUND(BOOST_GCC, >= 50000) \
+#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+#if !defined(BOOST_GCC) || (defined(__MINGW32__) && (1 == __MINGW32__)) || \
+    BOOST_WORKAROUND(BOOST_GCC, < 40800) || ( \
+        BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
     )
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#endif
 #endif
 
 #include <boost/config/pragma_message.hpp>
 
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/mpl/assert.hpp>
 #include <boost/parameter.hpp>
@@ -93,7 +92,7 @@ BOOST_PRAGMA_MESSAGE("Test not compiled.");
 
 MPL_TEST_CASE()
 {
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     BOOST_MPL_ASSERT((test::Y<void()>));
     BOOST_MPL_ASSERT_NOT((test::Y<int>));
     BOOST_MPL_ASSERT((test::Y<double(double)>));

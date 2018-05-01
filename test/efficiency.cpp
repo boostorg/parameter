@@ -10,6 +10,8 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 1 or greater.
 #endif
 
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
+/*
 #if !defined(BOOST_GCC) || ( \
         defined(__MINGW32__) && (1 == __MINGW32__) \
     ) || ( \
@@ -20,12 +22,14 @@
             BOOST_WORKAROUND(BOOST_GCC, < 50000) \
         ) \
     )
+*/
 #define LIBS_PARAMETER_TEST_WILL_NOT_ICE
+//#endif
 #endif
 
 #include <boost/config/pragma_message.hpp>
 
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
 
 #include <boost/parameter.hpp>
 #include <boost/config/workaround.hpp>
@@ -184,7 +188,7 @@ BOOST_PRAGMA_MESSAGE("Test not compiled.");
 
 int main()
 {
-#if defined LIBS_PARAMETER_TEST_WILL_NOT_ICE
+#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     // First decide how many repetitions to measure.
     long repeats = 100;
     double measured = 0;
