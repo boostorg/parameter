@@ -10,26 +10,6 @@
 #error Define BOOST_PARAMETER_MAX_ARITY as 16 or greater.
 #endif
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-#if defined(BOOST_GCC)
-#if (defined(__MINGW32__) && (1 == __MINGW32__)) || \
-    defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
-    BOOST_WORKAROUND(BOOST_GCC, < 40800)
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
-#else // !defined(BOOST_GCC)
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
-    !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
-#endif // BOOST_GCC
-#endif // !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -223,13 +203,8 @@ namespace test {
     };
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::D::evaluate(
         test::h_parameters()(
             test::lvalue_const_bitset<0>()
@@ -262,7 +237,6 @@ int main()
           , test::rvalue_const_bitset<7>()
         )
     );
-#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

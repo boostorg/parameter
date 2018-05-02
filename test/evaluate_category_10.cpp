@@ -14,21 +14,6 @@
 #endif
 #endif
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-#if !defined(BOOST_GCC) && ( \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
-        !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || \
-        defined(__APPLE_CC__) \
-    )
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
-#endif
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -65,6 +50,7 @@ namespace test {
     };
 } // namespace test
 
+#include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
 
 namespace test {
@@ -145,13 +131,8 @@ namespace test {
     };
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::C::evaluate(
         test::g_parameters()(
             test::lvalue_const_bitset<0>()
@@ -177,7 +158,6 @@ int main()
           , test::rvalue_bitset<2>()
         )
     );
-#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 

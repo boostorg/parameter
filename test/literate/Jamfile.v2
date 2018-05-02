@@ -14,7 +14,8 @@ run extracting-parameter-types0.cpp
     :
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ept0-no_perf_fwd
+    :
+        ept0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -31,7 +32,8 @@ run extracting-parameter-types1.cpp
     :
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ept1-no_perf_fwd
+    :
+        ept1-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -50,7 +52,8 @@ run top-level0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=3
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : tl0-no_perf_fwd
+    :
+        tl0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -69,7 +72,8 @@ run predicate-requirements0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : pr0-no_perf_fwd
+    :
+        pr0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -88,7 +92,8 @@ run building-argumentpacks0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : barg0-no_perf_fwd
+    :
+        barg0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -105,7 +110,8 @@ run lazy-default-computation0.cpp
     :
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ldc0-no_perf_fwd
+    :
+        ldc0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -122,7 +128,8 @@ run lazy-default-computation1.cpp
     :
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ldc1-no_perf_fwd
+    :
+        ldc1-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -141,7 +148,8 @@ run namespaces0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ns0-no_perf_fwd
+    :
+        ns0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -160,7 +168,8 @@ run namespaces1.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ns1-no_perf_fwd
+    :
+        ns1-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -179,7 +188,8 @@ run namespaces2.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ns2-no_perf_fwd
+    :
+        ns2-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -198,7 +208,8 @@ run namespaces3.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : ns3-no_perf_fwd
+    :
+        ns3-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -217,7 +228,8 @@ run parameter-enabled-constructors0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : pec0-no_perf_fwd
+    :
+        pec0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -236,7 +248,8 @@ run deduced-template-parameters0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : dtp0-no_perf_fwd
+    :
+        dtp0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -255,7 +268,8 @@ run deduced-parameters0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : dp0-no_perf_fwd
+    :
+        dp0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -274,7 +288,8 @@ run default-expression-evaluation0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : dee0-no_perf_fwd
+    :
+        dee0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
@@ -293,21 +308,24 @@ run fine-grained-name-control0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : fgnc0-no_perf_fwd
+    :
+        fgnc0-no_perf_fwd
     :
         <preserve-target-tests>off
     ;
-# compile template-keywords0.cpp ;
+compile template-keywords0.cpp ;
 compile template-keywords0.cpp
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : tk0-no_perf_fwd
+    :
+        tk0-no_perf_fwd
     ;
-# compile template-keywords1.cpp ;
+compile template-keywords1.cpp ;
 compile template-keywords1.cpp
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : tk1-no_perf_fwd
+    :
+        tk1-no_perf_fwd
     ;
 compile headers-and-namespaces0.cpp ;
 compile handling-out-parameters0.cpp
@@ -318,7 +336,8 @@ compile handling-out-parameters0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : hop0-no_perf_fwd
+    :
+        hop0-no_perf_fwd
     ;
 compile writing-the-function0.cpp
     :
@@ -328,19 +347,22 @@ compile writing-the-function0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : hop0-no_perf_fwd
+    :
+        hop0-no_perf_fwd
     ;
 compile defining-the-keywords0.cpp ;
 compile defining-the-keywords0.cpp
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : dtk0-no_perf_fwd
+    :
+        dtk0-no_perf_fwd
     ;
 compile defining-the-keywords1.cpp ;
 compile defining-the-keywords1.cpp
     :
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : dtk1-no_perf_fwd
+    :
+        dtk1-no_perf_fwd
     ;
 compile exercising-the-code-so-far0.cpp
     :
@@ -350,7 +372,8 @@ compile exercising-the-code-so-far0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : etcsf0-no_perf_fwd
+    :
+        etcsf0-no_perf_fwd
     ;
 compile optional-parameters0.cpp
     :
@@ -360,7 +383,8 @@ compile optional-parameters0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=5
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : op0-no_perf_fwd
+    :
+        op0-no_perf_fwd
     ;
 compile static-member-functions0.cpp
     :
@@ -370,7 +394,8 @@ compile static-member-functions0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : smf0-no_perf_fwd
+    :
+        smf0-no_perf_fwd
     ;
 compile required-parameters0.cpp
     :
@@ -380,7 +405,8 @@ compile required-parameters0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : rp0-no_perf_fwd
+    :
+        rp0-no_perf_fwd
     ;
 compile class-template-skeleton0.cpp
     :
@@ -390,7 +416,8 @@ compile class-template-skeleton0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=4
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : cts0-no_perf_fwd
+    :
+        cts0-no_perf_fwd
     ;
 compile parameter-enabled-member-functions0.cpp
     :
@@ -400,7 +427,8 @@ compile parameter-enabled-member-functions0.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : pemf0-no_perf_fwd
+    :
+        pemf0-no_perf_fwd
     ;
 compile parameter-enabled-member-functions1.cpp
     :
@@ -410,6 +438,7 @@ compile parameter-enabled-member-functions1.cpp
     :
         <define>BOOST_PARAMETER_MAX_ARITY=2
         <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-    : pemf1-no_perf_fwd
+    :
+        pemf1-no_perf_fwd
     ;
 

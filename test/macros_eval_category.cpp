@@ -14,32 +14,6 @@
 #endif
 #endif
 
-#if !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-#if defined(BOOST_GCC)
-#if ( \
-        BOOST_WORKAROUND(BOOST_GCC, < 40700) && ( \
-            BOOST_WORKAROUND(BOOST_GCC, >= 40500) || \
-            !defined(__GXX_EXPERIMENTAL_CXX0X__) \
-        ) \
-    ) || ( \
-        BOOST_WORKAROUND(BOOST_GCC, >= 40900) && \
-        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
-    )
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
-#else // !defined(BOOST_GCC)
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
-    !defined(BOOST_CLANG) || !(1 == BOOST_CLANG) || defined(__APPLE_CC__)
-#define LIBS_PARAMETER_TEST_WILL_NOT_ICE
-#endif
-#endif // BOOST_GCC
-#endif // !defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
-#include <boost/core/lightweight_test.hpp>
-#include <boost/config/pragma_message.hpp>
-
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -155,13 +129,8 @@ namespace test {
     };
 } // namespace test
 
-#else
-BOOST_PRAGMA_MESSAGE("Test not compiled.");
-#endif // Compiler won't ICE.
-
 int main()
 {
-#if defined(LIBS_PARAMETER_TEST_WILL_NOT_ICE)
     test::C::evaluate(
         test::lvalue_const_bitset<0>()
       , test::lvalue_bitset<0>()
@@ -183,7 +152,6 @@ int main()
       , test::lvalue_bitset<2>()
       , test::rvalue_bitset<2>()
     );
-#endif // Compiler won't ICE.
     return boost::report_errors();
 }
 
