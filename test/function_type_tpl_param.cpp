@@ -10,19 +10,14 @@
 #include <boost/parameter/config.hpp>
 
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
-#if defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
 #include <boost/type_traits/is_same.hpp>
-#else
-#include <boost/type_traits/is_base_of.hpp>
-#endif
 #else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <type_traits>
 #endif
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || \
-    !defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -49,7 +44,6 @@ namespace test {
 
     template <typename T>
     struct Y
-#if defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
 #if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
       : boost::is_same<
 #else
@@ -61,15 +55,6 @@ namespace test {
 #else
                 std::function<T>
 #endif
-#else // !defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
-#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
-      : boost::is_base_of<
-#else
-      : boost::mpl::if_<
-            std::is_base_of<
-#endif
-                boost::function_base
-#endif // BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES
               , typename X<
                     test::keywords::tag::function_type
                   , test::keywords::function_type<T>
@@ -89,13 +74,8 @@ namespace test {
 
 MPL_TEST_CASE()
 {
-    BOOST_MPL_ASSERT_NOT((test::Y<int>));
-#if defined(BOOST_PARAMETER_TEMPLATE_KEYWORD_SUPPORTS_FUNCTION_TYPES)
     BOOST_MPL_ASSERT((test::Y<void()>));
+    BOOST_MPL_ASSERT_NOT((test::Y<int>));
     BOOST_MPL_ASSERT((test::Y<double(double)>));
-#else
-    BOOST_MPL_ASSERT((test::Y<boost::function<void()> >));
-    BOOST_MPL_ASSERT((test::Y<boost::function<double(double)> >));
-#endif
 }
 

@@ -113,34 +113,9 @@ alias parameter_preproc_eval_cat_1
     ]
     ;
 
-alias parameter_eval_cat_16_0
+alias parameter_fttp
     :
-    [ run evaluate_category_16.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=16
-            <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    ;
-
-alias parameter_eval_cat_16_1
-    :
-    [ run evaluate_category_16.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=16
-            <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            eval_cat_16_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
+    [ compile function_type_tpl_param.cpp ]
     ;
 
 alias parameter_standard_tests
@@ -276,6 +251,28 @@ alias parameter_standard_tests
             <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         :
             eval_cat_no_perfect_fwd
+        :
+            <preserve-target-tests>off
+    ]
+    [ run evaluate_category_16.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=16
+            <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run evaluate_category_16.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=16
+            <define>BOOST_PARAMETER_ALL_CONST_THRESHOLD_ARITY=1
+            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
+        :
+            eval_cat_16_no_perfect_fwd
         :
             <preserve-target-tests>off
     ]
@@ -508,7 +505,6 @@ alias parameter_standard_tests
         :
             unwrap_cv_ref_no_perfect_fwd
     ]
-    [ compile function_type_tpl_param.cpp ]
     [ compile ntp.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
@@ -567,6 +563,91 @@ alias parameter_standard_tests
 #    ]
     ;
 
+alias parameter_0000011_stress_tests
+    :
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
+alias parameter_0000111_stress_tests
+    :
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
+alias parameter_0001111_stress_tests
+    :
+        parameter_eval_cat_10_1
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
+alias parameter_0011111_stress_tests
+    :
+        parameter_eval_cat_10_0
+        parameter_eval_cat_10_1
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
+alias parameter_0101111_stress_tests
+    :
+        parameter_macros_eval_cat_1
+        parameter_eval_cat_10_1
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
+alias parameter_0111111_stress_tests
+    :
+        parameter_macros_eval_cat_1
+        parameter_eval_cat_10_0
+        parameter_eval_cat_10_1
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
+alias parameter_1010101_stress_tests
+    :
+        parameter_macros_eval_cat_0
+        parameter_eval_cat_10_0
+        parameter_preproc_eval_cat_0
+        parameter_fttp
+    ;
+
+alias parameter_1010111_stress_tests
+    :
+        parameter_macros_eval_cat_0
+        parameter_eval_cat_10_0
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
+alias parameter_1011101_stress_tests
+    :
+        parameter_macros_eval_cat_0
+        parameter_eval_cat_10_0
+        parameter_eval_cat_10_1
+        parameter_preproc_eval_cat_0
+        parameter_fttp
+    ;
+
+alias parameter_1011111_stress_tests
+    :
+        parameter_macros_eval_cat_0
+        parameter_eval_cat_10_0
+        parameter_eval_cat_10_1
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
 alias parameter_all_stress_tests
     :
         parameter_macros_eval_cat_0
@@ -575,8 +656,7 @@ alias parameter_all_stress_tests
         parameter_eval_cat_10_1
         parameter_preproc_eval_cat_0
         parameter_preproc_eval_cat_1
-        parameter_eval_cat_16_0
-        parameter_eval_cat_16_1
+        parameter_fttp
     ;
 
 alias parameter_sp_tests
@@ -585,76 +665,46 @@ alias parameter_sp_tests
         parameter_python_test
     ;
 
-alias parameter_00000011_sl_tests
+alias parameter_sl_tests
     :
-        parameter_eval_cat_16_0
-        parameter_eval_cat_16_1
         parameter_standard_tests
-#        parameter_literate_tests
+        parameter_literate_tests
     ;
 
-alias parameter_00000011_slp_tests
+alias parameter_slp_tests
     :
-        parameter_eval_cat_16_0
-        parameter_eval_cat_16_1
         parameter_standard_tests
-#        parameter_literate_tests
+        parameter_literate_tests
         parameter_python_test
     ;
 
-alias parameter_all_but_lp_tests
+alias parameter_sfl_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_eval_cat_16_0
-        parameter_eval_cat_16_1
         parameter_standard_tests
+        parameter_fttp
+        parameter_literate_tests
     ;
 
-alias parameter_all_but_literate_tests
+alias parameter_sflp_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_eval_cat_16_0
-        parameter_eval_cat_16_1
         parameter_standard_tests
+        parameter_fttp
+        parameter_literate_tests
         parameter_python_test
     ;
 
 alias parameter_all_but_python_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_eval_cat_16_0
-        parameter_eval_cat_16_1
+        parameter_all_stress_tests
         parameter_standard_tests
-#        parameter_literate_tests
+        parameter_literate_tests
     ;
 
 alias parameter_all_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_eval_cat_16_0
-        parameter_eval_cat_16_1
+        parameter_all_stress_tests
         parameter_standard_tests
-#        parameter_literate_tests
+        parameter_literate_tests
         parameter_python_test
     ;
 
