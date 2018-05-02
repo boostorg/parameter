@@ -612,6 +612,15 @@ alias parameter_0111111_stress_tests
         parameter_fttp
     ;
 
+alias parameter_1001111_stress_tests
+    :
+        parameter_macros_eval_cat_0
+        parameter_eval_cat_10_1
+        parameter_preproc_eval_cat_0
+        parameter_preproc_eval_cat_1
+        parameter_fttp
+    ;
+
 alias parameter_1010101_stress_tests
     :
         parameter_macros_eval_cat_0

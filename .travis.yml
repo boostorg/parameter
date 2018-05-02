@@ -40,7 +40,7 @@ matrix:
 
     - os: linux
       compiler: g++-4.4
-      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98 TEST_SUITE=parameter_0111111_stress_tests
+      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98 TEST_SUITE=parameter_0101111_stress_tests
       addons:
         apt:
           packages:
@@ -60,7 +60,7 @@ matrix:
 
     - os: linux
       compiler: g++-4.4
-      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=0x TEST_SUITE=parameter_0111111_stress_tests
+      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=0x TEST_SUITE=parameter_0101111_stress_tests
       addons:
         apt:
           packages:
@@ -118,7 +118,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: TOOLSET=gcc COMPILER=g++-4.7 CXXSTD=03 TEST_SUITE=parameter_1011111_stress_tests
+      env: TOOLSET=gcc COMPILER=g++-4.7 CXXSTD=03 TEST_SUITE=parameter_1001111_stress_tests
       addons:
         apt:
           packages:
@@ -721,7 +721,7 @@ matrix:
             - llvm-toolchain-precise-3.8
 
     - os: linux
-      env: TOOLSET=clang COMPILER=clang++-3.8 CXXSTD=03 TEST_SUITE=parameter_0111111_stress_tests
+      env: TOOLSET=clang COMPILER=clang++-3.8 CXXSTD=03 TEST_SUITE=parameter_0001111_stress_tests
       addons:
         apt:
           packages:
