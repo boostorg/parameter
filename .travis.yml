@@ -30,7 +30,7 @@ matrix:
   include:
     - os: linux
       compiler: g++-4.4
-      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98 TEST_SUITE=
+      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98 TEST_SUITE=parameter_sp_tests
       addons:
         apt:
           packages:
@@ -50,7 +50,7 @@ matrix:
 
     - os: linux
       compiler: g++-4.4
-      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98 TEST_SUITE=
+      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98 TEST_SUITE=parameter_all_stress_tests
       addons:
         apt:
           packages:

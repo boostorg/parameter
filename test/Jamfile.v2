@@ -13,12 +13,11 @@ project boost/parameter
         <warnings>off
     ;
 
+import python ;
+
 alias parameter_python_test
     :
-    [
-        import python ;
-        bpl-test python_test ;
-    ]
+    [ bpl-test python_test ]
     ;
 
 alias parameter_literate_tests
@@ -591,7 +590,7 @@ alias parameter_00000011_sl_tests
         parameter_eval_cat_16_0
         parameter_eval_cat_16_1
         parameter_standard_tests
-        parameter_literate_tests
+#        parameter_literate_tests
     ;
 
 alias parameter_00000011_slp_tests
@@ -599,7 +598,7 @@ alias parameter_00000011_slp_tests
         parameter_eval_cat_16_0
         parameter_eval_cat_16_1
         parameter_standard_tests
-        parameter_literate_tests
+#        parameter_literate_tests
         parameter_python_test
     ;
 
@@ -641,7 +640,7 @@ alias parameter_all_but_python_tests
         parameter_eval_cat_16_0
         parameter_eval_cat_16_1
         parameter_standard_tests
-        parameter_literate_tests
+#        parameter_literate_tests
     ;
 
 alias parameter_all_tests
@@ -655,7 +654,7 @@ alias parameter_all_tests
         parameter_eval_cat_16_0
         parameter_eval_cat_16_1
         parameter_standard_tests
-        parameter_literate_tests
+#        parameter_literate_tests
         parameter_python_test
     ;
 
