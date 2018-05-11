@@ -573,10 +573,15 @@ alias parameter_00000101_stress_tests
         parameter_preproc_eval_cat_fail
     ;
 
-alias parameter_00000111_stress_tests
+alias parameter_00000110_stress_tests
     :
         parameter_preproc_eval_cat_1
         parameter_fttp
+    ;
+
+alias parameter_00000111_stress_tests
+    :
+        parameter_00000110_stress_tests
         parameter_preproc_eval_cat_fail
     ;
 
@@ -667,7 +672,7 @@ alias parameter_10111011_stress_tests
         parameter_preproc_eval_cat_fail
     ;
 
-alias parameter_10111111_stress_tests
+alias parameter_10111110_stress_tests
     :
         parameter_macros_eval_cat_0
         parameter_eval_cat_10_0
@@ -675,6 +680,11 @@ alias parameter_10111111_stress_tests
         parameter_preproc_eval_cat_0
         parameter_preproc_eval_cat_1
         parameter_fttp
+    ;
+
+alias parameter_10111111_stress_tests
+    :
+        parameter_10111110_stress_tests
         parameter_preproc_eval_cat_fail
     ;
 
@@ -691,13 +701,7 @@ alias parameter_11111110_stress_tests
 
 alias parameter_all_stress_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_fttp
+        parameter_11111110_stress_tests
         parameter_preproc_eval_cat_fail
     ;
 
