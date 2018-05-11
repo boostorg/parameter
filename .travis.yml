@@ -154,7 +154,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: TOOLSET=gcc COMPILER=g++-4.8 CXXSTD=03 TEST_SUITE=parameter_00000101_stress_tests
+      env: TOOLSET=gcc COMPILER=g++-4.8 CXXSTD=03 TEST_SUITE=parameter_preproc_eval_cat_1
       addons:
         apt:
           packages:
