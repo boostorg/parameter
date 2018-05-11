@@ -861,7 +861,7 @@ matrix:
             - llvm-toolchain-precise-3.9
 
     - os: linux
-      env: TOOLSET=clang COMPILER=clang++-3.9 CXXSTD=1z TEST_SUITE=parameter_10111110_stress_tests
+      env: TOOLSET=clang COMPILER=clang++-3.9 CXXSTD=1z TEST_SUITE=parameter_10101110_stress_tests
       addons:
         apt:
           packages:
