@@ -199,7 +199,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: TOOLSET=gcc COMPILER=g++-4.9 CXXSTD=11 TEST_SUITE=parameter_sl_tests
+      env: TOOLSET=gcc COMPILER=g++-4.9 CXXSTD=11 TEST_SUITE=parameter_standard_tests
       addons:
         apt:
           packages:
