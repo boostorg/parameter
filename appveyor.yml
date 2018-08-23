@@ -37,10 +37,10 @@ environment:
       TEST_SUITE: parameter_all_tests
     - ARGS: --toolset=msvc-12.0 address-model=32
       TEST_SUITE: parameter_all_tests
-    - ARGS: --toolset=msvc-14.0 address-model=32
-      TEST_SUITE: parameter_all_tests
     - ARGS: --toolset=msvc-12.0 address-model=64
       TEST_SUITE: parameter_all_but_python_tests
+    - ARGS: --toolset=msvc-14.0 address-model=32
+      TEST_SUITE: parameter_all_tests
     - ARGS: --toolset=msvc-14.0 address-model=64
       TEST_SUITE: parameter_all_but_python_tests
     - ARGS: --toolset=msvc-14.0 address-model=64 cxxflags=-std:c++latest
