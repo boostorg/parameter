@@ -74,4 +74,4 @@ test_script:
   - ..\..\..\b2 config_info_travis_install %ARGS%
   - config_info_travis
   - cd ..\..\parameter\test
-  - ..\..\..\b2 -j3 --hash %ARGS% %TEST_SUITE%
+  - ..\..\..\b2 -j%NUMBER_OF_PROCESSORS% --hash %ARGS% %TEST_SUITE%

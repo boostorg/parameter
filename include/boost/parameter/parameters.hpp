@@ -907,7 +907,7 @@ namespace boost { namespace parameter { namespace aux {
     // This recursive metafunction forwards successive elements of
     // parameters::parameter_spec to make_deduced_items<>.
     // -- Cromwell D. Enage
-    template <typename SpecDeque>
+    template <typename SpecSeq>
     struct make_deduced_list;
 }}} // namespace boost::parameter::aux
 
@@ -916,12 +916,12 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <typename SpecDeque>
+    template <typename SpecSeq>
     struct make_deduced_list_not_empty
       : ::boost::parameter::aux::make_deduced_items<
-            typename boost::mpl::front<SpecDeque>::type
+            typename boost::mpl::front<SpecSeq>::type
           , ::boost::parameter::aux::make_deduced_list<
-                typename boost::mpl::pop_front<SpecDeque>::type
+                typename boost::mpl::pop_front<SpecSeq>::type
             >
         >
     {
@@ -932,12 +932,12 @@ namespace boost { namespace parameter { namespace aux {
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <typename SpecDeque>
+    template <typename SpecSeq>
     struct make_deduced_list
       : ::boost::mpl::eval_if<
-            ::boost::mpl::empty<SpecDeque>
+            ::boost::mpl::empty<SpecSeq>
           , ::boost::mpl::identity< ::boost::parameter::void_>
-          , ::boost::parameter::aux::make_deduced_list_not_empty<SpecDeque>
+          , ::boost::parameter::aux::make_deduced_list_not_empty<SpecSeq>
         >
     {
     };
@@ -962,20 +962,20 @@ namespace boost { namespace parameter { namespace aux {
     };
 
     // Checks if the arguments match the criteria of overload resolution.
-    template <typename ArgumentPackAndError, typename SpecDeque>
+    template <typename ArgumentPackAndError, typename SpecSeq>
     struct match_parameters_base_cond;
 
     // Helper for match_parameters_base_cond<...>, below.
-    template <typename ArgumentPackAndError, typename SpecDeque>
+    template <typename ArgumentPackAndError, typename SpecSeq>
     struct match_parameters_base_cond_helper
       : ::boost::mpl::eval_if<
             ::boost::parameter::aux::satisfies_requirements_of<
                 typename ::boost::mpl::first<ArgumentPackAndError>::type
-              , typename ::boost::mpl::front<SpecDeque>::type
+              , typename ::boost::mpl::front<SpecSeq>::type
             >
           , ::boost::parameter::aux::match_parameters_base_cond<
                 ArgumentPackAndError
-              , typename ::boost::mpl::pop_front<SpecDeque>::type
+              , typename ::boost::mpl::pop_front<SpecSeq>::type
             >
           , ::boost::mpl::false_
         >
@@ -984,55 +984,55 @@ namespace boost { namespace parameter { namespace aux {
 
     // If NamedList satisfies the PS0, PS1, ..., this is a metafunction
     // returning parameters.  Otherwise it has no nested ::type.
-    template <typename ArgumentPackAndError, typename SpecDeque>
+    template <typename ArgumentPackAndError, typename SpecSeq>
     struct match_parameters_base_cond
       : ::boost::mpl::eval_if<
-            ::boost::mpl::empty<SpecDeque>
+            ::boost::mpl::empty<SpecSeq>
           , ::boost::parameter::aux::is_arg_pack_error_void<
                 ArgumentPackAndError
             >
           , ::boost::parameter::aux::match_parameters_base_cond_helper<
                 ArgumentPackAndError
-              , SpecDeque
+              , SpecSeq
             >
         >
     {
     };
 
     // Helper metafunction for make_parameter_spec_items<...>, below.
-    template <typename SpecDeque, typename ...Args>
+    template <typename SpecSeq, typename ...Args>
     struct make_parameter_spec_items_helper;
 
     // This parameters item chaining metafunction class does not require
-    // the lengths of the SpecDeque and of Args parameter pack to match.
+    // the lengths of the SpecSeq and of Args parameter pack to match.
     // Used by argument_pack to build the items in the resulting arg_list.
     // -- Cromwell D. Enage
-    template <typename SpecDeque, typename ...Args>
+    template <typename SpecSeq, typename ...Args>
     struct make_parameter_spec_items
       : ::boost::mpl::eval_if<
-            ::boost::mpl::empty<SpecDeque>
+            ::boost::mpl::empty<SpecSeq>
           , ::boost::mpl::identity< ::boost::parameter::void_>
           , ::boost::parameter::aux::make_parameter_spec_items_helper<
-                SpecDeque
+                SpecSeq
               , Args...
             >
         >
     {
     };
 
-    template <typename SpecDeque>
-    struct make_parameter_spec_items_helper<SpecDeque>
+    template <typename SpecSeq>
+    struct make_parameter_spec_items_helper<SpecSeq>
       : ::boost::mpl::identity< ::boost::parameter::void_>
     {
     };
 
-    template <typename SpecDeque, typename A0, typename ...Args>
-    struct make_parameter_spec_items_helper<SpecDeque,A0,Args...>
+    template <typename SpecSeq, typename A0, typename ...Args>
+    struct make_parameter_spec_items_helper<SpecSeq,A0,Args...>
       : ::boost::parameter::aux::make_items<
-            typename ::boost::mpl::front<SpecDeque>::type
+            typename ::boost::mpl::front<SpecSeq>::type
           , A0
           , ::boost::parameter::aux::make_parameter_spec_items<
-                typename ::boost::mpl::pop_front<SpecDeque>::type
+                typename ::boost::mpl::pop_front<SpecSeq>::type
               , Args...
             >
         >
@@ -1093,7 +1093,13 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#if defined(BOOST_FUSION_HAS_VARIADIC_VECTOR)
+#include <boost/fusion/container/vector.hpp>
+#elif defined(BOOST_FUSION_HAS_VARIADIC_DEQUE)
 #include <boost/fusion/container/deque.hpp>
+#else
+#include <boost/fusion/container/list.hpp>
+#endif
 #include <boost/fusion/mpl.hpp>
 
 namespace boost { namespace parameter {
@@ -1101,7 +1107,13 @@ namespace boost { namespace parameter {
     template <typename ...Spec>
     struct parameters
     {
+#if defined(BOOST_FUSION_HAS_VARIADIC_VECTOR)
+        typedef ::boost::fusion::vector<Spec...> parameter_spec;
+#elif defined(BOOST_FUSION_HAS_VARIADIC_DEQUE)
         typedef ::boost::fusion::deque<Spec...> parameter_spec;
+#else
+        typedef ::boost::fusion::list<Spec...> parameter_spec;
+#endif
 
         typedef typename ::boost::parameter::aux::make_deduced_list<
             parameter_spec

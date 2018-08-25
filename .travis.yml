@@ -1113,7 +1113,7 @@ script:
   - for CXXLOCAL in $CXXSTD; do  (cd libs/config/test && ../../../b2 config_info_travis_install toolset=$TOOLSET cxxstd=$CXXLOCAL $CXXSTD_DIALECT && echo With Standard Version $CXXLOCAL && ./config_info_travis && rm ./config_info_travis)  done
   - unset IFS
   - cd libs/parameter/test
-  - ../../../b2 $TEST_SUITE -j3 toolset=$TOOLSET cxxstd=$CXXSTD $CXXSTD_DIALECT
+  - ../../../b2 $TEST_SUITE -j`(nproc || sysctl -n hw.ncpu) 2> /dev/null` toolset=$TOOLSET cxxstd=$CXXSTD $CXXSTD_DIALECT
   - cd ../../..
 
 notifications:
