@@ -1093,12 +1093,10 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_FUSION_HAS_VARIADIC_VECTOR)
-#include <boost/fusion/container/vector.hpp>
-#elif defined(BOOST_FUSION_HAS_VARIADIC_DEQUE)
-#include <boost/fusion/container/deque.hpp>
-#else
+#if defined(BOOST_FUSION_HAS_VARIADIC_LIST)
 #include <boost/fusion/container/list.hpp>
+#else
+#include <boost/fusion/container/deque.hpp>
 #endif
 #include <boost/fusion/mpl.hpp>
 
@@ -1107,12 +1105,10 @@ namespace boost { namespace parameter {
     template <typename ...Spec>
     struct parameters
     {
-#if defined(BOOST_FUSION_HAS_VARIADIC_VECTOR)
-        typedef ::boost::fusion::vector<Spec...> parameter_spec;
-#elif defined(BOOST_FUSION_HAS_VARIADIC_DEQUE)
-        typedef ::boost::fusion::deque<Spec...> parameter_spec;
-#else
+#if defined(BOOST_FUSION_HAS_VARIADIC_LIST)
         typedef ::boost::fusion::list<Spec...> parameter_spec;
+#else
+        typedef ::boost::fusion::deque<Spec...> parameter_spec;
 #endif
 
         typedef typename ::boost::parameter::aux::make_deduced_list<
