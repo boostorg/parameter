@@ -1093,7 +1093,9 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#if defined(BOOST_FUSION_HAS_VARIADIC_LIST)
+#if defined(BOOST_FUSION_HAS_VARIADIC_LIST) && ( \
+        !defined(BOOST_MSVC) || (BOOST_MSVC < 1800) \
+    )
 #include <boost/fusion/container/list.hpp>
 #else
 #include <boost/fusion/container/deque.hpp>
@@ -1105,7 +1107,9 @@ namespace boost { namespace parameter {
     template <typename ...Spec>
     struct parameters
     {
-#if defined(BOOST_FUSION_HAS_VARIADIC_LIST)
+#if defined(BOOST_FUSION_HAS_VARIADIC_LIST) && ( \
+        !defined(BOOST_MSVC) || (BOOST_MSVC < 1800) \
+    )
         typedef ::boost::fusion::list<Spec...> parameter_spec;
 #else
         typedef ::boost::fusion::deque<Spec...> parameter_spec;
