@@ -1119,4 +1119,3 @@ script:
 notifications:
   email:
     on_success: always
-
