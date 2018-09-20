@@ -2678,9 +2678,9 @@ encounter.  In this case you could replace all mentions of vertex descriptor
 types with ``int`` in the text, and your understanding of the Parameter
 library wouldn't suffer.
 
-.. [#ConceptsTS] This is a major motivation behind `ConceptsTS`_.
+.. [#ConceptsTS] This is a major motivation behind `C++20 constraints`_.
 
-.. _`ConceptsTS`: http://en.cppreference.com/w/cpp/language/constraints
+.. _`C++20 constraints`: http://en.cppreference.com/w/cpp/language/constraints
 
 .. .. [#bind] The Lambda library is known not to work on `some
 .. less-conformant compilers`__.  When using one of those you could
@@ -2712,7 +2712,7 @@ Herb Sutter.
 
 .. [#sfinae] This capability depends on your compiler's support for
 SFINAE.  **SFINAE**: **S**\ ubstitution **F**\ ailure **I**\ s **N**\ ot
-**A**\ n **E** rror.  If type substitution during the instantiation of a
+**A**\ n **E**\ rror.  If type substitution during the instantiation of a
 function template results in an invalid type, no compilation error is emitted;
 instead the overload is removed from the overload set.  By producing an
 invalid type in the function signature depending on the result of some

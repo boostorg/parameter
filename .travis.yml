@@ -905,7 +905,7 @@ matrix:
 
     - os: linux
       compiler: clang++-4.0
-      env: TOOLSET=clang COMPILER=clang++-4.0 CXXSTD=11 TEST_SUITE=parameter_10111110_stress_tests
+      env: TOOLSET=clang COMPILER=clang++-4.0 CXXSTD=11 TEST_SUITE=parameter_10101110_stress_tests
       addons:
         apt:
           packages:
