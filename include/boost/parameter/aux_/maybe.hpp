@@ -1,119 +1,155 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 //
 // 2009.10.21 TDS remove depenency on boost::python::detail::referent_storage
 //
 #ifndef BOOST_PARAMETER_MAYBE_091021_HPP
-# define BOOST_PARAMETER_MAYBE_091021_HPP
-
-# include <boost/mpl/if.hpp>
-# include <boost/mpl/identity.hpp>
-# include <boost/type_traits/is_reference.hpp>
-# include <boost/type_traits/add_reference.hpp>
-# include <boost/optional.hpp>
-# include <boost/aligned_storage.hpp>
-# include <boost/type_traits/remove_cv.hpp>
-# include <boost/type_traits/add_const.hpp>
-# include <boost/parameter/aux_/is_maybe.hpp>
+#define BOOST_PARAMETER_MAYBE_091021_HPP
 
 namespace boost { namespace parameter { namespace aux {
 
-template <class T> struct referent_size;
+    template <typename T>
+    struct referent_size;
+}}} // namespace boost::parameter::aux
 
-template <class T>
-struct referent_size<T&>
-{
-  BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(T));
-};
+#include <boost/parameter/config.hpp>
 
-// A metafunction returning a POD type which can store U, where T ==
-// U&. If T is not a reference type, returns a POD which can store T.
-template <class T>
-struct referent_storage
-{
-  typedef typename boost::aligned_storage<
-    referent_size<T>::value
-    >::type type;
-};
+namespace boost { namespace parameter { namespace aux {
 
-template <class T>
-struct maybe : maybe_base
-{
-    typedef typename add_reference<
-# if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        T const
-# else
-        typename add_const<T>::type
-# endif
-    >::type reference;
-
-    typedef typename remove_cv<
-        BOOST_DEDUCED_TYPENAME remove_reference<reference>::type
-    >::type non_cv_value;
-
-    explicit maybe(T value_)
-      : value(value_)
-      , constructed(false)
-    {}
-
-    maybe()
-      : constructed(false)
-    {}
-
-    ~maybe()
+    template <typename T>
+    struct referent_size<T&>
     {
-        if (constructed)
-            this->destroy();
-    }
+        BOOST_STATIC_CONSTANT(::std::size_t, value = sizeof(T));
+    };
+}}} // namespace boost::parameter::aux
 
-    reference construct(reference value_) const
+#include <boost/type_traits/aligned_storage.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    // A metafunction returning a POD type which can store U, where T == U&.
+    // If T is not a reference type, returns a POD which can store T.
+    template <typename T>
+    struct referent_storage
+      : ::boost::aligned_storage<
+            ::boost::parameter::aux::referent_size<T>::value
+        >
     {
-        return value_;
-    }
+    };
+}}} // namespace boost::parameter::aux
 
-    template <class U>
-    reference construct2(U const& value_) const
+#include <boost/parameter/aux_/is_maybe.hpp>
+#include <boost/optional/optional.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/identity.hpp>
+
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#include <boost/type_traits/add_const.hpp>
+#endif
+#include <boost/type_traits/add_lvalue_reference.hpp>
+#include <boost/type_traits/remove_cv.hpp>
+#else
+#include <type_traits>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename T>
+    struct maybe : ::boost::parameter::aux::maybe_base
     {
-        new (m_storage.address()) non_cv_value(value_);
-        constructed = true;
-        return *(non_cv_value*)m_storage.address();
-    }
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+        typedef typename ::boost::add_lvalue_reference<
+#else
+        typedef typename ::std::add_lvalue_reference<
+#endif
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+            T const
+#elif defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+            typename ::boost::add_const<T>::type
+#else
+            typename ::std::add_const<T>::type
+#endif
+        >::type reference;
 
-    template <class U>
-    reference construct(U const& value_) const
-    {
-        return this->construct2(value_);
-    }
+#if defined(BOOST_PARAMETER_USES_BOOST_VICE_CXX11_TYPE_TRAITS)
+        typedef typename ::boost::remove_cv<
+            BOOST_DEDUCED_TYPENAME ::boost::remove_reference<reference>::type
+        >::type non_cv_value;
+#else
+        typedef typename ::std::remove_cv<
+            BOOST_DEDUCED_TYPENAME ::std::remove_reference<reference>::type
+        >::type non_cv_value;
+#endif
 
-    void destroy()
-    {
-        ((non_cv_value*)m_storage.address())->~non_cv_value();
-    }
+        inline explicit maybe(T value_) : value(value_), constructed(false)
+        {
+        }
 
-    typedef reference(maybe<T>::*safe_bool)() const;
+        inline maybe() : value(), constructed(false)
+        {
+        }
 
-    operator safe_bool() const
-    {
-        return value ? &maybe<T>::get : 0 ;
-    }
+        ~maybe()
+        {
+            if (this->constructed)
+            {
+                this->destroy();
+            }
+        }
 
-    reference get() const
-    {
-        return value.get();
-    }
+        inline reference construct(reference value_) const
+        {
+            return value_;
+        }
 
-private:
-    boost::optional<T> value;
-    mutable bool constructed;
+        template <typename U>
+        reference construct2(U const& value_) const
+        {
+            new (this->m_storage.address()) non_cv_value(value_);
+            this->constructed = true;
+            return *reinterpret_cast<non_cv_value*>(
+                this->m_storage.address()
+            );
+        }
 
+        template <typename U>
+        inline reference construct(U const& value_) const
+        {
+            return this->construct2(value_);
+        }
 
-    mutable typename referent_storage<
-        reference
-    >::type m_storage;
-};
+        void destroy()
+        {
+            reinterpret_cast<non_cv_value*>(
+                this->m_storage.address()
+            )->~non_cv_value();
+        }
 
+        typedef reference(
+            ::boost::parameter::aux::maybe<T>::*safe_bool
+        )() const;
+
+        inline operator safe_bool() const
+        {
+            return this->value ? &::boost::parameter::aux::maybe<T>::get : 0;
+        }
+
+        inline reference get() const
+        {
+            return this->value.get();
+        }
+
+     private:
+        ::boost::optional<T> value;
+        mutable bool constructed;
+        mutable typename ::boost::parameter::aux::referent_storage<
+            reference
+        >::type m_storage;
+    };
 }}} // namespace boost::parameter::aux
 
 #endif // BOOST_PARAMETER_MAYBE_060211_HPP
