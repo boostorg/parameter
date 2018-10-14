@@ -25,6 +25,7 @@ install:
   - git submodule update --init tools/build
   - git submodule update --init libs/config
   - git submodule update --init tools/boostdep
+  - git submodule update --init libs/parameter_python
   - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\parameter
   - python tools/boostdep/depinst/depinst.py parameter
   - bootstrap
