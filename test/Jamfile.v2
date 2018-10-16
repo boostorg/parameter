@@ -20,6 +20,7 @@ test-suite "parameter"
      [ run tutorial.cpp ]
      [ run singular.cpp ]
      [ run mpl.cpp ]
+     [ run function_type_tpl_param.cpp ]
      [ run preprocessor.cpp ]
      [ run preprocessor_deduced.cpp ]
      [ run efficiency.cpp : : : : : <variant>release ]
