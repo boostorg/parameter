@@ -7,8 +7,17 @@
 
 # include <boost/mpl/and.hpp>
 # include <boost/mpl/not.hpp>
+# include <boost/mpl/if.hpp>
 # include <boost/type_traits/is_convertible.hpp>
-# include <boost/type_traits/is_reference.hpp>
+# include <boost/type_traits/is_lvalue_reference.hpp>
+# include <boost/type_traits/is_function.hpp>
+# include <boost/config.hpp>
+
+# if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#  include <boost/function.hpp>
+# else
+#  include <functional>
+# endif
 
 namespace boost { namespace parameter { 
 
@@ -25,7 +34,7 @@ namespace aux
   template <class T>
   struct is_template_keyword
     : mpl::and_<
-          mpl::not_<is_reference<T> >
+          mpl::not_<is_lvalue_reference<T> >
         , is_pointer_convertible<T, template_keyword_tag>
       >
   {};
@@ -37,7 +46,19 @@ struct template_keyword
   : aux::template_keyword_tag
 {
     typedef Tag key_type;
-    typedef T value_type;
+
+    // Wrap plain (non-UDT) function objects in either
+    // a boost::function or a std::function. -- Cromwell D. Enage
+    typedef typename ::boost::mpl::if_<
+        ::boost::is_function<T>
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+      , ::boost::function<T>
+#else
+      , ::std::function<T>
+#endif
+      , T
+    >::type value_type;
+
     typedef value_type reference;
 };
 

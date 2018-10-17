@@ -29,6 +29,7 @@ test-suite "parameter"
      [ run deduced_dependent_predicate.cpp ]
      [ run normalized_argument_types.cpp ]
      [ compile ntp.cpp ]
+     [ compile function_type_tpl_param.cpp ]
      [ compile unwrap_cv_reference.cpp ]
      [ compile-fail duplicates.cpp ]
      [ compile-fail deduced_unmatched_arg.cpp ]
