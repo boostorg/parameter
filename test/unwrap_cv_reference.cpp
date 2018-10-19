@@ -6,6 +6,11 @@
 #include <boost/mpl/assert.hpp>
 #include <boost/ref.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/config.hpp>
+
+#if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#include <functional>
+#endif
 
 namespace test
 {
@@ -17,14 +22,21 @@ namespace test
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<int const>::type,int const>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<int volatile>::type,int volatile>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<int const volatile>::type,int const volatile>));
-  
+
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<foo>::type,foo>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<foo const>::type,foo const>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<foo volatile>::type,foo volatile>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<foo const volatile>::type,foo const volatile>));
-  
+
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<reference_wrapper<foo> >::type,foo>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<reference_wrapper<foo> const>::type,foo>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<reference_wrapper<foo> volatile>::type,foo>));
   BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<reference_wrapper<foo> const volatile>::type,foo>));
+
+#if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+  BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<std::reference_wrapper<foo> >::type,foo>));
+  BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<std::reference_wrapper<foo> const>::type,foo>));
+  BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<std::reference_wrapper<foo> volatile>::type,foo>));
+  BOOST_MPL_ASSERT((is_same<unwrap_cv_reference<std::reference_wrapper<foo> const volatile>::type,foo>));
+#endif
 }
