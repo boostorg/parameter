@@ -10,6 +10,11 @@
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/eval_if.hpp>
+#include <boost/config.hpp>
+
+#if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+#include <functional>
+#endif
 
 namespace boost { template<class T> class reference_wrapper; }
 
@@ -26,6 +31,11 @@ namespace boost { namespace parameter { namespace aux {
 // reference_wrapper<U> cv
 template <class U>
 yes_tag is_cv_reference_wrapper_check(reference_wrapper<U> const volatile*);
+#if !defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
+// Support for std::ref(x) -- Cromwell D. Enage
+template <class U>
+yes_tag is_cv_reference_wrapper_check(::std::reference_wrapper<U> const volatile*);
+#endif
 no_tag is_cv_reference_wrapper_check(...);
 
 template <class T>
