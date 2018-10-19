@@ -20,10 +20,7 @@
 # include <boost/config.hpp>
 # include <boost/config/workaround.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
-        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
-        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
-    )
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -51,10 +48,7 @@ public:
     // a boost::function or a std::function. -- Cromwell D. Enage
     typedef typename ::boost::mpl::if_<
         ::boost::is_function<arg_type>
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
-        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
-        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
-    )
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
       , ::boost::function<arg_type>
 #else
       , ::std::function<arg_type>
