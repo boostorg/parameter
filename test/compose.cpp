@@ -20,10 +20,7 @@ namespace param {
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
-        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
-        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
-    )
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
 #else
 #include <functional>
@@ -75,12 +72,7 @@ namespace test {
 
     struct B : A
     {
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL) || ( \
-        BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
-        BOOST_WORKAROUND(BOOST_MSVC, < 1800) \
-    )
-        // MSVC 11.0 on AppVeyor reports error C2528:
-        // 'abstract declarator': pointer to reference is illegal
+#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
         boost::function<float()> k;
         boost::function<double()> l;
 #else
@@ -117,25 +109,27 @@ namespace test {
 
 int main()
 {
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+#if !defined(LIBS_PARAMETER_TEST_RUN_FAILURE) && \
+    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails at runtime without this workaround.
     test::A a((
         param::_a0 = 1
       , param::_a1 = 13
-      , param::_a2 = boost::function<double()>(test::D)
+      , param::_a2 = std::function<double()>(test::D)
     ));
 #else
     test::A a((param::_a0 = 1, param::_a1 = 13, param::_a2 = test::D));
 #endif
     BOOST_TEST_EQ(1, a.i);
     BOOST_TEST_EQ(13, a.j);
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+#if !defined(LIBS_PARAMETER_TEST_RUN_FAILURE) && \
+    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails at runtime without this workaround.
     test::B b0((
         param::_a1 = 13
-      , param::_a2 = boost::function<float()>(test::F)
+      , param::_a2 = std::function<float()>(test::F)
     ));
 #else
     test::B b0((param::_a1 = 13, param::_a2 = test::F));
@@ -144,11 +138,12 @@ int main()
     BOOST_TEST_EQ(13, b0.j);
     BOOST_TEST_EQ(4.0f, b0.k());
     BOOST_TEST_EQ(2.5, b0.l());
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+#if !defined(LIBS_PARAMETER_TEST_RUN_FAILURE) && \
+    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails at runtime without this workaround.
     test::B b1((
-        param::_a3 = boost::function<double()>(test::D)
+        param::_a3 = std::function<double()>(test::D)
       , param::_a1 = 13
     ));
 #else

@@ -11,8 +11,8 @@ project boost/parameter
   ;
 
 build-project literate ;
-  
-test-suite "parameter"
+
+alias parameter
   :  [ run basics.cpp ]
      [ run compose.cpp ]
      [ run sfinae.cpp ]
@@ -35,5 +35,14 @@ test-suite "parameter"
      [ compile-fail duplicates.cpp ]
      [ compile-fail deduced_unmatched_arg.cpp ]
      [ bpl-test python_test ]
+  ;
+
+alias parameter_msvc11_fail
+  :  [ run-fail compose.cpp : : : <define>LIBS_PARAMETER_TEST_RUN_FAILURE : compose_fail_0 : <preserve-target-tests>off ]
+  ;
+
+alias parameter_msvc11_tests
+  :  parameter
+     parameter_msvc11_fail
   ;
 
