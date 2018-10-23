@@ -1,6 +1,7 @@
 # Copyright 2017 Edward Diener
 # Distributed under the Boost Software License, Version 1.0.
-# (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://boost.org/LICENSE_1_0.txt)
 
 version: 1.0.{build}-{branch}
 
@@ -13,10 +14,30 @@ branches:
 
 environment:
   matrix:
+    - ARGS: --toolset=gcc address-model=32
+      TEST_SUITE: parameter
+      PATH: C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin;%PATH%
+    - ARGS: --toolset=gcc address-model=32 linkflags=-Wl,-allow-multiple-definition
+      TEST_SUITE: parameter
+      PATH: C:\MinGW\bin;%PATH%
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      ARGS: --toolset=msvc-9.0  address-model=32
+      TEST_SUITE: parameter
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      ARGS: --toolset=msvc-10.0 address-model=32
+      TEST_SUITE: parameter
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      ARGS: --toolset=msvc-11.0 address-model=32
+      TEST_SUITE: parameter_msvc11_tests
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      ARGS: --toolset=msvc-12.0 address-model=32
+      TEST_SUITE: parameter
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      TOOLSET: msvc-9.0,msvc-10.0,msvc-11.0,msvc-12.0,msvc-14.0
+      ARGS: --toolset=msvc-14.0 address-model=32
+      TEST_SUITE: parameter
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      TOOLSET: msvc-14.1
+      ARGS: --toolset=msvc-14.1 address-model=32
+      TEST_SUITE: parameter
 
 install:
   - cd ..
@@ -34,4 +55,6 @@ install:
 build: off
 
 test_script:
-  - b2 libs/parameter/test toolset=%TOOLSET%
+  - cd libs\parameter\test
+  - ..\..\..\b2 -j%NUMBER_OF_PROCESSORS% --hash %ARGS% %TEST_SUITE%
+  - cd ..\..\..

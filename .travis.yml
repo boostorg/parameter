@@ -26,11 +26,11 @@ matrix:
   include:
     - os: linux
       compiler: g++
-      env: TOOLSET=gcc COMPILER=g++ CXXSTD=03,11
+      env: TOOLSET=gcc COMPILER=g++ CXXSTD=03,11 TEST_SUITE=parameter
 
     - os: linux
       compiler: g++-4.4
-      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98,0x
+      env: TOOLSET=gcc COMPILER=g++-4.4 CXXSTD=98,0x TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -40,7 +40,7 @@ matrix:
 
     - os: linux
       compiler: g++-4.6
-      env: TOOLSET=gcc COMPILER=g++-4.6 CXXSTD=03,0x
+      env: TOOLSET=gcc COMPILER=g++-4.6 CXXSTD=03,0x TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -50,7 +50,7 @@ matrix:
 
     - os: linux
       compiler: g++-5
-      env: TOOLSET=gcc COMPILER=g++-5 CXXSTD=03,11,14,1z
+      env: TOOLSET=gcc COMPILER=g++-5 CXXSTD=03,11,14,1z TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -60,7 +60,7 @@ matrix:
 
     - os: linux
       compiler: g++-6
-      env: TOOLSET=gcc COMPILER=g++-6 CXXSTD=03,11,14,1z
+      env: TOOLSET=gcc COMPILER=g++-6 CXXSTD=03,11,14,1z TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -71,7 +71,7 @@ matrix:
     - os: linux
       dist: trusty
       compiler: g++-7
-      env: TOOLSET=gcc COMPILER=g++-7 CXXSTD=03,11,14,17
+      env: TOOLSET=gcc COMPILER=g++-7 CXXSTD=03,11,14,17 TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -81,7 +81,7 @@ matrix:
 
     - os: linux
       compiler: g++-8
-      env: TOOLSET=gcc COMPILER=g++-8 CXXSTD=03,11,14,17
+      env: TOOLSET=gcc COMPILER=g++-8 CXXSTD=03,11,14,17 TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -91,7 +91,7 @@ matrix:
 
     - os: linux
       compiler: clang++
-      env: TOOLSET=clang COMPILER=clang++ CXXSTD=03,11,14,1z
+      env: TOOLSET=clang COMPILER=clang++ CXXSTD=03,11,14,1z TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -101,7 +101,7 @@ matrix:
 
     - os: linux
       compiler: clang++-libc++
-      env: TOOLSET=clang COMPILER=clang++-libc++ CXXSTD=03,11,14,1z
+      env: TOOLSET=clang COMPILER=clang++-libc++ CXXSTD=03,11,14,1z TEST_SUITE=parameter
       addons:
         apt:
           packages:
@@ -109,7 +109,7 @@ matrix:
 
     - os: osx
       compiler: clang++
-      env: TOOLSET=clang COMPILER=clang++ CXXSTD=03,11,14,1z
+      env: TOOLSET=clang COMPILER=clang++ CXXSTD=03,11,14,1z TEST_SUITE=parameter
 
 install:
   - BOOST_BRANCH=develop && [ "$TRAVIS_BRANCH" == "master" ] && BOOST_BRANCH=master || true
@@ -129,7 +129,9 @@ script:
   - |-
     echo "using $TOOLSET : : $COMPILER ;" > ~/user-config.jam
   - ./b2 --verbose-test libs/config/test//config_info toolset=$TOOLSET cxxstd=$CXXSTD || true
-  - ./b2 -j3 libs/parameter/test toolset=$TOOLSET cxxstd=$CXXSTD
+  - cd libs/parameter/test
+  - ../../../b2 $TEST_SUITE -j`(nproc || sysctl -n hw.ncpu) 2> /dev/null` toolset=$TOOLSET cxxstd=$CXXSTD $CXXSTD_DIALECT
+  - cd ../../..
 
 notifications:
   email:
