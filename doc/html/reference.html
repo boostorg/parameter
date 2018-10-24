@@ -533,14 +533,15 @@ template &lt;class A0, …class Aβ&gt; <a class="reference internal" href="#arg
 <div class="section" id="optional-required">
 <span id="required"></span><span id="optional"></span><h2><a class="toc-backref" href="#id42">4.3&nbsp;&nbsp;&nbsp;<tt class="docutils literal">optional</tt>, <tt class="docutils literal">required</tt></a></h2>
 <p>These templates describe the requirements on a function parameter.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Defined in:</th><td class="field-body"><a class="reference external" href="../../../../boost/parameter/parameters.hpp">boost/parameter/parameters.hpp</a></td>
-</tr>
-</tbody>
-</table>
+<p><tt class="docutils literal">optional</tt> is defined in: <a
+class="reference external" href="../../../../boost/parameter/optional.hpp"
+>boost/parameter/optional.hpp</a>.</p>
+<p><tt class="docutils literal">required</tt> is defined in: <a
+class="reference external" href="../../../../boost/parameter/required.hpp"
+>boost/parameter/required.hpp</a>.</p>
+<p>Both headers are included by: <a class="reference external"
+href="../../../../boost/parameter/parameters.hpp"
+>boost/parameter/parameters.hpp</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -551,10 +552,10 @@ template &lt;class A0, …class Aβ&gt; <a class="reference internal" href="#arg
 </tbody>
 </table>
 <pre class="literal-block">
-template &lt;class Tag, class Predicate = <em>unspecified</em>&gt;
+template &lt;typename Tag, typename Predicate = <em>unspecified</em>&gt;
 struct optional;
 
-template &lt;class Tag, class Predicate = <em>unspecified</em>&gt;
+template &lt;typename Tag, typename Predicate = <em>unspecified</em>&gt;
 struct required;
 </pre>
 <p>The default value of <tt class="docutils literal">Predicate</tt> is an unspecified <a class="reference external" href="../../../mpl/doc/refmanual/metafunction.html"><span class="concept">Metafunction</span></a> that returns
@@ -568,7 +569,17 @@ struct required;
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Defined in:</th><td class="field-body"><a class="reference external" href="../../../../boost/parameter/parameters.hpp">boost/parameter/parameters.hpp</a></td>
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/deduced.hpp"
+>boost/parameter/deduced.hpp</a></td>
+</tr>
+<tr class="field">
+<th class="field-name">Included by:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/parameters.hpp"
+>boost/parameter/parameters.hpp</a></td>
 </tr>
 </tbody>
 </table>
