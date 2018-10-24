@@ -12,6 +12,9 @@
 #include <boost/parameter/aux_/parameter_requirements.hpp>
 #include <boost/parameter/aux_/yesno.hpp>
 #include <boost/parameter/aux_/is_maybe.hpp>
+#include <boost/parameter/aux_/tagged_argument_fwd.hpp>
+#include <boost/parameter/aux_/lambda_tag.hpp>
+#include <boost/parameter/keyword_fwd.hpp>
 #include <boost/parameter/config.hpp>
 
 #include <boost/mpl/apply.hpp>
@@ -26,15 +29,7 @@
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 
-namespace boost { namespace parameter {
-
-// Forward declaration for aux::arg_list, below.
-template<class T> struct keyword;
-
-namespace aux {
-
-// Tag type passed to MPL lambda.
-struct lambda_tag;
+namespace boost { namespace parameter { namespace aux {
 
 //
 // Structures used to build the tuple of actual arguments.  The
@@ -145,10 +140,6 @@ struct empty_arg_list
     typedef empty_arg_list type;   // convenience
     typedef arg_list_tag tag; // For dispatching to sequence intrinsics
 };
-
-// Forward declaration for arg_list::operator,
-template <class KW, class T>
-struct tagged_argument;
 
 template <class T>
 struct get_reference
