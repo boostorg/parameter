@@ -141,5 +141,24 @@
     )
 /**/
 
+// Expands to a Boost.Parameter-enabled function call operator header.  All
+// arguments are accessible via args and keywords, as well as by name.
+#define BOOST_PARAMETER_FUNCTION_CALL_OPERATOR(result, tag_ns, args)         \
+    BOOST_PARAMETER_MEMBER_FUNCTION_AUX(                                     \
+        result, operator(), operator, tag_ns, 0                              \
+      , BOOST_PARAMETER_FLATTEN(3, 2, 3, args)                               \
+    )
+/**/
+
+// Expands to a Boost.Parameter-enabled const-qualified function call operator
+// header.  All arguments are accessible via args and keywords, as well as
+// by name.
+#define BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR(result, tag_ns, args)   \
+    BOOST_PARAMETER_MEMBER_FUNCTION_AUX(                                     \
+        result, operator(), operator, tag_ns, 1                              \
+      , BOOST_PARAMETER_FLATTEN(3, 2, 3, args)                               \
+    )
+/**/
+
 #endif  // include guard
 
