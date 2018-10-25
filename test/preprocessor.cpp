@@ -4,6 +4,7 @@
 
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/keyword.hpp>
+#include <boost/parameter/binding.hpp>
 #include <boost/type_traits/is_const.hpp>
 #include <string>
 #include "basics.hpp"
