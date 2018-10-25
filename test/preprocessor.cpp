@@ -213,6 +213,35 @@ struct class_ : base
         return 1;
     }
 
+    BOOST_PARAMETER_FUNCTION_CALL_OPERATOR((int), test::tag,
+        (required
+            (tester, *)
+            (name, *)
+        )
+        (optional
+            (value, *, 1.f)
+            (index, *, 2)
+        )
+    )
+    {
+        tester(name, value, index);
+        return 1;
+    }
+
+    BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR((int), test::tag,
+        (required
+            (tester, *)
+            (name, *)
+        )
+        (optional
+            (value, *, 1.f)
+            (index, *, 2)
+        )
+    )
+    {
+        tester(name, value, index);
+        return 1;
+    }
 
     BOOST_PARAMETER_MEMBER_FUNCTION((int), static f_static, tag,
         (required
@@ -417,6 +446,16 @@ int main()
       , name = S("foo")
     );
 
+    x(
+        values(S("foo"), 1.f, 2)
+      , S("foo")
+    );
+
+    x(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+    );
+
     class_ const& x_const = x;
 
     x_const.f(
@@ -440,6 +479,16 @@ int main()
     );
 
     x_const.f2(
+        tester = values(S("foo"), 1.f, 2)
+      , name = S("foo")
+    );
+
+    x_const(
+        values(S("foo"), 1.f, 2)
+      , S("foo")
+    );
+
+    x_const(
         tester = values(S("foo"), 1.f, 2)
       , name = S("foo")
     );

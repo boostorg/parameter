@@ -67,20 +67,26 @@ or copy at <a class="reference external" href="http://www.boost.org/LICENSE_1_0.
 </li>
 <li><a class="reference internal" href="#code-generation-macros" id="id48">6&nbsp;&nbsp;&nbsp;Code Generation Macros</a><ul class="auto-toc">
 <li><a class="reference internal" href="#boost-parameter-function-result-name-tag-namespace-arguments" id="id49">6.1&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_FUNCTION(result,name,tag_namespace,arguments)</tt></a></li>
-<li><a class="reference internal" href="#boost-parameter-member-function-result-name-tag-namespace-arguments" id="id50">6.2&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MEMBER_FUNCTION(result,name,tag_namespace,arguments)</tt></a></li>
-<li><a class="reference internal" href="#boost-parameter-constructor-cls-impl-tag-namespace-arguments" id="id51">6.3&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_CONSTRUCTOR(cls, impl, tag_namespace, arguments)</tt></a></li>
-<li><a class="reference internal" href="#boost-parameter-name-name" id="id52">6.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></li>
-<li><a class="reference internal" href="#boost-parameter-template-keyword-name" id="id53">6.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_TEMPLATE_KEYWORD(name)</tt></a></li>
-<li><a class="reference internal" href="#boost-parameter-fun-r-n-l-h-p" id="id54">6.6&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_FUN(r,n,l,h,p)</tt></a></li>
-<li><a class="reference internal" href="#boost-parameter-keyword-n-k" id="id55">6.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_KEYWORD(n,k)</tt></a></li>
-<li><a class="reference internal" href="#boost-parameter-match-p-a-x" id="id56">6.8&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MATCH(p,a,x)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-member-function-result-name-tag-namespace-arguments" id="id50">6.2&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MEMBER_FUNCTION(result, name, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-c-mem-function-result-name-tag-namespace-arguments" id="id51">6.3&nbsp;&nbsp;&nbsp;<tt class="docutils literal" >BOOST_PARAMETER_CONST_MEMBER_FUNCTION(result, name, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-function-call-op-result-tag-namespace-arguments" id="id52">6.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_FUNCTION_CALL_OPERATOR(result, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-const-function-call-op-result-tag-namespace-arguments" id="id53">6.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR(result, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-constructor-cls-impl-tag-namespace-arguments" id="id54">6.3&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_CONSTRUCTOR(cls, impl, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-basic-function-result-name-tag-namespace-arguments" id="id55">6.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_BASIC_FUNCTION(result, name, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-basic-member-function-result-name-tag-ns-arguments" id="id56">6.8&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_BASIC_MEMBER_FUNCTION(result, name, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-basic-c-mem-function-result-name-tag-ns-arguments" id="id57">6.9&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION(result, name, tag_namespace, arguments)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-name-name" id="id58">6.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-template-keyword-name" id="id59">6.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_TEMPLATE_KEYWORD(name)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-fun-r-n-l-h-p" id="id60">6.6&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_FUN(r,n,l,h,p)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-keyword-n-k" id="id61">6.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_KEYWORD(n,k)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-match-p-a-x" id="id62">6.8&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MATCH(p,a,x)</tt></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#configuration-macros" id="id57">7&nbsp;&nbsp;&nbsp;Configuration Macros</a><ul class="auto-toc">
-<li><a class="reference internal" href="#boost-parameter-max-arity" id="id58">7.1&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MAX_ARITY</tt></a></li>
+<li><a class="reference internal" href="#configuration-macros" id="id63">7&nbsp;&nbsp;&nbsp;Configuration Macros</a><ul class="auto-toc">
+<li><a class="reference internal" href="#boost-parameter-max-arity" id="id64">7.1&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MAX_ARITY</tt></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#tutorial" id="id59">8&nbsp;&nbsp;&nbsp;Tutorial</a></li>
+<li><a class="reference internal" href="#tutorial" id="id65">8&nbsp;&nbsp;&nbsp;Tutorial</a></li>
 </ul>
 </div>
 <hr class="docutils" />
@@ -824,43 +830,190 @@ ResultType boost_param_default_ ## __LINE__ ## <strong>name</strong>(
 </dd>
 </dl>
 </div>
-<div class="section" id="boost-parameter-member-function-result-name-tag-namespace-arguments">
-<h2><a class="toc-backref" href="#id50">6.2&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MEMBER_FUNCTION(result,name,tag_namespace,arguments)</tt></a></h2>
+<div class="section"
+id="boost-parameter-member-function-result-name-tag-namespace-arguments">
+<h2><a class="toc-backref" href="#id50">6.2&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_MEMBER_FUNCTION(result, name,
+tag_namespace, arguments)</tt></a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Defined in:</th><td class="field-body"><a class="reference external" href="../../../../boost/parameter/preprocessor.hpp">boost/parameter/preprocessor.hpp</a></td>
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
 </tr>
 </tbody>
 </table>
-<p>See <tt class="docutils literal">BOOST_PARAMETER_FUNCTION(result,name,tag_namespace,arguments)</tt></p>
+<p>Same as <a class="reference internal"
+href="#boost-parameter-function-result-name-tag-namespace-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_FUNCTION</tt></a>, except:</p>
+<ul>
+<li><tt class="docutils literal">name</tt> may be qualified by the
+<tt class="docutils literal">static</tt> keyword to declare the member
+function and its helpers as not associated with any object of the enclosing
+type.</li>
+<li>Expansion of this macro omits all forward declarations of the front-end
+implementation and dispatch functions.</li>
+</ul>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper
+usage of this macro.</p>
 </div>
-<div class="section" id="boost-parameter-constructor-cls-impl-tag-namespace-arguments">
-<h2><a class="toc-backref" href="#id51">6.3&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_CONSTRUCTOR(cls, impl, tag_namespace, arguments)</tt></a></h2>
+<div class="section"
+id="boost-parameter-c-mem-function-result-name-tag-namespace-arguments">
+<h2><a class="toc-backref" href="#id51">6.3&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_CONST_MEMBER_FUNCTION(result, name,
+tag_namespace, arguments)</tt></a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Defined in:</th><td class="field-body"><a class="reference external" href="../../../../boost/parameter/preprocessor.hpp">boost/parameter/preprocessor.hpp</a></td>
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
 </tr>
 </tbody>
 </table>
+<p>Same as <a class="reference internal"
+href="#boost-parameter-member-function-result-name-tag-namespace-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_MEMBER_FUNCTION</tt></a>,
+except that the overloaded forwarding member functions and their helper
+methods are <tt class="docutils literal">const</tt>-qualified.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
+</div>
+<div class="section"
+id="boost-parameter-function-call-op-result-tag-namespace-arguments">
+<h2><a class="toc-backref" href="#id52">6.4&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_FUNCTION_CALL_OPERATOR(result,
+tag_ns, arguments)</tt></a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Requires:</th><td class="field-body"><p class="first"><tt class="docutils literal">cls</tt> is the name of this class. <tt class="docutils literal">impl</tt> is the
-parenthesized implementation base class for <tt class="docutils literal">cls</tt>.
-<tt class="docutils literal">tag_namespace</tt> is the namespace in which the keywords
-used by the function resides. <tt class="docutils literal">arguments</tt> is
-a list of <em>argument specifiers</em>, as defined in
-<tt class="docutils literal">BOOST_PARAMETER_FUNCTION(result,name,tag_namespace,arguments)</tt>.</p>
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<p>Same as <a class="reference internal"
+href="#boost-parameter-member-function-result-name-tag-namespace-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_MEMBER_FUNCTION</tt></a>,
+except that the name of the forwarding member function overloads is
+<tt class="docutils literal">operator()</tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name" colspan="2">Generated names in enclosing scope:</th>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td class="field-body">
+<ul class="first last simple">
+<li><tt class="docutils literal">boost_param_result_ ## __LINE__ ##
+operator</tt></li>
+<li><tt class="docutils literal">boost_param_params_ ## __LINE__ ##
+operator</tt></li>
+<li><tt class="docutils literal">boost_param_parameters_ ## __LINE__ ##
+operator</tt></li>
+<li><tt class="docutils literal">boost_param_impl ## operator</tt></li>
+<li><tt class="docutils literal">boost_param_dispatch_0boost_ ## __LINE__ ##
+operator</tt></li>
+<li><tt class="docutils literal">boost_param_dispatch_1boost_ ## __LINE__ ##
+operator</tt></li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2">Generated names in enclosing scope:</th></tr>
-<tr><td>&nbsp;</td><td class="field-body"><ul class="first last simple">
-<li><tt class="docutils literal">boost_param_params_ ## __LINE__ ## ctor</tt></li>
+</tbody>
+</table>
+</div>
+<div class="section"
+id="boost-parameter-const-function-call-op-result-tag-namespace-arguments">
+<h2><a class="toc-backref" href="#id53">6.5&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR(result,
+tag_ns, arguments)</tt></a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<p>Same as <a class="reference internal"
+href="#boost-parameter-function-call-op-result-tag-namespace-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_FUNCTION_CALL_OPERATOR</tt></a>,
+except that the overloaded function call operators and their helper methods
+are <tt class="docutils literal">const</tt>-qualified.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
+</div>
+<div class="section"
+id="boost-parameter-constructor-cls-impl-tag-namespace-arguments">
+<h2><a class="toc-backref" href="#id54">6.6&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_CONSTRUCTOR(cls, impl, tag_namespace,
+arguments)</tt></a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name" colspan="2">Requires:</th>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td class="field-body">
+<p class="first"><tt class="docutils literal">cls</tt> is the name of this
+class.  <tt class="docutils literal">impl</tt> is the parenthesized
+implementation base class for <tt class="docutils literal"
+>cls</tt>.  <tt class="docutils literal">tag_namespace</tt> is the namespace
+in which the keywords used by the function resides.  <tt
+class="docutils literal">arguments</tt> is a list of
+<em>argument-specifiers</em>, as defined in <a class="reference internal"
+href="#boost-parameter-function-result-name-tag-namespace-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_FUNCTION</tt></a> except that
+<em>optional-specifier</em> no longer includes <em>default-value</em>.  It is
+up to the delegate constructor in <tt class="docutils literal">impl</tt> to
+determine the default value of all optional arguments.</p>
+</td>
+</tr>
+<tr class="field">
+<th class="field-name" colspan="2">Generated names in enclosing scope:</th>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td class="field-body">
+<ul class="first last simple">
+<li><tt class="docutils literal">boost_param_params_ ## __LINE__ ##
+ctor</tt></li>
 <li><tt class="docutils literal">constructor_parameters ## __LINE__</tt></li>
 </ul>
 </td>
@@ -869,38 +1022,172 @@ a list of <em>argument specifiers</em>, as defined in
 </table>
 <dl class="docutils">
 <dt>Approximate expansion:</dt>
-<dd><p class="first"><strong>Where</strong>:</p>
+<dd>
+<p class="first"><strong>Where</strong>:</p>
 <ul class="simple">
-<li><tt class="docutils literal">n</tt> denotes the <em>minimum</em> arity, as determined from <tt class="docutils literal">arguments</tt>.</li>
-<li><tt class="docutils literal">m</tt> denotes the <em>maximum</em> arity, as determined from <tt class="docutils literal">arguments</tt>.</li>
+<li><tt class="docutils literal">n</tt> denotes the <em>minimum</em> arity, as
+determined from <tt class="docutils literal">arguments</tt>.</li>
+<li><tt class="docutils literal">m</tt> denotes the <em>maximum</em> arity, as
+determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
 struct boost_param_params_ ## __LINE__ ## ctor
   : boost::parameter::parameters&lt;
         <em>list of parameter specifications, based on arguments</em>
     &gt;
-{};
+{
+};
 
 typedef boost_param_params_ ## __LINE__ ## <strong>name</strong>
-  constructor_parameters ## __LINE__;
+    constructor_parameters ## __LINE__;
 
-template &lt;class A0, …, class A<strong>n</strong>&gt;
-<em>cls</em>(A0 const&amp; a0, …, A<strong>n</strong> const&amp; a<strong>n</strong>)
-  : <em>impl</em>(constructor_parameters ## __LINE__(a0, …, a<strong>n</strong>))
-{}
+template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
+<em>cls</em>(A0 const&amp; a0, …, A ## <strong
+>n</strong> const&amp; a ## <strong>n</strong>)
+  : <em>impl</em>(constructor_parameters ## __LINE__(a0, …, a ## <strong
+>n</strong>))
+{
+}
 
 <span class="vellipsis">⋮</span>
 
-template &lt;class A0, …, class A<strong>m</strong>&gt;
-<em>cls</em>(A0 const&amp; a0, …, A<strong>n</strong> const&amp; a<strong>m</strong>)
-  : <em>impl</em>(constructor_parameters ## __LINE__(a0, …, a<strong>m</strong>))
-{}
+template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
+<em>cls</em>(A0&amp; a0, …, A ## <strong
+>n</strong> &amp; a ## <strong>n</strong>)
+  : <em>impl</em>(constructor_parameters ## __LINE__(a0, …, a ## <strong
+>n</strong>))
+{
+}
+
+<span class="vellipsis">⋮</span>
+
+template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
+<em>cls</em>(A0 const&amp; a0, …, A ## <strong
+>m</strong> const&amp; a ## <strong>m</strong>)
+  : <em>impl</em>(constructor_parameters ## __LINE__(a0, …, a ## <strong
+>m</strong>))
+{
+}
+
+<span class="vellipsis">⋮</span>
+
+template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
+<em>cls</em>(A0&amp; a0, …, A ## <strong
+>m</strong> &amp; a ## <strong>m</strong>)
+  : <em>impl</em>(constructor_parameters ## __LINE__(a0, …, a ## <strong
+>m</strong>))
+{
+}
 </pre>
 </dd>
 </dl>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper
+usage of this macro.</p>
+</div>
+<div class="section"
+id="boost-parameter-basic-function-result-name-tag-namespace-arguments">
+<h2><a class="toc-backref" href="#id55">6.7&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_BASIC_FUNCTION(result, name,
+tag_namespace, arguments)</tt></a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<p>Same as <a class="reference internal"
+href="#boost-parameter-function-result-name-tag-namespace-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_FUNCTION</tt></a>, except:</p>
+<ul>
+<li>For the argument specifiers syntax, <em>optional-specifier</em> no longer
+includes <em>default-value</em>.  It is up to the function body to determine
+the default value of all optional arguments.</li>
+<li>Generated names in the enclosing scope no longer include
+<tt class="docutils literal">boost_param_dispatch_0boost_ ## __LINE__ ##
+name</tt> or <tt class="docutils literal">boost_param_dispatch_1boost_ ##
+__LINE__ ## name</tt>.</li>
+<li>Expansion of this macro omits all overloads of <tt
+class="docutils literal">boost_param_dispatch_0boost_ ## __LINE__ ## name</tt>
+and <tt class="docutils literal">boost_param_dispatch_1boost_ ## __LINE__ ##
+name</tt> and stops at the header of <tt class="docutils literal"
+>boost_param_impl ## name</tt>.  Therefore, only the <a
+class="reference internal" href="#argumentpack"><span class="concept"
+>ArgumentPack</span></a> type <tt class="docutils literal">Args</tt> and its
+object instance <tt class="docutils literal">args</tt> are available for use
+within the function body.</li>
+</ul>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
+</div>
+<div class="section"
+id="boost-parameter-basic-member-function-result-name-tag-ns-arguments">
+<h2><a class="toc-backref" href="#id56">6.8&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_BASIC_MEMBER_FUNCTION(result, name,
+tag_namespace, arguments)</tt></a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<p>Same as <a class="reference internal"
+href="#boost-parameter-basic-function-result-name-tag-namespace-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_BASIC_FUNCTION</tt></a>,
+except that:</p>
+<ul>
+<li><tt class="docutils literal">name</tt> may be qualified by the
+<tt class="docutils literal">static</tt> keyword to declare the member
+function and its helpers as not associated with any object of the enclosing
+type.</li>
+<li>Expansion of this macro omits the forward declaration of the
+implementation function.</li>
+</ul>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
+</div>
+<div class="section"
+id="boost-parameter-basic-c-mem-function-result-name-tag-ns-arguments">
+<h2><a class="toc-backref" href="#id57">6.9&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION(result,
+name, tag_namespace, arguments)</tt></a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/preprocessor.hpp"
+>boost/parameter/preprocessor.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<p>Same as <a class="reference internal"
+href="#boost-parameter-basic-member-function-result-name-tag-ns-arguments"
+><tt class="docutils literal">BOOST_PARAMETER_BASIC_MEMBER_FUNCTION</tt></a>,
+except that the overloaded forwarding member functions and their helper
+methods are <tt class="docutils literal">const</tt>-qualified.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
 </div>
 <div class="section" id="boost-parameter-name-name">
-<h2><a class="toc-backref" href="#id52">6.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></h2>
+<h2><a class="toc-backref" href="#id58">6.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></h2>
 <p>Declares a tag-type and keyword object.</p>
 <p>Expands to:</p>
 <p><strong>If</strong> <em>name</em> is of the form:</p>
@@ -947,7 +1234,7 @@ namespace tag
 </pre>
 </div>
 <div class="section" id="boost-parameter-template-keyword-name">
-<h2><a class="toc-backref" href="#id53">6.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_TEMPLATE_KEYWORD(name)</tt></a></h2>
+<h2><a class="toc-backref" href="#id59">6.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_TEMPLATE_KEYWORD(name)</tt></a></h2>
 <p>Expands to:</p>
 <pre class="literal-block">
 namespace tag
@@ -962,7 +1249,7 @@ struct <em>name</em>
 </pre>
 </div>
 <div class="section" id="boost-parameter-fun-r-n-l-h-p">
-<h2><a class="toc-backref" href="#id54">6.6&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_FUN(r,n,l,h,p)</tt></a></h2>
+<h2><a class="toc-backref" href="#id60">6.6&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_FUN(r,n,l,h,p)</tt></a></h2>
 <div class="admonition-deprecated admonition">
 <p class="first admonition-title">Deprecated</p>
 <p class="last">This macro has been deprecated in favor of
@@ -1023,7 +1310,7 @@ r name(
 </dl>
 </div>
 <div class="section" id="boost-parameter-keyword-n-k">
-<h2><a class="toc-backref" href="#id55">6.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_KEYWORD(n,k)</tt></a></h2>
+<h2><a class="toc-backref" href="#id61">6.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_KEYWORD(n,k)</tt></a></h2>
 <div class="admonition-deprecated admonition">
 <p class="first admonition-title">Deprecated</p>
 <p class="last">This macro has been deprecated in favor of
@@ -1053,7 +1340,7 @@ namespace {
 </dl>
 </div>
 <div class="section" id="boost-parameter-match-p-a-x">
-<h2><a class="toc-backref" href="#id56">6.8&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MATCH(p,a,x)</tt></a></h2>
+<h2><a class="toc-backref" href="#id62">6.8&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MATCH(p,a,x)</tt></a></h2>
 <p>Generates a defaulted parameter declaration for a <a class="reference external" href="index.html#forwarding-functions">forwarding
 function</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1087,9 +1374,9 @@ typename <strong>p</strong>::match&lt;<strong>A0</strong>,<strong>A1</strong>…
 </div>
 </div>
 <div class="section" id="configuration-macros">
-<h1><a class="toc-backref" href="#id57">7&nbsp;&nbsp;&nbsp;Configuration Macros</a></h1>
+<h1><a class="toc-backref" href="#id63">7&nbsp;&nbsp;&nbsp;Configuration Macros</a></h1>
 <div class="section" id="boost-parameter-max-arity">
-<h2><a class="toc-backref" href="#id58">7.1&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MAX_ARITY</tt></a></h2>
+<h2><a class="toc-backref" href="#id64">7.1&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_MAX_ARITY</tt></a></h2>
 <p>Determines the maximum number of arguments supported by the
 library.  Will only be <tt class="docutils literal">#defined</tt> by the library if it is not
 already <tt class="docutils literal">#defined</tt>.</p>
@@ -1112,7 +1399,7 @@ already <tt class="docutils literal">#defined</tt>.</p>
 </div>
 </div>
 <div class="section" id="tutorial">
-<h1><a class="toc-backref" href="#id59">8&nbsp;&nbsp;&nbsp;Tutorial</a></h1>
+<h1><a class="toc-backref" href="#id65">8&nbsp;&nbsp;&nbsp;Tutorial</a></h1>
 <p>Follow <a class="reference external" href="index.html#tutorial">this link</a> to the Boost.Parameter tutorial
 documentation.</p>
 <hr class="docutils" />
