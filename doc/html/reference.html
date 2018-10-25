@@ -315,34 +315,283 @@ arguments that will be matched by <a class="reference external" href="index.html
 </tbody>
 </table>
 <pre class="literal-block">
-template &lt;class Tag&gt;
+template &lt;typename Tag&gt;
 struct keyword
 {
-    template &lt;class T&gt; <a class="reference internal" href="#argumentpack"><span class="concept">ArgumentPack</span></a> <a class="reference internal" href="#operator">operator=</a>(T&amp; value) const;
-    template &lt;class T&gt; <a class="reference internal" href="#argumentpack"><span class="concept">ArgumentPack</span></a> <a class="reference internal" href="#operator">operator=</a>(T const&amp; value) const;
+    template &lt;typename T&gt;
+    typename boost::<a class="reference external"
+href="../../../core/doc/html/core/enable_if.html"><tt
+class="docutils literal">enable_if</tt></a>&lt;
+        typename boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+            boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_scalar.html"
+><tt class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+                boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                    typename Tag::qualifier
+                  , boost::parameter::in_reference
+                &gt;
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/if.html"><tt
+class="docutils literal">if_</tt></a>&lt;
+                    boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    &gt;
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+                &gt;
+            &gt;
+        &gt;::type
+      , <a class="reference internal" href="#argumentpack"><span
+class="concept">ArgumentPack</span></a>
+    &gt;::type constexpr
+        <a class="reference internal"
+href="#operator">operator=</a>(T const&amp; value) const;
 
-    template &lt;class T&gt; <em>tagged default</em> <a class="reference internal" href="#id9">operator|</a>(T&amp; x) const;
-    template &lt;class T&gt; <em>tagged default</em> <a class="reference internal" href="#id9">operator|</a>(T const&amp; x) const;
+    template &lt;typename T&gt;
+    typename boost::<a class="reference external"
+href="../../../core/doc/html/core/enable_if.html"><tt
+class="docutils literal">enable_if</tt></a>&lt;
+        typename boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+            typename boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+                boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                    typename Tag::qualifier
+                  , boost::parameter::out_reference
+                &gt;
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/if.html"><tt
+class="docutils literal">if_</tt></a>&lt;
+                    boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    &gt;
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+                &gt;
+            &gt;
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/if.html"><tt
+class="docutils literal">if_</tt></a>&lt;
+                boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_const.html"
+><tt class="docutils literal">is_const</tt></a>&lt;T&gt;
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+            &gt;
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+        &gt;::type
+      , <a class="reference internal" href="#argumentpack"><span
+class="concept">ArgumentPack</span></a>
+    &gt;::type constexpr
+        <a class="reference internal"
+href="#operator">operator=</a>(T&amp; value) const;
 
-    template &lt;class F&gt; <em>tagged lazy default</em> <a class="reference internal" href="#id10">operator||</a>(F const&amp;) const;
+    template &lt;typename T&gt;
+    typename boost::<a class="reference external"
+href="../../../core/doc/html/core/enable_if.html"><tt
+class="docutils literal">enable_if</tt></a>&lt;
+        typename boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+            boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_scalar.html"
+><tt class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+                boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                    typename Tag::qualifier
+                  , boost::parameter::in_reference
+                &gt;
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/if.html"><tt
+class="docutils literal">if_</tt></a>&lt;
+                    boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    &gt;
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+                &gt;
+            &gt;
+        &gt;::type
+      , <em>tagged default</em>
+    &gt;::type constexpr
+        <a class="reference internal"
+href="#id9">operator|</a>(T const&amp; x) const;
 
-    static keyword&lt;Tag&gt;&amp; <a class="reference internal" href="#get">get</a>();
+    template &lt;typename T&gt;
+    typename boost::<a class="reference external"
+href="../../../core/doc/html/core/enable_if.html"><tt
+class="docutils literal">enable_if</tt></a>&lt;
+        typename boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+            typename boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/eval-if.html"><tt
+class="docutils literal">eval_if</tt></a>&lt;
+                boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                    typename Tag::qualifier
+                  , boost::parameter::out_reference
+                &gt;
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/if.html"><tt
+class="docutils literal">if_</tt></a>&lt;
+                    boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_same.html"
+><tt class="docutils literal">is_same</tt></a>&lt;
+                        typename Tag::qualifier
+                      , boost::parameter::forward_reference
+                    &gt;
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+                  , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+                &gt;
+            &gt;
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/if.html"><tt
+class="docutils literal">if_</tt></a>&lt;
+                boost::<a class="reference external"
+href="../../../type_traits/doc/html/boost_typetraits/reference/is_const.html"
+><tt class="docutils literal">is_const</tt></a>&lt;T&gt;
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+              , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">true_</tt></a>
+            &gt;
+          , boost::mpl::<a class="reference external"
+href="../../../mpl/doc/refmanual/bool.html"><tt
+class="docutils literal">false_</tt></a>
+        &gt;::type
+      , <em>tagged default</em>
+    &gt;::type constexpr
+        <a class="reference internal"
+href="#id9">operator|</a>(T&amp; x) const;
+
+    template &lt;typename F&gt;
+    <em>tagged lazy default</em> <a class="reference internal"
+href="#id10">operator||</a>(F const&amp;) const;
+
+    template &lt;typename F&gt;
+    <em>tagged lazy default</em> <a class="reference internal"
+href="#id10">operator||</a>(F&amp;) const;
+
+    static keyword&lt;Tag&gt; const&amp; <a class="reference internal"
+href="#instance">instance</a>;
+
+    static keyword&lt;Tag&gt;&amp; <a class="reference internal"
+href="#get">get</a>();
 };
 </pre>
 <dl class="docutils" id="operator">
 <dt><tt class="docutils literal">operator=</tt></dt>
-<dd><pre class="first literal-block">
-template &lt;class T&gt; <a class="reference internal" href="#argumentpack"><span class="concept">ArgumentPack</span></a> operator=(T&amp; value) const;
-template &lt;class T&gt; <a class="reference internal" href="#argumentpack"><span class="concept">ArgumentPack</span></a> operator=(T const&amp; value) const;
+<dd>
+<pre class="first literal-block">
+template &lt;typename T&gt; <a class="reference internal" href="#argumentpack"
+><span class="concept">ArgumentPack</span></a
+> operator=(T const&amp; value) const;
+template &lt;typename T&gt; <a class="reference internal" href="#argumentpack"
+><span class="concept">ArgumentPack</span></a
+> operator=(T&amp; value) const;
 </pre>
 <table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Requires:</th><td class="field-body">nothing</td>
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">one of the following:
+<ul>
+<li>The nested <tt class="docutils literal">qualifier</tt> type of
+<tt class="docutils literal">Tag</tt> must be
+<tt class="docutils literal">forward_reference</tt>.</li>
+<li>To use the <tt class="docutils literal">const</tt> lvalue reference
+overload, <tt class="docutils literal">T</tt> must be scalar, or the nested
+<tt class="docutils literal">qualifier</tt> type of
+<tt class="docutils literal">Tag</tt> must be
+<tt class="docutils literal">in_reference</tt>.</li>
+<li>To use the mutable lvalue reference overload, the nested
+<tt class="docutils literal">qualifier</tt> type of
+<tt class="docutils literal">Tag</tt> must be
+<tt class="docutils literal">out_reference</tt> or
+<tt class="docutils literal">in_out_reference</tt>, and
+<tt class="docutils literal">T</tt> must not be
+<tt class="docutils literal">const</tt>-qualified.</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">an <a class="reference internal" href="#argumentpack"><span class="concept">ArgumentPack</span></a>  containing a single <a class="reference internal" href="#tagged-reference">tagged reference</a> to
-<tt class="docutils literal">value</tt> with <a class="reference internal" href="#kw">keyword</a> <tt class="docutils literal">Tag</tt></td>
+<tr class="field">
+<th class="field-name">Returns:</th>
+<td class="field-body">an <a class="reference internal"
+href="#argumentpack"><span class="concept">ArgumentPack</span></a> containing
+a single <a class="reference internal" href="#tagged-reference">tagged
+reference</a> to <tt class="docutils literal">value</tt> with
+<a class="reference internal" href="#kw">keyword</a>
+<tt class="docutils literal">Tag</tt></td>
 </tr>
 </tbody>
 </table>
@@ -351,14 +600,44 @@ template &lt;class T&gt; <a class="reference internal" href="#argumentpack"><spa
 <dl class="docutils" id="id9">
 <dt><tt class="docutils literal">operator|</tt></dt>
 <dd><pre class="first literal-block">
-template &lt;class T&gt; <em>tagged default</em> operator|(T&amp; x) const;
-template &lt;class T&gt; <em>tagged default</em> operator|(T const&amp; x) const;
+template &lt;typename T&gt; <em
+>tagged default</em> operator|(T const&amp; x) const;
+template &lt;typename T&gt; <em
+>tagged default</em> operator|(T&amp; x) const;
 </pre>
 <table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">a <a class="reference internal" href="#tagged-default">tagged default</a> with <em>value</em> <tt class="docutils literal">x</tt> and <a class="reference internal" href="#kw">keyword</a> <tt class="docutils literal">Tag</tt>.</td>
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">one of the following:
+<ul>
+<li>The nested <tt class="docutils literal">qualifier</tt> type of
+<tt class="docutils literal">Tag</tt> must be
+<tt class="docutils literal">forward_reference</tt>.</li>
+<li>To use the <tt class="docutils literal">const</tt> lvalue reference
+overload, <tt class="docutils literal">T</tt> must be scalar, or the nested
+<tt class="docutils literal">qualifier</tt> type of
+<tt class="docutils literal">Tag</tt> must be
+<tt class="docutils literal">in_reference</tt>.</li>
+<li>To use the mutable lvalue reference overload, the nested
+<tt class="docutils literal">qualifier</tt> type of
+<tt class="docutils literal">Tag</tt> must be
+<tt class="docutils literal">out_reference</tt> or
+<tt class="docutils literal">in_out_reference</tt>, and
+<tt class="docutils literal">T</tt> must not be
+<tt class="docutils literal">const</tt>-qualified.</li>
+</ul>
+</td>
+</tr>
+<tr class="field">
+<th class="field-name">Returns:</th>
+<td class="field-body">a <a class="reference internal"
+href="#tagged-default">tagged default</a> with <em>value</em>
+<tt class="docutils literal">x</tt> and
+<a class="reference internal" href="#kw">keyword</a>
+<tt class="docutils literal">Tag</tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -366,16 +645,56 @@ template &lt;class T&gt; <em>tagged default</em> operator|(T const&amp; x) const
 </dl>
 <dl class="docutils" id="id10">
 <dt><tt class="docutils literal">operator||</tt></dt>
-<dd><pre class="first literal-block">
-template &lt;class F&gt; <em>tagged lazy default</em> operator||(F const&amp; g) const;
+<dd>
+<pre class="first literal-block">
+template &lt;typename F&gt; <em
+>tagged lazy default</em> operator||(F const&amp; g) const;
+template &lt;typename F&gt; <em
+>tagged lazy default</em> operator||(F&amp; g) const;
 </pre>
 <table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Requires:</th><td class="field-body"><tt class="docutils literal">g()</tt> is valid, with type <tt class="docutils literal">boost::</tt><a class="reference external" href="../../../utility/utility.htm#result_of"><tt class="docutils literal">result_of</tt></a><tt class="docutils literal"><span class="pre">&lt;F()&gt;::type</span></tt>.<a class="footnote-reference" href="#no-result-of" id="id11"><sup>2</sup></a></td>
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body"><tt class="docutils literal">g()</tt> is valid, with
+type <tt class="docutils literal">boost::</tt><a class="reference external"
+href="../../../utility/utility.htm#result_of"><tt class="docutils literal"
+>result_of</tt></a><tt class="docutils literal"><span class="pre"
+>&lt;F()&gt;::type</span></tt>.<a class="footnote-reference"
+href="#no-result-of" id="id11"><sup>2</sup></a></td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">a <a class="reference internal" href="#tagged-lazy-default">tagged lazy default</a> with <em>value</em> <tt class="docutils literal">g</tt> and <a class="reference internal" href="#kw">keyword</a> <tt class="docutils literal">Tag</tt>.</td>
+<tr class="field">
+<th class="field-name">Returns:</th>
+<td class="field-body">a <a class="reference internal"
+href="#tagged-lazy-default">tagged lazy default</a> with <em>value</em>
+<tt class="docutils literal">g</tt> and <a class="reference internal"
+href="#kw">keyword</a> <tt class="docutils literal">Tag</tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="docutils" id="instance">
+<dt><tt class="docutils literal">instance</tt></dt>
+<dd><pre class="first literal-block">
+static keyword&lt;Tag&gt; const&amp; instance;
+</pre>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Returns:</th>
+<td class="field-body">a “singleton instance”: the same object will be
+returned on each invocation of
+<tt class="docutils literal">instance</tt>.</td>
+</tr>
+<tr class="field">
+<th class="field-name">Thread Safety:</th>
+<td class="field-body"><tt class="docutils literal">instance</tt> can be
+accessed from multiple threads simultaneously.</td>
 </tr>
 </tbody>
 </table>
@@ -386,15 +705,25 @@ template &lt;class F&gt; <em>tagged lazy default</em> operator||(F const&amp; g)
 <dd><pre class="first literal-block">
 static keyword&lt;Tag&gt;&amp; get();
 </pre>
+<div class="admonition-deprecated admonition">
+<p class="first admonition-title">Deprecated</p>
+<p class="last">This macro has been deprecated in favor of
+<tt class="docutils literal">instance</tt>.</p>
+</div>
 <table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">a “singleton instance”: the same object will be
-returned on each invocation of <tt class="docutils literal">get()</tt>.</td>
+<tr class="field">
+<th class="field-name">Returns:</th>
+<td class="field-body">a “singleton instance”: the same object will be
+returned on each invocation of
+<tt class="docutils literal">get()</tt>.</td>
 </tr>
-<tr class="field"><th class="field-name">Thread Safety:</th><td class="field-body"><tt class="docutils literal">get()</tt> can be called from multiple threads
-simultaneously.</td>
+<tr class="field">
+<th class="field-name">Thread Safety:</th>
+<td class="field-body"><tt class="docutils literal">get()</tt> can be called
+from multiple threads simultaneously.</td>
 </tr>
 </tbody>
 </table>
@@ -1187,50 +1516,120 @@ methods are <tt class="docutils literal">const</tt>-qualified.</p>
 macro.</p>
 </div>
 <div class="section" id="boost-parameter-name-name">
-<h2><a class="toc-backref" href="#id58">6.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></h2>
+<h2><a class="toc-backref" href="#id58">6.10&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_NAME(name)</tt></a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/name.hpp">boost/parameter/name.hpp</a></td>
+</tr>
+</tbody>
+</table>
 <p>Declares a tag-type and keyword object.</p>
-<p>Expands to:</p>
 <p><strong>If</strong> <em>name</em> is of the form:</p>
 <pre class="literal-block">
-(<em>tag-name</em>, <em>namespace-name</em>) <em>object-name</em>
+(<em>object-name</em>, <em>namespace-name</em>) <em>qualifier</em>(<em
+>tag-name</em>)
 </pre>
 <p><strong>then</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">
+<p class="first"><em>qualifier</em> is either <tt class="docutils literal"
+>in</tt>, <tt class="docutils literal">out</tt>, <tt class="docutils literal"
+>in_out</tt>, <tt class="docutils literal">consume</tt>, <tt
+class="docutils literal">move_from</tt>, or <tt class="docutils literal"
+>forward</tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Expands to:</p>
 <pre class="literal-block">
-namespace <em>namespace-name</em>
-{
-  struct <em>tag-name</em>
-  {
-      static char const* keyword_name()
-      {
-          return ##<em>tag-name</em>;
-      }
+namespace <em>namespace-name</em> {
 
-      typedef <em>unspecified</em> _;
-      typedef <em>unspecified</em> _1;
-  };
+    struct <em>tag-name</em>
+    {
+        static char const* keyword_name()
+        {
+            return ##<em>tag-name</em>;
+        }
+
+        typedef <em>unspecified</em> _;
+        typedef <em>unspecified</em> _1;
+        typedef boost::parameter::<em>qualifier</em> ## _reference qualifier;
+    };
 }
 
-::boost::parameter::keyword&lt;<em>tag-namespace</em>::<em>tag-name</em>&gt; const&amp; <em>object-name</em>
-    = ::boost::parameter::keyword&lt;<em>tag-namespace</em>::<em>tag-name</em>&gt;::instance;
+::boost::parameter::keyword&lt;<em>tag-namespace</em>::<em
+>tag-name</em>&gt; const&amp;
+    <em>object-name</em> = ::boost::parameter::keyword&lt;
+        <em>tag-namespace</em>::<em>tag-name</em>
+    &gt;::instance;
+</pre>
+<p><strong>Else If</strong> <em>name</em> is of the form:</p>
+<pre class="literal-block">
+(<em>object-name</em>, <em>namespace-name</em>) <em>tag-name</em>
+</pre>
+<p><strong>then</strong></p>
+<p>Treats <em>name</em> as if it were of the form:</p>
+<pre class="literal-block">
+(<em>object-name</em>, <em>namespace-name</em>) forward(<em>tag-name</em>)
+</pre>
+<p><strong>Else If</strong> <em>name</em> is of the form:</p>
+<pre class="literal-block">
+<em>qualifier</em>(<em>tag-name</em>)
+</pre>
+<p><strong>then</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">
+<p class="first"><em>qualifier</em> is either <tt class="docutils literal"
+>in</tt>, <tt class="docutils literal">out</tt>, <tt class="docutils literal"
+>in_out</tt>, <tt class="docutils literal">consume</tt>, <tt
+class="docutils literal">move_from</tt>, or <tt class="docutils literal"
+>forward</tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Expands to:</p>
+<pre class="literal-block">
+namespace tag {
+
+    struct <em>tag-name</em>
+    {
+        static char const* keyword_name()
+        {
+            return ##<em>tag-name</em>;
+        }
+
+        typedef <em>unspecified</em> _;
+        typedef <em>unspecified</em> _1;
+        typedef boost::parameter::<em>qualifier</em> ## _reference qualifier;
+    };
+}
+
+::boost::parameter::keyword&lt;tag::<em>tag-name</em>&gt; const&amp; _ ## <em
+>tag-name</em>
+    = ::boost::parameter::keyword&lt;tag::<em>tag-name</em>&gt;::instance;
 </pre>
 <p><strong>Else</strong></p>
+<p>Treats <em>name</em> as if it were of the form:</p>
 <pre class="literal-block">
-namespace tag
-{
-  struct <em>name</em>
-  {
-      static char const* keyword_name()
-      {
-          return ##<em>name</em>;
-      }
-
-      typedef <em>unspecified</em> _;
-      typedef <em>unspecified</em> _1;
-  };
-}
-
-::boost::parameter::keyword&lt;tag::<em>name</em>&gt; const&amp; _<em>name</em>
-    = ::boost::parameter::keyword&lt;tag::<em>name</em>&gt;::instance;
+forward(<em>tag-name</em>)
 </pre>
 </div>
 <div class="section" id="boost-parameter-template-keyword-name">

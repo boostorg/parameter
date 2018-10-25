@@ -1,6 +1,6 @@
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- The Boost Parameter Library Reference Documentation 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+The Boost Parameter Library Reference Documentation 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 :Authors:       David Abrahams, Daniel Wallin
 :Contact:       dave@boost-consulting.com, daniel@boostpro.com
@@ -8,14 +8,14 @@
 :date:          $Date: 2005/07/17 19:53:01 $
 
 :copyright:     Copyright David Abrahams, Daniel Wallin
-                2005-2009. Distributed under the Boost Software License,
-                Version 1.0. (See accompanying file LICENSE_1_0.txt
+                2005-2009.  Distributed under the Boost Software License,
+                Version 1.0.  (See accompanying file LICENSE_1_0.txt
                 or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 |(logo)|__
 
 .. |(logo)| image:: ../../../../boost.png
-   :alt: Boost
+    :alt: Boost
 
 __ ../../../../index.htm
 
@@ -289,71 +289,222 @@ __ ../../../../boost/parameter/keyword.hpp
 
 .. parsed-literal::
 
-    template <class Tag>
+    template <typename Tag>
     struct keyword
     {
-        template <class T> |ArgumentPack|_ `operator=`_\(T& value) const;
-        template <class T> |ArgumentPack|_ `operator=`_\(T const& value) const;
+        template <typename T>
+        typename boost::`enable_if`_<
+            typename boost::mpl::`eval_if_`_<
+                boost::`is_scalar`_<T>
+              , boost::mpl::`true_`_
+              , boost::mpl::`eval_if_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::in_reference
+                    >
+                  , boost::mpl::`true_`_
+                  , boost::mpl::`if_`_<
+                        boost::`is_same`_<
+                            typename Tag::qualifier
+                          , boost::parameter::forward_reference
+                        >
+                      , boost::mpl::`true_`_
+                      , boost::mpl::`false_`_
+                    >
+                >
+            >::type
+          , |ArgumentPack|_
+        >::type constexpr
+            `operator=`_\(T const& value) const;
 
-        template <class T> *tagged default* `operator|`_\(T& x) const;
-        template <class T> *tagged default* `operator|`_\(T const& x) const;
+        template <typename T>
+        typename boost::`enable_if`_<
+            typename boost::mpl::`eval_if_`_<
+                typename boost::mpl::`eval_if_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::mpl::`true_`_
+                  , boost::mpl::`if_`_<
+                        boost::`is_same`_<
+                            typename Tag::qualifier
+                          , boost::parameter::forward_reference
+                        >
+                      , boost::mpl::`true_`_
+                      , boost::mpl::`false_`_
+                    >
+                >::type
+              , boost::mpl::`if_`_<
+                    boost::`is_const`_<T>
+                  , boost::mpl::`false_`_
+                  , boost::mpl::`true_`_
+                >
+              , boost::mpl::`false_`_
+            >::type
+          , |ArgumentPack|_
+        >::type constexpr
+            `operator=`_\(T& value) const;
 
-        template <class F> *tagged lazy default* `operator||`_\(F const&) const;
+        template <typename T>
+        typename boost::`enable_if`_<
+            typename boost::mpl::`eval_if_`_<
+                boost::`is_scalar`_<T>
+              , boost::mpl::`true_`_
+              , boost::mpl::`eval_if_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::in_reference
+                    >
+                  , boost::mpl::`true_`_
+                  , boost::mpl::`if_`_<
+                        boost::`is_same`_<
+                            typename Tag::qualifier
+                          , boost::parameter::forward_reference
+                        >
+                      , boost::mpl::`true_`_
+                      , boost::mpl::`false_`_
+                    >
+                >
+            >::type
+          , *tagged default*
+        >::type
+            `operator|`_\(T const& x) const;
+
+        template <typename T>
+        typename boost::`enable_if`_<
+            typename boost::mpl::`eval_if_`_<
+                typename boost::mpl::`eval_if_`_<
+                    boost::`is_same`_<
+                        typename Tag::qualifier
+                      , boost::parameter::out_reference
+                    >
+                  , boost::mpl::`true_`_
+                  , boost::mpl::`if_`_<
+                        boost::`is_same`_<
+                            typename Tag::qualifier
+                          , boost::parameter::forward_reference
+                        >
+                      , boost::mpl::`true_`_
+                      , boost::mpl::`false_`_
+                    >
+                >::type
+              , boost::mpl::`if_`_<
+                    boost::`is_const`_<T>
+                  , boost::mpl::`false_`_
+                  , boost::mpl::`true_`_
+                >
+              , boost::mpl::`false_`_
+            >::type
+          , *tagged default*
+        >::type
+            `operator|`_\(T& x) const;
+
+        template <typename F>
+        *tagged lazy default* `operator||`_\(F const&) const;
+
+        template <typename F>
+        *tagged lazy default* `operator||`_\(F&) const;
+
+        static keyword<Tag> const& instance;
 
         static keyword<Tag>& get_\();
     };
 
+.. _enable_if: ../../../core/doc/html/core/enable_if.html
+.. _eval_if_: ../../../mpl/doc/refmanual/eval-if.html
+.. _false_: ../../../mpl/doc/refmanual/bool.html
+.. _if_: ../../../mpl/doc/refmanual/if.html
+.. _is_const: ../../../type_traits/doc/html/boost_typetraits/reference/is_const.html
+.. _is_same: ../../../type_traits/doc/html/boost_typetraits/reference/is_same.html
+.. _is_scalar: ../../../type_traits/doc/html/boost_typetraits/reference/is_scalar.html
+.. _true_: ../../../mpl/doc/refmanual/bool.html
 
 .. |operator=| replace:: ``operator=``
 .. _operator=:
 
 ``operator=``
-  .. parsed-literal::
+.. parsed-literal::
 
-      template <class T> |ArgumentPack|_ operator=(T& value) const;
-      template <class T> |ArgumentPack|_ operator=(T const& value) const;
+    template <typename T> |ArgumentPack|_ operator=(T const& value) const;
+    template <typename T> |ArgumentPack|_ operator=(T& value) const;
 
-  :Requires: nothing
+:Requires: one of the following:
 
-  :Returns:
-      an |ArgumentPack|_  containing a single |tagged reference| to
-      ``value`` with |kw|_ ``Tag`` 
+\*. The nested ``qualifier`` type of ``Tag`` must be ``forward_reference``.
+
+\*. To use the ``const`` lvalue reference overload, ``T`` must be scalar, or
+the nested ``qualifier`` type of ``Tag`` must be ``in_reference``.
+
+\*. To use the mutable lvalue reference overload, the nested ``qualifier``
+type of ``Tag`` must be ``out_reference`` or ``in_out_reference``, and ``T``
+must not be ``const``-qualified.
+
+:Returns: an |ArgumentPack|_  containing a single |tagged reference| to
+``value`` with |kw|_ ``Tag`` 
 
 .. _operator|:
 
 ``operator|``
-  .. parsed-literal::
+.. parsed-literal::
 
-      template <class T> *tagged default* operator|(T& x) const;
-      template <class T> *tagged default* operator|(T const& x) const;
+    template <typename T> *tagged default* operator|(T const& x) const;
+    template <typename T> *tagged default* operator|(T& x) const;
 
-  :Returns: a |tagged default| with *value* ``x`` and |kw|_ ``Tag``.
+:Requires: one of the following:
+
+\*. The nested ``qualifier`` type of ``Tag`` must be ``forward_reference``.
+
+\*. To use the ``const`` lvalue reference overload, ``T`` must be scalar, or
+the nested ``qualifier`` type of ``Tag`` must be ``in_reference``.
+
+\*. To use the mutable lvalue reference overload, the nested ``qualifier``
+type of ``Tag`` must be ``out_reference`` or ``in_out_reference``, and ``T``
+must not be ``const``-qualified.
+
+:Returns: a |tagged default| with *value* ``x`` and |kw|_ ``Tag``.
 
 .. _operator||:
 
 ``operator||``
-  .. parsed-literal::
+.. parsed-literal::
 
-      template <class F> *tagged lazy default* operator||(F const& g) const;
+    template <typename F> *tagged lazy default* operator||(F const& g) const;
+    template <typename F> *tagged lazy default* operator||(F& g) const;
 
-  :Requires: ``g()`` is valid, with type ``boost::``\ |result_of|_\
-    ``<F()>::type``.  [#no_result_of]_
+:Requires: ``g()`` must be valid, with type ``boost::``\ |result_of|_\
+``<F()>::type``.  [#no_result_of]_
 
+:Returns: a |tagged lazy default| with *value* ``g`` and |kw|_ ``Tag``.
 
-  :Returns: a |tagged lazy default| with *value* ``g`` and |kw|_ ``Tag``.
+.. _instance:
+
+``instance``
+.. parsed-literal::
+
+    static keyword<Tag> const& instance;
+
+:Returns: a “singleton instance”: the same object will be returned on each
+invocation of ``instance``.
+
+:Thread Safety:
+``instance`` can be accessed from multiple threads simultaneously.
 
 .. _get:
 
 ``get``
-  .. parsed-literal::
+.. parsed-literal::
 
-        static keyword<Tag>& get\();
+    static keyword<Tag>& get\();
 
-  :Returns: a “singleton instance”: the same object will be
-    returned on each invocation of ``get()``.
+.. admonition:: Deprecated
 
-  :Thread Safety: ``get()`` can be called from multiple threads
-    simultaneously.
+    This function has been deprecated in favor of ``instance``.
+
+:Returns: a “singleton instance”: the same object will be returned on each
+invocation of ``get()``.
+
+:Thread Safety: ``get()`` can be called from multiple threads simultaneously.
 
 ``parameters``
 --------------
@@ -951,57 +1102,99 @@ The |preprocessor|_ test program demonstrates proper usage of this macro.
 ``BOOST_PARAMETER_NAME(name)``
 ------------------------------
 
-Declares a tag-type and keyword object.
+:Defined in: `boost/parameter/name.hpp`__
 
-Expands to:
+__ ../../../../boost/parameter/name.hpp
+
+Declares a tag-type and keyword object.
 
 **If** *name* is of the form:
 
 .. parsed-literal::
 
-  (*tag-name*, *namespace-name*) *object-name*
+    (*object-name*, *namespace-name*) *qualifier*\ (*tag-name*)
 
 **then**
 
+:Requires: *qualifier* is either ``in``, ``out``, ``in_out``, or ``forward``.
+
+Expands to:
+
 .. parsed-literal::
 
-  namespace *namespace-name* 
-  {
-    struct *tag-name*
-    {
-        static char const* keyword_name()
+    namespace *namespace-name* {
+
+        struct *tag-name*
         {
-            return ##\ *tag-name*;
-        }
+            static char const* keyword_name()
+            {
+                return ## *tag-name*;
+            }
 
-        typedef *unspecified* _;
-        typedef *unspecified* _1;
-    };
-  }
+            typedef *unspecified* _;
+            typedef *unspecified* _1;
+            typedef boost::parameter::*qualifier* ## _reference qualifier;
+        };
+    }
 
-  ::boost::parameter::keyword<*tag-namespace*\ ::\ *tag-name*\ > const& *object-name*
-      = ::boost::parameter::keyword<*tag-namespace*\ ::\ *tag-name*\ >::instance;
+    ::boost::parameter::keyword<*tag-namespace* :: *tag-name* > const&
+        *object-name* = ::boost::parameter::keyword<
+            *tag-namespace* :: *tag-name*
+        >::instance;
+
+**Else If** *name* is of the form:
+
+.. parsed-literal::
+
+    (*tag-name*, *namespace-name*) *object-name*
+
+**then**
+
+Treats *name* as if it were of the form:
+
+.. parsed-literal::
+
+    (forward(*tag-name*), *namespace-name*) *object-name*
+
+**Else If** *name* is of the form:
+
+.. parsed-literal::
+
+    *qualifier*\ (*tag-name*)
+
+**then**
+
+:Requires: *qualifier* is either ``in``, ``out``, ``in_out``, or ``forward``.
+
+Expands to:
+
+.. parsed-literal::
+
+    namespace tag {
+
+        struct *tag-name*
+        {
+            static char const* keyword_name()
+            {
+                return ## *tag-name*;
+            }
+
+            typedef *unspecified* _;
+            typedef *unspecified* _1;
+            typedef boost::parameter::*qualifier* ## _reference qualifier;
+        };
+    }
+
+    ::boost::parameter::keyword<tag:: *tag-name* > const& _ ## *tag-name*
+        = ::boost::parameter::keyword<tag:: *tag-name* >::instance;
 
 **Else**
 
+Treats *name* as if it were of the form:
+
 .. parsed-literal::
 
-  namespace tag
-  {
-    struct *name*
-    {
-        static char const* keyword_name()
-        {
-            return ##\ *name*;
-        }
-
-        typedef *unspecified* _;
-        typedef *unspecified* _1;
-    };
-  }
-
-  ::boost::parameter::keyword<tag::\ *name*\ > const& _\ *name*
-      = ::boost::parameter::keyword<tag::\ *name*\ >::instance;
+    forward(*tag-name*)
 
 
 ``BOOST_PARAMETER_TEMPLATE_KEYWORD(name)``

@@ -535,7 +535,7 @@ expression representing the parameter's default value:</p>
 (optional <strong>    (visitor,           *, boost::dfs_visitor&lt;&gt;())
     (root_vertex,       *, *vertices(graph).first)
     (index_map,         *, get(boost::vertex_index,graph))
-    (in_out(color_map), *,
+    (color_map,         *,
       default_color_map(num_vertices(graph), index_map) )</strong>
 )
 </pre>
@@ -556,7 +556,7 @@ BOOST_PARAMETER_NAME(graph)
 BOOST_PARAMETER_NAME(visitor)
 BOOST_PARAMETER_NAME(root_vertex)
 BOOST_PARAMETER_NAME(index_map)
-BOOST_PARAMETER_NAME(color_map)
+BOOST_PARAMETER_NAME(in_out(color_map))
 
 BOOST_PARAMETER_FUNCTION((void), f, tag,
   (required (graph, *))
@@ -565,67 +565,101 @@ BOOST_PARAMETER_FUNCTION((void), f, tag,
 <!-- @test('compile') -->
 </div>
 <div class="section" id="handling-out-parameters">
-<h4>2.1.5.3&nbsp;&nbsp;&nbsp;Handling “Out” Parameters</h4>
+<h4>2.1.5.3&nbsp;&nbsp;&nbsp;Handling “In”, “Out”, and “Forward”
+Parameters</h4>
 <div class="compound">
-<p class="compound-first">Within the function body, a parameter name such as <tt class="docutils literal">visitor</tt> is
-a <em>C++ reference</em>, bound either to an actual argument passed by
-the caller or to the result of evaluating a default expression.
-In most cases, parameter types are of the form <tt class="docutils literal">T const&amp;</tt> for
-some <tt class="docutils literal">T</tt>.  Parameters whose values are expected to be modified,
-however, must be passed by reference to <em>non</em>-<tt class="docutils literal">const</tt>.  To
-indicate that <tt class="docutils literal">color_map</tt> is both read and written, we wrap
-its name in <tt class="docutils literal"><span class="pre">in_out(…)</span></tt>:</p>
+<p class="compound-first">By default, Boost.Parameter treats all parameters as
+if they were <em>forward</em> <a class="reference external" href=
+"http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters"
+>parameters</a>, which functions would take in by rvalue reference and only
+<tt class="docutils literal">std::forward</tt> or
+<tt class="docutils literal">boost::forward</tt> to other functions.  Such
+parameters can be <tt class="docutils literal">const</tt> lvalues or mutable
+lvalues.  Therefore, the default configuration grants the most flexibility to
+user code.  However:</p>
+<ul>
+<li>Users can configure one or more parameters to be <em>in</em>
+<a class="reference external" href=
+"http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters"
+>parameters</a>, which can fall into the same categories as <em>forward</em>
+<a class="reference external" href=
+"http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters"
+>parameters</a> but are now passed by <tt class="docutils literal">const</tt>
+lvalue reference and so must only be read from.  Continuing from the previous
+example, to indicate that <tt class="docutils literal">root_vertex</tt> and
+<tt class="docutils literal">index_map</tt> are read-only, we wrap their names
+in <tt class="docutils literal">in(…)</tt>.</li>
+<li>Users can configure one or more parameters to be either <em>out</em>
+<a class="reference external" href=
+"http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters"
+>parameters</a>, which functions would strictly write to, or <em>in-out</em>
+<a class="reference external" href=
+"http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters"
+>parameters</a>, which functions would both read from and write to.  Such
+parameters can only be mutable lvalues.  In the example, to indicate that
+<tt class="docutils literal">color_map</tt> is read-write, we wrap its name in
+<tt class="docutils literal">in_out(…)</tt>.  Note that Boost.Parameter sees
+no functional difference between <tt class="docutils literal">out(…)</tt> and
+<tt class="docutils literal">in_out(…)</tt>, so you may choose whichever makes
+your interfaces more self-documenting.</li>
+</ul>
 <pre class="compound-last literal-block">
-(optional
-    (visitor,            *, boost::dfs_visitor&lt;&gt;())
-    (root_vertex,        *, *vertices(graph).first)
-    (index_map,          *, get(boost::vertex_index,graph))
-    (<strong>in_out(color_map)</strong>, *,
-      default_color_map(num_vertices(graph), index_map) )
-)
+    BOOST_PARAMETER_NAME(graph)
+    BOOST_PARAMETER_NAME(visitor)
+    BOOST_PARAMETER_NAME(<strong>in(root_vertex)</strong>)
+    BOOST_PARAMETER_NAME(<strong>in(index_map)</strong>)
+    BOOST_PARAMETER_NAME(<strong>in_out(color_map)</strong>)
 </pre>
+<p>In order to see what happens when parameters are bound to arguments that
+violate their category constraints, attempt to compile the
+<a class="reference external" href="../../test/compose.cpp"
+>test/compose.cpp</a> test program with the
+<tt class="docutils literal">LIBS_PARAMETER_TEST_COMPILE_FAILURE_0</tt> macro
+<tt class="docutils literal">#defined</tt>.  You should encounter a compiler
+error caused by a specific constraint violation.</p>
 </div>
 <!-- @example.prepend('''
 #include <boost/parameter.hpp>
 
-namespace boost
-{
-  int vertex_index = 0;
+namespace boost {
 
-  template <class T = int>
-  struct dfs_visitor
-  {};
+    int vertex_index = 0;
+
+    template <typename T = int>
+    struct dfs_visitor
+    {
+    };
 }
-
-BOOST_PARAMETER_NAME(graph)
-
-BOOST_PARAMETER_NAME(visitor)
-BOOST_PARAMETER_NAME(root_vertex)
-BOOST_PARAMETER_NAME(index_map)
-BOOST_PARAMETER_NAME(color_map)
-
-BOOST_PARAMETER_FUNCTION((void), f, tag,
-  (required (graph, *))
 ''') -->
-<!-- @example.append(') {}') -->
+<!-- @example.append('''
+BOOST_PARAMETER_FUNCTION((void), f, tag,
+    (required (graph, *))
+    (optional
+        (visitor,     *, boost::dfs_visitor&lt;&gt;())
+        (root_vertex, *, *vertices(graph).first)
+        (index_map,   *, get(boost::vertex_index, graph))
+        (color_map,   *,
+            default_color_map(num_vertices(graph), index_map)
+        )
+    )
+)
+{
+}
+''') -->
 <!-- @test('compile') -->
-<p>If <tt class="docutils literal">color_map</tt> were strictly going to be modified but not examined,
-we could have written <tt class="docutils literal">out(color_map)</tt>.  There is no functional
-difference between <tt class="docutils literal">out</tt> and <tt class="docutils literal">in_out</tt>; the library provides
-both so you can make your interfaces more self-documenting.</p>
 </div>
 <div class="section" id="positional-arguments">
 <h4>2.1.5.4&nbsp;&nbsp;&nbsp;Positional Arguments</h4>
-<p>When arguments are passed positionally (without the use of
-keywords), they will be mapped onto parameters in the order the
-parameters are given in the signature, so for example in this
-call</p>
+<p>When arguments are passed positionally (without the use of keywords), they
+will be mapped onto parameters in the order the parameters are given in the
+signature, so for example in this call</p>
 <pre class="literal-block">
 graphs::depth_first_search(x, y);
 </pre>
 <!-- @ignore() -->
-<p><tt class="docutils literal">x</tt> will always be interpreted as a graph and <tt class="docutils literal">y</tt> will always
-be interpreted as a visitor.</p>
+<p><tt class="docutils literal">x</tt> will always be interpreted as a graph
+and <tt class="docutils literal">y</tt> will always be interpreted as a
+visitor.</p>
 </div>
 <div class="section" id="default-expression-evaluation">
 <h4>2.1.5.5&nbsp;&nbsp;&nbsp;Default Expression Evaluation</h4>
@@ -639,7 +673,7 @@ used in the default expressions for <tt class="docutils literal">root_vertex</tt
   (visitor,           *, boost::dfs_visitor&lt;&gt;())
   (root_vertex,       *, *vertices(<strong>graph</strong>).first)
   (index_map,         *, get(boost::vertex_index,<strong>graph</strong>))
-  (in_out(color_map), *,
+  (color_map,         *,
     default_color_map(num_vertices(<strong>graph</strong>), index_map) )
 )
 </pre>
@@ -689,7 +723,7 @@ BOOST_PARAMETER_NAME(graph)
 BOOST_PARAMETER_NAME(visitor)
 BOOST_PARAMETER_NAME(root_vertex)
 BOOST_PARAMETER_NAME(index_map)
-BOOST_PARAMETER_NAME(color_map)''') -->
+BOOST_PARAMETER_NAME(in_out(color_map))''') -->
 <!-- @example.replace_emphasis('''
 , (required
     (graph, *)
@@ -861,7 +895,7 @@ BOOST_PARAMETER_FUNCTION(
           &gt;)</strong>
         , get(boost::vertex_index,graph))
 
-      (in_out(color_map)
+      (color_map
         , <strong>*(boost::is_same&lt;
               vertex_descriptor&lt;graphs::graph::_&gt;, key_type&lt;_&gt;
           &gt;)</strong>
@@ -878,7 +912,7 @@ BOOST_PARAMETER_NAME((_graph, graphs) graph)
 BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
 BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
 BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
-BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
+BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 
 using boost::mpl::_;
 ''') -->
