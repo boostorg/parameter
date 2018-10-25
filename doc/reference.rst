@@ -475,9 +475,16 @@ __ ../../../../boost/parameter/parameters.hpp
 
 These templates describe the requirements on a function parameter.
 
-:Defined in: `boost/parameter/parameters.hpp`__
+``optional`` is defined in: |optional_header|_
+``required`` is defined in: |required_header|_
+Both headers are included by: |preprocessor_header|_
 
-__ ../../../../boost/parameter/parameters.hpp
+.. |optional_header| replace:: boost/parameter/optional.hpp
+.. _optional_header: ../../../../boost/parameter/optional.hpp
+.. |required_header| replace:: boost/parameter/required.hpp
+.. _required_header: ../../../../boost/parameter/required.hpp
+.. |preprocessor_header| replace:: boost/parameter/preprocessor.hpp
+.. _preprocessor_header: ../../../../boost/parameter/preprocessor.hpp
 
 :Specializations model: |ParameterSpec|_
 
@@ -502,9 +509,13 @@ The default value of ``Predicate`` is an unspecified |Metafunction|_ that return
 This template is used to wrap the *keyword tag* argument to
 ``optional`` or ``required``.
 
-:Defined in: `boost/parameter/parameters.hpp`__
+:Defined in: |deduced_header|_
+:Included by: |preprocessor_header|_
 
-__ ../../../../boost/parameter/parameters.hpp
+.. |deduced_header| replace:: boost/parameter/deduced.hpp
+.. _deduced_header: ../../../../boost/parameter/deduced.hpp
+.. |preprocessor_header| replace:: boost/parameter/preprocessor.hpp
+.. _preprocessor_header: ../../../../boost/parameter/preprocessor.hpp
 
 .. parsed-literal::
 
