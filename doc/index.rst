@@ -1,11 +1,11 @@
-+++++++++++++++++++++++++++++++++++++++++++++++++
- The Boost Parameter Library 
-+++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+The Boost Parameter Library 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 |(logo)|__
 
 .. |(logo)| image:: ../../../../boost.png
-   :alt: Boost
+    :alt: Boost
 
 __ ../../../../index.htm
 
@@ -453,13 +453,13 @@ definition follows a simple pattern using the
 
         tag,                   // 3. namespace of tag types
 
-        (required (graph, *) ) // 4. one required parameter, and
+        (required (graph, \*) ) // 4. one required parameter, and
 
         (optional              //    four optional parameters, with defaults
-          (visitor,           *, boost::dfs_visitor<>()) 
-          (root_vertex,       *, *vertices(graph).first) 
-          (index_map,         *, get(boost::vertex_index,graph)) 
-          (in_out(color_map), *, 
+          (visitor,           \*, boost::dfs_visitor<>()) 
+          (root_vertex,       \*, \*vertices(graph).first) 
+          (index_map,         \*, get(boost::vertex_index,graph)) 
+          (in_out(color_map), \*, 
             default_color_map(num_vertices(graph), index_map) ) 
         )
     )
@@ -564,7 +564,7 @@ Optional Parameters
         (visitor,           \*, boost::dfs_visitor<>()) 
         (root_vertex,       \*, \*vertices(graph).first) 
         (index_map,         \*, get(boost::vertex_index,graph)) 
-        (in_out(color_map), \*, 
+        (color_map,         \*, 
           default_color_map(num_vertices(graph), index_map) )**
     )
 
@@ -584,86 +584,104 @@ Optional Parameters
    BOOST_PARAMETER_NAME(visitor)
    BOOST_PARAMETER_NAME(root_vertex)
    BOOST_PARAMETER_NAME(index_map)
-   BOOST_PARAMETER_NAME(color_map)
+   BOOST_PARAMETER_NAME(in_out(color_map))
 
    BOOST_PARAMETER_FUNCTION((void), f, tag,
-     (required (graph, *))
+     (required (graph, \*))
    ''')
 
 .. @example.append(') {}')
 .. @test('compile')
 
-Handling “Out” Parameters
--------------------------
+Handling “In”, “Out”, and “Forward” Parameters
+----------------------------------------------
 
 .. compound::
 
-  Within the function body, a parameter name such as ``visitor`` is
-  a *C++ reference*, bound either to an actual argument passed by
-  the caller or to the result of evaluating a default expression.
-  In most cases, parameter types are of the form ``T const&`` for
-  some ``T``.  Parameters whose values are expected to be modified,
-  however, must be passed by reference to *non*\ -``const``.  To
-  indicate that ``color_map`` is both read and written, we wrap
-  its name in ``in_out(…)``:
+By default, Boost.Parameter treats all parameters as if they were *forward*
+`parameters`_, which functions would take in by rvalue reference and only
+``std::forward`` or ``boost::forward`` to other functions.  Such parameters
+can be ``const`` lvalues or mutable lvalues.  Therefore, the default
+configuration grants the most flexibility to user code.  However:
 
-  .. parsed-literal::
+\*. Users can configure one or more parameters to be *in* `parameters`_, which
+can fall into the same categories as *forward* `parameters`_ but are now
+passed by ``const`` lvalue reference and so must only be read from.  Continuing
+from the previous example, to indicate that ``root_vertex`` and ``index_map``
+are read-only, we wrap their names in ``in(…)``.
 
-    (optional
-        (visitor,            \*, boost::dfs_visitor<>()) 
-        (root_vertex,        \*, \*vertices(graph).first) 
-        (index_map,          \*, get(boost::vertex_index,graph)) 
-        (**in_out(color_map)**, \*, 
-          default_color_map(num_vertices(graph), index_map) )
-    )
+\*. Users can configure one or more parameters to be either *out*
+`parameters`_, which functions would strictly write to, or *in-out*
+`parameters`_, which functions would both read from and write to.  Such
+parameters can only be mutable lvalues.  In the example, to indicate that
+``color_map`` is read-write, we wrap its name in ``in_out(…)``.  Note that
+Boost.Parameter sees no functional difference between ``out(…)`` and
+``in_out(…)``, so you may choose whichever makes your interfaces more
+self-documenting.
+
+.. parsed-literal::
+
+    BOOST_PARAMETER_NAME(graph)
+    BOOST_PARAMETER_NAME(visitor)
+    BOOST_PARAMETER_NAME(**in(root_vertex)**)
+    BOOST_PARAMETER_NAME(**in(index_map)**)
+    BOOST_PARAMETER_NAME(**in_out(color_map)**)
+
+In order to see what happens when parameters are bound to arguments that
+violate their category constraints, attempt to compile the |compose_cpp|_ test
+program with the ``LIBS_PARAMETER_TEST_COMPILE_FAILURE_0`` macro
+``#defined``.  You should encounter a compiler error caused by a specific
+constraint violation.
 
 .. @example.prepend('''
-   #include <boost/parameter.hpp>
+    #include <boost/parameter.hpp>
 
-   namespace boost
-   {
-     int vertex_index = 0;
+    namespace boost {
 
-     template <class T = int>
-     struct dfs_visitor
-     {};
-   }
+        int vertex_index = 0;
 
-   BOOST_PARAMETER_NAME(graph)
+        template <typename T = int>
+        struct dfs_visitor
+        {
+        };
+    }
+''')
 
-   BOOST_PARAMETER_NAME(visitor)
-   BOOST_PARAMETER_NAME(root_vertex)
-   BOOST_PARAMETER_NAME(index_map)
-   BOOST_PARAMETER_NAME(color_map)
+.. @example.append('''
+    BOOST_PARAMETER_FUNCTION((void), f, tag,
+        (required (graph, \*))
+        (optional
+            (visitor,     \*, boost::dfs_visitor<>())
+            (root_vertex, \*, \*vertices(graph).first)
+            (index_map,   \*, get(boost::vertex_index, graph))
+            (color_map,   \*,
+                default_color_map(num_vertices(graph), index_map)
+            )
+        )
+    )
+    {
+    }
+''')
 
-   BOOST_PARAMETER_FUNCTION((void), f, tag,
-     (required (graph, *))
-   ''')
-
-.. @example.append(') {}')
 .. @test('compile')
 
-If ``color_map`` were strictly going to be modified but not examined,
-we could have written ``out(color_map)``.  There is no functional
-difference between ``out`` and ``in_out``; the library provides
-both so you can make your interfaces more self-documenting.
+.. _`parameters`: http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters
+.. |compose_cpp| replace:: compose.cpp
+.. _compose_cpp: ../../test/compose.cpp
 
 Positional Arguments
 --------------------
 
-When arguments are passed positionally (without the use of
-keywords), they will be mapped onto parameters in the order the
-parameters are given in the signature, so for example in this
-call ::
+When arguments are passed positionally (without the use of keywords), they
+will be mapped onto parameters in the order the parameters are given in the
+signature, so for example in this call ::
 
-  graphs::depth_first_search(x, y);
+    graphs::depth_first_search(x, y);
 
 .. @ignore()
 
-``x`` will always be interpreted as a graph and ``y`` will always
-be interpreted as a visitor.
-
-.. _sequence: http://boost-consulting.com/mplbook/preprocessor.html#sequences
+``x`` will always be interpreted as a graph and ``y`` will always be
+interpreted as a visitor.
 
 Default Expression Evaluation
 -----------------------------
@@ -681,7 +699,7 @@ Default Expression Evaluation
           (visitor,           \*, boost::dfs_visitor<>()) 
           (root_vertex,       \*, \*vertices(**graph**).first) 
           (index_map,         \*, get(boost::vertex_index,\ **graph**)) 
-          (in_out(color_map), \*, 
+          (color_map,         \*, 
             default_color_map(num_vertices(**graph**), index_map) ) 
         )
 
@@ -739,11 +757,11 @@ Default Expression Evaluation
 
 .. @example.replace_emphasis('''
    , (required 
-       (graph, *)
-       (visitor, *)
-       (root_vertex, *)
-       (index_map, *)
-       (color_map, *)
+       (graph, \*)
+       (visitor, \*)
+       (root_vertex, \*)
+       (index_map, \*)
+       (in_out(color_map), \*)
      )
    ''')
 .. @test('compile')
@@ -924,7 +942,7 @@ in parentheses *and preceded by an asterix*, as follows:
               >)**
             , get(boost::vertex_index,graph))
  
-          (in_out(color_map)
+          (color_map
             , **\ \*(boost::is_same<
                   vertex_descriptor<graphs::graph::_>, key_type<_>
               >)**
@@ -941,7 +959,7 @@ in parentheses *and preceded by an asterix*, as follows:
    BOOST_PARAMETER_NAME((_visitor, graphs) visitor) 
    BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex) 
    BOOST_PARAMETER_NAME((_index_map, graphs) index_map) 
-   BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
+   BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 
    using boost::mpl::_;
    ''')

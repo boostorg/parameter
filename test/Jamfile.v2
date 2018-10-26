@@ -32,6 +32,7 @@ alias parameter
      [ compile ntp.cpp ]
      [ compile function_type_tpl_param.cpp ]
      [ compile unwrap_cv_reference.cpp ]
+     [ compile-fail compose.cpp : <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_0 : compose_fail_0 ]
      [ compile-fail duplicates.cpp ]
      [ compile-fail deduced_unmatched_arg.cpp ]
      [ bpl-test python_test ]
