@@ -16,40 +16,32 @@
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename p)>
 /**/
 
-#include <boost/preprocessor/punctuation/comma_if.hpp>
 #include <boost/preprocessor/cat.hpp>
-
-#define BOOST_PARAMETER_FUNCTION_ARGUMENT(r, _, i, elem)                     \
-    BOOST_PP_COMMA_IF(i) elem& BOOST_PP_CAT(a, i)
-/**/
-
-#include <boost/parameter/aux_/preprocessor/qualifier.hpp>
-#include <boost/preprocessor/control/if.hpp>
 #include <boost/config.hpp>
 
 #if defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING)
 // No partial ordering.  This feature doesn't work.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_COMBINATION(r, _, i, elem)          \
-    (BOOST_PP_IF(                                                            \
-        BOOST_PARAMETER_IS_QUALIFIER(                                        \
-            BOOST_PARAMETER_FN_ARG_KEYWORD(elem)                             \
-        )                                                                    \
-      , (BOOST_PP_CAT(ParameterArgumentType, i))                             \
-      , (BOOST_PP_CAT(ParameterArgumentType, i) const)                       \
-    ))
+    ((BOOST_PP_CAT(ParameterArgumentType, i)))
 /**/
 #else
 #define BOOST_PARAMETER_FUNCTION_FORWARD_COMBINATION(r, _, i, elem)          \
-    (BOOST_PP_IF(                                                            \
-        BOOST_PARAMETER_IS_QUALIFIER(                                        \
-            BOOST_PARAMETER_FN_ARG_KEYWORD(elem)                             \
-        )                                                                    \
-      , (BOOST_PP_CAT(ParameterArgumentType, i) const)                       \
+    (                                                                        \
+        (BOOST_PP_CAT(ParameterArgumentType, i) const)                       \
         (BOOST_PP_CAT(ParameterArgumentType, i))                             \
-      , (BOOST_PP_CAT(ParameterArgumentType, i) const)                       \
-    ))
+    )
 /**/
 #endif  // BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+
+#include <boost/preprocessor/punctuation/comma_if.hpp>
+
+// Expands to a definition of a constructor or forwarding function argument
+// passed by lvalue reference.  Used by
+// BOOST_PARAMETER_CONSTRUCTOR_OVERLOAD_IMPL and
+// BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_IMPL.
+#define BOOST_PARAMETER_FUNCTION_ARGUMENT(r, _, i, elem)                     \
+    BOOST_PP_COMMA_IF(i) elem& BOOST_PP_CAT(a, i)
+/**/
 
 #include <boost/preprocessor/seq/for_each_i.hpp>
 
@@ -62,6 +54,7 @@
 #include <boost/parameter/aux_/preprocessor/impl/function_forward_match.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
 #include <boost/preprocessor/control/expr_if.hpp>
+#include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/tuple/eat.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>

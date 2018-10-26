@@ -7,7 +7,7 @@ BOOST_PARAMETER_NAME((_graph, graphs) graph)
 BOOST_PARAMETER_NAME((_visitor, graphs) visitor)
 BOOST_PARAMETER_NAME((_root_vertex, graphs) root_vertex)
 BOOST_PARAMETER_NAME((_index_map, graphs) index_map)
-BOOST_PARAMETER_NAME((_color_map, graphs) color_map)
+BOOST_PARAMETER_NAME((_color_map, graphs) in_out(color_map))
 
 using boost::mpl::_;
 // We first need to define a few metafunction that we use in the
@@ -78,7 +78,7 @@ BOOST_PARAMETER_FUNCTION(
           >)
         , get(boost::vertex_index,graph))
 
-      (in_out(color_map)
+      (color_map
         , *(boost::is_same<
               vertex_descriptor<graphs::graph::_>, key_type<_>
           >)

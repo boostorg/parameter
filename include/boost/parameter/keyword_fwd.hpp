@@ -8,7 +8,12 @@
 
 namespace boost { namespace parameter {
 
-    template <class Tag>
+    struct in_reference;
+    struct out_reference;
+    typedef ::boost::parameter::out_reference in_out_reference;
+    struct forward_reference;
+
+    template <typename Tag>
     struct keyword;
 }} // namespace boost::parameter
 
