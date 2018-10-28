@@ -1,171 +1,302 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <string>
+#include <boost/container/string.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/type_traits/is_convertible.hpp>
 #include "basics.hpp"
 
-#ifndef BOOST_NO_SFINAE
-# include <boost/utility/enable_if.hpp>
+#if !defined(BOOST_NO_SFINAE)
+#include <boost/core/enable_if.hpp>
 #endif
 
 namespace test {
 
-namespace mpl = boost::mpl;
-
-using mpl::_;
-using boost::is_convertible;
-
-BOOST_PARAMETER_NAME(expected)
-BOOST_PARAMETER_NAME(x)
-BOOST_PARAMETER_NAME(y)
-BOOST_PARAMETER_NAME(z)
-
-// Sun has problems with this syntax:
-//
-//   template1< r* ( template2<x> ) >
-//
-// Workaround: factor template2<x> into a separate typedef
-typedef is_convertible<_, int> predicate1;
-typedef is_convertible<_, std::string> predicate2;
+    BOOST_PARAMETER_NAME(expected)
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
 
 #if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-
-BOOST_PARAMETER_FUNCTION((int), f, tag,
-    (required
-       (expected, *)
-    )
-    (deduced
-       (required
-          (x, *(predicate1))
-          (y, *(predicate2))
-       )
-    )
-)
-#else
-BOOST_PARAMETER_FUNCTION((int), f, tag,
-    (required
-       (expected, *)
-    )
-    (deduced
-       (required
-          (x, *(is_convertible<_, int>))
-          (y, *(is_convertible<_, std::string>))
-       )
-    )
-)
-#endif 
-{
-    assert(equal(x, boost::tuples::get<0>(expected)));
-    assert(equal(y, boost::tuples::get<1>(expected)));
-    return 1;
-}
-
-struct X 
-{
-    X(int x = -1)
-      : x(x)
-    {}
-    
-    bool operator==(X const& other) const
+    // Sun has problems with this syntax:
+    //
+    //   template1< r* ( template2<x> ) >
+    //
+    // Workaround: factor template2<x> into separate typedefs
+    struct predicate1
     {
-        return x == other.x;
+        template <typename From, typename Args>
+        struct apply
+          : boost::mpl::if_<
+                boost::is_convertible<From,int>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+        {
+        };
+    };
+
+    struct predicate2
+    {
+        template <typename From, typename Args>
+        struct apply
+          : boost::mpl::if_<
+                boost::is_convertible<From,boost::container::string>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+        {
+        };
+    };
+
+    BOOST_PARAMETER_FUNCTION((int), f, test::tag,
+        (required
+            (expected, *)
+        )
+        (deduced
+            (required
+                (x, *(test::predicate1))
+                (y, *(test::predicate2))
+            )
+        )
+    )
+#else   // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+    template <typename To>
+    struct predicate
+    {
+        template <typename From, typename Args>
+        struct apply
+          : boost::mpl::if_<
+                boost::is_convertible<From,To>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+        {
+        };
+    };
+
+    BOOST_PARAMETER_FUNCTION((int), f, test::tag,
+        (required
+            (expected, *)
+        )
+        (deduced
+            (required
+                (x, *(test::predicate<int>))
+                (y, *(test::predicate<boost::container::string>))
+            )
+        )
+    )
+#endif  // SunPro CC workarounds needed.
+    {
+        BOOST_TEST(test::equal(x, boost::tuples::get<0>(expected)));
+        BOOST_TEST(test::equal(y, boost::tuples::get<1>(expected)));
+        return 1;
     }
-    
-    int x;
-};
 
-typedef is_convertible<_, X> predicate3;  // SunPro workaround; see above
+    struct X 
+    {
+        X(int x_ = -1) : x(x_)
+        {
+        }
 
-BOOST_PARAMETER_FUNCTION((int), g, tag,
-    (required
-      (expected, *)
+        bool operator==(X const& other) const
+        {
+            return this->x == other.x;
+        }
+
+        int x;
+    };
+
+#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+    // SunPro workaround; see above
+    struct predicate3
+    {
+        template <typename From, typename Args>
+        struct apply
+          : boost::mpl::if_<
+                boost::is_convertible<From,test::X>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+        {
+        };
+    };
+
+    BOOST_PARAMETER_FUNCTION((int), g, tag,
+        (required
+            (expected, *)
+        )
+        (deduced
+            (required
+                (x, *(test::predicate1))
+                (y, *(test::predicate2))
+            )
+            (optional
+                (z, *(test::predicate3), test::X())
+            )
+        )
     )
-    (deduced
-       (required
-          (x, *(is_convertible<_, int>))
-          (y, *(is_convertible<_, std::string>))
-       )
-       (optional
-          (z, *(predicate3), X())
-       )
+#else   // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+    BOOST_PARAMETER_FUNCTION((int), g, test::tag,
+        (required
+            (expected, *)
+        )
+        (deduced
+            (required
+                (x, *(test::predicate<int>))
+                (y, *(test::predicate<boost::container::string>))
+            )
+            (optional
+                (z, *(test::predicate<test::X>), test::X())
+            )
+        )
     )
-)
-{
-    assert(equal(x, boost::tuples::get<0>(expected)));
-    assert(equal(y, boost::tuples::get<1>(expected)));
-    assert(equal(z, boost::tuples::get<2>(expected)));
-    return 1;
-}
+#endif  // SunPro CC workarounds needed.
+    {
+        BOOST_TEST(test::equal(x, boost::tuples::get<0>(expected)));
+        BOOST_TEST(test::equal(y, boost::tuples::get<1>(expected)));
+        BOOST_TEST(test::equal(z, boost::tuples::get<2>(expected)));
+        return 1;
+    }
 
-BOOST_PARAMETER_FUNCTION(
-    (int), sfinae, tag,
-    (deduced
-      (required
-        (x, *(predicate2))
-      )
+#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+    BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
+        (deduced
+            (required
+                (x, *(test::predicate2))
+            )
+        )
     )
-)
-{
-    return 1;
-}
-
-#ifndef BOOST_NO_SFINAE
-// On compilers that actually support SFINAE, add another overload
-// that is an equally good match and can only be in the overload set
-// when the others are not.  This tests that the SFINAE is actually
-// working.  On all other compilers we're just checking that
-// everything about SFINAE-enabled code will work, except of course
-// the SFINAE.
-template<class A0>
-typename boost::enable_if<boost::is_same<int,A0>, int>::type
-sfinae(A0 const& a0)
-{
-    return 0;
-}
+#else
+    BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
+        (deduced
+            (required
+                (x, *(test::predicate<boost::container::string>))
+            )
+        )
+    )
 #endif
+    {
+        return 1;
+    }
 
+#if !defined(BOOST_NO_SFINAE)
+    // On compilers that actually support SFINAE, add another overload
+    // that is an equally good match and can only be in the overload set
+    // when the others are not.  This tests that the SFINAE is actually
+    // working.  On all other compilers we're just checking that everything
+    // about SFINAE-enabled code will work, except of course the SFINAE.
+    template <typename A0>
+    typename boost::enable_if<
+        typename boost::mpl::if_<
+            boost::is_same<int,A0>
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+      , int
+    >::type
+        sfinae(A0 const& a0)
+    {
+        return 0;
+    }
+#endif  // BOOST_NO_SFINAE
+
+    // make_tuple doesn't work with char arrays.
+    char const* str(char const* s)
+    {
+        return s;
+    }
 } // namespace test
 
-using boost::make_tuple;
-
-// make_tuple doesn't work with char arrays.
-char const* str(char const* s)
-{
-    return s;
-}
+#include <boost/core/lightweight_test.hpp>
 
 int main()
 {
-    using namespace test;
+    test::f(
+        boost::make_tuple(0, boost::container::string("foo"))
+      , test::_x = 0
+      , test::_y = boost::container::string("foo")
+    );
+    test::f(
+        boost::make_tuple(0, boost::container::string("foo"))
+      , 0
+      , boost::container::string("foo")
+    );
+    test::f(
+        boost::make_tuple(0, boost::container::string("foo"))
+      , boost::container::string("foo")
+      , 0
+    );
+    test::f(
+        boost::make_tuple(0, boost::container::string("foo"))
+      , test::_y = boost::container::string("foo")
+      , 0
+    );
+    test::f(
+        boost::make_tuple(0, boost::container::string("foo"))
+      , test::_x = 0
+      , boost::container::string("foo")
+    );
+    test::f(
+        boost::make_tuple(0, boost::container::string("foo"))
+      , 0
+      , test::_y = boost::container::string("foo")
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X())
+      , test::_x = 0
+      , test::_y = boost::container::string("foo")
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X())
+      , 0
+      , boost::container::string("foo")
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X())
+      , boost::container::string("foo")
+      , 0
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X())
+      , test::_y = boost::container::string("foo")
+      , 0
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X())
+      , test::_x = 0
+      , boost::container::string("foo")
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X())
+      , 0
+      , test::_y = boost::container::string("foo")
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X(1))
+      , 0
+      , test::_y = boost::container::string("foo")
+      , test::X(1)
+    );
+    test::g(
+        boost::make_tuple(0, boost::container::string("foo"), test::X(1))
+      , test::X(1)
+      , 0
+      , test::_y = boost::container::string("foo")
+    );
 
-    f(make_tuple(0, str("foo")), _x = 0, _y = "foo");
-    f(make_tuple(0, str("foo")), _x = 0, _y = "foo");
-    f(make_tuple(0, str("foo")), 0, "foo");
-    f(make_tuple(0, str("foo")), "foo", 0);
-    f(make_tuple(0, str("foo")), _y = "foo", 0);
-    f(make_tuple(0, str("foo")), _x = 0, "foo");
-    f(make_tuple(0, str("foo")), 0, _y = "foo");
-
-    g(make_tuple(0, str("foo"), X()), _x = 0, _y = "foo");
-    g(make_tuple(0, str("foo"), X()), 0, "foo");
-    g(make_tuple(0, str("foo"), X()), "foo", 0);
-    g(make_tuple(0, str("foo"), X()), _y = "foo", 0);   
-    g(make_tuple(0, str("foo"), X()), _x = 0, "foo");
-    g(make_tuple(0, str("foo"), X()), 0, _y = "foo");
-
-    g(make_tuple(0, str("foo"), X(1)), 0, _y = "foo", X(1));
-    g(make_tuple(0, str("foo"), X(1)), X(1), 0, _y = "foo");
-
-#ifndef BOOST_NO_SFINAE
-    assert(sfinae("foo") == 1);
-    assert(sfinae(0) == 0);
+#if !defined(BOOST_NO_SFINAE)
+    BOOST_TEST(test::sfinae("foo") == 1);
+    BOOST_TEST(test::sfinae(0) == 0);
 #endif
 
-    return 0;
+    return boost::report_errors();
 }
 

@@ -1,49 +1,259 @@
-# Copyright David Abrahams, Daniel Wallin 2006. Distributed under the
-# Boost Software License, Version 1.0. (See accompanying file
-# LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+# Copyright David Abrahams, Daniel Wallin 2006.
+# Copyright Cromwell D. Enage 2017.
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
 
 # Boost Parameter Library test Jamfile
 
 import python ;
 
 project boost/parameter
-  : default-build <warnings>off
-  ;
+    :
+        default-build
+        <warnings>off
+    ;
 
 build-project literate ;
 
-alias parameter
-  :  [ run basics.cpp ]
-     [ run compose.cpp ]
-     [ run sfinae.cpp ]
-     [ run macros.cpp ]
-     [ run earwicker.cpp ]
-     [ run tutorial.cpp ]
-     [ run singular.cpp ]
-     [ run mpl.cpp ]
-     [ run preprocessor.cpp ]
-     [ run preprocessor_deduced.cpp ]
-     [ run efficiency.cpp : : : : : <variant>release ]
-     [ run maybe.cpp ]
-     [ run deduced.cpp ]
-     [ run optional_deduced_sfinae.cpp ]
-     [ run deduced_dependent_predicate.cpp ]
-     [ run normalized_argument_types.cpp ]
-     [ compile ntp.cpp ]
-     [ compile function_type_tpl_param.cpp ]
-     [ compile unwrap_cv_reference.cpp ]
-     [ compile-fail compose.cpp : <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_0 : compose_fail_0 ]
-     [ compile-fail duplicates.cpp ]
-     [ compile-fail deduced_unmatched_arg.cpp ]
-     [ bpl-test python_test ]
-  ;
+alias parameter_standard_tests
+    :
+    [ run maybe.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run singular.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run tutorial.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run compose.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run sfinae.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run optional_deduced_sfinae.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run efficiency.cpp
+        :
+        :
+        :
+        :
+        :
+            <variant>release
+            <preserve-target-tests>off
+    ]
+    [ run normalized_argument_types.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run basics.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run mpl.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run earwicker.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run macros.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run preprocessor.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run preprocessor_deduced.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run deduced.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run deduced_dependent_predicate.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ compile unwrap_cv_reference.cpp ]
+    [ compile ntp.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+    ]
+    [ compile function_type_tpl_param.cpp ]
+    [ compile-fail duplicates.cpp
+        :
+        :
+            duplicates_fail
+    ]
+    [ compile-fail deduced_unmatched_arg.cpp
+        :
+        :
+            deduced_unmatched_arg_fail
+    ]
+    [ compile-fail basics.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        :
+            basics_fail
+    ]
+    [ compile-fail compose.cpp
+        :
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_0
+        :
+            compose_fail_0
+    ]
+    [ compile-fail deduced.cpp
+        :
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        :
+            deduced_fail
+    ]
+    ;
 
-alias parameter_msvc11_fail
-  :  [ run-fail compose.cpp : : : <define>LIBS_PARAMETER_TEST_RUN_FAILURE : compose_fail_0 : <preserve-target-tests>off ]
-  ;
+alias parameter_python_test
+    :
+    [ bpl-test python_test ]
+    ;
+
+alias parameter_sl_tests
+    :
+        parameter_standard_tests
+    ;
+
+alias parameter_sp_tests
+    :
+        parameter_standard_tests
+        parameter_python_test
+    ;
+
+alias parameter_slp_tests
+    :
+        parameter_sl_tests
+        parameter_python_test
+    ;
+
+alias parameter_all_but_python_tests
+    :
+        parameter_sl_tests
+    ;
+
+alias parameter_all_tests
+    :
+        parameter_slp_tests
+    ;
+
+alias parameter_msvc11_fail_tests
+    :
+    [ run-fail compose.cpp
+        :
+        :
+        :
+            <define>LIBS_PARAMETER_TEST_RUN_FAILURE_MSVC
+        :
+            compose_fail_msvc11
+        :
+            <preserve-target-tests>off
+    ]
+    ;
 
 alias parameter_msvc11_tests
-  :  parameter
-     parameter_msvc11_fail
-  ;
+    :
+        parameter_all_tests
+        parameter_msvc11_fail_tests
+    ;
+
+alias parameter_msvc14_no_python_tests
+    :
+        parameter_all_but_python_tests
+    ;
+
+alias parameter_msvc14_tests
+    :
+        parameter_all_tests
+    ;
 

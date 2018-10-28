@@ -1,56 +1,97 @@
-// Copyright David Abrahams, Daniel Wallin 2005. Use, modification and 
-// distribution is subject to the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Copyright David Abrahams, Daniel Wallin 2005.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/mpl/placeholders.hpp>
-#include <iostream>
+#include <boost/parameter/config.hpp>
+
+#if (BOOST_PARAMETER_MAX_ARITY < 4)
+#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
+#endif
+
+#include <boost/parameter/name.hpp>
 
 namespace test {
 
-BOOST_PARAMETER_KEYWORD(tag, x)
-BOOST_PARAMETER_KEYWORD(tag, y)
-BOOST_PARAMETER_KEYWORD(tag, z)
+    BOOST_PARAMETER_NAME(w)
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
+} // namespace test
 
-using namespace boost::parameter;
-using namespace boost::mpl::placeholders;
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/type_traits/is_convertible.hpp>
 
-struct f_parameters // vc6 is happier with inheritance than with a typedef
-  : parameters<
-        optional<tag::x,boost::is_convertible<_,int> >
-      , optional<tag::y,boost::is_convertible<_,int> >
-      , optional<tag::z,boost::is_convertible<_,int> >
-    >
-{};
+namespace test {
 
-#ifdef BOOST_NO_VOID_RETURNS
-BOOST_PARAMETER_FUN(int, f, 0, 3, f_parameters)
-#else 
-BOOST_PARAMETER_FUN(void, f, 0, 3, f_parameters)
+    struct f_predicate
+    {
+        template <typename T, typename Args>
+        struct apply
+          : boost::mpl::if_<
+                boost::is_convertible<T,int>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+        {
+        };
+    };
+} // namespace test
+
+#include <boost/parameter/parameters.hpp>
+
+namespace test {
+
+    struct f_parameters // vc6 is happier with inheritance than with a typedef
+      : boost::parameter::parameters<
+            boost::parameter::required<test::tag::w>
+          , boost::parameter::optional<test::tag::x,test::f_predicate>
+          , boost::parameter::optional<test::tag::y,test::f_predicate>
+          , boost::parameter::optional<test::tag::z,test::f_predicate>
+        >
+    {
+    };
+} // namespace test
+
+#include <boost/parameter/macros.hpp>
+#include <boost/core/lightweight_test.hpp>
+
+namespace test {
+
+#if defined(BOOST_NO_VOID_RETURNS)
+    BOOST_PARAMETER_FUN(int, f, 1, 4, f_parameters)
+#else
+    BOOST_PARAMETER_FUN(void, f, 1, 4, f_parameters)
 #endif 
-{
-    std::cout << "x = " << p[x | -1] << std::endl;
-    std::cout << "y = " << p[y | -2] << std::endl;
-    std::cout << "z = " << p[z | -3] << std::endl;
-    std::cout <<  "================" << std::endl;
-#ifdef BOOST_NO_VOID_RETURNS
-    return 0;
+    {
+        BOOST_TEST_EQ(p[test::_w][0], p[test::_x | -1]);
+        BOOST_TEST_EQ(p[test::_w][1], p[test::_y | -2]);
+        BOOST_TEST_EQ(p[test::_w][2], p[test::_z | -3]);
+#if defined(BOOST_NO_VOID_RETURNS)
+        return 0;
 #endif 
-}
-
-}
-
+    }
+} // namespace test
 
 int main()
 {
-    using namespace test;
-    f(x = 1, y = 2, z = 3);
-    f(x = 1);
-    f(y = 2);
-    f(z = 3);
-    f(z = 3, x = 1);
+    int a[3];
+    a[0] = 1;
+    a[1] = 2;
+    a[2] = 3;
+    test::f(test::_x = 1, test::_y = 2, test::_z = 3, test::_w = a);
+    a[1] = -2;
+    a[2] = -3;
+    test::f(test::_x = 1, test::_w = a);
+    a[0] = -1;
+    a[1] = 2;
+    test::f(test::_y = 2, test::_w = a);
+    a[1] = -2;
+    a[2] = 3;
+    test::f(test::_z = 3, test::_w = a);
+    a[0] = 1;
+    test::f(test::_z = 3, test::_x = 1, test::_w = a);
+    return boost::report_errors();
 }
-
 
