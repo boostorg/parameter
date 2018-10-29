@@ -155,11 +155,12 @@ namespace test {
     }
 } // namespace test
 
+#include <string>
+
 #if !defined(BOOST_NO_SFINAE)
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_base_of.hpp>
-#include <string>
 #endif
 
 namespace test {
@@ -452,47 +453,38 @@ namespace test {
     }
 } // namespace test
 
-#include <boost/container/string.hpp>
 #include <boost/core/lightweight_test.hpp>
 
 int main()
 {
     test::f(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::values(std::string("foo"), 1.f, 2)
+      , std::string("foo")
     );
     test::f(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
 
     int index_lvalue = 2;
 
     test::f(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
       , test::_value = 1.f
       , test::_index = index_lvalue
     );
 
     test::f(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::values(std::string("foo"), 1.f, 2)
+      , std::string("foo")
       , 1.f
       , index_lvalue
     );
 
     test::g(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::values(std::string("foo"), 1.f, 2)
+      , std::string("foo")
       , 1.f
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1300)
       , test::as_lvalue(2)
@@ -502,8 +494,8 @@ int main()
     );
 
     test::h(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::values(std::string("foo"), 1.f, 2)
+      , std::string("foo")
       , 1.f
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1300)
       , test::as_lvalue(2)
@@ -513,12 +505,8 @@ int main()
     );
 
     test::h2(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
       , test::_value = 1.f
     );
 
@@ -528,97 +516,51 @@ int main()
     BOOST_TEST(1.f == u.f);
 
     test::class_1 x(
-        test::values(boost::container::string("foo"), 1.f, 2)
+        test::values(std::string("foo"), 1.f, 2)
       , boost::container::string("foo")
       , test::_index = 2
     );
 
+    x.f(test::values(std::string("foo"), 1.f, 2), std::string("foo"));
     x.f(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
-    x.f(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
-    );
+    x.f2(test::values(std::string("foo"), 1.f, 2), std::string("foo"));
     x.f2(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
-    x.f2(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
-    );
+    x(test::values(std::string("foo"), 1.f, 2), std::string("foo"));
     x(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
-    );
-    x(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
 
     test::class_1 const& x_const = x;
 
+    x_const.f(test::values(std::string("foo"), 1.f, 2), std::string("foo"));
     x_const.f(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
-    x_const.f(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
-    );
+    x_const.f2(test::values(std::string("foo"), 1.f, 2), std::string("foo"));
     x_const.f2(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
-    );
-    x_const.f2(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
     test::class_1::f_static(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+        test::values(std::string("foo"), 1.f, 2)
+      , std::string("foo")
     );
     test::class_1::f_static(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
+    x_const(test::values(std::string("foo"), 1.f, 2), std::string("foo"));
     x_const(
-        test::values(boost::container::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
-    );
-    x_const(
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 1.f
-          , 2
-        )
-      , test::_name = boost::container::string("foo")
+        test::_tester = test::values(std::string("foo"), 1.f, 2)
+      , test::_name = std::string("foo")
     );
 
 #if !defined(BOOST_NO_SFINAE) && \

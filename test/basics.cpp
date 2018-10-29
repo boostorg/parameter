@@ -58,47 +58,43 @@ namespace test {
         return test::f_impl(test::f_parameters()(a0, a1));
     }
 
-    template <class Params>
+    template <typename Params>
     int f_list(Params const& params)
     {
         return test::f_impl(params);
     }
 }
 
-#include <boost/container/string.hpp>
 #include <boost/ref.hpp>
 #include <boost/config/workaround.hpp>
+#include <string>
 
 int main()
 {
     test::f(
         test::values(
-            boost::container::string("foo")
-          , boost::container::string("bar")
-          , boost::container::string("baz")
+            std::string("foo")
+          , std::string("bar")
+          , std::string("baz")
         )
-      , boost::container::string("foo")
-      , boost::container::string("bar")
-      , boost::container::string("baz")
+      , std::string("foo")
+      , std::string("bar")
+      , std::string("baz")
     );
 
     int x = 56;
     test::f(
-        test::values(boost::container::string("foo"), 666.222, 56)
+        test::values(std::string("foo"), 666.222, 56)
       , test::_index = boost::ref(x)
-      , test::_name = boost::container::string("foo")
+      , test::_name = std::string("foo")
     );
 
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
     x = 56;
     test::f_list((
-        test::_tester = test::values(
-            boost::container::string("foo")
-          , 666.222
-          , 56
-        )
+        test::_tester = test::values(std::string("foo"), 666.222, 56)
       , test::_index = boost::ref(x)
-      , test::_name = boost::container::string("foo")
+      , test::_name = std::string("foo")
     ));
 #endif  // No comma operator available on Borland.
 

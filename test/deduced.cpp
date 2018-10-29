@@ -3,6 +3,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
 #include <boost/parameter/parameters.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/parameter/binding.hpp>
@@ -36,8 +37,8 @@ namespace test {
     };
 } // namespace test
 
-#include <boost/container/string.hpp>
 #include <boost/core/lightweight_test.hpp>
+#include <string>
 
 int main()
 {
@@ -54,17 +55,17 @@ int main()
             >
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::z>
-              , test::predicate<boost::container::string>
+              , test::predicate<std::string>
             >
         >
     >(
         (
             test::_x = 0
           , test::_y = test::not_present
-          , test::_z = boost::container::string("foo")
+          , test::_z = std::string("foo")
         )
       , test::_x = 0
-      , boost::container::string("foo")
+      , std::string("foo")
     );
 
     test::check<
@@ -76,17 +77,13 @@ int main()
             >
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::z>
-              , test::predicate<boost::container::string>
+              , test::predicate<std::string>
             >
         >
     >(
-        (
-            test::_x = 0
-          , test::_y = 1
-          , test::_z = boost::container::string("foo")
-        )
+        (test::_x = 0, test::_y = 1, test::_z = std::string("foo"))
       , 0
-      , boost::container::string("foo")
+      , std::string("foo")
       , 1
     );
 
@@ -99,18 +96,14 @@ int main()
             >
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::z>
-              , test::predicate<boost::container::string>
+              , test::predicate<std::string>
             >
         >
     >(
-        (
-            test::_x = 0
-          , test::_y = 1
-          , test::_z = boost::container::string("foo")
-        )
+        (test::_x = 0, test::_y = 1, test::_z = std::string("foo"))
       , 0
       , 1
-      , boost::container::string("foo")
+      , std::string("foo")
     );
 
     test::check<
@@ -122,18 +115,14 @@ int main()
             >
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::z>
-              , test::predicate<boost::container::string>
+              , test::predicate<std::string>
             >
         >
     >(
-        (
-            test::_x = 0
-          , test::_y = 1
-          , test::_z = boost::container::string("foo")
-        )
+        (test::_x = 0, test::_y = 1, test::_z = std::string("foo"))
       , 0
       , test::_y = 1
-      , boost::container::string("foo")
+      , std::string("foo")
     );
 
     test::check<
@@ -145,16 +134,12 @@ int main()
             >
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::z>
-              , test::predicate<boost::container::string>
+              , test::predicate<std::string>
             >
         >
     >(
-        (
-            test::_x = 0
-          , test::_y = 1
-          , test::_z = boost::container::string("foo")
-        )
-      , test::_z = boost::container::string("foo")
+        (test::_x = 0, test::_y = 1, test::_z = std::string("foo"))
+      , test::_z = std::string("foo")
       , test::_x = 0
       , 1
     );
@@ -172,15 +157,11 @@ int main()
             >
           , boost::parameter::optional<
                 boost::parameter::deduced<test::tag::z>
-              , test::predicate<boost::container::string>
+              , test::predicate<std::string>
             >
         >
     >(
-        (
-            test::_x = 0
-          , test::_y = 1
-          , test::_z = boost::container::string("foo")
-        )
+        (test::_x = 0, test::_y = 1, test::_z = std::string("foo"))
       , test::_x = 0
       , static_cast<long*>(BOOST_TTI_DETAIL_NULLPTR)
       , 1

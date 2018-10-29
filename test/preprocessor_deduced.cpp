@@ -7,10 +7,10 @@
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/container/string.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#include <string>
 #include "basics.hpp"
 
 #if !defined(BOOST_NO_SFINAE)
@@ -48,7 +48,7 @@ namespace test {
         template <typename From, typename Args>
         struct apply
           : boost::mpl::if_<
-                boost::is_convertible<From,boost::container::string>
+                boost::is_convertible<From,std::string>
               , boost::mpl::true_
               , boost::mpl::false_
             >
@@ -89,7 +89,7 @@ namespace test {
         (deduced
             (required
                 (x, *(test::predicate<int>))
-                (y, *(test::predicate<boost::container::string>))
+                (y, *(test::predicate<std::string>))
             )
         )
     )
@@ -151,7 +151,7 @@ namespace test {
         (deduced
             (required
                 (x, *(test::predicate<int>))
-                (y, *(test::predicate<boost::container::string>))
+                (y, *(test::predicate<std::string>))
             )
             (optional
                 (z, *(test::predicate<test::X>), test::X())
@@ -178,7 +178,7 @@ namespace test {
     BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
         (deduced
             (required
-                (x, *(test::predicate<boost::container::string>))
+                (x, *(test::predicate<std::string>))
             )
         )
     )
@@ -207,12 +207,6 @@ namespace test {
         return 0;
     }
 #endif  // BOOST_NO_SFINAE
-
-    // make_tuple doesn't work with char arrays.
-    char const* str(char const* s)
-    {
-        return s;
-    }
 } // namespace test
 
 #include <boost/core/lightweight_test.hpp>
@@ -220,76 +214,76 @@ namespace test {
 int main()
 {
     test::f(
-        boost::make_tuple(0, boost::container::string("foo"))
+        boost::make_tuple(0, std::string("foo"))
       , test::_x = 0
-      , test::_y = boost::container::string("foo")
+      , test::_y = std::string("foo")
     );
     test::f(
-        boost::make_tuple(0, boost::container::string("foo"))
+        boost::make_tuple(0, std::string("foo"))
       , 0
-      , boost::container::string("foo")
+      , std::string("foo")
     );
     test::f(
-        boost::make_tuple(0, boost::container::string("foo"))
-      , boost::container::string("foo")
-      , 0
-    );
-    test::f(
-        boost::make_tuple(0, boost::container::string("foo"))
-      , test::_y = boost::container::string("foo")
+        boost::make_tuple(0, std::string("foo"))
+      , std::string("foo")
       , 0
     );
     test::f(
-        boost::make_tuple(0, boost::container::string("foo"))
+        boost::make_tuple(0, std::string("foo"))
+      , test::_y = std::string("foo")
+      , 0
+    );
+    test::f(
+        boost::make_tuple(0, std::string("foo"))
       , test::_x = 0
-      , boost::container::string("foo")
+      , std::string("foo")
     );
     test::f(
-        boost::make_tuple(0, boost::container::string("foo"))
+        boost::make_tuple(0, std::string("foo"))
       , 0
-      , test::_y = boost::container::string("foo")
+      , test::_y = std::string("foo")
     );
     test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X())
+        boost::make_tuple(0, std::string("foo"), test::X())
       , test::_x = 0
-      , test::_y = boost::container::string("foo")
+      , test::_y = std::string("foo")
     );
     test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X())
+        boost::make_tuple(0, std::string("foo"), test::X())
       , 0
-      , boost::container::string("foo")
+      , std::string("foo")
     );
     test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X())
-      , boost::container::string("foo")
-      , 0
-    );
-    test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X())
-      , test::_y = boost::container::string("foo")
+        boost::make_tuple(0, std::string("foo"), test::X())
+      , std::string("foo")
       , 0
     );
     test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X())
+        boost::make_tuple(0, std::string("foo"), test::X())
+      , test::_y = std::string("foo")
+      , 0
+    );
+    test::g(
+        boost::make_tuple(0, std::string("foo"), test::X())
       , test::_x = 0
-      , boost::container::string("foo")
+      , std::string("foo")
     );
     test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X())
+        boost::make_tuple(0, std::string("foo"), test::X())
       , 0
-      , test::_y = boost::container::string("foo")
+      , test::_y = std::string("foo")
     );
     test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X(1))
+        boost::make_tuple(0, std::string("foo"), test::X(1))
       , 0
-      , test::_y = boost::container::string("foo")
+      , test::_y = std::string("foo")
       , test::X(1)
     );
     test::g(
-        boost::make_tuple(0, boost::container::string("foo"), test::X(1))
+        boost::make_tuple(0, std::string("foo"), test::X(1))
       , test::X(1)
       , 0
-      , test::_y = boost::container::string("foo")
+      , test::_y = std::string("foo")
     );
 
 #if !defined(BOOST_NO_SFINAE)
