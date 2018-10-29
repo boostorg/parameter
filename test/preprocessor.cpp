@@ -517,7 +517,7 @@ int main()
 
     test::class_1 x(
         test::values(std::string("foo"), 1.f, 2)
-      , boost::container::string("foo")
+      , std::string("foo")
       , test::_index = 2
     );
 
