@@ -1,4 +1,5 @@
 // Copyright Daniel Wallin, David Abrahams 2005.
+// Copyright Cromwell D. Enage 2017.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -9,17 +10,22 @@
 #include <boost/parameter/aux_/tag.hpp>
 #include <boost/parameter/aux_/default.hpp>
 #include <boost/parameter/keyword_fwd.hpp>
-#include <boost/config.hpp>
+#include <boost/parameter/config.hpp>
 
 #if !defined(BOOST_NO_SFINAE)
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/core/enable_if.hpp>
-#include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #endif  // BOOST_NO_SFINAE
+
+#include <boost/type_traits/is_const.hpp>
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#include <boost/move/utility_core.hpp>
+#endif
 
 namespace boost { namespace parameter {
 
@@ -43,7 +49,7 @@ namespace boost { namespace parameter {
     {
         template <typename T>
 #if defined(BOOST_NO_SFINAE)
-        inline typename ::boost::parameter::aux::tag<Tag,T const>::type
+        inline typename ::boost::parameter::aux::tag<Tag,T const&>::type
 #else
         inline typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
@@ -65,13 +71,13 @@ namespace boost { namespace parameter {
                     >
                 >
             >::type
-          , ::boost::parameter::aux::tag<Tag,T const>
+          , ::boost::parameter::aux::tag<Tag,T const&>
         >::type BOOST_CONSTEXPR
 #endif  // BOOST_NO_SFINAE
             operator=(T const& x) const
         {
             typedef typename ::boost::parameter::aux
-            ::tag<Tag,T const>::type result;
+            ::tag<Tag,T const&>::type result;
             return result(x);
         }
 
@@ -109,7 +115,7 @@ namespace boost { namespace parameter {
 
         template <typename T>
 #if defined(BOOST_NO_SFINAE)
-        inline typename ::boost::parameter::aux::tag<Tag,T>::type
+        inline typename ::boost::parameter::aux::tag<Tag,T&>::type
 #else
         inline typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
@@ -131,13 +137,13 @@ namespace boost { namespace parameter {
                 >
               , ::boost::mpl::false_
             >::type
-          , ::boost::parameter::aux::tag<Tag,T>
+          , ::boost::parameter::aux::tag<Tag,T&>
         >::type BOOST_CONSTEXPR
 #endif  // BOOST_NO_SFINAE
             operator=(T& x) const
         {
             typedef typename ::boost::parameter::aux
-            ::tag<Tag,T>::type result;
+            ::tag<Tag,T&>::type result;
             return result(x);
         }
 
@@ -187,6 +193,126 @@ namespace boost { namespace parameter {
         {
             return ::boost::parameter::aux::lazy_default<Tag,Default>(d);
         }
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+        template <typename T>
+        inline typename ::boost::lazy_enable_if<
+            typename ::boost::mpl::eval_if<
+                ::boost::is_scalar<T>
+              , ::boost::mpl::false_
+              , ::boost::mpl::eval_if<
+                    ::boost::is_same<
+                        typename Tag::qualifier
+                      , ::boost::parameter::in_reference
+                    >
+                  , ::boost::mpl::true_
+                  , ::boost::mpl::if_<
+                        ::boost::is_same<
+                            typename Tag::qualifier
+                          , ::boost::parameter::forward_reference
+                        >
+                      , ::boost::mpl::true_
+                      , ::boost::mpl::false_
+                    >
+                >
+            >::type
+          , ::boost::parameter::aux::tag<Tag,T const>
+        >::type BOOST_CONSTEXPR
+            operator=(T const&& x) const
+        {
+            typedef typename ::boost::parameter::aux
+            ::tag<Tag,T const>::type result;
+            return result(::boost::forward<T const>(x));
+        }
+
+        template <typename T>
+        inline typename ::boost::lazy_enable_if<
+            typename ::boost::mpl::eval_if<
+                ::boost::is_scalar<T>
+              , ::boost::mpl::false_
+              , ::boost::mpl::eval_if<
+                    ::boost::is_same<
+                        typename Tag::qualifier
+                      , ::boost::parameter::consume_reference
+                    >
+                  , ::boost::mpl::true_
+                  , ::boost::mpl::if_<
+                        ::boost::is_same<
+                            typename Tag::qualifier
+                          , ::boost::parameter::forward_reference
+                        >
+                      , ::boost::mpl::true_
+                      , ::boost::mpl::false_
+                    >
+                >
+            >::type
+          , ::boost::parameter::aux::tag<Tag,T>
+        >::type BOOST_CONSTEXPR
+            operator=(T&& x) const
+        {
+            typedef typename ::boost::parameter::aux::tag<Tag,T>::type result;
+            return result(::boost::forward<T>(x));
+        }
+
+        template <typename Default>
+        inline typename ::boost::enable_if<
+            typename ::boost::mpl::eval_if<
+                ::boost::is_scalar<Default>
+              , ::boost::mpl::false_
+              , ::boost::mpl::eval_if<
+                    ::boost::is_same<
+                        typename Tag::qualifier
+                      , ::boost::parameter::in_reference
+                    >
+                  , ::boost::mpl::true_
+                  , ::boost::mpl::if_<
+                        ::boost::is_same<
+                            typename Tag::qualifier
+                          , ::boost::parameter::forward_reference
+                        >
+                      , ::boost::mpl::true_
+                      , ::boost::mpl::false_
+                    >
+                >
+            >::type
+          , ::boost::parameter::aux::default_r_<Tag,Default const>
+        >::type
+            operator|(Default const&& d) const
+        {
+            return ::boost::parameter::aux::default_r_<Tag,Default const>(
+                ::boost::forward<Default const>(d)
+            );
+        }
+
+        template <typename Default>
+        inline typename ::boost::enable_if<
+            typename ::boost::mpl::eval_if<
+                ::boost::is_scalar<Default>
+              , ::boost::mpl::false_
+              , ::boost::mpl::eval_if<
+                    ::boost::is_same<
+                        typename Tag::qualifier
+                      , ::boost::parameter::consume_reference
+                    >
+                  , ::boost::mpl::true_
+                  , ::boost::mpl::if_<
+                        ::boost::is_same<
+                            typename Tag::qualifier
+                          , ::boost::parameter::forward_reference
+                        >
+                      , ::boost::mpl::true_
+                      , ::boost::mpl::false_
+                    >
+                >
+            >::type
+          , ::boost::parameter::aux::default_r_<Tag,Default>
+        >::type
+            operator|(Default&& d) const
+        {
+            return ::boost::parameter::aux
+            ::default_r_<Tag,Default>(::boost::forward<Default>(d));
+        }
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
      public: // Insurance against ODR violations
         // Users will need to define their keywords in header files.  To

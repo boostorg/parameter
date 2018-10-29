@@ -5,11 +5,23 @@ BOOST_PARAMETER_NAME(name)
 BOOST_PARAMETER_NAME(index)
 
 template <typename T>
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+void noop(T&&)
+#else
 void noop(T&)
+#endif
 {
 }
 
 template <typename Name, typename Index>
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+int deduce_arg_types_impl(Name&& name, Index&& index)
+{
+    noop(boost::forward<Name>(name));
+    noop(boost::forward<Index>(index));
+    return index;
+}
+#else
 int deduce_arg_types_impl(Name& name, Index& index)
 {
     Name& n2 = name;  // we know the types
@@ -18,6 +30,7 @@ int deduce_arg_types_impl(Name& name, Index& index)
     noop(i2);
     return index;
 }
+#endif
 
 template <typename ArgumentPack>
 int deduce_arg_types(ArgumentPack const& args)
