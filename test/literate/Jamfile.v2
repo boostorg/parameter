@@ -5,7 +5,7 @@ run extracting-parameter-types0.cpp ;
 run extracting-parameter-types1.cpp ;
 compile template-keywords0.cpp ;
 compile template-keywords1.cpp ;
-compile top-level0.cpp ;
+run top-level0.cpp ;
 compile headers-and-namespaces0.cpp ;
 compile predicate-requirements0.cpp ;
 compile handling-out-parameters0.cpp ;
