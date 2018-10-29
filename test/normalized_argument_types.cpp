@@ -1,85 +1,136 @@
-// Copyright Daniel Wallin 2006. Use, modification and distribution is
-// subject to the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright Daniel Wallin 2006.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+#include <boost/parameter/config.hpp>
+
+#if (BOOST_PARAMETER_MAX_ARITY < 2)
+#error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
+#endif
 
 #include <boost/parameter.hpp>
+
+namespace test {
+
+    struct count_instances
+    {
+        count_instances()
+        {
+            ++count_instances::count;
+        }
+
+        count_instances(count_instances const&)
+        {
+            ++count_instances::count;
+        }
+
+        template <typename T>
+        count_instances(T const&)
+        {
+            ++count_instances::count;
+        }
+
+        ~count_instances()
+        {
+            --count_instances::count;
+        }
+
+        static std::size_t count;
+
+        void noop() const
+        {
+        }
+    };
+
+    std::size_t count_instances::count = 0;
+
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+} // namespace test
+
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <cassert>
+#include <boost/type_traits/is_convertible.hpp>
 
-struct count_instances
-{
-    count_instances()
-    {
-        ++count;
-    }
+namespace test {
 
-    count_instances(count_instances const&)
-    {
-        ++count;
-    }
-
-    template <class T>
-    count_instances(T const&)
-    {
-        ++count;
-    }
-
-    ~count_instances()
-    {
-        --count;
-    }
-
-    static std::size_t count;
-};
-
-std::size_t count_instances::count = 0;
-
-BOOST_PARAMETER_NAME(x)
-BOOST_PARAMETER_NAME(y)
-
-BOOST_PARAMETER_FUNCTION((int), f, tag,
-    (required
-       (x, (int))
-       (y, (int))
+    BOOST_PARAMETER_FUNCTION((int), f, tag,
+        (required
+            (x, (long))
+        )
+        (optional
+            (y, (long), 2L)
+        )
     )
-)
-{
-    BOOST_MPL_ASSERT((boost::is_same<x_type,int>));
-    BOOST_MPL_ASSERT((boost::is_same<y_type,int>));
-    return 0;
-}
+    {
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                boost::is_convertible<x_type,long>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                boost::is_convertible<y_type,long>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+        return 0;
+    }
+} // namespace test
 
-BOOST_PARAMETER_FUNCTION((int), g, tag,
-    (required
-       (x, (count_instances))
-    )
-)
-{
-    BOOST_MPL_ASSERT((boost::is_same<x_type,count_instances>));
-    assert(count_instances::count > 0);
-    return 0;
-}
+#include <boost/core/lightweight_test.hpp>
 
-BOOST_PARAMETER_FUNCTION((int), h, tag,
-    (required
-       (x, (count_instances const&))
+namespace test {
+
+    BOOST_PARAMETER_FUNCTION((int), g, tag,
+        (required
+            (x, (test::count_instances))
+        )
     )
-)
-{
-    BOOST_MPL_ASSERT((boost::is_same<x_type,count_instances const>));
-    assert(count_instances::count == 1);
-    return 0;
-}
+    {
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                boost::is_convertible<x_type,test::count_instances>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+        x.noop();
+        BOOST_TEST_LT(0, test::count_instances::count);
+        return 0;
+    }
+
+    BOOST_PARAMETER_FUNCTION((int), h, tag,
+        (required
+            (x, (test::count_instances const&))
+        )
+    )
+    {
+        BOOST_MPL_ASSERT((
+            typename boost::mpl::if_<
+                boost::is_convertible<x_type,test::count_instances const>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >::type
+        ));
+        x.noop();
+        BOOST_TEST_EQ(1, test::count_instances::count);
+        return 0;
+    }
+} // namespace test
 
 int main()
 {
-    f(1, 2);
-    f(1., 2.f);
-    f(1U, 2L);
-
-    g(0);
-
-    h(0);
+    test::f(1, 2);
+    test::f(1., 2.f);
+    test::f(1U);
+    test::g(0);
+    test::h(0);
+    return boost::report_errors();
 }
 
