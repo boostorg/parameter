@@ -161,11 +161,6 @@ namespace test {
             return test::rvalue_const_bitset<N>();
         }
     };
-} // namespace test
-
-#include <boost/parameter/config.hpp>
-
-namespace test {
 
     template <typename T>
     struct A
@@ -180,7 +175,6 @@ namespace test {
             return test::passed_by_lvalue_reference;
         }
 
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         static test::invoked evaluate_category(T const&&)
         {
             return test::passed_by_rvalue_reference_to_const;
@@ -190,7 +184,6 @@ namespace test {
         {
             return test::passed_by_rvalue_reference;
         }
-#endif
     };
 
     struct U
@@ -207,7 +200,6 @@ namespace test {
             return test::passed_by_lvalue_reference;
         }
 
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         template <std::size_t N>
         static test::invoked evaluate_category(std::bitset<N + 1> const&&)
         {
@@ -219,11 +211,11 @@ namespace test {
         {
             return test::passed_by_rvalue_reference;
         }
-#endif
     };
 } // namespace test
 
 #include <boost/parameter/value_type.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>

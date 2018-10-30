@@ -14,11 +14,7 @@ namespace param {
     BOOST_PARAMETER_NAME(a3)
     BOOST_PARAMETER_NAME(in(lrc))
     BOOST_PARAMETER_NAME(out(lr))
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     BOOST_PARAMETER_NAME(consume(rr))
-#else
-    BOOST_PARAMETER_NAME(rr)
-#endif
 }
 
 #include <boost/config.hpp>
@@ -131,52 +127,17 @@ namespace test {
 
 #include <boost/core/lightweight_test.hpp>
 
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#include <boost/move/move.hpp>
-#endif
-
 int main()
 {
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
-    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
-    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
-    // MSVC 11.0 on AppVeyor fails without this workaround.
-    test::A a((
-        param::_a0 = 1
-      , param::_a1 = 13
-      , param::_a2 = std::function<double()>(test::D)
-    ));
-#else
     test::A a((param::_a0 = 1, param::_a1 = 13, param::_a2 = test::D));
-#endif
     BOOST_TEST_EQ(1, a.i);
     BOOST_TEST_EQ(13, a.j);
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
-    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
-    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
-    // MSVC 11.0 on AppVeyor fails without this workaround.
-    test::B b0((
-        param::_a1 = 13
-      , param::_a2 = std::function<float()>(test::F)
-    ));
-#else
     test::B b0((param::_a1 = 13, param::_a2 = test::F));
-#endif
     BOOST_TEST_EQ(1, b0.i);
     BOOST_TEST_EQ(13, b0.j);
     BOOST_TEST_EQ(4.0f, b0.k());
     BOOST_TEST_EQ(2.5, b0.l());
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
-    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
-    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
-    // MSVC 11.0 on AppVeyor fails without this workaround.
-    test::B b1((
-        param::_a3 = std::function<double()>(test::D)
-      , param::_a1 = 13
-    ));
-#else
     test::B b1((param::_a3 = test::D, param::_a1 = 13));
-#endif
     BOOST_TEST_EQ(1, b1.i);
     BOOST_TEST_EQ(13, b1.j);
     BOOST_TEST_EQ(4.625f, b1.k());

@@ -3,18 +3,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/config.hpp>
-
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#if (BOOST_PARAMETER_MAX_ARITY < 10)
-#error Define BOOST_PARAMETER_MAX_ARITY as 10 or greater.
-#endif
-#if (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 11)
-#error Define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY \
-as 11 or greater.
-#endif
-#endif
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -22,7 +10,7 @@ namespace test {
     BOOST_PARAMETER_NAME(in(lrc0))
     BOOST_PARAMETER_NAME(out(lr0))
     BOOST_PARAMETER_NAME(in(rrc0))
-    BOOST_PARAMETER_NAME(rr0)
+    BOOST_PARAMETER_NAME(consume(rr0))
     BOOST_PARAMETER_NAME(in(lrc1))
     BOOST_PARAMETER_NAME(out(lr1))
     BOOST_PARAMETER_NAME(in(rrc1))
@@ -85,7 +73,6 @@ namespace test {
                     p[test::_lr2 || test::lvalue_bitset_function<2>()]
                 )
             );
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference_to_const
               , U::evaluate_category<0>(p[test::_rrc0])
@@ -104,26 +91,6 @@ namespace test {
                     p[test::_rr2 || test::rvalue_bitset_function<2>()]
                 )
             );
-#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<0>(p[test::_rrc0])
-            );
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<0>(p[test::_rr0])
-            );
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<1>(p[test::_rrc1])
-            );
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<2>(
-                    p[test::_rr2 || test::rvalue_bitset_function<2>()]
-                )
-            );
-#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
             return 0;
         }

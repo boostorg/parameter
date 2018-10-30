@@ -7,12 +7,10 @@
 #ifndef BOOST_PARAMETER_AUX_TAG_DWA2005610_HPP
 #define BOOST_PARAMETER_AUX_TAG_DWA2005610_HPP
 
+#include <boost/parameter/config.hpp>
 #include <boost/parameter/aux_/unwrap_cv_reference.hpp>
 #include <boost/parameter/aux_/tagged_argument.hpp>
-#include <boost/parameter/config.hpp>
 #include <boost/mpl/bool.hpp>
-
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
@@ -20,7 +18,6 @@
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/is_lvalue_reference.hpp>
 #include <boost/type_traits/remove_const.hpp>
-#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 namespace boost { namespace parameter { namespace aux { 
 
@@ -34,8 +31,7 @@ namespace boost { namespace parameter { namespace aux {
     >
     struct tag
     {
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) || \
-    !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         typedef ::boost::parameter::aux::tagged_argument<
             Keyword
           , typename ::boost::parameter::aux
@@ -62,7 +58,7 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
             >
         >::type type;
-#endif  // Borland/forwarding workarounds needed.
+#endif  // Borland workarounds needed.
     };
 }}} // namespace boost::parameter::aux_
 
@@ -74,7 +70,6 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Keyword, typename ActualArg>
     struct tag<Keyword,ActualArg,::boost::mpl::false_>
     {
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         typedef typename ::boost::remove_reference<ActualArg>::type Arg;
         typedef typename ::boost::add_const<Arg>::type ConstArg;
         typedef typename ::boost::remove_const<Arg>::type MutArg;
@@ -89,12 +84,6 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
             >
         >::type type;
-#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-        typedef ::boost::parameter::aux::tagged_argument<
-            Keyword
-          , typename ::boost::remove_reference<ActualArg>::type
-        > type;
-#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
     };
 }}} // namespace boost::parameter::aux_
 

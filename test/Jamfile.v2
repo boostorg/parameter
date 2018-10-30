@@ -18,118 +18,12 @@ import python ;
 
 alias parameter_standard_tests
     :
-    [ run maybe.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run maybe.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            maybe_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run singular.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run singular.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            singular_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run tutorial.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run tutorial.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            tutorial_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run compose.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run compose.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            compose_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run sfinae.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run sfinae.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            sfinae_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run optional_deduced_sfinae.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run optional_deduced_sfinae.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            opt_ded_sfinae_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
+    [ run maybe.cpp : : : : : <preserve-target-tests>off ]
+    [ run singular.cpp : : : : : <preserve-target-tests>off ]
+    [ run tutorial.cpp : : : : : <preserve-target-tests>off ]
+    [ run compose.cpp : : : : : <preserve-target-tests>off ]
+    [ run sfinae.cpp : : : : : <preserve-target-tests>off ]
+    [ run optional_deduced_sfinae.cpp : : : : : <preserve-target-tests>off ]
     [ run efficiency.cpp
         :
         :
@@ -139,88 +33,12 @@ alias parameter_standard_tests
             <variant>release
             <preserve-target-tests>off
     ]
-    [ run efficiency.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            efficiency_no_perfect_fwd
-        :
-            <variant>release
-            <preserve-target-tests>off
-    ]
-    [ run evaluate_category.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run evaluate_category.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            eval_cat_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run evaluate_category_16.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=16
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run evaluate_category_16.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=16
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            eval_cat_16_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
+    [ run evaluate_category.cpp : : : : : <preserve-target-tests>off ]
+    [ run evaluate_category_16.cpp : : : : : <preserve-target-tests>off ]
     [ run preprocessor_eval_category.cpp
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run preprocessor_eval_category.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            preproc_eval_cat_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run normalized_argument_types.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
         :
         :
             <preserve-target-tests>off
@@ -229,205 +47,32 @@ alias parameter_standard_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            norm_arg_types_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run basics.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
         :
         :
             <preserve-target-tests>off
     ]
-    [ run basics.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            basics_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run mpl.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run mpl.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            mpl_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run earwicker.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run earwicker.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            earwicker_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run macros.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run macros.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            macros_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run preprocessor.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run preprocessor.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            preproc_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run preprocessor_deduced.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run preprocessor_deduced.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            preproc_ded_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run deduced.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run deduced.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            deduced_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
+    [ run basics.cpp : : : : : <preserve-target-tests>off ]
+    [ run mpl.cpp : : : : : <preserve-target-tests>off ]
+    [ run earwicker.cpp : : : : : <preserve-target-tests>off ]
+    [ run macros.cpp : : : : : <preserve-target-tests>off ]
+    [ run preprocessor.cpp : : : : : <preserve-target-tests>off ]
+    [ run preprocessor_deduced.cpp : : : : : <preserve-target-tests>off ]
+    [ run deduced.cpp : : : : : <preserve-target-tests>off ]
     [ run deduced_dependent_predicate.cpp
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
         :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run deduced_dependent_predicate.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ded_dep_pred_no_perfect_fwd
         :
             <preserve-target-tests>off
     ]
     [ compile unwrap_cv_reference.cpp ]
-    [ compile unwrap_cv_reference.cpp
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            unwrap_cv_ref_no_perfect_fwd
-    ]
-    [ compile ntp.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-    ]
-    [ compile ntp.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ntp_no_perfect_fwd
-    ]
+    [ compile ntp.cpp ]
     [ compile function_type_tpl_param.cpp ]
-    [ compile-fail duplicates.cpp
-        :
-        :
-            duplicates_fail
-    ]
-    [ compile-fail deduced_unmatched_arg.cpp
-        :
-        :
-            deduced_unmatched_arg_fail
-    ]
+    [ compile-fail duplicates.cpp : : duplicates_fail ]
+    [ compile-fail deduced_unmatched_arg.cpp : : deduced_unmatched_arg_fail ]
     [ compile-fail basics.cpp
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         :
             basics_fail
@@ -446,8 +91,6 @@ alias parameter_standard_tests
     ]
     [ compile-fail evaluate_category.cpp
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         :
             evaluate_category_fail
@@ -470,16 +113,6 @@ alias parameter_literate_tests
         :
             <preserve-target-tests>off
     ]
-    [ run literate/extracting-parameter-types0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ept0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
     [ run literate/extracting-parameter-types1.cpp
         :
         :
@@ -488,61 +121,11 @@ alias parameter_literate_tests
         :
             <preserve-target-tests>off
     ]
-    [ run literate/extracting-parameter-types1.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ept1-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/top-level0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=3
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/top-level0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=3
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            tl0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
+    [ run literate/top-level0.cpp : : : : : <preserve-target-tests>off ]
     [ run literate/predicate-requirements0.cpp
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/predicate-requirements0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            pr0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/building-argumentpacks0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
         :
         :
             <preserve-target-tests>off
@@ -551,10 +134,7 @@ alias parameter_literate_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         :
-            barg0-no_perf_fwd
         :
             <preserve-target-tests>off
     ]
@@ -566,16 +146,6 @@ alias parameter_literate_tests
         :
             <preserve-target-tests>off
     ]
-    [ run literate/lazy-default-computation0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ldc0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
     [ run literate/lazy-default-computation1.cpp
         :
         :
@@ -584,121 +154,14 @@ alias parameter_literate_tests
         :
             <preserve-target-tests>off
     ]
-    [ run literate/lazy-default-computation1.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ldc1-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ns0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces1.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces1.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ns1-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces2.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces2.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ns2-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces3.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/namespaces3.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            ns3-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
+    [ run literate/namespaces0.cpp : : : : : <preserve-target-tests>off ]
+    [ run literate/namespaces1.cpp : : : : : <preserve-target-tests>off ]
+    [ run literate/namespaces2.cpp : : : : : <preserve-target-tests>off ]
+    [ run literate/namespaces3.cpp : : : : : <preserve-target-tests>off ]
     [ run literate/parameter-enabled-constructors0.cpp
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/parameter-enabled-constructors0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            pec0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/deduced-template-parameters0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
         :
         :
             <preserve-target-tests>off
@@ -707,18 +170,6 @@ alias parameter_literate_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            dtp0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/deduced-parameters0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -727,18 +178,6 @@ alias parameter_literate_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            dp0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/default-expression-evaluation0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -747,18 +186,6 @@ alias parameter_literate_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            dee0-no_perf_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    [ run literate/fine-grained-name-control0.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
         :
         :
             <preserve-target-tests>off
@@ -767,141 +194,24 @@ alias parameter_literate_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
         :
-            fgnc0-no_perf_fwd
         :
             <preserve-target-tests>off
     ]
     [ compile literate/template-keywords0.cpp ]
-    [ compile literate/template-keywords0.cpp
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            tk0-no_perf_fwd
-    ]
     [ compile literate/template-keywords1.cpp ]
-    [ compile literate/template-keywords1.cpp
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            tk1-no_perf_fwd
-    ]
     [ compile literate/headers-and-namespaces0.cpp ]
-    [ compile literate/handling-out-parameters0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-    ]
-    [ compile literate/handling-out-parameters0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            hop0-no_perf_fwd
-    ]
-    [ compile literate/writing-the-function0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-    ]
-    [ compile literate/writing-the-function0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            wtf0-no_perf_fwd
-    ]
+    [ compile literate/handling-out-parameters0.cpp ]
+    [ compile literate/writing-the-function0.cpp ]
     [ compile literate/defining-the-keywords0.cpp ]
-    [ compile literate/defining-the-keywords0.cpp
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            dtk0-no_perf_fwd
-    ]
     [ compile literate/defining-the-keywords1.cpp ]
-    [ compile literate/defining-the-keywords1.cpp
-        :
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            dtk1-no_perf_fwd
-    ]
-    [ compile literate/exercising-the-code-so-far0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-    ]
-    [ compile literate/exercising-the-code-so-far0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            etcsf0-no_perf_fwd
-    ]
-    [ compile literate/optional-parameters0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-    ]
-    [ compile literate/optional-parameters0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=5
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            op0-no_perf_fwd
-    ]
-    [ compile literate/static-member-functions0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-    ]
-    [ compile literate/static-member-functions0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            smf0-no_perf_fwd
-    ]
-    [ compile literate/required-parameters0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-    ]
-    [ compile literate/required-parameters0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            rp0-no_perf_fwd
-    ]
-    [ compile literate/class-template-skeleton0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-    ]
-    [ compile literate/class-template-skeleton0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            cts0-no_perf_fwd
-    ]
-    [ compile literate/parameter-enabled-member-functions0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-    ]
-    [ compile literate/parameter-enabled-member-functions0.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            pemf0-no_perf_fwd
-    ]
-    [ compile literate/parameter-enabled-member-functions1.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-    ]
-    [ compile literate/parameter-enabled-member-functions1.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=2
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            pemf1-no_perf_fwd
-    ]
+    [ compile literate/exercising-the-code-so-far0.cpp ]
+    [ compile literate/optional-parameters0.cpp ]
+    [ compile literate/static-member-functions0.cpp ]
+    [ compile literate/required-parameters0.cpp ]
+    [ compile literate/class-template-skeleton0.cpp ]
+    [ compile literate/parameter-enabled-member-functions0.cpp ]
+    [ compile literate/parameter-enabled-member-functions1.cpp ]
     ;
 
 alias parameter_python_test
@@ -909,229 +219,95 @@ alias parameter_python_test
     [ bpl-test python_test ]
     ;
 
-alias parameter_macros_eval_cat_0
+alias parameter_macros_eval_category
     :
-    [ run macros_eval_category.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=10
-        :
-        :
-            <preserve-target-tests>off
-    ]
+    [ run macros_eval_category.cpp : : : : : <preserve-target-tests>off ]
     ;
 
-alias parameter_macros_eval_cat_1
+alias parameter_evaluate_category_10
     :
-    [ run macros_eval_category.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=10
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            macros_eval_cat_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
+    [ run evaluate_category_10.cpp : : : : : <preserve-target-tests>off ]
     ;
 
-alias parameter_eval_cat_10_0
+alias parameter_preprocessor_eval_cat_8
     :
-    [ run evaluate_category_10.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=10
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=11
-        :
-        :
-            <preserve-target-tests>off
-    ]
+    [ run preprocessor_eval_cat_8.cpp : : : : : <preserve-target-tests>off ]
     ;
 
-alias parameter_eval_cat_10_1
-    :
-    [ run evaluate_category_10.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=10
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=11
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            eval_cat_10_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    ;
-
-alias parameter_preproc_eval_cat_0
-    :
-    [ run preprocessor_eval_cat_8.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=8
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    ;
-
-alias parameter_preproc_eval_cat_1
-    :
-    [ run preprocessor_eval_cat_8.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=8
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
-            <define>BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING
-        :
-            preproc_eval_cat_8_no_perfect_fwd
-        :
-            <preserve-target-tests>off
-    ]
-    ;
-
-alias parameter_preproc_eval_cat_fail
+alias parameter_preprocessor_eval_cat_fail
     :
     [ compile-fail preprocessor_eval_category.cpp
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=8
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         :
             preproc_eval_cat_fail
     ]
     ;
 
-alias parameter_0000011_stress_tests
+alias parameter_0011_stress_tests
     :
-        parameter_preproc_eval_cat_1
-        parameter_preproc_eval_cat_fail
+        parameter_preprocessor_eval_cat_8
+        parameter_preprocessor_eval_cat_fail
     ;
 
-alias parameter_0000111_stress_tests
+alias parameter_0101_stress_tests
     :
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_preproc_eval_cat_fail
+        parameter_evaluate_category_10
+        parameter_preprocessor_eval_cat_fail
     ;
 
-alias parameter_0001111_stress_tests
+alias parameter_0110_stress_tests
     :
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_preproc_eval_cat_fail
+        parameter_evaluate_category_10
+        parameter_preprocessor_eval_cat_8
     ;
 
-alias parameter_0011111_stress_tests
+alias parameter_0111_stress_tests
     :
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_preproc_eval_cat_fail
+        parameter_0110_stress_tests
+        parameter_preprocessor_eval_cat_fail
     ;
 
-alias parameter_0101111_stress_tests
+alias parameter_1001_stress_tests
     :
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_preproc_eval_cat_fail
+        parameter_macros_eval_category
+        parameter_preprocessor_eval_cat_fail
     ;
 
-alias parameter_0111110_stress_tests
+alias parameter_1010_stress_tests
     :
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
+        parameter_macros_eval_category
+        parameter_preprocessor_eval_cat_8
     ;
 
-alias parameter_0111111_stress_tests
+alias parameter_1011_stress_tests
     :
-        parameter_0111110_stress_tests
-        parameter_preproc_eval_cat_fail
+        parameter_1010_stress_tests
+        parameter_preprocessor_eval_cat_fail
     ;
 
-alias parameter_1001111_stress_tests
+alias parameter_1100_stress_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-        parameter_preproc_eval_cat_fail
+        parameter_macros_eval_category
+        parameter_evaluate_category_10
     ;
 
-alias parameter_1010101_stress_tests
+alias parameter_1101_stress_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_eval_cat_10_0
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_fail
+        parameter_1100_stress_tests
+        parameter_preprocessor_eval_cat_fail
     ;
 
-alias parameter_1010110_stress_tests
+alias parameter_1110_stress_tests
     :
-        parameter_macros_eval_cat_0
-        parameter_eval_cat_10_0
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-    ;
-
-alias parameter_1010111_stress_tests
-    :
-        parameter_1010110_stress_tests
-        parameter_preproc_eval_cat_fail
-    ;
-
-alias parameter_1011101_stress_tests
-    :
-        parameter_macros_eval_cat_0
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_fail
-    ;
-
-alias parameter_1011110_stress_tests
-    :
-        parameter_macros_eval_cat_0
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
-    ;
-
-alias parameter_1011111_stress_tests
-    :
-        parameter_1011110_stress_tests
-        parameter_preproc_eval_cat_fail
-    ;
-
-alias parameter_1111110_stress_tests
-    :
-        parameter_macros_eval_cat_0
-        parameter_macros_eval_cat_1
-        parameter_eval_cat_10_0
-        parameter_eval_cat_10_1
-        parameter_preproc_eval_cat_0
-        parameter_preproc_eval_cat_1
+        parameter_1100_stress_tests
+        parameter_preprocessor_eval_cat_8
     ;
 
 alias parameter_all_stress_tests
     :
-        parameter_1111110_stress_tests
-        parameter_preproc_eval_cat_fail
+        parameter_1110_stress_tests
+        parameter_preprocessor_eval_cat_fail
     ;
 
 alias parameter_sl_tests
@@ -1154,7 +330,7 @@ alias parameter_slp_tests
 
 alias parameter_all_but_preproc_eval_cat_fail_tests
     :
-        parameter_1111110_stress_tests
+        parameter_1110_stress_tests
         parameter_slp_tests
     ;
 
@@ -1170,51 +346,31 @@ alias parameter_all_tests
         parameter_slp_tests
     ;
 
-alias parameter_msvc11_fail_tests
-    :
-    [ compile-fail compose.cpp
-        :
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
-        :
-            compose_msvc11_fail
-    ]
-    ;
-
-alias parameter_msvc11_tests
-    :
-        parameter_all_tests
-        parameter_msvc11_fail_tests
-    ;
-
-alias parameter_msvc14_fail_tests
+alias parameter_msvc_fail_tests
     :
     [ compile-fail evaluate_category.cpp
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC14_1
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            evaluate_category_msvc14_fail
+            evaluate_category_msvc_fail
     ]
     [ compile-fail preprocessor_eval_category.cpp
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=8
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC14_1
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            preproc_eval_cat_msvc14_fail
+            preproc_eval_cat_msvc_fail
     ]
     ;
 
-alias parameter_msvc14_no_python_tests
+alias parameter_msvc_no_python_tests
     :
         parameter_all_but_python_tests
-        parameter_msvc14_fail_tests
+        parameter_msvc_fail_tests
     ;
 
-alias parameter_msvc14_tests
+alias parameter_msvc_tests
     :
         parameter_all_tests
-        parameter_msvc14_fail_tests
+        parameter_msvc_fail_tests
     ;
 
