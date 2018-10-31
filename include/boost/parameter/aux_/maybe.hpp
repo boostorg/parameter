@@ -43,8 +43,6 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <boost/parameter/aux_/is_maybe.hpp>
 #include <boost/optional/optional.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/mpl/identity.hpp>
 #include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/type_traits/remove_cv.hpp>
 
