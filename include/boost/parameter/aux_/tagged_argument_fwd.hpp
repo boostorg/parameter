@@ -9,7 +9,7 @@
 namespace boost { namespace parameter { namespace aux {
 
     template <class Keyword, class Arg>
-    class tagged_argument;
+    struct tagged_argument;
 }}} // namespace boost::parameter::aux
 
 #endif  // include guard
