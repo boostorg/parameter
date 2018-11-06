@@ -7,7 +7,7 @@
 #ifndef BOOST_PARAMETER_CONFIG_050403_HPP
 #define BOOST_PARAMETER_CONFIG_050403_HPP
 
-#include <boost/move/detail/workaround.hpp>
+#include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 
 // Require correct SFINAE support, needed explicitly by tagged_argument &
@@ -19,8 +19,9 @@
 // -- Cromwell D. Enage
 #if defined(BOOST_NO_SFINAE) || \
     defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) || \
-    BOOST_WORKAROUND(BOOST_GCC, < 40900) || \
-    !defined(BOOST_MOVE_PERFECT_FORWARDING)
+    defined(BOOST_NO_CXX11_RVALUE_REFERENCES) || \
+    defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) || \
+    BOOST_WORKAROUND(BOOST_GCC, < 40900)
 #error Your compiler does not support perfect forwarding.
 #endif
 
