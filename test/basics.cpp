@@ -40,6 +40,13 @@ namespace test {
         return 1;
     }
 
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+    template <typename ...Args>
+    int f(Args const&... args)
+    {
+        return test::f_impl(test::f_parameters()(args...));
+    }
+#else
     template <typename A0, typename A1, typename A2, typename A3>
     int f(A0 const& a0, A1 const& a1, A2 const& a2, A3 const& a3)
     {
@@ -57,6 +64,7 @@ namespace test {
     {
         return test::f_impl(test::f_parameters()(a0, a1));
     }
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
     template <typename Params>
     int f_list(Params const& params)
@@ -65,7 +73,7 @@ namespace test {
     }
 }
 
-#include <boost/ref.hpp>
+#include <boost/core/ref.hpp>
 #include <boost/config/workaround.hpp>
 #include <string>
 

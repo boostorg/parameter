@@ -6,7 +6,7 @@
 
 # Boost Parameter Library test Jamfile
 
-import python ;
+import testing ;
 
 project boost/parameter
     :
@@ -14,42 +14,14 @@ project boost/parameter
         <warnings>off
     ;
 
-build-project literate ;
+import python ;
 
 alias parameter_standard_tests
     :
-    [ run maybe.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run singular.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run tutorial.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run compose.cpp
-        :
-        :
-        :
-        :
-        :
-            <preserve-target-tests>off
-    ]
+    [ run maybe.cpp : : : : : <preserve-target-tests>off ]
+    [ run singular.cpp : : : : : <preserve-target-tests>off ]
+    [ run tutorial.cpp : : : : : <preserve-target-tests>off ]
+    [ run compose.cpp : : : : : <preserve-target-tests>off ]
     [ run sfinae.cpp
         :
         :
@@ -75,6 +47,36 @@ alias parameter_standard_tests
         :
         :
             <variant>release
+            <preserve-target-tests>off
+    ]
+    [ run evaluate_category.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run evaluate_category_16.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=16
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run preprocessor_eval_category.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
+        :
+        :
             <preserve-target-tests>off
     ]
     [ run normalized_argument_types.cpp
@@ -187,6 +189,20 @@ alias parameter_standard_tests
         :
             compose_fail_0
     ]
+    [ compile-fail compose.cpp
+        :
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_1
+        :
+            compose_fail_1
+    ]
+    [ compile-fail evaluate_category.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        :
+            evaluate_category_fail
+    ]
     [ compile-fail deduced.cpp
         :
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
@@ -195,20 +211,305 @@ alias parameter_standard_tests
     ]
     ;
 
+alias parameter_literate_tests
+    :
+    [ run literate/extracting-parameter-types0.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/extracting-parameter-types1.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/top-level0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=3
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/predicate-requirements0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=5
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/building-argumentpacks0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/lazy-default-computation0.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/lazy-default-computation1.cpp
+        :
+        :
+        :
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/namespaces0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/namespaces1.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/namespaces2.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/namespaces3.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/parameter-enabled-constructors0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/deduced-template-parameters0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/deduced-parameters0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=5
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/default-expression-evaluation0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=5
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ run literate/fine-grained-name-control0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    [ compile literate/template-keywords0.cpp ]
+    [ compile literate/template-keywords1.cpp ]
+    [ compile literate/headers-and-namespaces0.cpp ]
+    [ compile literate/handling-out-parameters0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=5
+    ]
+    [ compile literate/writing-the-function0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=5
+    ]
+    [ compile literate/defining-the-keywords0.cpp ]
+    [ compile literate/defining-the-keywords1.cpp ]
+    [ compile literate/exercising-the-code-so-far0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+    ]
+    [ compile literate/optional-parameters0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=5
+    ]
+    [ compile literate/static-member-functions0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+    ]
+    [ compile literate/required-parameters0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+    ]
+    [ compile literate/class-template-skeleton0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+    ]
+    [ compile literate/parameter-enabled-member-functions0.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+    ]
+    [ compile literate/parameter-enabled-member-functions1.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+    ]
+    ;
+
 alias parameter_python_test
     :
     [ bpl-test python_test ]
     ;
 
+alias parameter_macros_eval_category
+    :
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=11
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    ;
+
+alias parameter_macros_eval_category_cxx03
+    :
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    ;
+
+alias parameter_evaluate_category_10
+    :
+    [ run evaluate_category_10.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=11
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    ;
+
+alias parameter_evaluate_category_10_cxx03
+    :
+    [ run evaluate_category_10.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    ;
+
+alias parameter_preprocessor_eval_cat_8
+    :
+    [ run preprocessor_eval_cat_8.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
+        :
+        :
+            <preserve-target-tests>off
+    ]
+    ;
+
+alias parameter_preprocessor_eval_cat_fail
+    :
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        :
+            preproc_eval_cat_fail
+    ]
+    ;
+
+alias parameter_all_stress_tests
+    :
+        parameter_macros_eval_category
+        parameter_evaluate_category_10
+        parameter_preprocessor_eval_cat_8
+        parameter_preprocessor_eval_cat_fail
+    ;
+
+alias parameter_all_stress_tests_except_preproc_eval_cat_8
+    :
+        parameter_macros_eval_category_cxx03
+        parameter_evaluate_category_10_cxx03
+        parameter_preprocessor_eval_cat_fail
+    ;
+
+alias parameter_all_stress_tests_cxx03
+    :
+        parameter_macros_eval_category_cxx03
+        parameter_evaluate_category_10_cxx03
+        parameter_preprocessor_eval_cat_8
+        parameter_preprocessor_eval_cat_fail
+    ;
+
 alias parameter_sl_tests
     :
         parameter_standard_tests
-    ;
-
-alias parameter_sp_tests
-    :
-        parameter_standard_tests
-        parameter_python_test
+        parameter_literate_tests
     ;
 
 alias parameter_slp_tests
@@ -219,25 +520,67 @@ alias parameter_slp_tests
 
 alias parameter_all_but_python_tests
     :
+        parameter_all_stress_tests
         parameter_sl_tests
     ;
 
 alias parameter_all_tests
     :
+        parameter_all_stress_tests
         parameter_slp_tests
+    ;
+
+alias parameter_all_tests_except_preproc_eval_cat_8
+    :
+        parameter_all_stress_tests_except_preproc_eval_cat_8
+        parameter_slp_tests
+    ;
+
+alias parameter_all_tests_cxx03
+    :
+        parameter_all_stress_tests_cxx03
+        parameter_slp_tests
+    ;
+
+alias parameter_msvc_fail_tests
+    :
+    [ compile-fail evaluate_category.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            evaluate_category_msvc_fail
+    ]
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            preproc_eval_cat_msvc_fail
+    ]
+    ;
+
+alias parameter_msvc_no_python_tests
+    :
+        parameter_all_but_python_tests
+        parameter_msvc_fail_tests
+    ;
+
+alias parameter_msvc_tests
+    :
+        parameter_all_tests
+        parameter_msvc_fail_tests
     ;
 
 alias parameter_msvc11_fail_tests
     :
-    [ run-fail compose.cpp
+    [ compile-fail compose.cpp
         :
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-        :
-            <define>LIBS_PARAMETER_TEST_RUN_FAILURE_MSVC
-        :
-            compose_fail_msvc11
-        :
-            <preserve-target-tests>off
+            compose_msvc11_fail
     ]
     ;
 
@@ -245,15 +588,5 @@ alias parameter_msvc11_tests
     :
         parameter_all_tests
         parameter_msvc11_fail_tests
-    ;
-
-alias parameter_msvc14_no_python_tests
-    :
-        parameter_all_but_python_tests
-    ;
-
-alias parameter_msvc14_tests
-    :
-        parameter_all_tests
     ;
 

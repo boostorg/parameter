@@ -6,13 +6,13 @@
 // This file generates overloads in this format:
 //
 //     template <typename A0, typename A1>
-//     typename boost::mpl::apply_wrap1<
-//         boost::parameter::aux::make_arg_list<
+//     typename ::boost::mpl::apply_wrap1<
+//         ::boost::parameter::aux::make_arg_list<
 //             PS0,A0
-//           , boost::parameter::aux::make_arg_list<
+//           , ::boost::parameter::aux::make_arg_list<
 //                 PS1,A1
-//               , boost::mpl::identity<
-//                     boost::parameter::aux::empty_arg_list
+//               , ::boost::mpl::identity<
+//                     ::boost::parameter::aux::empty_arg_list
 //                 >
 //             >
 //         >
@@ -20,13 +20,13 @@
 //     >::type
 //     operator()(A0 const& a0, A1 const& a1) const
 //     {
-//         typedef typename boost::mpl::apply_wrap1<
-//             boost::parameter::aux::make_arg_list<
+//         typedef typename ::boost::mpl::apply_wrap1<
+//             ::boost::parameter::aux::make_arg_list<
 //                 PS0,A0
-//               , boost::parameter::aux::make_arg_list<
+//               , ::boost::parameter::aux::make_arg_list<
 //                     PS1,A1
-//                   , boost::mpl::identity<
-//                         boost::parameter::aux::empty_arg_list
+//                   , ::boost::mpl::identity<
+//                         ::boost::parameter::aux::empty_arg_list
 //                     >
 //                 >
 //             >
@@ -35,7 +35,7 @@
 //         return arg_tuple(
 //             a0
 //           , a1
-//           , boost::parameter::aux::void_()
+//           , ::boost::parameter::aux::void_()
 //             ...
 //         );
 //     }

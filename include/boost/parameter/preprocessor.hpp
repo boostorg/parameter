@@ -65,7 +65,8 @@
 // accessible via args and keywords only.
 #define BOOST_PARAMETER_CONSTRUCTOR(class_, base, tag_namespace, args)       \
     BOOST_PARAMETER_CONSTRUCTOR_AUX(                                         \
-        class_, base, tag_namespace, BOOST_PARAMETER_FLATTEN(2, 2, 3, args)  \
+        class_, base, tag_namespace                                          \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args)                        \
     )
 /**/
 
@@ -73,7 +74,8 @@
 // accessible via args and keywords only.
 #define BOOST_PARAMETER_BASIC_FUNCTION(result, name, tag_namespace, args)    \
     BOOST_PARAMETER_BASIC_FUNCTION_AUX(                                      \
-        result, name, tag_namespace, BOOST_PARAMETER_FLATTEN(2, 2, 3, args)  \
+        result, name, tag_namespace                                          \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args)                        \
     )
 /**/
 
@@ -81,7 +83,8 @@
 // are accessible via args and keywords only.
 #define BOOST_PARAMETER_BASIC_MEMBER_FUNCTION(result, name, tag_ns, args)    \
     BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(                               \
-        result, name, tag_ns, BOOST_PARAMETER_FLATTEN(2, 2, 3, args), 0      \
+        result, name, tag_ns                                                 \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args), 0                     \
     )
 /**/
 
@@ -89,7 +92,8 @@
 // header.  All arguments are accessible via args and keywords only.
 #define BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION(r, name, tag_ns, args)   \
     BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(                               \
-        r, name, tag_ns, BOOST_PARAMETER_FLATTEN(2, 2, 3, args), 1           \
+        r, name, tag_ns                                                      \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args), 1                     \
     )
 /**/
 
@@ -109,12 +113,15 @@
 // accessible via args and keywords, as well as by name.
 #define BOOST_PARAMETER_FUNCTION(result, name, tag_namespace, args)          \
     BOOST_PARAMETER_FUNCTION_AUX(                                            \
-        result, name, tag_namespace, BOOST_PARAMETER_FLATTEN(3, 2, 3, args)  \
+        result, name, tag_namespace                                          \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(3, 2, 3, args)                        \
     )
 /**/
 
-// Helper macro for BOOST_PARAMETER_MEMBER_FUNCTION and
-// BOOST_PARAMETER_CONST_MEMBER_FUNCTION.
+// Helper macro for BOOST_PARAMETER_MEMBER_FUNCTION
+// BOOST_PARAMETER_CONST_MEMBER_FUNCTION,
+// BOOST_PARAMETER_FUNCTION_CALL_OPERATOR, and
+// BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR.
 #define BOOST_PARAMETER_MEMBER_FUNCTION_AUX(r, name, impl, tag_ns, c, args)  \
     BOOST_PARAMETER_FUNCTION_HEAD(r, impl, tag_ns, args)                     \
     BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, args, c)          \
@@ -128,7 +135,7 @@
 #define BOOST_PARAMETER_MEMBER_FUNCTION(result, name, tag_ns, args)          \
     BOOST_PARAMETER_MEMBER_FUNCTION_AUX(                                     \
         result, name, name, tag_ns, 0                                        \
-      , BOOST_PARAMETER_FLATTEN(3, 2, 3, args)                               \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(3, 2, 3, args)                        \
     )
 /**/
 
@@ -138,7 +145,7 @@
 #define BOOST_PARAMETER_CONST_MEMBER_FUNCTION(result, name, tag_ns, args)    \
     BOOST_PARAMETER_MEMBER_FUNCTION_AUX(                                     \
         result, name, name, tag_ns, 1                                        \
-      , BOOST_PARAMETER_FLATTEN(3, 2, 3, args)                               \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(3, 2, 3, args)                        \
     )
 /**/
 
@@ -147,7 +154,7 @@
 #define BOOST_PARAMETER_FUNCTION_CALL_OPERATOR(result, tag_ns, args)         \
     BOOST_PARAMETER_MEMBER_FUNCTION_AUX(                                     \
         result, operator(), operator, tag_ns, 0                              \
-      , BOOST_PARAMETER_FLATTEN(3, 2, 3, args)                               \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(3, 2, 3, args)                        \
     )
 /**/
 
@@ -157,7 +164,7 @@
 #define BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR(result, tag_ns, args)   \
     BOOST_PARAMETER_MEMBER_FUNCTION_AUX(                                     \
         result, operator(), operator, tag_ns, 1                              \
-      , BOOST_PARAMETER_FLATTEN(3, 2, 3, args)                               \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(3, 2, 3, args)                        \
     )
 /**/
 
