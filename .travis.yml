@@ -56,7 +56,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: TOOLSET=gcc COMPILER=g++-4.8 CXXSTD=03 TEST_SUITE=parameter_all_tests_cxx03
+      env: TOOLSET=gcc COMPILER=g++-4.8 CXXSTD=03,11 TEST_SUITE=parameter_all_tests_except_preproc_eval_cat_8
       addons:
         apt:
           packages:
@@ -65,16 +65,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: TOOLSET=gcc COMPILER=g++-4.8 CXXSTD=11 TEST_SUITE=parameter_all_tests_except_preproc_eval_cat_8
-      addons:
-        apt:
-          packages:
-            - g++-4.8
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - os: linux
-      env: TOOLSET=gcc COMPILER=g++-4.9 CXXSTD=03,11 TEST_SUITE=parameter_all_tests
+      env: TOOLSET=gcc COMPILER=g++-4.9 CXXSTD=03,11 TEST_SUITE=parameter_all_tests_except_preproc_eval_cat_8
       addons:
         apt:
           packages:
