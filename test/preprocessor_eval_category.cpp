@@ -3,6 +3,18 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if (BOOST_PARAMETER_MAX_ARITY < 4)
+#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
+#endif
+#if (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 5)
+#error Define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY \
+as 5 or greater.
+#endif
+#endif
+
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -10,15 +22,22 @@ namespace test {
     BOOST_PARAMETER_NAME((_lrc0, kw) in(lrc0))
     BOOST_PARAMETER_NAME((_lr0, kw) in_out(lr0))
     BOOST_PARAMETER_NAME((_rrc0, kw) in(rrc0))
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     BOOST_PARAMETER_NAME((_rr0, kw) consume(rr0))
+#else
+    BOOST_PARAMETER_NAME((_rr0, kw) rr0)
+#endif
 } // namespace test
 
 #include <boost/core/lightweight_test.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
-#include <utility>
 #include "evaluate_category.hpp"
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#include <utility>
+#endif
 
 namespace test {
 
@@ -68,6 +87,7 @@ namespace test {
             >::evaluate_category(lr0)
         );
 
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         if (
             boost::is_scalar<
                 typename boost::remove_const<
@@ -152,6 +172,44 @@ namespace test {
                 >::evaluate_category(std::forward<rr0_type>(rr0))
             );
         }
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+        BOOST_TEST((
+            test::passed_by_lvalue_reference_to_const == test::A<
+                typename boost::remove_const<
+                    typename boost::parameter::value_type<
+                        Args
+                      , test::kw::rrc0
+                    >::type
+                >::type
+            >::evaluate_category(args[test::_rrc0])
+        ));
+        BOOST_TEST_EQ(
+            test::passed_by_lvalue_reference_to_const
+          , test::A<
+                typename boost::remove_const<
+                    typename boost::remove_reference<rrc0_type>::type
+                >::type
+            >::evaluate_category(rrc0)
+        );
+        BOOST_TEST((
+            test::passed_by_lvalue_reference_to_const == test::A<
+                typename boost::remove_const<
+                    typename boost::parameter::value_type<
+                        Args
+                      , test::kw::rr0
+                    >::type
+                >::type
+            >::evaluate_category(args[test::_rr0])
+        ));
+        BOOST_TEST_EQ(
+            test::passed_by_lvalue_reference_to_const
+          , test::A<
+                typename boost::remove_const<
+                    typename boost::remove_reference<rr0_type>::type
+                >::type
+            >::evaluate_category(rr0)
+        );
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
         return true;
     }
@@ -159,9 +217,12 @@ namespace test {
 
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
+
+#if !defined(BOOST_NO_SFINAE)
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_base_of.hpp>
+#endif
 
 namespace test {
 
@@ -179,6 +240,7 @@ namespace test {
         template <typename Args>
         explicit B(
             Args const& args
+#if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
                 typename boost::mpl::if_<
                     boost::is_base_of<B,Args>
@@ -186,6 +248,7 @@ namespace test {
                   , boost::mpl::false_
                 >::type
             >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif  // BOOST_NO_SFINAE
         )
         {
             test::evaluate(
@@ -283,6 +346,8 @@ namespace test {
                     >::type
                 >::evaluate_category(rrc0)
             );
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename boost::remove_const<
@@ -301,6 +366,26 @@ namespace test {
                     >::type
                 >::evaluate_category(std::forward<rr0_type>(rr0))
             );
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::kw::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::A<
+                    typename boost::remove_const<
+                        typename boost::remove_reference<rr0_type>::type
+                    >::type
+                >::evaluate_category(rr0)
+            );
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
             return true;
         }
@@ -412,13 +497,23 @@ int main()
     test::evaluate(
         "q2x"
       , baz_arr
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       , static_cast<char_arr const&&>("mos")
       , static_cast<char_arr&&>(baz_arr)
+#else
+      , "crg"
+      , "uir"
+#endif
     );
     test::evaluate(
         test::_lr0 = baz_arr
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       , test::_rrc0 = static_cast<char_arr const&&>("def")
       , test::_rr0 = static_cast<char_arr&&>(baz_arr)
+#else
+      , test::_rrc0 = "grl"
+      , test::_rr0 = "grp"
+#endif
       , test::_lrc0 = "wld"
     );
 #endif  // MSVC
@@ -437,13 +532,23 @@ int main()
     test::C cp0(
         "frd"
       , baz_arr
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       , static_cast<char_arr const&&>("dfs")
       , static_cast<char_arr&&>(baz_arr)
+#else
+      , "plg"
+      , "thd"
+#endif
     );
     test::C cp1(
         test::_lr0 = baz_arr
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       , test::_rrc0 = static_cast<char_arr const&&>("dgx")
       , test::_rr0 = static_cast<char_arr&&>(baz_arr)
+#else
+      , test::_rrc0 = "hnk"
+      , test::_rr0 = "xzz"
+#endif
       , test::_lrc0 = "zts"
     );
 #endif  // MSVC

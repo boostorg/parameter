@@ -12,30 +12,30 @@
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
 
 #include <boost/parameter/aux_/pp_impl/match.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/enum_trailing_params.hpp>
 
 // Expands to an extra argument that is well-formed
 // iff all Args... satisfy the requirements set by params.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH(params, n, prefix)            \
-    typename ::boost::parameter::aux::match<                                 \
-        params, BOOST_PP_ENUM_PARAMS(n, prefix)                              \
+  , typename ::boost::parameter::aux::match<                                 \
+        params BOOST_PP_ENUM_TRAILING_PARAMS(n, prefix)                      \
     >::type = params()
 /**/
 
 #define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(z, params, n, prefix)       \
-    typename ::boost::parameter::aux::match<                                 \
-        params, BOOST_PP_ENUM_PARAMS_Z(z, n, prefix)                         \
+  , typename ::boost::parameter::aux::match<                                 \
+        params BOOST_PP_ENUM_TRAILING_PARAMS_Z(z, n, prefix)                 \
     >::type = params()
 /**/
 
 #else   // SFINAE/Borland workarounds needed.
 
 #define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH(params, n, prefix)            \
-    params = params()
+  , params = params()
 /**/
 
 #define BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(z, params, n, prefix)       \
-    params = params()
+  , params = params()
 /**/
 
 #endif

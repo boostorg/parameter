@@ -11,13 +11,17 @@
 
 // Expands to keyword_tag_type for some keyword_tag.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(keyword_tag)              \
-    BOOST_PP_CAT(BOOST_PP_CAT(keyword_tag, _), type)
+    BOOST_PP_CAT(keyword_tag, _type)
 /**/
 
 // Expands to a template parameter for each dispatch function.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_TEMPLATE_ARG(r, macro, arg)        \
   , typename BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))
 /**/
+
+#include <boost/parameter/config.hpp>
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 // Expands to a forwarding parameter for a dispatch function.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DEFN(r, macro, arg)            \
@@ -28,10 +32,28 @@
 
 // Expands to an argument passed from one dispatch function to the next.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_FWD(r, macro, arg)             \
-  , ::std::forward<                                                        \
+  , ::std::forward<                                                          \
         BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))               \
     >(macro(arg))
 /**/
+
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+
+// Expands to a forwarding parameter for a dispatch function.  The parameter
+// type stores its const-ness.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_DEFN(r, macro, arg)            \
+  , BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_TYPE(macro(arg))& macro(arg)
+/**/
+
+#include <boost/parameter/aux_/as_lvalue.hpp>
+
+// Expands to an argument passed from one dispatch function to the next.
+// Explicit forwarding takes the form of forcing the argument to be an lvalue.
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_FWD(r, macro, arg)             \
+  , ::boost::parameter::aux::as_lvalue(macro(arg))
+/**/
+
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 #include <boost/parameter/aux_/preprocessor/impl/argument_specs.hpp>
 #include <boost/parameter/aux_/preprocessor/impl/split_args.hpp>
@@ -139,7 +161,7 @@
 // Extracts the corresponding required argument from the pack.
 // This form enables BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER to use it
 // from within BOOST_PP_SEQ_FOR_EACH.
-//
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 // The boost::parameter::aux::forward wrapper is necessary to transmit the
 // target type to the next dispatch function.  Otherwise, the argument will
 // retain its original type. -- Cromwell D. Enage
@@ -163,11 +185,29 @@
         ]                                                                    \
     )
 /**/
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+// The explicit type cast is necessary to transmit the target type to the next
+// dispatch function.  Otherwise, the argument will retain its original type.
+// -- Cromwell D. Enage
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_CAST_R(r, tag_ns, arg)         \
+  , BOOST_PARAMETER_FUNCTION_CAST_T(                                         \
+        tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                             \
+      , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
+      , Args                                                                 \
+    )(                                                                       \
+        args[                                                                \
+            ::boost::parameter::keyword<                                     \
+                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
+            >::instance                                                      \
+        ]                                                                    \
+    )
+/**/
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 // Takes in the arg tuple (name, pred, default) and the tag namespace.
 // Extracts the corresponding optional argument from the pack if specified,
 // otherwise temporarily passes use_default_tag() to the dispatch functions.
-//
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 // The boost::parameter::aux::forward wrapper is necessary to transmit the
 // target type to the next dispatch function.  Otherwise, the argument will
 // retain its original type. -- Cromwell D. Enage
@@ -191,6 +231,19 @@
         ]                                                                    \
     )
 /**/
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_OPT_ARG_CAST(arg, tag_ns)          \
+    BOOST_PARAMETER_FUNCTION_CAST_B(                                         \
+        args[                                                                \
+            ::boost::parameter::keyword<                                     \
+                tag_ns::BOOST_PARAMETER_FN_ARG_NAME(arg)                     \
+            >::instance || ::boost::parameter::aux::use_default_tag()        \
+        ]                                                                    \
+      , BOOST_PARAMETER_FN_ARG_PRED(arg)                                     \
+      , Args                                                                 \
+    )
+/**/
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
 #include <boost/tti/detail/dnullptr.hpp>
 
