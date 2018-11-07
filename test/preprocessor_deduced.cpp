@@ -9,10 +9,13 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <string>
 #include "basics.hpp"
+
+#if !defined(BOOST_NO_SFINAE)
+#include <boost/core/enable_if.hpp>
+#endif
 
 namespace test {
 
@@ -184,10 +187,12 @@ namespace test {
         return 1;
     }
 
+#if !defined(BOOST_NO_SFINAE)
     // On compilers that actually support SFINAE, add another overload
     // that is an equally good match and can only be in the overload set
     // when the others are not.  This tests that the SFINAE is actually
-    // working.
+    // working.  On all other compilers we're just checking that everything
+    // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
         typename boost::mpl::if_<
@@ -201,6 +206,7 @@ namespace test {
     {
         return 0;
     }
+#endif  // BOOST_NO_SFINAE
 } // namespace test
 
 #include <boost/core/lightweight_test.hpp>
@@ -279,8 +285,11 @@ int main()
       , 0
       , test::_y = std::string("foo")
     );
+
+#if !defined(BOOST_NO_SFINAE)
     BOOST_TEST(test::sfinae("foo") == 1);
     BOOST_TEST(test::sfinae(0) == 0);
+#endif
 
     return boost::report_errors();
 }

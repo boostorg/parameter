@@ -10,27 +10,40 @@
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 
-// Require correct SFINAE support, needed explicitly by tagged_argument &
-// keyword & cast; correct function template ordering, needed by the code
-// generation macros; and the ability to handle multiple parameter packs,
-// needed by parameters.  Older versions of GCC either don't have the latter
-// ability or cannot disambiguate between keyword's overloaded
-// operators.
+// Allow projects to #define BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING to
+// turn off perfect forwarding as necessary.  Otherwise, also require correct
+// SFINAE support, needed explicitly by tagged_argument & keyword & cast;
+// correct function template ordering, needed by the code generation macros;
+// rvalue references, needed throughout; variadic templates, needed by
+// parameters; and the ability to handle multiple parameter packs, needed by
+// parameters.  Older versions of GCC either don't have the latter ability or
+// cannot disambiguate between keyword's overloaded operators.
 // -- Cromwell D. Enage
-#if defined(BOOST_NO_SFINAE) || \
-    defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) || \
-    defined(BOOST_NO_CXX11_RVALUE_REFERENCES) || \
-    defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) || \
-    BOOST_WORKAROUND(BOOST_GCC, < 40900)
-#error Your compiler does not support perfect forwarding.
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    !defined(BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING) && \
+    !defined(BOOST_NO_SFINAE) && \
+    !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
+    !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && \
+    !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
+    !BOOST_WORKAROUND(BOOST_GCC, < 40900)
+#define BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif
 
-#include <boost/mpl/limits/vector.hpp>
-
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if !defined(BOOST_PARAMETER_MAX_ARITY)
 // Unlike the variadic MPL sequences provided by Boost.Fusion,
 // boost::mpl::vector has a size limit. -- Cromwell D. Enage
-#if !defined(BOOST_PARAMETER_MAX_ARITY)
+#include <boost/mpl/limits/vector.hpp>
 #define BOOST_PARAMETER_MAX_ARITY BOOST_MPL_LIMIT_VECTOR_SIZE
 #endif
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if !defined(BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY)
+#define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY 11
+#endif
+#if !defined(BOOST_PARAMETER_MAX_ARITY)
+#define BOOST_PARAMETER_MAX_ARITY 8
+#endif
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif  // include guard
 

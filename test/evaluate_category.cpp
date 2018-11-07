@@ -3,6 +3,18 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if (BOOST_PARAMETER_MAX_ARITY < 4)
+#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
+#endif
+#if (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 5)
+#error Define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY \
+as 5 or greater.
+#endif
+#endif
+
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -10,7 +22,11 @@ namespace test {
     BOOST_PARAMETER_NAME((_lrc0, keywords) in(lrc0))
     BOOST_PARAMETER_NAME((_lr0, keywords) in_out(lr0))
     BOOST_PARAMETER_NAME((_rrc0, keywords) in(rrc0))
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     BOOST_PARAMETER_NAME((_rr0, keywords) consume(rr0))
+#else
+    BOOST_PARAMETER_NAME((_rr0, keywords) rr0)
+#endif
 
     struct f_parameters
       : boost::parameter::parameters<
@@ -43,6 +59,7 @@ namespace test {
                 test::passed_by_lvalue_reference
               , A<T>::evaluate_category(args[test::_lr0])
             );
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
             if (boost::is_scalar<T>::value)
             {
@@ -66,6 +83,16 @@ namespace test {
                   , A<T>::evaluate_category(args[test::_rr0])
                 );
             }
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , A<T>::evaluate_category(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , A<T>::evaluate_category(args[test::_rr0])
+            );
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         }
     };
 } // namespace test
@@ -133,6 +160,8 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_lr0])
             ));
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename boost::remove_const<
@@ -143,6 +172,18 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename boost::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         }
     };
 } // namespace test
@@ -203,14 +244,24 @@ int main()
         test::f_parameters()(
             "crg"
           , baz_arr
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
           , static_cast<char_arr const&&>("uir")
           , static_cast<char_arr&&>(baz_arr)
+#else
+          , "grl"
+          , "grp"
+#endif
         )
     );
     test::B<char_arr>::evaluate((
         test::_lr0 = baz_arr
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       , test::_rrc0 = static_cast<char_arr const&&>("wld")
       , test::_rr0 = static_cast<char_arr&&>(baz_arr)
+#else
+      , test::_rrc0 = "frd"
+      , test::_rr0 = "plg"
+#endif
       , test::_lrc0 = "mos"
     ));
 #endif  // MSVC

@@ -8,6 +8,12 @@
 #define BASICS_050424_HPP
 
 #include <boost/parameter.hpp>
+
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_MAX_ARITY < 4)
+#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
+#endif
+
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/assert.hpp>
