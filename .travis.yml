@@ -74,7 +74,16 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: TOOLSET=gcc COMPILER=g++-5 CXXSTD=03,11,14 TEST_SUITE=parameter_all_tests
+      env: TOOLSET=gcc COMPILER=g++-5 CXXSTD=03 TEST_SUITE=parameter_all_tests_except_preproc_eval_cat_8
+      addons:
+        apt:
+          packages:
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - os: linux
+      env: TOOLSET=gcc COMPILER=g++-5 CXXSTD=11,14 TEST_SUITE=parameter_all_tests
       addons:
         apt:
           packages:
