@@ -3,12 +3,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/config.hpp>
-
-#if (BOOST_PARAMETER_MAX_ARITY < 2)
-#error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
-#endif
-
 #include <boost/parameter.hpp>
 
 namespace test {

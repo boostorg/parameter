@@ -5,10 +5,6 @@
 
 #include <boost/parameter/config.hpp>
 
-#if (BOOST_PARAMETER_MAX_ARITY < 4)
-#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
-#endif
-
 namespace test {
 
     struct X

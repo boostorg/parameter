@@ -5,17 +5,15 @@ BOOST_PARAMETER_NAME(name)
 BOOST_PARAMETER_NAME(index)
 
 template <typename T>
-void noop(T&)
+void noop(T&&)
 {
 }
 
 template <typename Name, typename Index>
-int deduce_arg_types_impl(Name& name, Index& index)
+int deduce_arg_types_impl(Name&& name, Index&& index)
 {
-    Name& n2 = name;  // we know the types
-    Index& i2 = index;
-    noop(n2);
-    noop(i2);
+    noop(std::forward<Name>(name));
+    noop(std::forward<Index>(index));
     return index;
 }
 

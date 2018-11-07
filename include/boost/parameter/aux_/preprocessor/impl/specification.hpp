@@ -30,10 +30,9 @@
 /**/
 
 #include <boost/parameter/aux_/preprocessor/impl/argument_specs.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
 #include <boost/preprocessor/cat.hpp>
-#include <boost/config.hpp>
-#include <boost/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 
