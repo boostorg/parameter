@@ -1,4 +1,5 @@
 // Copyright Daniel Wallin, David Abrahams 2005.
+// Copyright Cromwell D. Enage 2017.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -8,8 +9,11 @@
 
 namespace boost { namespace parameter { namespace aux {
 
-    template <class Keyword, class Arg>
+    template <typename Keyword, typename Arg>
     class tagged_argument;
+
+    template <typename Keyword, typename Arg>
+    struct tagged_argument_rref;
 }}} // namespace boost::parameter::aux
 
 #endif  // include guard

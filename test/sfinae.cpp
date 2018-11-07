@@ -3,12 +3,6 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/config.hpp>
-
-#if (BOOST_PARAMETER_MAX_ARITY < 2)
-#error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
-#endif
-
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -108,8 +102,7 @@ namespace test {
     }
 } // namespace test
 
-#if !defined(BOOST_NO_SFINAE) && \
-    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
 
 #include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -118,9 +111,7 @@ namespace test {
 
     // On compilers that actually support SFINAE, add another overload that is
     // an equally good match and can only be in the overload set when the
-    // others are not.  This tests that the SFINAE is actually working.  On
-    // all other compilers we're just checking that everything about
-    // SFINAE-enabled code will work, except of course the SFINAE.
+    // others are not.  This tests that the SFINAE is actually working.
     template <typename A0, typename A1>
     typename boost::enable_if<
         typename boost::mpl::if_<
@@ -136,15 +127,14 @@ namespace test {
     }
 } // namespace test
 
-#endif  // SFINAE enabled, no Borland workarounds needed.
+#endif  // no Borland workarounds needed.
 
 int main()
 {
     test::f("foo");
     test::f("foo", 3.f);
     test::f(test::value = 3.f, test::name = "foo");
-#if !defined(BOOST_NO_SFINAE) && \
-    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
     BOOST_TEST_EQ(0, test::f(3, 4));
 #endif
     return boost::report_errors();
