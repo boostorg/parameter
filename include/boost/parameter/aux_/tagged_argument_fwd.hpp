@@ -11,10 +11,18 @@ namespace boost { namespace parameter { namespace aux {
 
     template <typename Keyword, typename Arg>
     class tagged_argument;
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/config.hpp>
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+
+namespace boost { namespace parameter { namespace aux {
 
     template <typename Keyword, typename Arg>
     struct tagged_argument_rref;
 }}} // namespace boost::parameter::aux
 
+#endif
 #endif  // include guard
 

@@ -184,19 +184,27 @@ id="id38">4.3&nbsp;&nbsp;&nbsp;Documentation</a></li>
 <li><a class="reference internal" href="#portability-considerations"
 id="id39">5&nbsp;&nbsp;&nbsp;Portability Considerations</a>
 <ul class="auto-toc">
+<li><a class="reference internal" href="#perfect-forwarding-support"
+id="id40">5.1&nbsp;&nbsp;&nbsp;Perfect Forwarding Support</a></li>
+<li><a class="reference internal" href="#no-sfinae-support"
+id="id41">5.2&nbsp;&nbsp;&nbsp;No SFINAE Support</a></li>
 <li><a class="reference internal" href="#no-support-for-result-of"
-id="id40">5.1&nbsp;&nbsp;&nbsp;No Support for
+id="id42">5.3&nbsp;&nbsp;&nbsp;No Support for
 <tt class="docutils literal">result_of</tt></a></li>
+<li><a class="reference internal"
+href="#compiler-can-t-see-references-in-unnamed-namespace"
+id="id43">5.4&nbsp;&nbsp;&nbsp;Compiler Can't See References In Unnamed
+Namespace</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#python-binding"
-id="id41">6&nbsp;&nbsp;&nbsp;Python Binding</a></li>
+id="id44">6&nbsp;&nbsp;&nbsp;Python Binding</a></li>
 <li><a class="reference internal" href="#reference"
-id="id42">7&nbsp;&nbsp;&nbsp;Reference</a></li>
+id="id45">7&nbsp;&nbsp;&nbsp;Reference</a></li>
 <li><a class="reference internal" href="#glossary"
-id="id43">8&nbsp;&nbsp;&nbsp;Glossary</a></li>
+id="id46">8&nbsp;&nbsp;&nbsp;Glossary</a></li>
 <li><a class="reference internal" href="#acknowledgements"
-id="id44">9&nbsp;&nbsp;&nbsp;Acknowledgements</a></li>
+id="id47">9&nbsp;&nbsp;&nbsp;Acknowledgements</a></li>
 </ul>
 </div>
 <hr class="docutils" />
@@ -760,8 +768,11 @@ corresponding names in <tt class="docutils literal">consume(…)</tt> or
 violate their category constraints, attempt to compile the
 <a class="reference external" href="../../test/compose.cpp"
 >test/compose.cpp</a> test program with either the
-<tt class="docutils literal">LIBS_PARAMETER_TEST_COMPILE_FAILURE_0</tt> macro
-or the <tt class="docutils literal">LIBS_PARAMETER_TEST_COMPILE_FAILURE_1</tt>
+<tt class="docutils literal">LIBS_PARAMETER_TEST_COMPILE_FAILURE_0</tt> macro,
+the <tt class="docutils literal">LIBS_PARAMETER_TEST_COMPILE_FAILURE_1</tt>
+macro, the
+<tt class="docutils literal">LIBS_PARAMETER_TEST_COMPILE_FAILURE_2</tt> macro,
+or the <tt class="docutils literal">LIBS_PARAMETER_TEST_COMPILE_FAILURE_3</tt>
 macro <tt class="docutils literal">#defined</tt>.  You should encounter a
 compiler error caused by a specific constraint violation.</p>
 </div>
@@ -2531,8 +2542,46 @@ href="http://www.boost.org/regression/release/user/parameter.html">regression
 test results</a> for the latest Boost release of the Parameter library to see
 how it fares on your favorite compiler.  Additionally, you may need to be
 aware of the following issues and workarounds for particular compilers.</p>
+<div class="section" id="perfect-forwarding-support">
+<h2><a class="toc-backref" href="#id40">5.1&nbsp;&nbsp;&nbsp;Perfect
+Forwarding Support</a></h2>
+<p>If your compiler supports <a class="reference external" href=
+"http://www.justsoftwaresolutions.co.uk/cplusplus/rvalue_references_and_perfect_forwarding.html"
+>perfect forwarding</a>, then the Parameter library will
+<tt class="docutils literal">#define</tt> the macro
+<a class="reference external"
+href="reference.html#boost-parameter-has-perfect-forwarding"
+><tt class="docutils literal">BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a>
+unless you disable it manually.  If your compiler does not provide this
+support, then <tt class="docutils literal"
+>parameter::parameters::operator()</tt> will treat rvalue references as lvalue
+const references to work around the <a class="reference external"
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2002/n1385.htm"
+>forwarding problem</a>, so in certain cases you must wrap
+<a class="reference external" href="../../../core/doc/html/core/ref.html"
+><tt class="docutils literal">boost::ref</tt></a> or
+<a class="reference external"
+href="http://en.cppreference.com/w/cpp/utility/functional/ref"
+><tt class="docutils literal">std::ref</tt></a> around any arguments that will
+be bound to out parameters.  The <a class="reference external"
+href="../../test/evaluate_category.cpp">test/evaluate_category.cpp</a> and
+<a class="reference external"
+href="../../test/preprocessor_eval_category.cpp"
+>test/preprocessor_eval_category.cpp</a> test programs demonstrate this
+support.</p>
+</div>
+<div class="section" id="no-sfinae-support">
+<h2><a class="toc-backref" href="#id41">5.2&nbsp;&nbsp;&nbsp;No SFINAE
+Support</a></h2>
+<p>Some older compilers don't support SFINAE.  If your compiler meets
+that criterion, then Boost headers will
+<tt class="docutils literal">#define</tt> the preprocessor symbol
+<tt class="docutils literal">BOOST_NO_SFINAE</tt>, and parameter-enabled
+functions won't be removed from the overload set based on their
+signatures.</p>
+</div>
 <div class="section" id="no-support-for-result-of">
-<h2><a class="toc-backref" href="#id40">5.1&nbsp;&nbsp;&nbsp;No Support
+<h2><a class="toc-backref" href="#id42">5.3&nbsp;&nbsp;&nbsp;No Support
 for</a> <a class="reference external"
 href="../../../utility/utility.htm#result_of"
 ><tt class="docutils literal">result_of</tt></a></h2>
@@ -2579,9 +2628,29 @@ are unspecified, the workaround is to use
 
 .. |BOOST_PARAMETER_MATCH| replace:: ``BOOST_PARAMETER_MATCH`` -->
 </div>
+<div class="section" id="compiler-can-t-see-references-in-unnamed-namespace">
+<h2><a class="toc-backref" href="#id43">5.3&nbsp;&nbsp;&nbsp;Compiler Can't
+See References In Unnamed Namespace</a></h2>
+<p>If you use Microsoft Visual C++ 6.x, you may find that the compiler has
+trouble finding your keyword objects.  This problem has been observed, but
+only on this one compiler, and it disappeared as the test code evolved, so we
+suggest you use it only as a last resort rather than as a preventative
+measure.  The solution is to add <em>using-declarations</em> to force the
+names to be available in the enclosing namespace without qualification:</p>
+<pre class="literal-block">
+namespace graphs {
+
+    using graphs::graph;
+    using graphs::visitor;
+    using graphs::root_vertex;
+    using graphs::index_map;
+    using graphs::color_map;
+}
+</pre>
+</div>
 </div>
 <div class="section" id="python-binding">
-<h1><a class="toc-backref" href="#id41">6&nbsp;&nbsp;&nbsp;Python
+<h1><a class="toc-backref" href="#id44">6&nbsp;&nbsp;&nbsp;Python
 Binding</a></h1>
 <p>Follow <a class="reference external"
 href="../../../parameter_python/doc/html/index.html">this link</a> for
@@ -2590,12 +2659,12 @@ with <a class="reference external" href="../../../python/doc/index.html"
 >Boost.Python</a>.</p>
 </div>
 <div class="section" id="reference">
-<h1><a class="toc-backref" href="#id42">7&nbsp;&nbsp;&nbsp;Reference</a></h1>
+<h1><a class="toc-backref" href="#id45">7&nbsp;&nbsp;&nbsp;Reference</a></h1>
 <p>Follow <a class="reference external" href="reference.html">this link</a> to
 the Boost.Parameter reference documentation.</p>
 </div>
 <div class="section" id="glossary">
-<h1><a class="toc-backref" href="#id43">8&nbsp;&nbsp;&nbsp;Glossary</a></h1>
+<h1><a class="toc-backref" href="#id46">8&nbsp;&nbsp;&nbsp;Glossary</a></h1>
 <table class="docutils field-list" frame="void" id="arguments" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2636,7 +2705,7 @@ int y = f(3);
 </table>
 </div>
 <div class="section" id="acknowledgements">
-<h1><a class="toc-backref" href="#id44"
+<h1><a class="toc-backref" href="#id47"
 >9&nbsp;&nbsp;&nbsp;Acknowledgements</a></h1>
 <p>The authors would like to thank all the Boosters who participated in the
 review of this library and its documentation, most especially our review
@@ -2719,6 +2788,33 @@ using foo_overloads::foo;
 <p>This technique for avoiding unintentional argument-dependent lookup is due
 to Herb Sutter.</p>
 </td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="sfinae" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr>
+<td class="label">[7]</td>
+<td>This capability depends on your compiler's support for
+SFINAE.  <strong>SFINAE</strong>: <strong>S</strong>ubstitution
+<strong>F</strong>ailure <strong>I</strong>s <strong>N</strong>ot
+<strong>A</strong>n <strong>E</strong>rror.  If type substitution during the
+instantiation of a function template results in an invalid type, no
+compilation error is emitted; instead the overload is removed from the
+overload set.  By producing an invalid type in the function signature
+depending on the result of some condition, we can decide whether or not an
+overload is considered during overload resolution.  The technique is
+formalized in the <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html"><tt class="docutils literal"
+>enable_if</tt></a> utility.  Most recent compilers support SFINAE; on
+compilers that don't support it, the Boost config library will
+<tt class="docutils literal">#define</tt> the symbol
+<tt class="docutils literal">BOOST_NO_SFINAE</tt>.  See
+<a class="reference external"
+href="http://www.semantics.org/once_weakly/w02_SFINAE.pdf"
+>http://www.semantics.org/once_weakly/w02_SFINAE.pdf</a> for more information
+on SFINAE.</td>
+</tr>
 </tbody>
 </table>
 </div>

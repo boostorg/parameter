@@ -155,10 +155,13 @@ namespace test {
     }
 } // namespace test
 
+#include <string>
+
+#if !defined(BOOST_NO_SFINAE)
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_base_of.hpp>
-#include <string>
+#endif
 
 namespace test {
 
@@ -170,6 +173,7 @@ namespace test {
         template <typename Args>
         explicit base_0(
             Args const& args
+#if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
                 typename boost::mpl::if_<
                     boost::is_base_of<base_0,Args>
@@ -177,6 +181,7 @@ namespace test {
                   , boost::mpl::false_
                 >::type
             >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif  // BOOST_NO_SFINAE
         ) : f(args[test::_value | 1.f]), i(args[test::_index | 2])
         {
         }
@@ -197,6 +202,7 @@ namespace test {
         template <typename Args>
         explicit base_1(
             Args const& args
+#if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
                 typename boost::mpl::if_<
                     boost::is_base_of<base_1,Args>
@@ -204,6 +210,7 @@ namespace test {
                   , boost::mpl::false_
                 >::type
             >::type* = BOOST_TTI_DETAIL_NULLPTR
+#endif  // BOOST_NO_SFINAE
         )
         {
             args[test::_tester](
@@ -352,10 +359,12 @@ namespace test {
         return 1;
     }
 
+#if !defined(BOOST_NO_SFINAE)
     // On compilers that actually support SFINAE, add another overload
     // that is an equally good match and can only be in the overload set
     // when the others are not.  This tests that the SFINAE is actually
-    // working.
+    // working.  On all other compilers we're just checking that everything
+    // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
         typename boost::mpl::if_<
@@ -369,6 +378,7 @@ namespace test {
     {
         return 0;
     }
+#endif  // BOOST_NO_SFINAE
 
     struct predicate
     {
@@ -392,10 +402,12 @@ namespace test {
         return 1;
     }
 
+#if !defined(BOOST_NO_SFINAE)
     // On compilers that actually support SFINAE, add another overload
     // that is an equally good match and can only be in the overload set
     // when the others are not.  This tests that the SFINAE is actually
-    // working.
+    // working.  On all other compilers we're just checking that everything
+    // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
         typename boost::mpl::if_<
@@ -409,6 +421,7 @@ namespace test {
     {
         return 0;
     }
+#endif  // BOOST_NO_SFINAE
 
     template <typename T>
     T const& as_lvalue(T const& x)
@@ -550,7 +563,8 @@ int main()
       , test::_name = std::string("foo")
     );
 
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
+#if !defined(BOOST_NO_SFINAE) && \
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
     BOOST_TEST(test::sfinae("foo") == 1);
     BOOST_TEST(test::sfinae(1) == 0);
 

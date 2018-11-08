@@ -3,6 +3,13 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/config.hpp>
+
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_MAX_ARITY < 10)
+#error Define BOOST_PARAMETER_MAX_ARITY as 10 or greater.
+#endif
+
 #include <boost/parameter.hpp>
 
 namespace test {
@@ -10,7 +17,11 @@ namespace test {
     BOOST_PARAMETER_NAME((_lrc0, keywords) in(lrc0))
     BOOST_PARAMETER_NAME((_lr0, keywords) in_out(lr0))
     BOOST_PARAMETER_NAME((_rrc0, keywords) in(rrc0))
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
     BOOST_PARAMETER_NAME((_rr0, keywords) consume(rr0))
+#else
+    BOOST_PARAMETER_NAME((_rr0, keywords) rr0)
+#endif
     BOOST_PARAMETER_NAME((_lrc1, keywords) in(lrc1))
     BOOST_PARAMETER_NAME((_lr1, keywords) out(lr1))
     BOOST_PARAMETER_NAME((_rrc1, keywords) in(rrc1))
@@ -73,6 +84,7 @@ namespace test {
                     args[test::_lr2 || test::lvalue_bitset_function<2>()]
                 )
             );
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference_to_const
               , U::evaluate_category<0>(args[test::_rrc0])
@@ -91,12 +103,39 @@ namespace test {
                     args[test::_rr2 || test::rvalue_bitset_function<2>()]
                 )
             );
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<0>(args[test::_rr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<1>(args[test::_rrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , U::evaluate_category<2>(
+                    args[test::_rr2 || test::rvalue_bitset_function<2>()]
+                )
+            );
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         }
     };
 } // namespace test
 
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#include <boost/parameter/as_lvalue.hpp>
+#include <boost/core/ref.hpp>
+#endif
+
 int main()
 {
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    (10 < BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY)
     test::C::evaluate(
         test::g_parameters()(
             test::lvalue_const_bitset<0>()
@@ -122,6 +161,33 @@ int main()
           , test::rvalue_bitset<2>()
         )
     );
+#else   // no perfect forwarding support and no exponential overloads
+    test::C::evaluate(
+        test::g_parameters()(
+            test::lvalue_const_bitset<0>()
+          , boost::ref(test::lvalue_bitset<0>())
+          , test::rvalue_const_bitset<0>()
+          , boost::parameter::as_lvalue(test::rvalue_bitset<0>())
+          , test::lvalue_const_bitset<1>()
+          , boost::ref(test::lvalue_bitset<1>())
+          , test::rvalue_const_bitset<1>()
+        )
+    );
+    test::C::evaluate(
+        test::g_parameters()(
+            test::lvalue_const_bitset<0>()
+          , boost::ref(test::lvalue_bitset<0>())
+          , test::rvalue_const_bitset<0>()
+          , boost::parameter::as_lvalue(test::rvalue_bitset<0>())
+          , test::lvalue_const_bitset<1>()
+          , boost::ref(test::lvalue_bitset<1>())
+          , test::rvalue_const_bitset<1>()
+          , test::lvalue_const_bitset<2>()
+          , boost::ref(test::lvalue_bitset<2>())
+          , boost::parameter::as_lvalue(test::rvalue_bitset<2>())
+        )
+    );
+#endif  // perfect forwarding support, or exponential overloads
     return boost::report_errors();
 }
 

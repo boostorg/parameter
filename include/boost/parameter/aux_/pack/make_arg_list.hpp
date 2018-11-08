@@ -28,6 +28,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/aux_/pack/insert_tagged.hpp>
 #include <boost/parameter/aux_/pack/deduce_tag.hpp>
 #include <boost/parameter/deduced.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/pair.hpp>
 #include <boost/mpl/if.hpp>
@@ -37,8 +38,6 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
-#include <boost/config.hpp>
-#include <boost/config/workaround.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 

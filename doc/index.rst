@@ -674,10 +674,11 @@ names in ``consume(…)`` or ``move_from(…)``.
 
 In order to see what happens when parameters are bound to arguments that
 violate their category constraints, attempt to compile the |compose_cpp|_ test
-program with the ``LIBS_PARAMETER_TEST_COMPILE_FAILURE_0`` macro or the
-``LIBS_PARAMETER_TEST_COMPILE_FAILURE_1`` macro ``#defined``.  You should
-encounter at least four compiler errors, each corresponding to a specific
-constraint violation.
+program with either the ``LIBS_PARAMETER_TEST_COMPILE_FAILURE_0`` macro, the
+``LIBS_PARAMETER_TEST_COMPILE_FAILURE_1`` macro, the
+``LIBS_PARAMETER_TEST_COMPILE_FAILURE_2`` macro, or the
+``LIBS_PARAMETER_TEST_COMPILE_FAILURE_3`` macro ``#defined``.  You should
+encounter a compiler error caused by a specific constraint violation.
 
 .. @example.prepend('''
     #include <boost/parameter.hpp>
@@ -2504,6 +2505,45 @@ issues and workarounds for particular compilers.
 
 .. _`regression test results`: http://www.boost.org/regression/release/user/parameter.html
 
+--------------------------
+Perfect Forwarding Support
+--------------------------
+
+If your compiler supports `perfect forwarding`_, then the Parameter library
+will ``#define`` the macro ``BOOST_PARAMETER_HAS_PERFECT_FORWARDING`` unless
+you disable it manually.  If your compiler does not provide this support, then
+``parameter::parameters::operator()`` will treat rvalue references as lvalue
+const references to work around the `forwarding problem`_, so in certain cases
+you must wrap |boost_ref|_ or |std_ref|_ around any arguments that will be
+bound to out parameters.  The |evaluate_category|_ and
+|preprocessor_eval_category|_ test programs demonstrate this support.
+
+.. _`perfect forwarding`: http://www.justsoftwaresolutions.co.uk/cplusplus/rvalue_references_and_perfect_forwarding.html
+.. _`forwarding problem`: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2002/n1385.htm
+.. |boost_ref| replace:: ``boost\:\:ref``
+.. _boost_ref: ../../../core/doc/html/core/ref.html
+.. |std_ref| replace:: ``std\:\:ref``
+.. _std_ref: http://en.cppreference.com/w/cpp/utility/functional/ref
+.. |evaluate_category| replace:: evaluate_category.cpp
+.. _evaluate_category: ../../test/evaluate_category.cpp
+.. |preprocessor_eval_category| replace:: preprocessor_eval_category.cpp
+.. _preprocessor_eval_category: ../../test/preprocessor_eval_category.cpp
+
+-----------------
+No SFINAE Support
+-----------------
+
+Some older compilers don't support SFINAE.  If your compiler meets that
+criterion, then Boost headers will ``#define`` the preprocessor symbol
+``BOOST_NO_SFINAE``, and parameter-enabled functions won't be removed
+from the overload set based on their signatures.  The |sfinae_cpp|_ and
+|optional_deduced_sfinae|_ test programs demonstrate SFINAE support.
+
+.. |sfinae_cpp| replace:: sfinae.cpp
+.. _sfinae_cpp: ../../test/sfinae.cpp
+.. |optional_deduced_sfinae| replace:: optional_deduced_sfinae.cpp
+.. _optional_deduced_sfinae: ../../test/optional_deduced_sfinae.cpp
+
 ---------------------------
 No Support for |result_of|_
 ---------------------------
@@ -2521,6 +2561,58 @@ indicates its return type when invoked without arguments.  To use an ordinary
 function as a default generator on those compilers, you'll need to wrap it in
 a class that provides ``result_type`` as a ``typedef`` and invokes the
 function via its ``operator()``.
+
+---------------------------------------------
+Can't Declare |ParameterSpec| via ``typedef``
+---------------------------------------------
+
+In principle you can declare a |ParameterSpec| as a ``typedef`` for a
+specialization of ``parameters<…>``, but Microsoft Visual C++ 6.x has been
+seen to choke on that usage.  The workaround is to use inheritance and declare
+your |ParameterSpec| as a class:
+
+.. parsed-literal::
+
+    **struct dfs_parameters
+      :** parameter::parameters<
+            tag::graph, tag::visitor, tag::root_vertex
+          , tag::index_map, tag::color_map
+        >
+    **{
+    };**
+
+-------------------------------------------------
+Default Arguments Unsupported on Nested Templates
+-------------------------------------------------
+
+As of this writing, Borland compilers don't support the use of default
+template arguments on member class templates.  As a result, you have to supply
+``BOOST_PARAMETER_MAX_ARITY`` arguments to every use of
+``parameters<…>::match``.  Since the actual defaults used are unspecified, the
+workaround is to use |BOOST_PARAMETER_MATCH|_ to declare default arguments for
+SFINAE.
+
+.. |BOOST_PARAMETER_MATCH| replace:: ``BOOST_PARAMETER_MATCH``
+
+--------------------------------------------------
+Compiler Can't See References In Unnamed Namespace
+--------------------------------------------------
+
+If you use Microsoft Visual C++ 6.x, you may find that the compiler has
+trouble finding your keyword objects.  This problem has been observed, but
+only on this one compiler, and it disappeared as the test code evolved, so
+we suggest you use it only as a last resort rather than as a preventative
+measure.  The solution is to add *using-declarations* to force the names
+to be available in the enclosing namespace without qualification::
+
+    namespace graphs {
+
+        using graphs::graph;
+        using graphs::visitor;
+        using graphs::root_vertex;
+        using graphs::index_map;
+        using graphs::color_map;
+    }
 
 ==============
 Python Binding
@@ -2619,5 +2711,22 @@ lives in an outer namespace by applying a *using-declaration*::
 
 This technique for avoiding unintentional argument-dependent lookup is due to
 Herb Sutter.
+
+.. [#sfinae] This capability depends on your compiler's support for
+SFINAE.  **SFINAE**: **S**\ ubstitution **F**\ ailure **I**\ s **N**\ ot
+**A**\ n **E**\ rror.  If type substitution during the instantiation of a
+function template results in an invalid type, no compilation error is emitted;
+instead the overload is removed from the overload set.  By producing an
+invalid type in the function signature depending on the result of some
+condition, we can decide whether or not an overload is considered during
+overload resolution.  The technique is formalized in the |enable_if|_
+utility.  Most recent compilers support SFINAE; on compilers that don't
+support it, the Boost config library will ``#define`` the symbol
+``BOOST_NO_SFINAE``.  See
+http://www.semantics.org/once_weakly/w02_SFINAE.pdf for more information on
+SFINAE.
+
+.. |enable_if| replace:: ``enable_if``
+.. _enable_if: ../../../core/doc/html/core/enable_if.html
 
 

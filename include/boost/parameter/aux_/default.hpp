@@ -7,8 +7,6 @@
 #ifndef DEFAULT_050329_HPP
 #define DEFAULT_050329_HPP
 
-#include <boost/parameter/config.hpp>
-
 namespace boost { namespace parameter { namespace aux {
 
     // A wrapper for the default value passed by the user when resolving
@@ -22,6 +20,11 @@ namespace boost { namespace parameter { namespace aux {
 
         Value& value;
     };
+}}} // namespace boost::parameter::aux
+
+#include <boost/parameter/config.hpp>
+
+namespace boost { namespace parameter { namespace aux {
 
     // lazy_default -- A wrapper for the default value computation function
     // passed by the user when resolving the value of the parameter with the
@@ -73,6 +76,8 @@ namespace boost { namespace parameter { namespace aux {
 /**/
 #endif
 
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+
 #include <utility>
 
 namespace boost { namespace parameter { namespace aux {
@@ -88,5 +93,6 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif  // include guard
 
