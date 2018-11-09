@@ -166,20 +166,19 @@ intended argument type
 Concepts
 ========
 
-This section describes the generic type concepts_ used by the Parameter
+This section describes the generic type concepts used by the Parameter
 library.
-
-.. _concepts: http://www.boost.org/more/generic_programming.html#concept
 
 |ArgumentPack|
 --------------
 
 An |ArgumentPack| is a collection of |tagged reference|\ s to the actual
-arguments passed to a function.  Every |ArgumentPack| is also a valid MPL
-|ForwardSequence|__ consisting of the |keyword tag type|\ s in its
-|tagged reference|\ s.
+arguments passed to a function.  Every |ArgumentPack| is also a valid `MPL
+Forward Sequence`_ and `MPL Associative Sequence`_ consisting of the |keyword
+tag type|\ s in its |tagged reference|\ s.
 
-__ ../../../mpl/doc/refmanual/forward-sequence.html
+.. _`MPL Forward Sequence`: ../../../mpl/doc/refmanual/forward-sequence.html
+.. _`MPL Associative Sequence`: ../../../mpl/doc/refmanual/associative-sequence.html
 
 Requirements
 ............
@@ -299,6 +298,8 @@ __ ../../../../boost/parameter/keyword.hpp
     template <typename Tag>
     struct keyword
     {
+        typedef Tag tag;
+
         template <typename T>
         typename boost::`enable_if`_<
             typename boost::mpl::`eval_if_`_<
@@ -526,6 +527,8 @@ __ ../../../../boost/parameter/keyword.hpp
     template <typename Tag>
     struct keyword
     {
+        typedef Tag tag;
+
         template <typename T>
         typename boost::`enable_if`_<
             typename boost::mpl::`eval_if_`_<
@@ -1105,6 +1108,23 @@ exists, returns ``D``. Equivalent to::
     >::type
 
 … when ``D`` is not a reference type.
+
+``is_argument_pack``
+--------------------
+
+:Defined in: `boost/parameter/is_argument_pack.hpp`__
+
+__ ../../../../boost/parameter/is_argument_pack.hpp
+
+.. parsed-literal::
+
+    template <typename T>
+    struct is_argument_pack  // : mpl::true_ or mpl::false_
+    {
+    };
+
+:Returns: ``mpl::true_`` if ``T`` is a model of |ArgumentPack|_,
+``mpl::false_`` otherwise.
 
 //////////////////////////////////////////////////////////////////////////////
 

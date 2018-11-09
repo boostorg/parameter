@@ -21,6 +21,18 @@ namespace param {
 #endif
 }
 
+#include <boost/parameter/is_argument_pack.hpp>
+#include <boost/mpl/void.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/int.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/has_key.hpp>
+#include <boost/mpl/key_type.hpp>
+#include <boost/mpl/order.hpp>
+#include <boost/mpl/count.hpp>
+#include <boost/mpl/equal_to.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/config.hpp>
 #include <boost/config/workaround.hpp>
 
@@ -40,6 +52,65 @@ namespace test {
         template <typename ArgPack>
         A(ArgPack const& args) : i(args[param::_a0]), j(args[param::_a1])
         {
+            BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgPack>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::a0>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::a1>));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::a0>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::a1>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::a0>::type
+                      , param::tag::a0
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::a1>::type
+                      , param::tag::a1
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::a0>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::a1>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
         }
     };
 
@@ -105,6 +176,94 @@ namespace test {
           , j(args[param::_lr])
           , k(args[param::_lrc])
         {
+            BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgPack>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::rr>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lr>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lrc>));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::rr>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::lr>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::lrc>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::rr>::type
+                      , param::tag::rr
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::lr>::type
+                      , param::tag::lr
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::lrc>::type
+                      , param::tag::lrc
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::rr>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::lr>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::lrc>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
         }
     };
 } // namespace test
@@ -125,6 +284,94 @@ namespace test {
           , j(args[param::_lr])
           , k(args[param::_lrc])
         {
+            BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgPack>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::rr>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lr>));
+            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lrc>));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::rr>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::lr>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                boost::mpl::equal_to<
+                    typename boost::mpl::count<ArgPack,param::tag::lrc>::type
+                  , boost::mpl::int_<1>
+                >
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::rr>::type
+                      , param::tag::rr
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::lr>::type
+                      , param::tag::lr
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::key_type<ArgPack,param::tag::lrc>::type
+                      , param::tag::lrc
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::rr>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::lr>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
+            BOOST_MPL_ASSERT((
+                typename boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::mpl
+                        ::order<ArgPack,param::tag::lrc>::type
+                      , boost::mpl::void_
+                    >
+                  , boost::mpl::false_
+                  , boost::mpl::true_
+                >::type
+            ));
         }
     };
 } // namespace test

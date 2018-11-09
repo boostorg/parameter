@@ -43,6 +43,8 @@ namespace boost { namespace parameter {
     template <typename Tag>
     struct keyword
     {
+        typedef Tag tag;
+
         template <typename T>
         inline typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
@@ -344,6 +346,8 @@ namespace boost { namespace parameter {
     template <typename Tag>
     struct keyword
     {
+        typedef Tag tag;
+
         template <typename T>
 #if defined(BOOST_NO_SFINAE)
         inline typename ::boost::parameter::aux::tag<Tag,T const&>::type
