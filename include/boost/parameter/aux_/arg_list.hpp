@@ -857,7 +857,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/mpl/begin.hpp>
+#include <boost/mpl/begin_end_fwd.hpp>
 
 // MPL sequence support
 namespace boost { namespace mpl {
@@ -871,11 +871,6 @@ namespace boost { namespace mpl {
             typedef ::boost::parameter::aux::arg_list_iterator<S> type;
         };
     };
-}} // namespace boost::mpl
-
-#include <boost/mpl/end.hpp>
-
-namespace boost { namespace mpl {
 
     template <>
     struct end_impl< ::boost::parameter::aux::arg_list_tag>
@@ -886,6 +881,134 @@ namespace boost { namespace mpl {
             typedef ::boost::parameter::aux::arg_list_iterator<
                 ::boost::parameter::aux::empty_arg_list
             > type;
+        };
+    };
+}} // namespace boost::mpl
+
+#include <boost/mpl/has_key_fwd.hpp>
+#include <boost/mpl/find.hpp>
+
+namespace boost { namespace mpl {
+
+    template <>
+    struct has_key_impl< ::boost::parameter::aux::arg_list_tag>
+    {
+        template <typename ArgList, typename Keyword>
+        struct apply
+        {
+            typedef typename ::boost::mpl::if_<
+                ::boost::is_same<
+                    typename ::boost::mpl::find<ArgList,Keyword>::type
+                  , ::boost::parameter::aux::arg_list_iterator<
+                        ::boost::parameter::aux::empty_arg_list
+                    >
+                >
+              , ::boost::mpl::false_
+              , ::boost::mpl::true_
+            >::type type;
+        };
+    };
+}} // namespace boost::mpl
+
+#include <boost/mpl/count_fwd.hpp>
+#include <boost/mpl/int.hpp>
+
+namespace boost { namespace mpl {
+
+    template <>
+    struct count_impl< ::boost::parameter::aux::arg_list_tag>
+    {
+        template <typename ArgList, typename Keyword>
+        struct apply
+        {
+            typedef typename ::boost::mpl::if_<
+                ::boost::is_same<
+                    typename ::boost::mpl::find<ArgList,Keyword>::type
+                  , ::boost::parameter::aux::arg_list_iterator<
+                        ::boost::parameter::aux::empty_arg_list
+                    >
+                >
+              , ::boost::mpl::int_<0>
+              , ::boost::mpl::int_<1>
+            >::type type;
+        };
+    };
+}} // namespace boost::mpl
+
+#include <boost/mpl/key_type_fwd.hpp>
+
+namespace boost { namespace mpl {
+
+    template <>
+    struct key_type_impl< ::boost::parameter::aux::arg_list_tag>
+    {
+        template <typename ArgList, typename Keyword>
+        struct apply
+        {
+            typedef typename ::boost::mpl::eval_if<
+                ::boost::is_same<
+                    typename ::boost::mpl::find<ArgList,Keyword>::type
+                  , ::boost::parameter::aux::arg_list_iterator<
+                        ::boost::parameter::aux::empty_arg_list
+                    >
+                >
+              , void
+              , ::boost::mpl::identity<Keyword>
+            >::type type;
+        };
+    };
+}} // namespace boost::mpl
+
+#include <boost/mpl/value_type_fwd.hpp>
+
+namespace boost { namespace mpl {
+
+    template <>
+    struct value_type_impl< ::boost::parameter::aux::arg_list_tag>
+      : ::boost::mpl::key_type_impl< ::boost::parameter::aux::arg_list_tag>
+    {
+    };
+}} // namespace boost::mpl
+
+#include <boost/mpl/at_fwd.hpp>
+
+namespace boost { namespace mpl {
+
+    template <>
+    struct at_impl< ::boost::parameter::aux::arg_list_tag>
+      : ::boost::mpl::key_type_impl< ::boost::parameter::aux::arg_list_tag>
+    {
+    };
+}} // namespace boost::mpl
+
+#include <boost/mpl/order_fwd.hpp>
+#include <boost/mpl/void.hpp>
+#include <boost/mpl/distance.hpp>
+
+namespace boost { namespace mpl {
+
+    template <>
+    struct order_impl< ::boost::parameter::aux::arg_list_tag>
+    {
+        template <typename ArgList, typename Keyword>
+        struct apply
+        {
+            typedef typename ::boost::mpl::find<ArgList,Keyword>::type Itr;
+            typedef typename ::boost::mpl::eval_if<
+                ::boost::is_same<
+                    Itr
+                  , ::boost::parameter::aux::arg_list_iterator<
+                        ::boost::parameter::aux::empty_arg_list
+                    >
+                >
+              , ::boost::mpl::identity< ::boost::mpl::void_>
+              , ::boost::mpl::distance<
+                    Itr
+                  , ::boost::parameter::aux::arg_list_iterator<
+                        ::boost::parameter::aux::empty_arg_list
+                    >
+                >
+            >::type type;
         };
     };
 }} // namespace boost::mpl

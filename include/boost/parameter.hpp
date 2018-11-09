@@ -9,6 +9,7 @@
 #define BOOST_PARAMETER_050401_HPP
 
 #include <boost/parameter/parameters.hpp>
+#include <boost/parameter/is_argument_pack.hpp>
 #include <boost/parameter/required.hpp>
 #include <boost/parameter/optional.hpp>
 #include <boost/parameter/deduced.hpp>
