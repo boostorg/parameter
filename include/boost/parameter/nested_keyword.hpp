@@ -19,7 +19,7 @@
         {                                                                    \
             static char const* keyword_name()                                \
             {                                                                \
-                return BOOST_PP_STRINGIZE(BOOST_PP_CAT(name, _));            \
+                return BOOST_PP_STRINGIZE(name);                             \
             }                                                                \
             typedef BOOST_PARAMETER_TAG_PLACEHOLDER_TYPE(                    \
                 BOOST_PP_CAT(name, _)<Dummy>                                 \

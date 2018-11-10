@@ -4,12 +4,13 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/parameter/nested_keyword.hpp>
 #include <boost/parameter/name.hpp>
 
 namespace param {
 
-    BOOST_PARAMETER_NAME(a0)
-    BOOST_PARAMETER_NAME(a1)
+    BOOST_PARAMETER_NESTED_KEYWORD(tag, a0, a_zero)
+    BOOST_PARAMETER_NESTED_KEYWORD(tag, a1, a_one)
     BOOST_PARAMETER_NAME(a2)
     BOOST_PARAMETER_NAME(a3)
     BOOST_PARAMETER_NAME(in(lrc))
@@ -50,7 +51,7 @@ namespace test {
         int j;
 
         template <typename ArgPack>
-        A(ArgPack const& args) : i(args[param::_a0]), j(args[param::_a1])
+        A(ArgPack const& args) : i(args[param::a0]), j(args[param::a1])
         {
             BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgPack>));
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::a0>));
@@ -157,7 +158,7 @@ namespace test {
 
         template <typename ArgPack>
         B(ArgPack const& args)
-          : A((args, param::_a0 = 1))
+          : A((args, param::tag::a0::a_zero = 1))
           , k(args[param::_a2 | E])
           , l(args[param::_a3 || C()])
         {
@@ -385,12 +386,12 @@ int main()
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails without this workaround.
     test::A a((
-        param::_a0 = 1
-      , param::_a1 = 13
+        param::a0 = 1
+      , param::a1 = 13
       , param::_a2 = std::function<double()>(test::D)
     ));
 #else
-    test::A a((param::_a0 = 1, param::_a1 = 13, param::_a2 = test::D));
+    test::A a((param::a0 = 1, param::a1 = 13, param::_a2 = test::D));
 #endif
     BOOST_TEST_EQ(1, a.i);
     BOOST_TEST_EQ(13, a.j);
@@ -399,11 +400,11 @@ int main()
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails without this workaround.
     test::B b0((
-        param::_a1 = 13
+        param::tag::a1::a_one = 13
       , param::_a2 = std::function<float()>(test::F)
     ));
 #else
-    test::B b0((param::_a1 = 13, param::_a2 = test::F));
+    test::B b0((param::tag::a1::a_one = 13, param::_a2 = test::F));
 #endif
     BOOST_TEST_EQ(1, b0.i);
     BOOST_TEST_EQ(13, b0.j);
@@ -415,10 +416,10 @@ int main()
     // MSVC 11.0 on AppVeyor fails without this workaround.
     test::B b1((
         param::_a3 = std::function<double()>(test::D)
-      , param::_a1 = 13
+      , param::a1 = 13
     ));
 #else
-    test::B b1((param::_a3 = test::D, param::_a1 = 13));
+    test::B b1((param::_a3 = test::D, param::a1 = 13));
 #endif
     BOOST_TEST_EQ(1, b1.i);
     BOOST_TEST_EQ(13, b1.j);
