@@ -155,43 +155,46 @@ arguments)</tt></a></li>
 <li><a class="reference internal" href="#boost-parameter-name-name"
 id="id59">6.10&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_NAME(name)</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-nested-keyword-t-n-a"
+id="id60">6.11&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+>BOOST_PARAMETER_NESTED_KEYWORD(tag_namespace, name, alias)</tt></a></li>
 <li><a class="reference internal"
 href="#boost-parameter-template-keyword-name"
-id="id60">6.11&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id61">6.12&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_TEMPLATE_KEYWORD(name)</tt></a></li>
 <li><a class="reference internal" href="#boost-parameter-fun-r-n-l-h-p"
-id="id61">6.12&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id62">6.13&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_FUN(r,n,l,h,p)</tt></a></li>
 <li><a class="reference internal" href="#boost-parameter-keyword-n-k"
-id="id62">6.13&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id63">6.14&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_KEYWORD(n,k)</tt></a></li>
 <li><a class="reference internal" href="#boost-parameter-match-p-a-x"
-id="id63">6.14&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id64">6.15&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_MATCH(p,a,x)</tt></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#configuration-macros"
-id="id64">7&nbsp;&nbsp;&nbsp;Configuration Macros</a>
+id="id65">7&nbsp;&nbsp;&nbsp;Configuration Macros</a>
 <ul class="auto-toc">
 <li><a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"
-id="id65">7.1&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id66">7.1&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a></li>
 <li><a class="reference internal"
 href="#boost-parameter-variadic-mpl-sequence"
-id="id66">7.2&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id67">7.2&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_VARIADIC_MPL_SEQUENCE</tt></a></li>
 <li><a class="reference internal" href="#boost-parameter-has-arity"
-id="id67">7.3&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id68">7.3&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_MAX_ARITY</tt></a></li>
 <li><a class="reference internal"
 href="#boost-parameter-exponential-overload-threshold-arity"
-id="id68">7.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id69">7.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY</tt></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#tutorial"
-id="id69">8&nbsp;&nbsp;&nbsp;Tutorial</a></li>
+id="id70">8&nbsp;&nbsp;&nbsp;Tutorial</a></li>
 </ul>
 </div>
 <hr class="docutils" />
@@ -3227,8 +3230,80 @@ namespace tag {
 forward(<em>tag-name</em>)
 </pre>
 </div>
-<div class="section" id="boost-parameter-template-keyword-name">
+<div class="section" id="boost-parameter-nested-keyword-t-n-a">
 <h2><a class="toc-backref" href="#id60">6.11&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_NESTED_KEYWORD(tag_namespace, name,
+alias)</tt></a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/nested_keyword.hpp"
+>boost/parameter/nested_keyword.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<p>Declares a tag-type, a keyword object, and an alias for that object nested
+in the tag-type.</p>
+<p><strong>If</strong> <em>name</em> is of the form:</p>
+<pre class="literal-block">
+<em>qualifier</em>(<em>tag-name</em>)
+</pre>
+<p><strong>then</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">
+<p class="first"><em>qualifier</em> is either <tt class="docutils literal"
+>in</tt>, <tt class="docutils literal">out</tt>, <tt class="docutils literal"
+>in_out</tt>, <tt class="docutils literal">consume</tt>, <tt
+class="docutils literal">move_from</tt>, or <tt class="docutils literal"
+>forward</tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Expands to:</p>
+<pre class="literal-block">
+namespace tag {
+
+    struct <em>tag-name</em>
+    {
+        static char const* keyword_name()
+        {
+            return ##<em>tag-name</em>;
+        }
+
+        typedef <em>unspecified</em> _;
+        typedef <em>unspecified</em> _1;
+        typedef boost::parameter::<em>qualifier</em> ## _reference qualifier;
+        static ::boost::parameter::keyword&lt;<em>tag-name</em>&gt; const& <em
+>alias</em>;
+    };
+
+    ::boost::parameter::keyword&lt;<em>tag-name</em>&gt; const& <em
+>tag-name</em>::<em>alias</em>
+        = ::boost::parameter::keyword&lt;<em>tag-name</em>&gt;::instance;
+}
+
+::boost::parameter::keyword&lt;tag::<em>tag-name</em>&gt; const&amp; _ ## <em
+>tag-name</em>
+    = ::boost::parameter::keyword&lt;tag::<em>tag-name</em>&gt;::instance;
+</pre>
+<p><strong>Else</strong></p>
+<p>Treats <em>name</em> as if it were of the form:</p>
+<pre class="literal-block">
+forward(<em>tag-name</em>)
+</pre>
+</div>
+<div class="section" id="boost-parameter-template-keyword-name">
+<h2><a class="toc-backref" href="#id61">6.12&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_TEMPLATE_KEYWORD(name)</tt></a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3262,7 +3337,7 @@ function types as either <tt class="docutils literal">boost::function</tt> or
 <tt class="docutils literal">std::function</tt> specializations.</p>
 </div>
 <div class="section" id="boost-parameter-fun-r-n-l-h-p">
-<h2><a class="toc-backref" href="#id61">6.12&nbsp;&nbsp;&nbsp;<tt
+<h2><a class="toc-backref" href="#id62">6.13&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_FUN(r, n, l, h, p)</tt></a></h2>
 <div class="admonition-deprecated admonition">
 <p class="first admonition-title">Deprecated</p>
@@ -3554,7 +3629,7 @@ href="../../test/macros_eval_category.cpp">test/macros_eval_category.cpp</a>
 test programs demonstrate proper usage of this macro.</p>
 </div>
 <div class="section" id="boost-parameter-keyword-n-k">
-<h2><a class="toc-backref" href="#id62">6.13&nbsp;&nbsp;&nbsp;<tt
+<h2><a class="toc-backref" href="#id63">6.14&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_KEYWORD(n, k)</tt></a></h2>
 <div class="admonition-deprecated admonition">
 <p class="first admonition-title">Deprecated</p>
@@ -3603,7 +3678,7 @@ namespace {
 </dl>
 </div>
 <div class="section" id="boost-parameter-match-p-a-x">
-<h2><a class="toc-backref" href="#id63">6.14&nbsp;&nbsp;&nbsp;<tt
+<h2><a class="toc-backref" href="#id64">6.15&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_MATCH(p, a, x)</tt></a></h2>
 <p>Generates a defaulted parameter declaration for a
 <a class="reference external"
@@ -3650,10 +3725,10 @@ href="../../../../boost/parameter/match.hpp"
 </div>
 </div>
 <div class="section" id="configuration-macros">
-<h1><a class="toc-backref" href="#id64">7&nbsp;&nbsp;&nbsp;Configuration
+<h1><a class="toc-backref" href="#id65">7&nbsp;&nbsp;&nbsp;Configuration
 Macros</a></h1>
 <div class="section" id="boost-parameter-has-perfect-forwarding">
-<h2><a class="toc-backref" href="#id65">7.1&nbsp;&nbsp;&nbsp;<tt
+<h2><a class="toc-backref" href="#id66">7.1&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a></h2>
 <p>Determines whether or not the library supports perfect forwarding, or the
 preservation of parameter value categories.  Users can manually disable this
@@ -3688,7 +3763,7 @@ href="../../../../boost/parameter/config.hpp"
 </table>
 </div>
 <div class="section" id="boost-parameter-variadic-mpl-sequence">
-<h2><a class="toc-backref" href="#id66">7.2&nbsp;&nbsp;&nbsp;<tt
+<h2><a class="toc-backref" href="#id67">7.2&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_VARIADIC_MPL_SEQUENCE</tt></a></h2>
 <p>If <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
@@ -3740,7 +3815,7 @@ href="../../../../boost/parameter/parameters.hpp"
 </table>
 </div>
 <div class="section" id="boost-parameter-max-arity">
-<h2><a class="toc-backref" href="#id67">7.3&nbsp;&nbsp;&nbsp;<tt
+<h2><a class="toc-backref" href="#id68">7.3&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">BOOST_PARAMETER_MAX_ARITY</tt></a></h2>
 <p>Determines the maximum number of arguments supported by the library.</p>
 <p>If <a class="reference internal"
@@ -3816,7 +3891,7 @@ forwarding is supported, <tt class="docutils literal">8</tt> otherwise.</td>
 </table>
 </div>
 <div class="section" id="boost-parameter-exponential-overload-threshold-arity"
-><h2><a class="toc-backref" href="#id68">7.4&nbsp;&nbsp;&nbsp;<tt
+><h2><a class="toc-backref" href="#id69">7.4&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal"
 >BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY</tt></a></h2>
 <p>If this library does <strong>not</strong> support perfect forwarding,
@@ -3859,7 +3934,7 @@ href="../../../../boost/parameter/config.hpp"
 </div>
 </div>
 <div class="section" id="tutorial">
-<h1><a class="toc-backref" href="#id69">8&nbsp;&nbsp;&nbsp;Tutorial</a></h1>
+<h1><a class="toc-backref" href="#id70">8&nbsp;&nbsp;&nbsp;Tutorial</a></h1>
 <p>Follow <a class="reference external" href="index.html#tutorial">this
 link</a> to the Boost.Parameter tutorial documentation.</p>
 <hr class="docutils" />

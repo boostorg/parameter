@@ -1960,6 +1960,58 @@ Treats *name* as if it were of the form:
 
     forward(*tag-name*)
 
+``BOOST_PARAMETER_NESTED_KEYWORD(tag_namespace, name, alias)``
+------------------------------------------
+
+:Defined in: `boost/parameter/nested_keyword.hpp`__
+
+__ ../../../../boost/parameter/nested_keyword.hpp
+
+Declares a tag-type, a keyword object, and an alias for that object nested in
+the tag-type.
+
+**If** *name* is of the form:
+
+.. parsed-literal::
+
+    *qualifier*\ (*tag-name*)
+
+**then**
+
+:Requires: *qualifier* is either ``in``, ``out``, ``in_out``, ``consume``,
+``move_from``, or ``forward``.
+
+Expands to:
+
+.. parsed-literal::
+
+    namespace tag {
+
+        struct *tag-name*
+        {
+            static char const* keyword_name()
+            {
+                return ## *tag-name* ## _;
+            }
+
+            typedef *unspecified* _;
+            typedef *unspecified* _1;
+            typedef boost::parameter::*qualifier* ## _reference qualifier;
+            static ::boost::parameter::keyword<*tag-name*> const& *alias*;
+        };
+    }
+
+    ::boost::parameter::keyword<*tag-name*> const& *tag-name*::*alias*
+        = ::boost::parameter::keyword<*tag-name*>::instance;
+
+**Else**
+
+Treats *name* as if it were of the form:
+
+.. parsed-literal::
+
+    forward(*tag-name*)
+
 ``BOOST_PARAMETER_TEMPLATE_KEYWORD(name)``
 ------------------------------------------
 
