@@ -66,7 +66,8 @@ namespace boost { namespace parameter { namespace aux {
     // Holds an lvalue reference to an argument of type Arg associated with
     // keyword Keyword
     template <typename Keyword, typename Arg>
-    class tagged_argument : ::boost::parameter::aux::tagged_argument_base
+    class tagged_argument
+      : public ::boost::parameter::aux::tagged_argument_base
     {
         typedef typename ::boost::mpl::eval_if<
             typename ::boost::mpl::eval_if<
@@ -464,7 +465,8 @@ namespace boost { namespace parameter { namespace aux {
     // Holds an lvalue reference to an argument of type Arg associated with
     // keyword Keyword
     template <typename Keyword, typename Arg>
-    class tagged_argument : ::boost::parameter::aux::tagged_argument_base
+    class tagged_argument
+      : public ::boost::parameter::aux::tagged_argument_base
     {
         typedef typename ::boost::remove_const<Arg>::type arg_type;
 
