@@ -641,7 +641,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 #else
 //#if !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
-//    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         template <typename Default>
         inline reference
             operator[](
