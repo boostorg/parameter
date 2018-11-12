@@ -639,9 +639,7 @@ namespace boost { namespace parameter { namespace aux {
         {
             return this->get_with_lazy_default(x, 0L);
         }
-#else
-//#if !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
-//    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#else   // No function template ordering or Borland workarounds needed.
         template <typename Default>
         inline reference
             operator[](
