@@ -424,6 +424,7 @@ alias parameter_macros_eval_category_cxx03
             <define>BOOST_PARAMETER_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
+            macros_eval_category_cxx03
         :
             <preserve-target-tests>off
     ]
@@ -452,6 +453,7 @@ alias parameter_evaluate_category_10_cxx03
             <define>BOOST_PARAMETER_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
+            evaluate_category_10_cxx03
         :
             <preserve-target-tests>off
     ]
