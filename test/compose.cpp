@@ -273,6 +273,12 @@ namespace test {
 
 namespace test {
 
+    std::pair<int,int> const& lvalue_const_pair()
+    {
+        static std::pair<int,int> const clp = std::pair<int,int>(7, 10);
+        return clp;
+    }
+
     struct H
     {
         std::pair<int,int> i;
@@ -281,20 +287,13 @@ namespace test {
 
         template <typename ArgPack>
         H(ArgPack const& args)
-          : i(args[param::_rr])
+          : i(args[param::_rr | test::lvalue_const_pair()])
           , j(args[param::_lr])
           , k(args[param::_lrc])
         {
             BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgPack>));
-            BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::rr>));
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lr>));
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lrc>));
-            BOOST_MPL_ASSERT((
-                boost::mpl::equal_to<
-                    typename boost::mpl::count<ArgPack,param::tag::rr>::type
-                  , boost::mpl::int_<1>
-                >
-            ));
             BOOST_MPL_ASSERT((
                 boost::mpl::equal_to<
                     typename boost::mpl::count<ArgPack,param::tag::lr>::type
@@ -306,17 +305,6 @@ namespace test {
                     typename boost::mpl::count<ArgPack,param::tag::lrc>::type
                   , boost::mpl::int_<1>
                 >
-            ));
-            BOOST_MPL_ASSERT((
-                typename boost::mpl::if_<
-                    boost::is_same<
-                        typename boost::mpl
-                        ::key_type<ArgPack,param::tag::rr>::type
-                      , param::tag::rr
-                    >
-                  , boost::mpl::true_
-                  , boost::mpl::false_
-                >::type
             ));
             BOOST_MPL_ASSERT((
                 typename boost::mpl::if_<
@@ -338,17 +326,6 @@ namespace test {
                     >
                   , boost::mpl::true_
                   , boost::mpl::false_
-                >::type
-            ));
-            BOOST_MPL_ASSERT((
-                typename boost::mpl::if_<
-                    boost::is_same<
-                        typename boost::mpl
-                        ::order<ArgPack,param::tag::rr>::type
-                      , boost::mpl::void_
-                    >
-                  , boost::mpl::false_
-                  , boost::mpl::true_
                 >::type
             ));
             BOOST_MPL_ASSERT((
@@ -437,30 +414,30 @@ int main()
     BOOST_TEST_EQ(42, g.k);
     x = 1;
     BOOST_TEST_EQ(1, g.j);
-    std::pair<int,int> p0(7, 10);
     std::pair<int,int> p1(8, 9);
     std::pair<int,int> const p2(11, 12);
+    test::H h0((param::_lr = p1, param::_lrc = p2));
 #if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_1)
-    test::H h((
+    test::H h1((
         param::_lr = p2
       , param::_rr = std::make_pair(7, 10)
       , param::_lrc = p2
     ));
 #else
-    test::H h((
+    test::H h1((
         param::_lr = p1
       , param::_rr = std::make_pair(7, 10)
       , param::_lrc = p2
     ));
 #endif
-    BOOST_TEST_EQ(p0.first, h.i.first);
-    BOOST_TEST_EQ(p0.second, h.i.second);
-    BOOST_TEST_EQ(p1.first, h.j.first);
-    BOOST_TEST_EQ(p1.second, h.j.second);
-    BOOST_TEST_EQ(p2.first, h.k.first);
-    BOOST_TEST_EQ(p2.second, h.k.second);
+    BOOST_TEST_EQ(h0.i.first, h1.i.first);
+    BOOST_TEST_EQ(h0.i.second, h1.i.second);
+    BOOST_TEST_EQ(p1.first, h1.j.first);
+    BOOST_TEST_EQ(p1.second, h1.j.second);
+    BOOST_TEST_EQ(p2.first, h1.k.first);
+    BOOST_TEST_EQ(p2.second, h1.k.second);
     p1.first = 1;
-    BOOST_TEST_EQ(p1.first, h.j.first);
+    BOOST_TEST_EQ(p1.first, h1.j.first);
     return boost::report_errors();
 }
 

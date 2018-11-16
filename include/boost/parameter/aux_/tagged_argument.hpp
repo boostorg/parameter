@@ -398,6 +398,15 @@ namespace boost { namespace parameter { namespace aux {
         template <typename Default>
         inline reference
             operator[](
+                ::boost::parameter::aux::default_<key_type,Default> const&
+            ) const
+        {
+            return this->get_value();
+        }
+
+        template <typename Default>
+        inline reference
+            operator[](
                 ::boost::parameter::aux::default_r_<key_type,Default> const&
             ) const
         {
@@ -411,6 +420,15 @@ namespace boost { namespace parameter { namespace aux {
             ) const
         {
             return this->get_value();
+        }
+
+        template <typename KW, typename Default>
+        inline Default&
+            operator[](
+                ::boost::parameter::aux::default_<KW,Default> const& x
+            ) const
+        {
+            return x.value;
         }
 
         template <typename KW, typename Default>
