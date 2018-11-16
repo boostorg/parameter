@@ -395,6 +395,17 @@ alias parameter_literate_tests
             <define>BOOST_PARAMETER_MAX_ARITY=2
     ]
     ;
+    
+alias parameter_python_test 
+    :
+    : 
+    
+        # Python always fails for mingw(-64)/gcc because of a Python header problem
+        # so we turn off this test for this compiler completely
+
+        <target-os>windows
+        <toolset>gcc
+    ;
 
 alias parameter_python_test
     :
