@@ -128,7 +128,7 @@ namespace test {
 } // namespace test
 
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#include <boost/parameter/as_lvalue.hpp>
+#include <boost/parameter/aux_/as_lvalue.hpp>
 #include <boost/core/ref.hpp>
 #endif
 
@@ -167,7 +167,7 @@ int main()
             test::lvalue_const_bitset<0>()
           , boost::ref(test::lvalue_bitset<0>())
           , test::rvalue_const_bitset<0>()
-          , boost::parameter::as_lvalue(test::rvalue_bitset<0>())
+          , boost::parameter::aux::as_lvalue(test::rvalue_bitset<0>())
           , test::lvalue_const_bitset<1>()
           , boost::ref(test::lvalue_bitset<1>())
           , test::rvalue_const_bitset<1>()
@@ -178,13 +178,13 @@ int main()
             test::lvalue_const_bitset<0>()
           , boost::ref(test::lvalue_bitset<0>())
           , test::rvalue_const_bitset<0>()
-          , boost::parameter::as_lvalue(test::rvalue_bitset<0>())
+          , boost::parameter::aux::as_lvalue(test::rvalue_bitset<0>())
           , test::lvalue_const_bitset<1>()
           , boost::ref(test::lvalue_bitset<1>())
           , test::rvalue_const_bitset<1>()
           , test::lvalue_const_bitset<2>()
           , boost::ref(test::lvalue_bitset<2>())
-          , boost::parameter::as_lvalue(test::rvalue_bitset<2>())
+          , boost::parameter::aux::as_lvalue(test::rvalue_bitset<2>())
         )
     );
 #endif  // perfect forwarding support, or exponential overloads

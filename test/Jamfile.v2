@@ -424,6 +424,7 @@ alias parameter_macros_eval_category_cxx03
             <define>BOOST_PARAMETER_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
+            macros_eval_category_cxx03
         :
             <preserve-target-tests>off
     ]
@@ -452,6 +453,7 @@ alias parameter_evaluate_category_10_cxx03
             <define>BOOST_PARAMETER_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
+            evaluate_category_10_cxx03
         :
             <preserve-target-tests>off
     ]
@@ -542,6 +544,8 @@ alias parameter_all_tests_cxx03
         parameter_slp_tests
     ;
 
+alias parameter_msvc_fail_tests ;
+
 alias parameter_msvc_fail_tests
     :
     [ compile-fail evaluate_category.cpp
@@ -560,18 +564,43 @@ alias parameter_msvc_fail_tests
         :
             preproc_eval_cat_msvc_fail
     ]
+    :
+        <toolset>msvc
     ;
+
+alias parameter_msvc_no_python_tests ;
 
 alias parameter_msvc_no_python_tests
     :
         parameter_all_but_python_tests
         parameter_msvc_fail_tests
+    :
+        <toolset>msvc
     ;
+
+alias parameter_msvc_tests ;
 
 alias parameter_msvc_tests
     :
         parameter_all_tests
         parameter_msvc_fail_tests
+    :
+        <toolset>msvc
+    ;
+
+alias parameter_msvc11_fail_tests ;
+
+alias parameter_msvc11_fail_tests
+    :
+    [ compile-fail compose.cpp
+        :
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            compose_msvc11_fail_11
+    ]
+    :
+        <toolset>msvc
+        <toolset-msvc:version>11.0
     ;
 
 alias parameter_msvc11_fail_tests
@@ -580,13 +609,77 @@ alias parameter_msvc11_fail_tests
         :
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            compose_msvc11_fail
+            compose_msvc11_fail_12
     ]
+    :
+        <toolset>msvc
+        <toolset-msvc:version>12.0
     ;
+
+alias parameter_msvc11_fail_tests
+    :
+    [ compile-fail compose.cpp
+        :
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            compose_msvc11_fail_14
+    ]
+    :
+        <toolset>msvc
+        <toolset-msvc:version>14.0
+    ;
+
+alias parameter_msvc11_fail_tests
+    :
+    [ compile-fail compose.cpp
+        :
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            compose_msvc11_fail_141
+    ]
+    :
+        <toolset>msvc
+        <toolset-msvc:version>14.1
+    ;
+
+alias parameter_msvc11_tests ;
 
 alias parameter_msvc11_tests
     :
         parameter_all_tests
         parameter_msvc11_fail_tests
+        
+    :
+        <toolset>msvc
+        <toolset-msvc:version>11.0
     ;
-
+    
+alias parameter_msvc11_tests
+    :
+        parameter_all_tests
+        parameter_msvc11_fail_tests
+        
+    :
+        <toolset>msvc
+        <toolset-msvc:version>12.0
+    ;
+    
+alias parameter_msvc11_tests
+    :
+        parameter_all_tests
+        parameter_msvc11_fail_tests
+        
+    :
+        <toolset>msvc
+        <toolset-msvc:version>14.0
+    ;
+    
+alias parameter_msvc11_tests
+    :
+        parameter_all_tests
+        parameter_msvc11_fail_tests
+        
+    :
+        <toolset>msvc
+        <toolset-msvc:version>14.1
+    ;
