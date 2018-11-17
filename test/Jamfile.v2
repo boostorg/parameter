@@ -555,7 +555,7 @@ alias parameter_all_tests_cxx03
         parameter_slp_tests
     ;
 
-alias parameter_msvc_fail_tests
+alias parameter_msvc12plus_fail_tests
     :
     [ compile-fail evaluate_category.cpp
         :
@@ -575,16 +575,16 @@ alias parameter_msvc_fail_tests
     ]
     ;
 
-alias parameter_msvc_no_python_tests
+alias parameter_msvc12plus_no_python_tests
     :
         parameter_all_but_python_tests
-        parameter_msvc_fail_tests
+        parameter_msvc12plus_fail_tests
     ;
 
-alias parameter_msvc_tests
+alias parameter_msvc12plus_tests
     :
         parameter_all_tests
-        parameter_msvc_fail_tests
+        parameter_msvc12plus_fail_tests
     ;
 
 alias parameter_msvc11_fail_tests
