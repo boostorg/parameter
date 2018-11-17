@@ -192,7 +192,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: TOOLSET=clang COMPILER=clang++-3.5 CXXSTD=03,11 TEST_SUITE=parameter_all_tests
+      env: TOOLSET=clang COMPILER=clang++-3.5 CXXSTD=03 TEST_SUITE=parameter_all_tests_cxx03
       addons:
         apt:
           packages:
@@ -202,7 +202,17 @@ matrix:
             - llvm-toolchain-precise-3.5
 
     - os: linux
-      env: TOOLSET=clang COMPILER=clang++-3.6 CXXSTD=03,11 TEST_SUITE=parameter_all_tests
+      env: TOOLSET=clang COMPILER=clang++-3.5 CXXSTD=11 TEST_SUITE=parameter_all_tests
+      addons:
+        apt:
+          packages:
+            - clang-3.5
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.5
+
+    - os: linux
+      env: TOOLSET=clang COMPILER=clang++-3.6 CXXSTD=03 TEST_SUITE=parameter_all_tests_cxx03
       addons:
         apt:
           packages:
@@ -212,7 +222,27 @@ matrix:
             - llvm-toolchain-precise-3.6
 
     - os: linux
-      env: TOOLSET=clang COMPILER=clang++-3.7 CXXSTD=03,11 TEST_SUITE=parameter_all_tests
+      env: TOOLSET=clang COMPILER=clang++-3.6 CXXSTD=11 TEST_SUITE=parameter_all_tests
+      addons:
+        apt:
+          packages:
+            - clang-3.6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    - os: linux
+      env: TOOLSET=clang COMPILER=clang++-3.7 CXXSTD=03 TEST_SUITE=parameter_all_tests_cxx03
+      addons:
+        apt:
+          packages:
+            - clang-3.7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+
+    - os: linux
+      env: TOOLSET=clang COMPILER=clang++-3.7 CXXSTD=11 TEST_SUITE=parameter_all_tests
       addons:
         apt:
           packages:
@@ -369,7 +399,15 @@ matrix:
 
     - os: linux
       compiler: clang++-libc++
-      env: TOOLSET=clang COMPILER=clang++-libc++ CXXSTD=03,11,14,1z TEST_SUITE=parameter_all_tests
+      env: TOOLSET=clang COMPILER=clang++-libc++ CXXSTD=03 TEST_SUITE=parameter_all_tests_cxx03
+      addons:
+        apt:
+          packages:
+            - libc++-dev
+
+    - os: linux
+      compiler: clang++-libc++
+      env: TOOLSET=clang COMPILER=clang++-libc++ CXXSTD=11,14,1z TEST_SUITE=parameter_all_tests
       addons:
         apt:
           packages:
