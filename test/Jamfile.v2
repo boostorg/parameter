@@ -481,7 +481,7 @@ alias parameter_macros_eval_category
             <define>BOOST_PARAMETER_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
-            macros_eval_category_cxx03
+            macros_eval_category_cxx98
         :
             <preserve-target-tests>off
     ]
@@ -554,7 +554,7 @@ alias parameter_evaluate_category_10
             <define>BOOST_PARAMETER_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
-            evaluate_category_10_cxx03
+            evaluate_category_10_cxx98
         :
             <preserve-target-tests>off
     ]
@@ -700,7 +700,7 @@ alias parameter_msvc_fail_tests
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            evaluate_category_msvc_fail
+            evaluate_category_msvc12_fail
     ]
     [ compile-fail preprocessor_eval_category.cpp
         :
@@ -708,7 +708,7 @@ alias parameter_msvc_fail_tests
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            preproc_eval_cat_msvc_fail
+            preproc_eval_cat_msvc12_fail
     ]
     :
         <toolset>msvc
@@ -723,7 +723,7 @@ alias parameter_msvc_fail_tests
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            evaluate_category_msvc_fail
+            evaluate_category_msvc14_0_fail
     ]
     [ compile-fail preprocessor_eval_category.cpp
         :
@@ -731,7 +731,7 @@ alias parameter_msvc_fail_tests
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            preproc_eval_cat_msvc_fail
+            preproc_eval_cat_msvc14_0_fail
     ]
     :
         <toolset>msvc
@@ -746,7 +746,7 @@ alias parameter_msvc_fail_tests
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            evaluate_category_msvc_fail
+            evaluate_category_msvc14_1_fail
     ]
     [ compile-fail preprocessor_eval_category.cpp
         :
@@ -754,7 +754,7 @@ alias parameter_msvc_fail_tests
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            preproc_eval_cat_msvc_fail
+            preproc_eval_cat_msvc14_1_fail
     ]
     :
         <toolset>msvc
