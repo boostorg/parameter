@@ -6,8 +6,6 @@
 
 language: cpp
 
-sudo: false
-
 python: "2.7"
 
 branches:

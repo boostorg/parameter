@@ -2427,8 +2427,8 @@ not already ``#defined`` and ``BOOST_PARAMETER_HAS_PERFECT_FORWARDING`` is
 
 __ ../../../../boost/parameter/config.hpp
 
-:Default Value: ``11``
-:Minimum Value: ``1``
+:Default Value: ``0``
+:Minimum Value: ``0``
 
 Tutorial
 ========
