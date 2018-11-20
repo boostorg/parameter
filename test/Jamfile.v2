@@ -452,7 +452,7 @@ alias parameter_macros_eval_category
     :
         <target-os>linux
         <toolset>gcc
-        <version>4.8
+        <toolset-gcc:version>4.8
     ;
 
 alias parameter_macros_eval_category
@@ -525,7 +525,7 @@ alias parameter_evaluate_category_10
     :
         <target-os>linux
         <toolset>gcc
-        <version>4.8
+        <toolset-gcc:version>4.8
     ;
 
 alias parameter_evaluate_category_10
@@ -598,7 +598,7 @@ alias parameter_preprocessor_eval_cat_8
     :
         <target-os>linux
         <toolset>gcc
-        <version>4.8
+        <toolset-gcc:version>4.8
     ;
 
 alias parameter_preprocessor_eval_cat_8
@@ -606,7 +606,7 @@ alias parameter_preprocessor_eval_cat_8
     :
         <target-os>linux
         <toolset>gcc
-        <version>4.9
+        <toolset-gcc:version>4.9
     ;
 
 alias parameter_preprocessor_eval_cat_8
