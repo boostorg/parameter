@@ -27,6 +27,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -35,7 +36,8 @@ alias parameter_standard_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=2
         :
         :
             <preserve-target-tests>off
@@ -84,6 +86,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -93,6 +96,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -102,6 +106,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -111,6 +116,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -120,6 +126,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -129,6 +136,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -138,6 +146,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -147,6 +156,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -156,6 +166,7 @@ alias parameter_standard_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -179,6 +190,7 @@ alias parameter_standard_tests
     [ compile-fail basics.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
         :
             basics_fail
@@ -234,6 +246,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=3
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=4
         :
         :
             <preserve-target-tests>off
@@ -243,6 +256,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
         :
         :
             <preserve-target-tests>off
@@ -252,6 +266,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -277,6 +292,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -286,6 +302,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -295,6 +312,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -304,6 +322,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -313,6 +332,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -322,6 +342,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
         :
         :
             <preserve-target-tests>off
@@ -331,6 +352,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
         :
         :
             <preserve-target-tests>off
@@ -340,6 +362,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
         :
         :
             <preserve-target-tests>off
@@ -349,6 +372,7 @@ alias parameter_literate_tests
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -359,40 +383,49 @@ alias parameter_literate_tests
     [ compile literate/handling-out-parameters0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
     ]
     [ compile literate/writing-the-function0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
     ]
     [ compile literate/defining-the-keywords0.cpp ]
     [ compile literate/defining-the-keywords1.cpp ]
     [ compile literate/exercising-the-code-so-far0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
     ]
     [ compile literate/optional-parameters0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
     ]
     [ compile literate/static-member-functions0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
     ]
     [ compile literate/required-parameters0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
     ]
     [ compile literate/class-template-skeleton0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
     ]
     [ compile literate/parameter-enabled-member-functions0.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
     ]
     [ compile literate/parameter-enabled-member-functions1.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
     ]
     ;
 
