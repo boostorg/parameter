@@ -395,21 +395,115 @@ alias parameter_literate_tests
             <define>BOOST_PARAMETER_MAX_ARITY=2
     ]
     ;
-    
-alias parameter_python_test 
-    :
-    : 
-    
-        # Python always fails for mingw(-64)/gcc because of a Python header problem
-        # so we turn off this test for this compiler completely
 
+alias parameter_python_test
+    :
+    :
+        # Python fails for clang on linux with cxxstd set to 14
+        <target-os>linux
+        <toolset>clang
+        <cxxstd>14
+    ;
+
+alias parameter_python_test
+    :
+    :
+        # Python fails for clang on linux with cxxstd set to 1z
+        <target-os>linux
+        <toolset>clang
+        <cxxstd>1z
+    ;
+
+alias parameter_python_test
+    :
+    :
+        # Python fails for xcode 8.3.0 on osx
+        # so we turn off this test for this compiler completely for now
+        <target-os>darwin
+        # TODO: Differentiate by xcode version or by clang version
+    ;
+
+alias parameter_python_test
+    :
+    :
+        # Python fails for mingw compilers with cxxstd set to 11 or higher
+        # because of a Python header problem
+        # so we turn off this test for this compiler completely
         <target-os>windows
         <toolset>gcc
     ;
 
 alias parameter_python_test
     :
+    :
+        # Python fails for windows compilers with 64-bit addressing set
+        # because of a Python header problem
+        <target-os>windows
+        <address-model>64
+    ;
+
+alias parameter_python_test
+    :
     [ bpl-test python_test ]
+    ;
+
+alias parameter_macros_eval_category
+    :
+    :
+        <target-os>linux
+        <toolset>gcc
+        <toolset-gcc:version>4.8
+    ;
+
+alias parameter_macros_eval_category
+    :
+    :
+        # This test fails for xcode 7.3.0 on osx
+        # so we turn off this test for this compiler for now
+        <target-os>darwin
+        <cxxstd>03
+        # TODO: Differentiate by xcode version or by clang version
+    ;
+
+alias parameter_macros_eval_category
+    :
+    :
+        <target-os>windows
+        <toolset>gcc
+    ;
+
+alias parameter_macros_eval_category
+    :
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
+        :
+            macros_eval_category_cxx98
+        :
+            <preserve-target-tests>off
+    ]
+    :
+        <cxxstd>98
+    ;
+
+alias parameter_macros_eval_category
+    :
+    [ run macros_eval_category.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
+        :
+            macros_eval_category_cxx03
+        :
+            <preserve-target-tests>off
+    ]
+    :
+        <cxxstd>03
     ;
 
 alias parameter_macros_eval_category
@@ -426,19 +520,63 @@ alias parameter_macros_eval_category
     ]
     ;
 
-alias parameter_macros_eval_category_cxx03
+alias parameter_evaluate_category_10
     :
-    [ run macros_eval_category.cpp
+    :
+        <target-os>linux
+        <toolset>gcc
+        <toolset-gcc:version>4.8
+    ;
+
+alias parameter_evaluate_category_10
+    :
+    :
+        # This test fails for xcode 7.3.0 on osx
+        # so we turn off this test for this compiler for now
+        <target-os>darwin
+        <cxxstd>03
+        # TODO: Differentiate by xcode version or by clang version
+    ;
+
+alias parameter_evaluate_category_10
+    :
+    :
+        <target-os>windows
+        <toolset>gcc
+    ;
+
+alias parameter_evaluate_category_10
+    :
+    [ run evaluate_category_10.cpp
         :
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
-            macros_eval_category_cxx03
+            evaluate_category_10_cxx98
         :
             <preserve-target-tests>off
     ]
+    :
+        <cxxstd>98
+    ;
+
+alias parameter_evaluate_category_10
+    :
+    [ run evaluate_category_10.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
+        :
+            evaluate_category_10_cxx03
+        :
+            <preserve-target-tests>off
+    ]
+    :
+        <cxxstd>03
     ;
 
 alias parameter_evaluate_category_10
@@ -455,19 +593,45 @@ alias parameter_evaluate_category_10
     ]
     ;
 
-alias parameter_evaluate_category_10_cxx03
+alias parameter_preprocessor_eval_cat_8
     :
-    [ run evaluate_category_10.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=10
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
-        :
-            evaluate_category_10_cxx03
-        :
-            <preserve-target-tests>off
-    ]
+    :
+        <target-os>linux
+        <toolset>gcc
+        <toolset-gcc:version>4.8
+    ;
+
+alias parameter_preprocessor_eval_cat_8
+    :
+    :
+        <target-os>linux
+        <toolset>gcc
+        <toolset-gcc:version>4.9
+    ;
+
+alias parameter_preprocessor_eval_cat_8
+    :
+    :
+        <target-os>linux
+        <toolset>gcc
+        <cxxstd>03
+    ;
+
+alias parameter_preprocessor_eval_cat_8
+    :
+    :
+        # This test fails for xcode 7.3.0 and xcode 8.3.0 on osx
+        # so we turn off this test for this compiler for now
+        <target-os>darwin
+        <cxxstd>03
+        # TODO: Differentiate by xcode version or by clang version
+    ;
+
+alias parameter_preprocessor_eval_cat_8
+    :
+    :
+        <target-os>windows
+        <toolset>gcc
     ;
 
 alias parameter_preprocessor_eval_cat_8
@@ -486,6 +650,23 @@ alias parameter_preprocessor_eval_cat_8
 
 alias parameter_preprocessor_eval_cat_fail
     :
+    :
+        # This test fails for xcode 7.3.0 and xcode 8.3.0 on osx
+        # so we turn off this test for this compiler for now
+        <target-os>darwin
+        <cxxstd>03
+        # TODO: Differentiate by xcode version or by clang version
+    ;
+
+alias parameter_preprocessor_eval_cat_fail
+    :
+    :
+        <target-os>windows
+        <toolset>gcc
+    ;
+
+alias parameter_preprocessor_eval_cat_fail
+    :
     [ compile-fail preprocessor_eval_category.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=8
@@ -496,112 +677,9 @@ alias parameter_preprocessor_eval_cat_fail
     ]
     ;
 
-alias parameter_all_stress_tests
-    :
-        parameter_macros_eval_category
-        parameter_evaluate_category_10
-        parameter_preprocessor_eval_cat_8
-        parameter_preprocessor_eval_cat_fail
-    ;
-
-alias parameter_all_stress_tests_except_preproc_eval_cat_8
-    :
-        parameter_macros_eval_category_cxx03
-        parameter_evaluate_category_10_cxx03
-        parameter_preprocessor_eval_cat_fail
-    ;
-
-alias parameter_all_stress_tests_cxx03
-    :
-        parameter_macros_eval_category_cxx03
-        parameter_evaluate_category_10_cxx03
-        parameter_preprocessor_eval_cat_8
-        parameter_preprocessor_eval_cat_fail
-    ;
-
-alias parameter_sl_tests
-    :
-        parameter_standard_tests
-        parameter_literate_tests
-    ;
-
-alias parameter_slp_tests
-    :
-        parameter_sl_tests
-        parameter_python_test
-    ;
-
-alias parameter_all_but_python_tests
-    :
-        parameter_all_stress_tests
-        parameter_sl_tests
-    ;
-
-alias parameter_all_tests
-    :
-        parameter_all_stress_tests
-        parameter_slp_tests
-    ;
-
-alias parameter_all_tests_except_preproc_eval_cat_8
-    :
-        parameter_all_stress_tests_except_preproc_eval_cat_8
-        parameter_slp_tests
-    ;
-
-alias parameter_all_tests_cxx03
-    :
-        parameter_all_stress_tests_cxx03
-        parameter_slp_tests
-    ;
-
 alias parameter_msvc_fail_tests ;
 
 alias parameter_msvc_fail_tests
-    :
-    [ compile-fail evaluate_category.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=4
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
-        :
-            evaluate_category_msvc_fail
-    ]
-    [ compile-fail preprocessor_eval_category.cpp
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=8
-            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
-        :
-            preproc_eval_cat_msvc_fail
-    ]
-    :
-        <toolset>msvc
-    ;
-
-alias parameter_msvc_no_python_tests ;
-
-alias parameter_msvc_no_python_tests
-    :
-        parameter_all_but_python_tests
-        parameter_msvc_fail_tests
-    :
-        <toolset>msvc
-    ;
-
-alias parameter_msvc_tests ;
-
-alias parameter_msvc_tests
-    :
-        parameter_all_tests
-        parameter_msvc_fail_tests
-    :
-        <toolset>msvc
-    ;
-
-alias parameter_msvc11_fail_tests ;
-
-alias parameter_msvc11_fail_tests
     :
     [ compile-fail compose.cpp
         :
@@ -614,83 +692,84 @@ alias parameter_msvc11_fail_tests
         <toolset-msvc:version>11.0
     ;
 
-alias parameter_msvc11_fail_tests
+alias parameter_msvc_fail_tests
     :
-    [ compile-fail compose.cpp
+    [ compile-fail evaluate_category.cpp
         :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            compose_msvc11_fail_12
+            evaluate_category_msvc12_fail
+    ]
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            preproc_eval_cat_msvc12_fail
     ]
     :
         <toolset>msvc
         <toolset-msvc:version>12.0
     ;
 
-alias parameter_msvc11_fail_tests
+alias parameter_msvc_fail_tests
     :
-    [ compile-fail compose.cpp
+    [ compile-fail evaluate_category.cpp
         :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            compose_msvc11_fail_14
+            evaluate_category_msvc14_0_fail
+    ]
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            preproc_eval_cat_msvc14_0_fail
     ]
     :
         <toolset>msvc
         <toolset-msvc:version>14.0
     ;
 
-alias parameter_msvc11_fail_tests
+alias parameter_msvc_fail_tests
     :
-    [ compile-fail compose.cpp
+    [ compile-fail evaluate_category.cpp
         :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
             <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
         :
-            compose_msvc11_fail_141
+            evaluate_category_msvc14_1_fail
+    ]
+    [ compile-fail preprocessor_eval_category.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+        :
+            preproc_eval_cat_msvc14_1_fail
     ]
     :
         <toolset>msvc
         <toolset-msvc:version>14.1
     ;
 
-alias parameter_msvc11_tests ;
-
-alias parameter_msvc11_tests
+# TODO: Replace with "undeprecated" version.
+test-suite "parameter"
     :
-        parameter_all_tests
-        parameter_msvc11_fail_tests
-        
-    :
-        <toolset>msvc
-        <toolset-msvc:version>11.0
-    ;
-    
-alias parameter_msvc11_tests
-    :
-        parameter_all_tests
-        parameter_msvc11_fail_tests
-        
-    :
-        <toolset>msvc
-        <toolset-msvc:version>12.0
-    ;
-    
-alias parameter_msvc11_tests
-    :
-        parameter_all_tests
-        parameter_msvc11_fail_tests
-        
-    :
-        <toolset>msvc
-        <toolset-msvc:version>14.0
-    ;
-    
-alias parameter_msvc11_tests
-    :
-        parameter_all_tests
-        parameter_msvc11_fail_tests
-        
-    :
-        <toolset>msvc
-        <toolset-msvc:version>14.1
+        parameter_macros_eval_category
+        parameter_evaluate_category_10
+        parameter_preprocessor_eval_cat_8
+        parameter_preprocessor_eval_cat_fail
+        parameter_standard_tests
+        parameter_literate_tests
+        parameter_python_test
+        parameter_msvc_fail_tests
     ;
