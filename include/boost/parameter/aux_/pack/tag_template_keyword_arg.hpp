@@ -6,7 +6,7 @@
 #ifndef BOOST_PARAMETER_AUX_PACK_TAG_TEMPLATE_KEYWORD_ARG_HPP
 #define BOOST_PARAMETER_AUX_PACK_TAG_TEMPLATE_KEYWORD_ARG_HPP
 
-#include <boost/parameter/aux_/template_keyword.hpp>
+#include <boost/parameter/template_keyword.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 

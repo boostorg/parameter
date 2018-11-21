@@ -13,6 +13,7 @@
 #include <boost/parameter/required.hpp>
 #include <boost/parameter/optional.hpp>
 #include <boost/parameter/deduced.hpp>
+#include <boost/parameter/template_keyword.hpp>
 #include <boost/parameter/keyword.hpp>
 #include <boost/parameter/nested_keyword.hpp>
 #include <boost/parameter/binding.hpp>

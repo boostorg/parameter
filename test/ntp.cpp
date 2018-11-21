@@ -48,7 +48,7 @@ namespace test {
     };
 } // namespace test
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/template_keyword.hpp>
 
 namespace test {
 
@@ -71,6 +71,14 @@ namespace test {
     struct a3_is : boost::parameter::template_keyword<test::a3_is<>,T>
     {
     };
+} // namespace test
+
+#include <boost/parameter/parameters.hpp>
+#include <boost/parameter/optional.hpp>
+#include <boost/parameter/deduced.hpp>
+#include <boost/parameter/binding.hpp>
+
+namespace test {
 
     template <
         typename A0 = boost::parameter::void_
@@ -215,6 +223,18 @@ MPL_TEST_CASE()
             boost::is_same<
                 test::with_ntp<int&,test::a2_is<char>,test::Y>::type
               , void(*)(int&, void*, char, test::Y)
+            >
+          , boost::mpl::true_
+          , boost::mpl::false_
+        >::type
+    ));
+    typedef int test_array[1];
+    typedef void(*test_function)();
+    BOOST_MPL_ASSERT((
+        boost::mpl::if_<
+            boost::is_same<
+                test::with_ntp<test_array,test_function>::type
+              , void(*)(test_array&, test_function, void*, void*)
             >
           , boost::mpl::true_
           , boost::mpl::false_

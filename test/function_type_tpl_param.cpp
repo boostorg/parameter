@@ -4,7 +4,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/name.hpp>
+#include <boost/parameter/template_keyword.hpp>
 #include <boost/parameter/parameters.hpp>
 #include <boost/parameter/required.hpp>
 #include <boost/parameter/value_type.hpp>

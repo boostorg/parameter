@@ -93,18 +93,7 @@
     )(name)
 /**/
 
-#include <boost/parameter/aux_/template_keyword.hpp>
-
-#define BOOST_PARAMETER_TEMPLATE_KEYWORD(name)                               \
-    namespace tag                                                            \
-    {                                                                        \
-        struct name;                                                         \
-    }                                                                        \
-    template <typename T>                                                    \
-    struct name : ::boost::parameter::template_keyword<tag::name,T>          \
-    {                                                                        \
-    };
-/**/
+#include <boost/parameter/template_keyword.hpp>
 
 #endif  // include guard
 
