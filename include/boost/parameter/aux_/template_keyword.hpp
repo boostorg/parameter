@@ -68,13 +68,11 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/identity.hpp>
+#include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/type_traits/is_function.hpp>
-
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-#include <boost/function.hpp>
-#else
-#include <functional>
-#endif
+#include <boost/type_traits/is_array.hpp>
 
 namespace boost { namespace parameter { 
 
@@ -82,20 +80,32 @@ namespace boost { namespace parameter {
     struct template_keyword : ::boost::parameter::aux::template_keyword_base
     {
         typedef Tag key_type;
+        typedef T value_type;
 
-        // Wrap plain (non-UDT) function objects in either
-        // a boost::function or a std::function. -- Cromwell D. Enage
-        typedef typename ::boost::mpl::if_<
-            ::boost::is_function<T>
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-          , ::boost::function<T>
-#else
-          , ::std::function<T>
-#endif
-          , T
-        >::type value_type;
-
-        typedef value_type reference;
+        // reference is needed for two reasons:
+        //
+        // 1. It is used in the body of arg_list<...>
+        //
+        // 2. It is the result of binding<...>, which we mistakenly told
+        //    people to use instead of value_type<...> to access named
+        //    template parameters
+        //
+        // It used to be that reference == value_type, but that broke when
+        // the argument was a function or array type, because various
+        // arg_list functions return reference.
+        //
+        // Simply making reference == value_type& would break all the
+        // legacy code that uses binding<...> to access named template
+        // parameters. -- dwa
+        typedef typename ::boost::mpl::eval_if<
+            typename ::boost::mpl::if_<
+                ::boost::is_function<T>
+              , ::boost::mpl::true_
+              , ::boost::is_array<T>
+            >::type
+          , ::boost::add_lvalue_reference<value_type>
+          , ::boost::mpl::identity<value_type>
+        >::type reference;
     };
 }} // namespace boost::parameter
 
