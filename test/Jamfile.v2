@@ -469,6 +469,16 @@ alias parameter_python_test
 alias parameter_python_test
     :
     :
+        # Python fails for clang-linux compilers with cxxstd set to 11 or higher
+        # because of a Python header problem
+        # so we turn off this test for this compiler completely
+        <target-os>windows
+        <toolset>clang-linux
+    ;
+
+alias parameter_python_test
+    :
+    :
         # Python fails for windows compilers with 64-bit addressing set
         # because of a Python header problem
         <target-os>windows
