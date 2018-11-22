@@ -68,36 +68,5 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/type_traits/is_function.hpp>
-
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-#include <boost/function.hpp>
-#else
-#include <functional>
-#endif
-
-namespace boost { namespace parameter { 
-
-    template <typename Tag, typename T>
-    struct template_keyword : ::boost::parameter::aux::template_keyword_base
-    {
-        typedef Tag key_type;
-
-        // Wrap plain (non-UDT) function objects in either
-        // a boost::function or a std::function. -- Cromwell D. Enage
-        typedef typename ::boost::mpl::if_<
-            ::boost::is_function<T>
-#if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
-          , ::boost::function<T>
-#else
-          , ::std::function<T>
-#endif
-          , T
-        >::type value_type;
-
-        typedef value_type reference;
-    };
-}} // namespace boost::parameter
-
 #endif  // include guard
 
