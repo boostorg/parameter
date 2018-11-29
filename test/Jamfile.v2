@@ -464,6 +464,7 @@ alias parameter_python_test
         # so we turn off this test for this compiler completely
         <target-os>windows
         <toolset>gcc
+        <address-model>32
     ;
 
 alias parameter_python_test
@@ -474,6 +475,7 @@ alias parameter_python_test
         # so we turn off this test for this compiler completely
         <target-os>windows
         <toolset>clang-linux
+        <address-model>32
     ;
 
 alias parameter_python_test
