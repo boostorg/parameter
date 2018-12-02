@@ -22,6 +22,7 @@ namespace test {
 
     BOOST_PARAMETER_NAME(x)
     BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
 } // namespace test
 
 #include <boost/parameter/is_argument_pack.hpp>
@@ -33,6 +34,9 @@ namespace test {
     void check0(ArgumentPack const& p, K const& kw, T const& value)
     {
         BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgumentPack>));
+        BOOST_MPL_ASSERT_NOT((
+            boost::mpl::has_key<ArgumentPack,test::tag::z>
+        ));
         BOOST_TEST_EQ(p[kw], value);
     }
 } // namespace test
@@ -55,6 +59,9 @@ namespace test {
     {
         BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgumentPack>));
         BOOST_MPL_ASSERT((boost::mpl::has_key<ArgumentPack,typename K::tag>));
+        BOOST_MPL_ASSERT_NOT((
+            boost::mpl::has_key<ArgumentPack,test::tag::z>
+        ));
         BOOST_MPL_ASSERT((
             boost::mpl::equal_to<
                 typename boost::mpl::count<ArgumentPack,typename K::tag>::type

@@ -56,6 +56,15 @@ namespace test {
             BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgPack>));
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::a0>));
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::a1>));
+            BOOST_MPL_ASSERT_NOT((
+                boost::mpl::has_key<ArgPack,param::tag::lrc>
+            ));
+            BOOST_MPL_ASSERT_NOT((
+                boost::mpl::has_key<ArgPack,param::tag::lr>
+            ));
+            BOOST_MPL_ASSERT_NOT((
+                boost::mpl::has_key<ArgPack,param::tag::rr>
+            ));
             BOOST_MPL_ASSERT((
                 boost::mpl::equal_to<
                     typename boost::mpl::count<ArgPack,param::tag::a0>::type
@@ -181,6 +190,18 @@ namespace test {
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::rr>));
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lr>));
             BOOST_MPL_ASSERT((boost::mpl::has_key<ArgPack,param::tag::lrc>));
+            BOOST_MPL_ASSERT_NOT((
+                boost::mpl::has_key<ArgPack,param::tag::a0>
+            ));
+            BOOST_MPL_ASSERT_NOT((
+                boost::mpl::has_key<ArgPack,param::tag::a1>
+            ));
+            BOOST_MPL_ASSERT_NOT((
+                boost::mpl::has_key<ArgPack,param::tag::a2>
+            ));
+            BOOST_MPL_ASSERT_NOT((
+                boost::mpl::has_key<ArgPack,param::tag::a3>
+            ));
             BOOST_MPL_ASSERT((
                 boost::mpl::equal_to<
                     typename boost::mpl::count<ArgPack,param::tag::rr>::type
