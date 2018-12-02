@@ -885,8 +885,9 @@ namespace boost { namespace mpl {
     };
 }} // namespace boost::mpl
 
+#include <boost/parameter/value_type.hpp>
 #include <boost/mpl/has_key_fwd.hpp>
-#include <boost/mpl/find.hpp>
+#include <boost/type_traits/is_void.hpp>
 
 namespace boost { namespace mpl {
 
@@ -897,11 +898,9 @@ namespace boost { namespace mpl {
         struct apply
         {
             typedef typename ::boost::mpl::if_<
-                ::boost::is_same<
-                    typename ::boost::mpl::find<ArgList,Keyword>::type
-                  , ::boost::parameter::aux::arg_list_iterator<
-                        ::boost::parameter::aux::empty_arg_list
-                    >
+                ::boost::is_void<
+                    typename ::boost::parameter
+                    ::value_type<ArgList,Keyword,void>::type
                 >
               , ::boost::mpl::false_
               , ::boost::mpl::true_
@@ -922,11 +921,9 @@ namespace boost { namespace mpl {
         struct apply
         {
             typedef typename ::boost::mpl::if_<
-                ::boost::is_same<
-                    typename ::boost::mpl::find<ArgList,Keyword>::type
-                  , ::boost::parameter::aux::arg_list_iterator<
-                        ::boost::parameter::aux::empty_arg_list
-                    >
+                ::boost::is_void<
+                    typename ::boost::parameter
+                    ::value_type<ArgList,Keyword,void>::type
                 >
               , ::boost::mpl::int_<0>
               , ::boost::mpl::int_<1>
@@ -936,6 +933,7 @@ namespace boost { namespace mpl {
 }} // namespace boost::mpl
 
 #include <boost/mpl/key_type_fwd.hpp>
+#include <boost/mpl/identity.hpp>
 
 namespace boost { namespace mpl {
 
@@ -946,11 +944,9 @@ namespace boost { namespace mpl {
         struct apply
         {
             typedef typename ::boost::mpl::eval_if<
-                ::boost::is_same<
-                    typename ::boost::mpl::find<ArgList,Keyword>::type
-                  , ::boost::parameter::aux::arg_list_iterator<
-                        ::boost::parameter::aux::empty_arg_list
-                    >
+                ::boost::is_void<
+                    typename ::boost::parameter
+                    ::value_type<ArgList,Keyword,void>::type
                 >
               , void
               , ::boost::mpl::identity<Keyword>
@@ -983,6 +979,7 @@ namespace boost { namespace mpl {
 
 #include <boost/mpl/order_fwd.hpp>
 #include <boost/mpl/void.hpp>
+#include <boost/mpl/find.hpp>
 #include <boost/mpl/distance.hpp>
 
 namespace boost { namespace mpl {
@@ -995,11 +992,9 @@ namespace boost { namespace mpl {
         {
             typedef typename ::boost::mpl::find<ArgList,Keyword>::type Itr;
             typedef typename ::boost::mpl::eval_if<
-                ::boost::is_same<
-                    Itr
-                  , ::boost::parameter::aux::arg_list_iterator<
-                        ::boost::parameter::aux::empty_arg_list
-                    >
+                ::boost::is_void<
+                    typename ::boost::parameter
+                    ::value_type<ArgList,Keyword,void>::type
                 >
               , ::boost::mpl::identity< ::boost::mpl::void_>
               , ::boost::mpl::distance<
