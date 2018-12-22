@@ -67,15 +67,23 @@
 
 #include <boost/parameter/parameters.hpp>
 #include <boost/parameter/aux_/preprocessor/impl/function_name.hpp>
+#include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/seq/for_each_i.hpp>
 
 // Expands to a boost::parameter::parameters<> specialization for the
 // function named base.  Used by BOOST_PARAMETER_CONSTRUCTOR_AUX and
 // BOOST_PARAMETER_FUNCTION_HEAD for their respective ParameterSpec models.
-#define BOOST_PARAMETER_SPECIFICATION(tag_ns, base, split_args)              \
+#define BOOST_PARAMETER_SPECIFICATION(tag_ns, base, split_args, is_const)    \
     template <typename BoostParameterDummy>                                  \
     struct BOOST_PP_CAT(                                                     \
-        BOOST_PP_CAT(boost_param_params_, __LINE__)                          \
+        BOOST_PP_CAT(                                                        \
+            BOOST_PP_IF(                                                     \
+                is_const                                                     \
+              , boost_param_params_const_                                    \
+              , boost_param_params_                                          \
+            )                                                                \
+          , __LINE__                                                         \
+        )                                                                    \
       , BOOST_PARAMETER_MEMBER_FUNCTION_NAME(base)                           \
     ) : ::boost::parameter::parameters<                                      \
             BOOST_PP_SEQ_FOR_EACH_I(                                         \
@@ -85,7 +93,14 @@
     {                                                                        \
     };                                                                       \
     typedef BOOST_PP_CAT(                                                    \
-        BOOST_PP_CAT(boost_param_params_, __LINE__)                          \
+        BOOST_PP_CAT(                                                        \
+            BOOST_PP_IF(                                                     \
+                is_const                                                     \
+              , boost_param_params_const_                                    \
+              , boost_param_params_                                          \
+            )                                                                \
+          , __LINE__                                                         \
+        )                                                                    \
       , BOOST_PARAMETER_MEMBER_FUNCTION_NAME(base)                           \
     )<int>
 /**/

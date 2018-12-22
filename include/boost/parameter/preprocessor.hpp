@@ -7,56 +7,120 @@
 #ifndef BOOST_PARAMETER_PREPROCESSOR_060206_HPP
 #define BOOST_PARAMETER_PREPROCESSOR_060206_HPP
 
+#include <boost/parameter/aux_/preprocessor/impl/function_name.hpp>
+
+// Defines the implementation function header.
+#define BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name, is_const)                   \
+    template <typename Args>                                                 \
+    typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(name, is_const)<           \
+        Args                                                                 \
+    >::type BOOST_PARAMETER_FUNCTION_IMPL_NAME(name, is_const)(              \
+        Args const& args                                                     \
+    )
+/**/
+
 #include <boost/parameter/aux_/preprocessor/impl/forwarding_overloads.hpp>
+
+// Exapnds to a variadic function header that is enabled if and only if all
+// its arguments are tagged arguments.  All arguments are accessible via args
+// and keywords only.
+#define BOOST_PARAMETER_NO_SPEC_FUNCTION(result, name)                       \
+    BOOST_PARAMETER_NO_SPEC_FUNCTION_HEAD(result, name, 0)                   \
+    BOOST_PARAMETER_NO_SPEC_FUNCTION_IMPL_HEAD(name, 0);                     \
+    BOOST_PARAMETER_NO_SPEC_FUNCTION_OVERLOAD(name, name, 0, 0)              \
+    BOOST_PARAMETER_NO_SPEC_FUNCTION_IMPL_HEAD(name, 0)
+/**/
+
+#include <boost/preprocessor/control/expr_if.hpp>
+#include <boost/preprocessor/control/if.hpp>
+
+// Helper macro for BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION,
+// BOOST_PARAMETER_NO_SPEC_CONST_MEMBER_FUNCTION,
+// BOOST_PARAMETER_NO_SPEC_FUNCTION_CALL_OPERATOR, and
+// and BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR.
+#define BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION_AUX(result, name, impl, c)   \
+    BOOST_PARAMETER_NO_SPEC_FUNCTION_HEAD(result, impl, c)                   \
+    BOOST_PARAMETER_NO_SPEC_FUNCTION_OVERLOAD(                               \
+        name                                                                 \
+      , impl                                                                 \
+      , BOOST_PP_IF(BOOST_PARAMETER_MEMBER_FUNCTION_IS_STATIC(impl), 0, 1)   \
+      , c                                                                    \
+    )                                                                        \
+    BOOST_PARAMETER_NO_SPEC_FUNCTION_IMPL_HEAD(impl, c)                      \
+    BOOST_PP_EXPR_IF(c, const)
+/**/
+
+// Exapnds to a variadic member function header that is enabled if and only if
+// all its arguments are tagged arguments.  All arguments are accessible via
+// args and keywords only.
+#define BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION(result, name)                \
+    BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION_AUX(result, name, name, 0)
+/**/
+
+// Exapnds to a const-qualified variadic member function header that is
+// enabled if and only if all its arguments are tagged arguments.  All
+// arguments are accessible via args and keywords only.
+#define BOOST_PARAMETER_NO_SPEC_CONST_MEMBER_FUNCTION(result, name)          \
+    BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION_AUX(result, name, name, 1)
+/**/
+
+// Exapnds to a variadic function call operator header that is enabled if and
+// only if all its arguments are tagged arguments.  All arguments are
+// accessible via args and keywords only.
+#define BOOST_PARAMETER_NO_SPEC_FUNCTION_CALL_OPERATOR(result)               \
+    BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION_AUX(                             \
+        result, operator(), operator, 0                                      \
+    )
+/**/
+
+// Exapnds to a const-qualified variadic function call operator header that is
+// enabled if and only if all its arguments are tagged arguments.  All
+// arguments are accessible via args and keywords only.
+#define BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR(result)         \
+    BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION_AUX(                             \
+        result, operator(), operator, 1                                      \
+    )
+/**/
+
 #include <boost/parameter/aux_/preprocessor/impl/specification.hpp>
 #include <boost/preprocessor/cat.hpp>
 
 // Helper macro for BOOST_PARAMETER_CONSTRUCTOR.
 #define BOOST_PARAMETER_CONSTRUCTOR_AUX(class_, base, tag_namespace, args)   \
-    BOOST_PARAMETER_SPECIFICATION(tag_namespace, ctor, args)                 \
+    BOOST_PARAMETER_SPECIFICATION(tag_namespace, ctor, args, 0)              \
         BOOST_PP_CAT(constructor_parameters, __LINE__);                      \
     BOOST_PARAMETER_CONSTRUCTOR_OVERLOADS(class_, base, args)
-/**/
-
-#include <boost/parameter/aux_/preprocessor/impl/function_name.hpp>
-
-// Defines the implementation function header.
-#define BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name)                             \
-    template <typename Args>                                                 \
-    typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(name)<                     \
-        Args                                                                 \
-    >::type BOOST_PARAMETER_FUNCTION_IMPL_NAME(name)(Args const& args)
 /**/
 
 #include <boost/parameter/aux_/preprocessor/impl/parenthesized_type.hpp>
 
 // Expands to the result metafunction and the parameters specialization.
-#define BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_namespace, args)     \
+#define BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_ns, args, is_const)  \
     template <typename Args>                                                 \
-    struct BOOST_PARAMETER_FUNCTION_RESULT_NAME(name)                        \
+    struct BOOST_PARAMETER_FUNCTION_RESULT_NAME(name, is_const)              \
     {                                                                        \
         typedef typename BOOST_PARAMETER_PARENTHESIZED_TYPE(result) type;    \
     };                                                                       \
-    BOOST_PARAMETER_SPECIFICATION(tag_namespace, name, args)                 \
-        BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(name);
+    BOOST_PARAMETER_SPECIFICATION(tag_ns, name, args, is_const)              \
+        BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(name, is_const);
 /**/
 
 // Helper macro for BOOST_PARAMETER_BASIC_FUNCTION.
 #define BOOST_PARAMETER_BASIC_FUNCTION_AUX(result, name, tag_ns, args)       \
-    BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_ns, args)                \
-    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name);                                \
-    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, name, args, 0)          \
-    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name)
+    BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_ns, args, 0)             \
+    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name, 0);                             \
+    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, name, args, 0, 0)       \
+    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name, 0)
 /**/
 
-#include <boost/preprocessor/control/expr_if.hpp>
-
-// Helper macro for BOOST_PARAMETER_BASIC_MEMBER_FUNCTION
-// and BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION.
-#define BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(r, name, tag_ns, args, c)  \
-    BOOST_PARAMETER_FUNCTION_HEAD(r, name, tag_ns, args)                     \
-    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, name, args, c)          \
-    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name) BOOST_PP_EXPR_IF(c, const)
+// Helper macro for BOOST_PARAMETER_BASIC_MEMBER_FUNCTION,
+// BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION,
+// BOOST_PARAMETER_BASIC_FUNCTION_CALL_OPERATOR, and
+// BOOST_PARAMETER_BASIC_CONST_FUNCTION_CALL_OPERATOR.
+#define BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(r, n, i, tag_ns, args, c)  \
+    BOOST_PARAMETER_FUNCTION_HEAD(r, i, tag_ns, args, c)                     \
+    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(n, i, args, 1, c)             \
+    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(i, c) BOOST_PP_EXPR_IF(c, const)
 /**/
 
 #include <boost/parameter/aux_/preprocessor/impl/flatten.hpp>
@@ -83,7 +147,7 @@
 // are accessible via args and keywords only.
 #define BOOST_PARAMETER_BASIC_MEMBER_FUNCTION(result, name, tag_ns, args)    \
     BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(                               \
-        result, name, tag_ns                                                 \
+        result, name, name, tag_ns                                           \
       , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args), 0                     \
     )
 /**/
@@ -92,7 +156,25 @@
 // header.  All arguments are accessible via args and keywords only.
 #define BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION(r, name, tag_ns, args)   \
     BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(                               \
-        r, name, tag_ns                                                      \
+        r, name, name, tag_ns                                                \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args), 1                     \
+    )
+/**/
+
+// Expands to a Boost.Parameter-enabled function call operator header.  All
+// arguments are accessible via args and keywords only.
+#define BOOST_PARAMETER_BASIC_FUNCTION_CALL_OPERATOR(result, tag_ns, args)   \
+    BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(                               \
+        result, operator(), operator, tag_ns                                 \
+      , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args), 0                     \
+    )
+/**/
+
+// Expands to a Boost.Parameter-enabled const-qualified function call
+// operator header.  All arguments are accessible via args and keywords only.
+#define BOOST_PARAMETER_BASIC_CONST_FUNCTION_CALL_OPERATOR(r, tag_ns, args)  \
+    BOOST_PARAMETER_BASIC_MEMBER_FUNCTION_AUX(                               \
+        r, operator(), operator, tag_ns                                      \
       , BOOST_PARAMETER_AUX_PP_FLATTEN(2, 2, 3, args), 1                     \
     )
 /**/
@@ -101,11 +183,11 @@
 
 // Helper macro for BOOST_PARAMETER_FUNCTION.
 #define BOOST_PARAMETER_FUNCTION_AUX(result, name, tag_ns, args)             \
-    BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_ns, args)                \
-    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name);                                \
-    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, name, args, 0)          \
+    BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_ns, args, 0)             \
+    BOOST_PARAMETER_FUNCTION_IMPL_HEAD(name, 0);                             \
+    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, name, args, 0, 0)       \
     BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER(                                 \
-        1, (name, BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args), 0, tag_ns)      \
+        1, (name, BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args), 0, 0, tag_ns)   \
     )
 /**/
 
@@ -123,10 +205,20 @@
 // BOOST_PARAMETER_FUNCTION_CALL_OPERATOR, and
 // BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR.
 #define BOOST_PARAMETER_MEMBER_FUNCTION_AUX(r, name, impl, tag_ns, c, args)  \
-    BOOST_PARAMETER_FUNCTION_HEAD(r, impl, tag_ns, args)                     \
-    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, args, c)          \
+    BOOST_PARAMETER_FUNCTION_HEAD(r, impl, tag_ns, args, c)                  \
+    BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, args, 1, c)       \
     BOOST_PARAMETER_FUNCTION_DISPATCH_LAYER(                                 \
-        0, (impl, BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args), c, tag_ns)      \
+        0, (                                                                 \
+            impl                                                             \
+          , BOOST_PARAMETER_FUNCTION_SPLIT_ARGS(args)                        \
+          , BOOST_PP_IF(                                                     \
+                BOOST_PARAMETER_MEMBER_FUNCTION_IS_STATIC(impl)              \
+              , 0                                                            \
+              , 1                                                            \
+            )                                                                \
+          , c                                                                \
+          , tag_ns                                                           \
+        )                                                                    \
     )
 /**/
 

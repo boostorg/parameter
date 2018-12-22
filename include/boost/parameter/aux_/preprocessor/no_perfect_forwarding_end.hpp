@@ -19,6 +19,9 @@
 #undef BOOST_PARAMETER_make_deduced_list
 #undef BOOST_PARAMETER_build_arg_list
 #undef BOOST_PARAMETER_make_arg_list
+#undef BOOST_PARAMETER_make_simple_arg_list_function_call_op
+#undef BOOST_PARAMETER_make_simple_arg_list_type
+#undef BOOST_PARAMETER_make_simple_arg_list_type_prefix
 #undef BOOST_PARAMETER_satisfies_end
 #undef BOOST_PARAMETER_right_angle
 
