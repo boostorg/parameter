@@ -17,7 +17,10 @@
 // rvalue references, needed throughout; variadic templates, needed by
 // parameters; and the ability to handle multiple parameter packs, needed by
 // parameters.  Older versions of GCC either don't have the latter ability or
-// cannot disambiguate between keyword's overloaded operators.
+// cannot disambiguate between keyword's overloaded operators.  Older versions
+// of Clang either fail to compile due to differences in length between
+// parameter packs 'Args' and 'args' or fail at runtime due to segmentation
+// faults.
 // -- Cromwell D. Enage
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
     !defined(BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING) && \
@@ -25,8 +28,13 @@
     !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
     !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && \
     !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
-    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
-    !BOOST_WORKAROUND(BOOST_GCC, < 40900)
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && !( \
+        defined(BOOST_CLANG) && (1 == BOOST_CLANG) && ( \
+            (__clang_major__ < 3) || ( \
+                (3 == __clang_major__) && (__clang_minor__ < 2) \
+            ) \
+        ) \
+    ) && !BOOST_WORKAROUND(BOOST_GCC, < 40900)
 #define BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif
 
@@ -42,7 +50,9 @@
 #define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY 0
 #endif
 #if !defined(BOOST_PARAMETER_MAX_ARITY)
-#define BOOST_PARAMETER_MAX_ARITY 8
+// Libraries such as Boost.Log need a higher maximum arity
+// than the old value of 8. -- Cromwell D. Enage
+#define BOOST_PARAMETER_MAX_ARITY 20
 #endif
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif  // include guard
