@@ -781,14 +781,16 @@ that prints the arguments:
         std::cout << std::endl;
     }
 
+    #include <boost/core/lightweight_test.hpp>
+
     int main()
     {
         depth_first_search(1, 2, 3, 4, 5);
-
         depth_first_search(
             "1", '2', _color_map = '5',
             _index_map = "4", _root_vertex = "3"
         );
+        return boost::report_errors();
     }
 
 Despite the fact that default expressions such as ``vertices(graph).first``
@@ -815,7 +817,7 @@ and each one will print exactly the same thing.
         (color_map, \*)
     )
 ''')
-.. @test('compile')
+.. @test('run')
 
 Signature Matching and Overloading
 ----------------------------------
@@ -893,14 +895,18 @@ __ `parameter table`_
     {
         template <typename T, typename Args>
         struct apply
-          : boost::is_convertible<
-                T
-              , typename boost::graph_traits<
-                    typename boost::parameter::value_type<
-                        Args
-                      , graphs::graph
-                    >::type
-                >::vertex_descriptor
+          : boost::mpl::if_<
+                boost::is_convertible<
+                    T
+                  , typename boost::graph_traits<
+                        typename boost::parameter::value_type<
+                            Args
+                          , graphs::graph
+                        >::type
+                    >::vertex_descriptor
+                >
+              , boost::mpl::true_
+              , boost::mpl::false_
             >
         {
         };
@@ -949,14 +955,18 @@ classes provide the necessary checks.
     {
         template <typename T, typename Args>
         struct apply
-          : boost::mpl::and_<
+          : boost::mpl::eval_if<
                 boost::is_convertible<
                     typename boost::graph_traits<T>::traversal_category
                   , boost::incidence_graph_tag
                 >
-              , boost::is_convertible<
-                    typename boost::graph_traits<T>::traversal_category
-                  , boost::vertex_list_graph_tag
+              , boost::mpl::if_<
+                    boost::is_convertible<
+                        typename boost::graph_traits<T>::traversal_category
+                      , boost::vertex_list_graph_tag
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
                 >
             >
         {
@@ -967,18 +977,22 @@ classes provide the necessary checks.
     {
         template <typename T, typename Args>
         struct apply
-          : boost::mpl::and_<
+          : boost::mpl::eval_if<
                 boost::is_integral<
                     typename boost::property_traits<T>::value_type
                 >
-              , boost::is_same<
-                    typename boost::property_traits<T>::key_type
-                  , typename boost::graph_traits<
-                        typename boost::parameter::value_type<
-                            Args
-                          , graphs::graph
-                        >::type
-                    >::vertex_descriptor
+              , boost::mpl::if_<
+                    boost::is_same<
+                        typename boost::property_traits<T>::key_type
+                      , typename boost::graph_traits<
+                            typename boost::parameter::value_type<
+                                Args
+                              , graphs::graph
+                            >::type
+                        >::vertex_descriptor
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
                 >
             >
         {
@@ -989,14 +1003,18 @@ classes provide the necessary checks.
     {
         template <typename T, typename Args>
         struct apply
-          : boost::is_same<
-                typename boost::property_traits<T>::key_type
-              , typename boost::graph_traits<
-                    typename boost::parameter::value_type<
-                        Args
-                      , graphs::graph
-                    >::type
-                >::vertex_descriptor
+          : boost::mpl::if_<
+                boost::is_same<
+                    typename boost::property_traits<T>::key_type
+                  , typename boost::graph_traits<
+                        typename boost::parameter::value_type<
+                            Args
+                          , graphs::graph
+                        >::type
+                    >::vertex_descriptor
+                >
+              , boost::mpl::true_
+              , boost::mpl::false_
             >
         {
         };
@@ -1080,6 +1098,10 @@ by an asterix*, as follows:
     {
     }
 
+    #include <boost/core/lightweight_test.hpp>
+    #include <boost/graph/adjacency_list.hpp>
+    #include <utility>
+
     int main()
     {
         typedef boost::adjacency_list<
@@ -1095,11 +1117,11 @@ by an asterix*, as follows:
 
         depth_first_search(g);
         depth_first_search(g, _root_vertex = static_cast<int>(x));
-        return 0;
+        return boost::report_errors();
     }
 ''')
 
-.. @test('compile')
+.. @test('run')
 
 It usually isn't necessary to so completely encode the type requirements on
 arguments to generic functions.  However, doing so is worth the effort: your
@@ -1346,13 +1368,23 @@ the body of a class::
         }
     };
 
+    #include <boost/core/lightweight_test.hpp>
+
+    int main()
+    {
+        callable2 c2;
+        callable2 const& c2_const = c2;
+        c2_const.call(1, 2);
+        return boost::report_errors();
+    }
+
 .. @example.prepend('''
     #include <boost/parameter.hpp>
     #include <iostream>
     using namespace boost::parameter;
 ''')
 
-.. @test('compile')
+.. @test('run')
 
 These macros don't directly allow a function's interface to be separated from
 its implementation, but you can always forward arguments on to a separate
@@ -1364,7 +1396,7 @@ implementation function::
             (void), call, tag, (required (arg1,(int))(arg2,(int)))
         )
         {
-            call_impl(arg1,arg2);
+            call_impl(arg1, arg2);
         }
 
      private:
@@ -1401,13 +1433,22 @@ before the function name:
         }
     };
 
+    #include <boost/core/lightweight_test.hpp>
+
+    int main()
+    {
+        somebody::f();
+        somebody::f(4);
+        return boost::report_errors();
+    }
+
 .. @example.prepend('''
     #include <boost/parameter.hpp>
     #include <iostream>
     using namespace boost::parameter;
 ''')
 
-.. @test('compile')
+.. @test('run')
 
 -----------------------------------------
 Parameter-Enabled Function Call Operators
@@ -1434,13 +1475,23 @@ function objects::
         }
     };
 
+    #include <boost/core/lightweight_test.hpp>
+
+    int main()
+    {
+        callable2 c2;
+        callable2 const& c2_const = c2;
+        c2_const(1, 2);
+        return boost::report_errors();
+    }
+
 .. @example.prepend('''
     #include <boost/parameter.hpp>
     #include <iostream>
     using namespace boost::parameter;
 ''')
 
-.. @test('compile')
+.. @test('run')
 
 ------------------------------
 Parameter-Enabled Constructors
@@ -1451,7 +1502,7 @@ The lack of a “delegating constructor” feature in C++
 limits somewhat the quality of interface this library can provide
 for defining parameter-enabled constructors.  The usual workaround
 for a lack of constructor delegation applies: one must factor the
-common logic into a base class.  
+common logic into one or more base classes.  
 
 Let's build a parameter-enabled constructor that simply prints its
 arguments.  The first step is to write a base class whose
@@ -1501,7 +1552,11 @@ only ``name`` is required.  We can exercise our new interface as follows::
     myclass y(_index = 12, _name = "sally");  // named
     myclass z("june");                        // positional/defaulted
 
-.. @example.wrap('int main() {', ' return 0; }')
+.. @example.wrap('''
+    #include <boost/core/lightweight_test.hpp>
+
+    int main() {
+''', ' return boost::report_errors(); }')
 .. @test('run', howmany='all')
 
 For more on |ArgumentPack| manipulation, see the `Advanced Topics`_ section.

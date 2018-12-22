@@ -20,11 +20,16 @@ BOOST_PARAMETER_FUNCTION((void), depth_first_search, tag,
     )
 )
 {
-    std::cout << "graph=" << graph << std::endl;
-    std::cout << "visitor=" << visitor << std::endl;
-    std::cout << "root_vertex=" << root_vertex << std::endl;
-    std::cout << "index_map=" << index_map << std::endl;
-    std::cout << "color_map=" << color_map << std::endl;
+    std::cout << "graph=" << graph;
+    std::cout << std::endl;
+    std::cout << "visitor=" << visitor;
+    std::cout << std::endl;
+    std::cout << "root_vertex=" << root_vertex;
+    std::cout << std::endl;
+    std::cout << "index_map=" << index_map;
+    std::cout << std::endl;
+    std::cout << "color_map=" << color_map;
+    std::cout << std::endl;
 }
 
 #include <boost/core/lightweight_test.hpp>

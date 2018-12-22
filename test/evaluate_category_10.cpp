@@ -5,12 +5,11 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-    (BOOST_PARAMETER_MAX_ARITY < 10)
+#if (BOOST_PARAMETER_MAX_ARITY < 10)
 #error Define BOOST_PARAMETER_MAX_ARITY as 10 or greater.
 #endif
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/name.hpp>
 
 namespace test {
 
@@ -28,6 +27,13 @@ namespace test {
     BOOST_PARAMETER_NAME((_lrc2, keywords) in(lrc2))
     BOOST_PARAMETER_NAME((_lr2, keywords) out(lr2))
     BOOST_PARAMETER_NAME((_rr2, keywords) rr2)
+} // namespace test
+
+#include <boost/parameter/parameters.hpp>
+#include <boost/parameter/required.hpp>
+#include <boost/parameter/optional.hpp>
+
+namespace test {
 
     struct g_parameters
       : boost::parameter::parameters<
@@ -58,67 +64,67 @@ namespace test {
         {
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<0>(args[test::_lrc0])
+              , test::U::evaluate_category<0>(args[test::_lrc0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference
-              , U::evaluate_category<0>(args[test::_lr0])
+              , test::U::evaluate_category<0>(args[test::_lr0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<1>(args[test::_lrc1])
+              , test::U::evaluate_category<1>(args[test::_lrc1])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference
-              , U::evaluate_category<1>(args[test::_lr1])
+              , test::U::evaluate_category<1>(args[test::_lr1])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<2>(
+              , test::U::evaluate_category<2>(
                     args[test::_lrc2 | test::lvalue_const_bitset<2>()]
                 )
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference
-              , U::evaluate_category<2>(
+              , test::U::evaluate_category<2>(
                     args[test::_lr2 || test::lvalue_bitset_function<2>()]
                 )
             );
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference_to_const
-              , U::evaluate_category<0>(args[test::_rrc0])
+              , test::U::evaluate_category<0>(args[test::_rrc0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference
-              , U::evaluate_category<0>(args[test::_rr0])
+              , test::U::evaluate_category<0>(args[test::_rr0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference_to_const
-              , U::evaluate_category<1>(args[test::_rrc1])
+              , test::U::evaluate_category<1>(args[test::_rrc1])
             );
             BOOST_TEST_EQ(
                 test::passed_by_rvalue_reference
-              , U::evaluate_category<2>(
+              , test::U::evaluate_category<2>(
                     args[test::_rr2 || test::rvalue_bitset_function<2>()]
                 )
             );
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<0>(args[test::_rrc0])
+              , test::U::evaluate_category<0>(args[test::_rrc0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<0>(args[test::_rr0])
+              , test::U::evaluate_category<0>(args[test::_rr0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<1>(args[test::_rrc1])
+              , test::U::evaluate_category<1>(args[test::_rrc1])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , U::evaluate_category<2>(
+              , test::U::evaluate_category<2>(
                     args[test::_rr2 || test::rvalue_bitset_function<2>()]
                 )
             );

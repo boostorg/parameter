@@ -5,12 +5,11 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-    (BOOST_PARAMETER_MAX_ARITY < 8)
+#if (BOOST_PARAMETER_MAX_ARITY < 8)
 #error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
 #endif
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/name.hpp>
 
 namespace test {
 
@@ -28,6 +27,7 @@ namespace test {
     BOOST_PARAMETER_NAME((_rr1, kw) rr1)
 } // namespace test
 
+#include <boost/parameter/preprocessor.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/if.hpp>
@@ -102,54 +102,54 @@ namespace test {
         )
         {
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<0>(lrc0)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<0>(lrc0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference
-              , U::evaluate_category<1>(lr0)
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<1>(lr0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<4>(lrc1)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<4>(lrc1)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference
-              , U::evaluate_category<5>(lr1)
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<5>(lr1)
             );
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference_to_const
-              , U::evaluate_category<2>(std::forward<rrc0_type>(rrc0))
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<2>(std::forward<rrc0_type>(rrc0))
             );
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference
-              , U::evaluate_category<3>(std::forward<rr0_type>(rr0))
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<3>(std::forward<rr0_type>(rr0))
             );
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference_to_const
-              , U::evaluate_category<6>(std::forward<rrc1_type>(rrc1))
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<6>(std::forward<rrc1_type>(rrc1))
             );
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference
-              , U::evaluate_category<7>(std::forward<rr1_type>(rr1))
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<7>(std::forward<rr1_type>(rr1))
             );
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<2>(rrc0)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<2>(rrc0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<3>(rr0)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<3>(rr0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<6>(rrc1)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<6>(rrc1)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<7>(rr1)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<7>(rr1)
             );
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 

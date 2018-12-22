@@ -5,17 +5,14 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if (BOOST_PARAMETER_MAX_ARITY < 2)
 #error Define BOOST_PARAMETER_MAX_ARITY as 2 or greater.
 #endif
-#if (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 3)
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 3)
 #error Define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY \
 as 3 or greater.
 #endif
-#endif
-
-#include <boost/parameter.hpp>
 
 namespace test {
 
@@ -50,11 +47,17 @@ namespace test {
     };
 
     std::size_t count_instances::count = 0;
+} // namespace test
+
+#include <boost/parameter/name.hpp>
+
+namespace test {
 
     BOOST_PARAMETER_NAME(x)
     BOOST_PARAMETER_NAME(y)
 } // namespace test
 
+#include <boost/parameter/preprocessor.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/assert.hpp>

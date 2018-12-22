@@ -144,6 +144,7 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/tti/detail/dnullptr.hpp>
+#include <boost/core/enable_if.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -153,9 +154,13 @@ namespace boost { namespace parameter { namespace aux {
     template <
         typename TaggedArg
       , typename Next = ::boost::parameter::aux::empty_arg_list
+      , typename EmitErrors = ::boost::mpl::true_
     >
-    struct arg_list : Next
+    class arg_list : public Next
     {
+        TaggedArg arg;      // Stores the argument
+
+     public:
         typedef TaggedArg tagged_arg;
         typedef ::boost::parameter::aux::arg_list<TaggedArg,Next> self;
         typedef typename TaggedArg::key_type key_type;
@@ -175,8 +180,6 @@ namespace boost { namespace parameter { namespace aux {
           , reference
           , typename TaggedArg::value_type
         >::type value_type;
-
-        TaggedArg arg;      // Stores the argument
 
         // Create a new list by prepending arg to a copy of tail.  Used when
         // incrementally building this structure with the comma operator.
@@ -276,16 +279,22 @@ namespace boost { namespace parameter { namespace aux {
         static ::boost::parameter::aux::yes_tag has_key(key_type*);
         using Next::has_key;
 
-        BOOST_MPL_ASSERT_MSG(
+     private:
+        typedef ::boost::mpl::bool_<
             sizeof(
                 Next::has_key(
                     static_cast<key_type*>(BOOST_TTI_DETAIL_NULLPTR)
                 )
             ) == sizeof(::boost::parameter::aux::no_tag)
+        > _has_unique_key;
+
+        BOOST_MPL_ASSERT_MSG(
+            !(EmitErrors::value) || (_has_unique_key::value)
           , duplicate_keyword
           , (key_type)
         );
 
+     public:
         //
         // Begin implementation of indexing operators
         // for looking up specific arguments by name.
@@ -356,11 +365,18 @@ namespace boost { namespace parameter { namespace aux {
         // satisfied by TaggedArg.  Used only for compile-time computation
         // and never really called, so a declaration is enough.
         template <typename HasDefault, typename Predicate, typename ArgPack>
-        static typename ::boost::mpl::apply_wrap2<
-            ::boost::parameter::aux
-            ::augment_predicate<Predicate,reference,key_type>
-          , value_type
-          , ArgPack
+        static typename ::boost::lazy_enable_if<
+            typename ::boost::mpl::if_<
+                EmitErrors
+              , ::boost::mpl::true_
+              , _has_unique_key
+            >::type
+          , ::boost::mpl::apply_wrap2<
+                ::boost::parameter::aux
+                ::augment_predicate<Predicate,reference,key_type>
+              , value_type
+              , ArgPack
+            >
         >::type
             satisfies(
                 ::boost::parameter::aux::parameter_requirements<
@@ -524,6 +540,10 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/repetition/enum_shifted_params.hpp>
 
+#if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+#include <boost/core/enable_if.hpp>
+#endif
+
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 #include <boost/tti/detail/dnullptr.hpp>
 #endif
@@ -535,9 +555,13 @@ namespace boost { namespace parameter { namespace aux {
     template <
         typename TaggedArg
       , typename Next = ::boost::parameter::aux::empty_arg_list
+      , typename EmitErrors = ::boost::mpl::true_
     >
-    struct arg_list : Next
+    class arg_list : public Next
     {
+        TaggedArg arg;      // Stores the argument
+
+     public:
         typedef TaggedArg tagged_arg;
         typedef ::boost::parameter::aux::arg_list<TaggedArg,Next> self;
         typedef typename TaggedArg::key_type key_type;
@@ -557,8 +581,6 @@ namespace boost { namespace parameter { namespace aux {
           , reference
           , typename TaggedArg::value_type
         >::type value_type;
-
-        TaggedArg arg;      // Stores the argument
 
         // Create a new list by prepending arg to a copy of tail.  Used when
         // incrementally building this structure with the comma operator.
@@ -613,6 +635,7 @@ namespace boost { namespace parameter { namespace aux {
         static ::boost::parameter::aux::yes_tag has_key(key_type*);
         using Next::has_key;
 
+#if defined(BOOST_NO_SFINAE) || BOOST_WORKAROUND(BOOST_MSVC, < 1800)
         BOOST_MPL_ASSERT_MSG(
             sizeof(
                 Next::has_key(
@@ -622,8 +645,25 @@ namespace boost { namespace parameter { namespace aux {
           , duplicate_keyword
           , (key_type)
         );
-#endif
+#else
+     private:
+        typedef ::boost::mpl::bool_<
+            sizeof(
+                Next::has_key(
+                    static_cast<key_type*>(BOOST_TTI_DETAIL_NULLPTR)
+                )
+            ) == sizeof(::boost::parameter::aux::no_tag)
+        > _has_unique_key;
 
+        BOOST_MPL_ASSERT_MSG(
+            !(EmitErrors::value) || (_has_unique_key::value)
+          , duplicate_keyword
+          , (key_type)
+        );
+#endif
+#endif  // Borland workarounds not needed.
+
+     public:
         //
         // Begin implementation of indexing operators
         // for looking up specific arguments by name.
@@ -786,11 +826,23 @@ namespace boost { namespace parameter { namespace aux {
         // satisfied by TaggedArg.  Used only for compile-time computation
         // and never really called, so a declaration is enough.
         template <typename HasDefault, typename Predicate, typename ArgPack>
-        static typename ::boost::mpl::apply_wrap2<
-            ::boost::parameter::aux
-            ::augment_predicate<Predicate,reference,key_type>
-          , value_type
-          , ArgPack
+        static typename
+#if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+        ::boost::lazy_enable_if<
+            typename ::boost::mpl::if_<
+                EmitErrors
+              , ::boost::mpl::true_
+              , _has_unique_key
+            >::type,
+#endif
+            ::boost::mpl::apply_wrap2<
+                ::boost::parameter::aux
+                ::augment_predicate<Predicate,reference,key_type>
+              , value_type
+              , ArgPack
+#if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+           >
+#endif
         >::type
             satisfies(
                 ::boost::parameter::aux::parameter_requirements<

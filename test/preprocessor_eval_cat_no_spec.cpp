@@ -1,31 +1,30 @@
-// Copyright Cromwell D. Enage 2017.
+// Copyright Cromwell D. Enage 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter/config.hpp>
 
-#if (BOOST_PARAMETER_MAX_ARITY < 4)
-#error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
-#endif
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-    (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 5)
-#error Define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY \
-as 5 or greater.
+#if (BOOST_PARAMETER_MAX_ARITY < 8)
+#error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
 #endif
 
 #include <boost/parameter/name.hpp>
 
 namespace test {
 
-    BOOST_PARAMETER_NAME((_lrc0, kw) in(lrc0))
-    BOOST_PARAMETER_NAME((_lr0, kw) in_out(lr0))
-    BOOST_PARAMETER_NAME((_rrc0, kw) in(rrc0))
+    BOOST_PARAMETER_NAME((_lrc0, kw0) in(lrc0))
+    BOOST_PARAMETER_NAME((_lr0, kw1) in_out(lr0))
+    BOOST_PARAMETER_NAME((_rrc0, kw2) in(rrc0))
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-    BOOST_PARAMETER_NAME((_rr0, kw) consume(rr0))
+    BOOST_PARAMETER_NAME((_rr0, kw3) consume(rr0))
 #else
-    BOOST_PARAMETER_NAME((_rr0, kw) rr0)
+    BOOST_PARAMETER_NAME((_rr0, kw3) rr0)
 #endif
+    BOOST_PARAMETER_NAME((_lrc1, kw4) in(lrc1))
+    BOOST_PARAMETER_NAME((_lr1, kw5) out(lr1))
+    BOOST_PARAMETER_NAME((_rrc1, kw6) in(rrc1))
+    BOOST_PARAMETER_NAME((_rr1, kw7) rr1)
 } // namespace test
 
 #include <boost/parameter/preprocessor.hpp>
@@ -33,66 +32,41 @@ namespace test {
 #include <boost/core/lightweight_test.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/remove_const.hpp>
-#include <boost/type_traits/remove_reference.hpp>
 #include "evaluate_category.hpp"
-
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-#include <utility>
-#endif
 
 namespace test {
 
-    BOOST_PARAMETER_FUNCTION((bool), evaluate, kw,
-        (required
-            (lrc0, *)
-            (lr0, *)
-            (rrc0, *)
-            (rr0, *)
-        )
-    )
+    BOOST_PARAMETER_NO_SPEC_FUNCTION((bool), evaluate)
     {
         BOOST_TEST((
             test::passed_by_lvalue_reference_to_const == test::A<
                 typename boost::remove_const<
                     typename boost::parameter::value_type<
                         Args
-                      , test::kw::lrc0
+                      , test::kw0::lrc0
                     >::type
                 >::type
             >::evaluate_category(args[test::_lrc0])
         ));
-        BOOST_TEST_EQ(
-            test::passed_by_lvalue_reference_to_const
-          , test::A<
-                typename boost::remove_const<
-                    typename boost::remove_reference<lrc0_type>::type
-                >::type
-            >::evaluate_category(lrc0)
-        );
         BOOST_TEST((
             test::passed_by_lvalue_reference == test::A<
                 typename boost::remove_const<
                     typename boost::parameter::value_type<
                         Args
-                      , test::kw::lr0
+                      , test::kw1::lr0
                     >::type
                 >::type
             >::evaluate_category(args[test::_lr0])
         ));
-        BOOST_TEST_EQ(
-            test::passed_by_lvalue_reference
-          , test::A<
-                typename boost::remove_const<
-                    typename boost::remove_reference<lr0_type>::type
-                >::type
-            >::evaluate_category(lr0)
-        );
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         if (
             boost::is_scalar<
                 typename boost::remove_const<
-                    typename boost::remove_reference<rrc0_type>::type
+                    typename boost::parameter::value_type<
+                        Args
+                      , test::kw2::rrc0
+                    >::type
                 >::type
             >::value
         )
@@ -102,37 +76,21 @@ namespace test {
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rrc0
+                          , test::kw2::rrc0
                         >::type
                     >::type
                 >::evaluate_category(args[test::_rrc0])
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rrc0_type>::type
-                    >::type
-                >::evaluate_category(std::forward<rrc0_type>(rrc0))
-            );
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rr0
+                          , test::kw3::rr0
                         >::type
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rr0_type>::type
-                    >::type
-                >::evaluate_category(std::forward<rr0_type>(rr0))
-            );
         }
         else // rrc0's value type isn't scalar
         {
@@ -141,37 +99,21 @@ namespace test {
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rrc0
+                          , test::kw2::rrc0
                         >::type
                     >::type
                 >::evaluate_category(args[test::_rrc0])
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference_to_const
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rrc0_type>::type
-                    >::type
-                >::evaluate_category(std::forward<rrc0_type>(rrc0))
-            );
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rr0
+                          , test::kw3::rr0
                         >::type
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rr0_type>::type
-                    >::type
-                >::evaluate_category(std::forward<rr0_type>(rr0))
-            );
         }
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
         BOOST_TEST((
@@ -179,37 +121,21 @@ namespace test {
                 typename boost::remove_const<
                     typename boost::parameter::value_type<
                         Args
-                      , test::kw::rrc0
+                      , test::kw2::rrc0
                     >::type
                 >::type
             >::evaluate_category(args[test::_rrc0])
         ));
-        BOOST_TEST_EQ(
-            test::passed_by_lvalue_reference_to_const
-          , test::A<
-                typename boost::remove_const<
-                    typename boost::remove_reference<rrc0_type>::type
-                >::type
-            >::evaluate_category(rrc0)
-        );
         BOOST_TEST((
             test::passed_by_lvalue_reference_to_const == test::A<
                 typename boost::remove_const<
                     typename boost::parameter::value_type<
                         Args
-                      , test::kw::rr0
+                      , test::kw3::rr0
                     >::type
                 >::type
             >::evaluate_category(args[test::_rr0])
         ));
-        BOOST_TEST_EQ(
-            test::passed_by_lvalue_reference_to_const
-          , test::A<
-                typename boost::remove_const<
-                    typename boost::remove_reference<rr0_type>::type
-                >::type
-            >::evaluate_category(rr0)
-        );
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
         return true;
@@ -253,100 +179,47 @@ namespace test {
         )
         {
             test::evaluate(
-                args[test::_lrc0]
-              , args[test::_lr0]
-              , args[test::_rrc0]
-              , args[test::_rr0]
+                test::_lrc0 = args[test::_lrc0]
+              , test::_lr0 = args[test::_lr0]
+              , test::_rrc0 = args[test::_rrc0]
+              , test::_rr0 = args[test::_rr0]
             );
         }
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-        typedef test::string_predicate<test::kw::lr0> rr0_pred;
-
-        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate, kw,
-            (required
-                (lrc0, (char))
-            )
-            (deduced
-                (optional
-                    (rrc0, (float), 0.0f)
-                    (lr0, (char const*), test::baz)
-                    (rr0, *(rr0_pred), std::string(lr0))
-                )
-            )
-        )
-#else   // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-        BOOST_PARAMETER_MEMBER_FUNCTION((bool), static evaluate, kw,
-            (required
-                (lrc0, (char))
-            )
-            (deduced
-                (optional
-                    (rrc0, (float), 0.0f)
-                    (lr0, (char const*), test::baz)
-                    (rr0
-                      , *(test::string_predicate<test::kw::lr0>)
-                      , std::string(lr0)
-                    )
-                )
-            )
-        )
-#endif  // SunPro CC workarounds needed.
+        BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION((bool), static evaluate)
         {
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::lrc0
+                          , test::kw0::lrc0
                         >::type
                     >::type
                 >::evaluate_category(args[test::_lrc0])
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<lrc0_type>::type
-                    >::type
-                >::evaluate_category(lrc0)
-            );
             BOOST_TEST((
                 test::passed_by_lvalue_reference == test::A<
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::lr0
+                          , test::kw1::lr0
+                          , char const*
                         >::type
                     >::type
-                >::evaluate_category(args[test::_lr0])
+                >::evaluate_category(args[test::_lr0 | test::baz])
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<lr0_type>::type
-                    >::type
-                >::evaluate_category(lr0)
-            );
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rrc0
+                          , test::kw2::rrc0
+                          , float
                         >::type
                     >::type
-                >::evaluate_category(args[test::_rrc0])
+                >::evaluate_category(args[test::_rrc0 | 0.0f])
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rrc0_type>::type
-                    >::type
-                >::evaluate_category(rrc0)
-            );
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST((
@@ -354,38 +227,32 @@ namespace test {
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rr0
+                          , test::kw3::rr0
+                          , std::string
                         >::type
                     >::type
-                >::evaluate_category(args[test::_rr0])
+                >::evaluate_category(
+                    args[
+                        test::_rr0 | std::string(args[test::_lr0 | test::baz])
+                    ]
+                )
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_rvalue_reference
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rr0_type>::type
-                    >::type
-                >::evaluate_category(std::forward<rr0_type>(rr0))
-            );
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
                         typename boost::parameter::value_type<
                             Args
-                          , test::kw::rr0
+                          , test::kw3::rr0
+                          , std::string
                         >::type
                     >::type
-                >::evaluate_category(args[test::_rr0])
+                >::evaluate_category(
+                    args[
+                        test::_rr0 | std::string(args[test::_lr0 | test::baz])
+                    ]
+                )
             ));
-            BOOST_TEST_EQ(
-                test::passed_by_lvalue_reference_to_const
-              , test::A<
-                    typename boost::remove_const<
-                        typename boost::remove_reference<rr0_type>::type
-                    >::type
-                >::evaluate_category(rr0)
-            );
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
             return true;
@@ -401,37 +268,96 @@ namespace test {
         }
 #endif
 
-        BOOST_PARAMETER_CONSTRUCTOR(C, (B), kw,
-            (required
-                (lrc0, *)
-                (lr0, *)
-                (rrc0, *)
-                (rr0, *)
-            )
-        )
+        BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR(C, (B))
+    };
+
+    struct D
+    {
+        BOOST_PARAMETER_NO_SPEC_NO_BASE_CONSTRUCTOR(D, D::_evaluate)
+
+        BOOST_PARAMETER_NO_SPEC_CONST_MEMBER_FUNCTION((bool), evaluate_m)
+        {
+            return D::_evaluate(args);
+        }
+
+        BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR((bool))
+        {
+            return D::_evaluate(args);
+        }
+
+     private:
+        template <typename Args>
+        static bool _evaluate(Args const& args)
+        {
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<0>(args[test::_lrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<1>(args[test::_lr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<4>(args[test::_lrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<5>(
+                    args[test::_lr1 | test::lvalue_bitset<5>()]
+                )
+            );
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<2>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<3>(args[test::_rr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<6>(
+                    args[test::_rrc1 | test::rvalue_const_bitset<6>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<7>(
+                    args[test::_rr1 | test::rvalue_bitset<7>()]
+                )
+            );
+#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<2>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<3>(args[test::_rr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<6>(
+                    args[test::_rrc1 | test::rvalue_const_bitset<6>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<7>(
+                    args[test::_rr1 | test::rvalue_bitset<7>()]
+                )
+            );
+#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
+            return true;
+        }
     };
 } // namespace test
 
 int main()
 {
-    test::evaluate(
-        test::lvalue_const_float()
-      , test::lvalue_float()
-      , test::rvalue_const_float()
-      , test::rvalue_float()
-    );
-    test::evaluate(
-        test::lvalue_const_char_ptr()
-      , test::lvalue_char_ptr()
-      , test::rvalue_const_char_ptr()
-      , test::rvalue_char_ptr()
-    );
-    test::evaluate(
-        test::lvalue_const_str()
-      , test::lvalue_str()
-      , test::rvalue_const_str()
-      , test::rvalue_str()
-    );
     test::evaluate(
         test::_lr0 = test::lvalue_float()
       , test::_rrc0 = test::rvalue_const_float()
@@ -451,24 +377,6 @@ int main()
       , test::_lrc0 = test::lvalue_const_str()
     );
 
-    test::C cf0(
-        test::lvalue_const_float()
-      , test::lvalue_float()
-      , test::rvalue_const_float()
-      , test::rvalue_float()
-    );
-    test::C cc0(
-        test::lvalue_const_char_ptr()
-      , test::lvalue_char_ptr()
-      , test::rvalue_const_char_ptr()
-      , test::rvalue_char_ptr()
-    );
-    test::C cs0(
-        test::lvalue_const_str()
-      , test::lvalue_str()
-      , test::rvalue_const_str()
-      , test::rvalue_str()
-    );
     test::C cf1(
         test::_lr0 = test::lvalue_float()
       , test::_rrc0 = test::rvalue_const_float()
@@ -496,17 +404,6 @@ int main()
     // MSVC-12+ treats static_cast<char_arr&&>(baz_arr) as an lvalue.
 #else
     test::evaluate(
-        "q2x"
-      , baz_arr
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-      , static_cast<char_arr const&&>("mos")
-      , static_cast<char_arr&&>(baz_arr)
-#else
-      , "crg"
-      , "uir"
-#endif
-    );
-    test::evaluate(
         test::_lr0 = baz_arr
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
       , test::_rrc0 = static_cast<char_arr const&&>("def")
@@ -518,10 +415,10 @@ int main()
       , test::_lrc0 = "wld"
     );
 #endif  // MSVC-12+
-    test::B::evaluate(test::lvalue_const_str()[0]);
+    test::B::evaluate(test::_lrc0 = test::lvalue_const_str()[0]);
     test::C::evaluate(
-        test::lvalue_const_str()[0]
-      , test::rvalue_const_float()
+        test::_rrc0 = test::rvalue_const_float()
+      , test::_lrc0 = test::lvalue_const_str()[0]
     );
 
 #if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
@@ -531,14 +428,14 @@ int main()
     test::C cp1;
 #else
     test::C cp0(
-        "frd"
-      , baz_arr
+        test::_lrc0 = "frd"
+      , test::_lr0 = baz_arr
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-      , static_cast<char_arr const&&>("dfs")
-      , static_cast<char_arr&&>(baz_arr)
+      , test::_rrc0 = static_cast<char_arr const&&>("dfs")
+      , test::_rr0 = static_cast<char_arr&&>(baz_arr)
 #else
-      , "plg"
-      , "thd"
+      , test::_rrc0 = "plg"
+      , test::_rr0 = "thd"
 #endif
     );
     test::C cp1(
@@ -555,16 +452,68 @@ int main()
 #endif  // MSVC-12+
 
     cp0.evaluate(
-        test::lvalue_const_str()[0]
-      , test::lvalue_char_ptr()
-      , test::rvalue_str()
-      , test::rvalue_const_float()
+        test::_lrc0 = test::lvalue_const_str()[0]
+      , test::_lr0 = test::lvalue_char_ptr()
+      , test::_rr0 = test::rvalue_str()
+      , test::_rrc0 = test::rvalue_const_float()
     );
     cp1.evaluate(
-        test::lvalue_const_str()[0]
-      , test::rvalue_str()
-      , test::rvalue_const_float()
-      , test::lvalue_char_ptr()
+        test::_lrc0 = test::lvalue_const_str()[0]
+      , test::_rr0 = test::rvalue_str()
+      , test::_rrc0 = test::rvalue_const_float()
+      , test::_lr0 = test::lvalue_char_ptr()
+    );
+
+    test::D dp0(
+        test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+      , test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+    );
+    test::D dp1(
+        test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+      , test::_rrc1 = test::rvalue_const_bitset<6>()
+      , test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+    );
+
+    dp0.evaluate_m(
+        test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+      , test::_rrc1 = test::rvalue_const_bitset<6>()
+      , test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+    );
+    dp1.evaluate_m(
+        test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+      , test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lr1 = test::lvalue_bitset<5>()
+      , test::_rrc1 = test::rvalue_const_bitset<6>()
+      , test::_rr1 = test::rvalue_bitset<7>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+    );
+    dp0(
+        test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+      , test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+    );
+    dp1(
+        test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+      , test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lr1 = test::lvalue_bitset<5>()
+      , test::_rrc1 = test::rvalue_const_bitset<6>()
+      , test::_rr1 = test::rvalue_bitset<7>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
     );
     return boost::report_errors();
 }

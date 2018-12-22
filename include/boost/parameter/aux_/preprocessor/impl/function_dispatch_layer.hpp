@@ -281,7 +281,10 @@
     BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                         \
     inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, 0, 0)            \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                 \
+        return BOOST_PP_EXPR_IF(                                             \
+            BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                   \
+          , this->                                                           \
+        ) BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                      \
             static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
           , args                                                             \
           , 0L                                                               \
@@ -304,7 +307,10 @@
     BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                         \
     inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, 1, 0)            \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                 \
+        return BOOST_PP_EXPR_IF(                                             \
+            BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                   \
+          , this->                                                           \
+        ) BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                      \
             static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
           , args                                                             \
           , 0L                                                               \
@@ -331,7 +337,10 @@
     BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_TPL(n, x)                         \
     inline BOOST_PARAMETER_FUNCTION_DISPATCH_HEAD_PRN(n, x, 0, 1)            \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 1)(                 \
+        return BOOST_PP_EXPR_IF(                                             \
+            BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                   \
+          , this->                                                           \
+        ) BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 1)(                      \
             static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
           , (args                                                            \
               , BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT(                   \
@@ -357,7 +366,7 @@
 
 // x is a tuple:
 //
-//   (base_name, split_args, is_const, tag_namespace)
+//   (base_name, split_args, is_member, is_const, tag_namespace)
 //
 // Generates all dispatch functions for the function named base_name.  Each
 // dispatch function that takes in n optional parameters passes the default
@@ -391,15 +400,21 @@
         BOOST_PARAMETER_FUNCTION_DISPATCH_BASE_NAME(x)                       \
     ) inline typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(                  \
         BOOST_PARAMETER_FUNCTION_DISPATCH_BASE_NAME(x)                       \
+      , BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x)                        \
     )<Args>::type BOOST_PARAMETER_FUNCTION_IMPL_NAME(                        \
         BOOST_PARAMETER_FUNCTION_DISPATCH_BASE_NAME(x)                       \
+      , BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x)                        \
     )(Args const& args)                                                      \
     BOOST_PP_EXPR_IF(BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x), const)   \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                 \
+        return BOOST_PP_EXPR_IF(                                             \
+            BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                   \
+          , this->                                                           \
+        ) BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                      \
             static_cast<                                                     \
                 typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(               \
                     BOOST_PARAMETER_FUNCTION_DISPATCH_BASE_NAME(x)           \
+                  , BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x)            \
                 )<Args>::type(*)()                                           \
             >(BOOST_TTI_DETAIL_NULLPTR)                                      \
           , args                                                             \
