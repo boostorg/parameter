@@ -50,9 +50,7 @@
 #define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY 0
 #endif
 #if !defined(BOOST_PARAMETER_MAX_ARITY)
-// Libraries such as Boost.Log need a higher maximum arity
-// than the old value of 8. -- Cromwell D. Enage
-#define BOOST_PARAMETER_MAX_ARITY 20
+#define BOOST_PARAMETER_MAX_ARITY 8
 #endif
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif  // include guard
