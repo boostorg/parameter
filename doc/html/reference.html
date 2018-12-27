@@ -407,8 +407,7 @@ default</a> with <a class="reference internal" href="#tag-type">tag type</a>
 <li><tt class="docutils literal">z</tt> is an <span class="concept"
 >ArgumentPack</span> containing a single element (as created by <a
 class="reference internal" href="#keyword"><tt class="docutils literal"
->keyword</tt></a><tt class="docutils literal"><span class="pre"
->&lt;…&gt;::operator=</span></tt>)</li>
+>keyword</tt></a><tt class="docutils literal">&lt;…&gt;::operator=</tt>)</li>
 </ul>
 <p>Any exceptions are thrown from the invocation of
 <tt class="docutils literal">w</tt>'s <em>value</em>
@@ -432,8 +431,7 @@ will be propagated to the caller.</p>
 <tbody valign="top">
 <tr>
 <td><tt class="docutils literal">x[u]</tt></td>
-<td><tt class="docutils literal"><span
-class="pre">binding&lt;A,K&gt;::type</span></tt></td>
+<td><tt class="docutils literal">binding&lt;A,K&gt;::type</tt></td>
 <td><tt class="docutils literal">x</tt> contains an element <em>b</em> whose
 <a class="reference internal" href="#kw">keyword</a> is
 <tt class="docutils literal">K</tt></td>
@@ -441,8 +439,7 @@ class="pre">binding&lt;A,K&gt;::type</span></tt></td>
 </tr>
 <tr>
 <td><tt class="docutils literal">x[u]</tt></td>
-<td><tt class="docutils literal"><span
-class="pre">binding&lt;A,L,D&gt;::type</span></tt></td>
+<td><tt class="docutils literal">binding&lt;A,L,D&gt;::type</tt></td>
 <td><em>none</em></td>
 <td>If <tt class="docutils literal">x</tt> contains an element <em>b</em>
 whose <a class="reference internal" href="#kw">keyword</a> is the same as
@@ -451,8 +448,7 @@ reference).  Otherwise, returns <tt class="docutils literal">u</tt>'s
 <em>value</em>.</td>
 </tr>
 <tr><td><tt class="docutils literal">x[w]</tt></td>
-<td><tt class="docutils literal"><span
-class="pre">lazy_binding&lt;A,M,E&gt;::type</span></tt></td>
+<td><tt class="docutils literal">lazy_binding&lt;A,M,E&gt;::type</tt></td>
 <td><em>none</em></td>
 <td>If <tt class="docutils literal">x</tt> contains an element <em>b</em>
 whose <a class="reference internal" href="#kw">keyword</a> is the same as
@@ -574,44 +570,36 @@ struct keyword
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"><tt
-class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"
+>is_scalar</a>&lt;T&gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
         &gt;::type
@@ -623,56 +611,45 @@ href="#operator">operator=</a>(T const&amp; value) const;
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::out_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_const.html"><tt
-class="docutils literal">is_const</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_const.html"
+>is_const</a>&lt;T&gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
             &gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
         &gt;::type
       , <a class="reference internal" href="#argumentpack"><span
 class="concept">ArgumentPack</span></a>
@@ -682,44 +659,36 @@ href="#operator">operator=</a>(T&amp; value) const;
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"><tt
-class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"
+>is_scalar</a>&lt;T&gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
         &gt;::type
@@ -731,44 +700,36 @@ href="#operator">operator=</a>(T const&amp;&amp; value) const;
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"><tt
-class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"
+>is_scalar</a>&lt;T&gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::consume_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
         &gt;::type
@@ -780,44 +741,36 @@ href="#operator">operator=</a>(T&amp;&amp; value) const;
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"><tt
-class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"
+>is_scalar</a>&lt;T&gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
         &gt;::type
@@ -828,56 +781,46 @@ href="#id9">operator|</a>(T const&amp; x) const;
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::out_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
           , boost::mpl::<a class="reference external"
 href="../../../mpl/doc/refmanual/if.html"><tt
 class="docutils literal">if_</tt></a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_const.html"><tt
-class="docutils literal">is_const</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_const.html"
+>is_const</a>&lt;T&gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
             &gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
         &gt;::type
       , <em>tagged default</em>
     &gt;::type constexpr
@@ -886,44 +829,36 @@ href="#id9">operator|</a>(T&amp; x) const;
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"><tt
-class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"
+>is_scalar</a>&lt;T&gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::in_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
         &gt;::type
@@ -934,44 +869,36 @@ href="#id9">operator|</a>(T const&amp;&amp; x) const;
 
     template &lt;typename T&gt;
     typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
         typename boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
             boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"><tt
-class="docutils literal">is_scalar</tt></a>&lt;T&gt;
+href="../../../type_traits/doc/html/boost_typetraits/is_scalar.html"
+>is_scalar</a>&lt;T&gt;
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
           , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/eval-if.html"><tt
-class="docutils literal">eval_if</tt></a>&lt;
+href="../../../mpl/doc/refmanual/eval-if.html">eval_if</a>&lt;
                 boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                     typename Tag::qualifier
                   , boost::parameter::consume_reference
                 &gt;
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
               , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/if.html"><tt
-class="docutils literal">if_</tt></a>&lt;
+href="../../../mpl/doc/refmanual/if.html">if_</a>&lt;
                     boost::<a class="reference external"
-href="../../../type_traits/doc/html/boost_typetraits/is_same.html"><tt
-class="docutils literal">is_same</tt></a>&lt;
+href="../../../type_traits/doc/html/boost_typetraits/is_same.html"
+>is_same</a>&lt;
                         typename Tag::qualifier
                       , boost::parameter::forward_reference
                     &gt;
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">true_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">true_</a>
                   , boost::mpl::<a class="reference external"
-href="../../../mpl/doc/refmanual/bool.html"><tt
-class="docutils literal">false_</tt></a>
+href="../../../mpl/doc/refmanual/bool.html">false_</a>
                 &gt;
             &gt;
         &gt;::type
@@ -1498,8 +1425,8 @@ struct required;
 <p>The default value of <tt class="docutils literal">Predicate</tt> is an
 unspecified <a class="reference external"
 href="../../../mpl/doc/refmanual/metafunction-class.html">MPL Binary
-Metafunction Class</a> that returns <tt class="docutils literal"><span
-class="pre">mpl::true_</span></tt> for any argument.</p>
+Metafunction Class</a> that returns <tt class="docutils literal"
+>mpl::true_</tt> for any argument.</p>
 </div>
 <div class="section" id="deduced">
 <h2><a class="toc-backref" href="#id44">4.5&nbsp;&nbsp;&nbsp;<tt
@@ -1688,7 +1615,7 @@ exists, returns <tt class="docutils literal">D</tt>.  Equivalent to:</p>
 <pre class="literal-block">
 typename boost::<a class="reference external"
 href="../../../type_traits/doc/html/boost_typetraits/remove_reference.html"
-><tt class="docutils literal">remove_reference</tt></a>&lt;
+>remove_reference</a>&lt;
     typename <a class="reference internal" href="#binding"
 >binding</a>&lt;A, K, D&gt;::type
 &gt;::type
@@ -1730,12 +1657,11 @@ struct are_tagged_arguments  // : mpl::true_ or mpl::false_
 </tr>
 <tr>
 <td>&nbsp;</td>
-<td class="field-body"><tt class="docutils literal"><span class="pre"
->mpl::true_</span></tt> if <tt class="docutils literal">T0</tt> and all
-elements in parameter pack <tt class="docutils literal">Pack</tt> are
-<a class="reference internal" href="#tagged-reference">tagged reference</a>
-types, <tt class="docutils literal"><span class="pre">mpl::false_</span></tt>
-otherwise.</td>
+<td class="field-body"><tt class="docutils literal">mpl::true_</tt> if <tt
+class="docutils literal">T0</tt> and all elements in parameter pack <tt
+class="docutils literal">Pack</tt> are <a class="reference internal"
+href="#tagged-reference">tagged reference</a> types, <tt
+class="docutils literal">mpl::false_</tt> otherwise.</td>
 </tr>
 <tr class="field">
 <th class="field-name" colspan="2">Example usage:</th>
@@ -1748,8 +1674,8 @@ container that conforms to the C++ standard, one needs to remember that the
 standard requires the presence of other constructors that are typically
 defined as templates, such as range constructors.  To avoid overload
 ambiguities between the two constructors, use this metafunction in conjunction
-with <tt class="docutils literal"><span class="pre">disable_if</span></tt> to
-define the range constructor.</p>
+with <tt class="docutils literal">disable_if</tt> to define the range
+constructor.</p>
 <pre class="first literal-block">
 template &lt;typename B&gt;
 class frontend : public B
@@ -1768,8 +1694,7 @@ href="#boost-parameter-no-spec-constructor-cls-impl"
         Iterator itr
       , Iterator itr_end
       , typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">disable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>&lt;
             are_tagged_arguments&lt;Iterator&gt;
           , _enabler
         &gt;::type = _enabler()
@@ -1813,11 +1738,10 @@ struct is_argument_pack  // : mpl::true_ or mpl::false_
 </tr>
 <tr>
 <td>&nbsp;</td>
-<td class="field-body"><tt class="docutils literal"><span class="pre"
->mpl::true_</span></tt> if <tt class="docutils literal">T</tt> is a model of
-<a class="reference internal" href="#argumentpack"><span class="concept"
->ArgumentPack</span></a>, <tt class="docutils literal"><span class="pre"
->mpl::false_</span></tt> otherwise.</td>
+<td class="field-body"><tt class="docutils literal">mpl::true_</tt> if <tt
+class="docutils literal">T</tt> is a model of <a class="reference internal"
+href="#argumentpack"><span class="concept">ArgumentPack</span></a>, <tt
+class="docutils literal">mpl::false_</tt> otherwise.</td>
 </tr>
 <tr class="field">
 <th class="field-name" colspan="2">Example usage:</th>
@@ -1828,8 +1752,8 @@ struct is_argument_pack  // : mpl::true_ or mpl::false_
 <p class="first">To avoid overload ambiguities between a constructor that
 takes in an <a class="reference internal" href="#argumentpack"><span
 class="concept">ArgumentPack</span></a> and a templated conversion
-constructor, use this metafunction in conjunction with
-<tt class="docutils literal"><span class="pre">enable_if</span></tt>.</p>
+constructor, use this metafunction in conjunction with <tt
+class="docutils literal">enable_if</tt>.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(a0)
@@ -1905,6 +1829,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1915,8 +1841,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -1944,10 +1870,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -1986,13 +1912,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will be
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -2003,18 +1929,18 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal function
-header.  Enclose the return type <tt class="docutils literal">bool</tt> in
-parentheses.  For each parameter, also enclose the expected value type in
-parentheses.  Since the value types are mutually exclusive, you can wrap the
-parameters in a <tt class="docutils literal">(deduced …)</tt>
-clause.  Otherwise, just as with a normal function, the order in which you
-specify the parameters determines their position.  Also, just as with a normal
-function, optional parameters have default values, whereas required parameters
-do not.  Within the function body, either simply use the parameter name or
-pass the matching identifier with the leading underscore to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the
-corresponding argument.  Note that the second method doesn't require <tt
+<p>Use the macro as a substitute for a normal function header.  Enclose the
+return type <tt class="docutils literal">bool</tt> in parentheses.  For each
+parameter, also enclose the expected value type in parentheses.  Since the
+value types are mutually exclusive, you can wrap the parameters in a <tt
+class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
+normal function, the order in which you specify the parameters determines
+their position.  Also, just as with a normal function, optional parameters
+have default values, whereas required parameters do not.  Within the function
+body, either simply use the parameter name or pass the matching identifier
+with the leading underscore to the bracket operator of <tt
+class="docutils literal">args</tt> to extract the corresponding
+argument.  Note that the second method doesn't require <tt
 class="docutils literal">std::forward</tt> to preserve value categories.</p>
 <pre class="first literal-block">
 BOOST_PARAMETER_FUNCTION((bool), evaluate, kw,
@@ -2041,8 +1967,8 @@ BOOST_PARAMETER_FUNCTION((bool), evaluate, kw,
     BOOST_TEST_EQ(
         passed_by_rvalue_reference_to_const
       , U::evaluate_category&lt;2&gt;(std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;rrc0_type&gt;(rrc0))
     );
     BOOST_TEST_EQ(
         passed_by_rvalue_reference
@@ -2052,7 +1978,7 @@ class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
     return true;
 }
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 evaluate(  // positional arguments
     lvalue_const_bitset&lt;0&gt;()
@@ -2081,9 +2007,8 @@ evaluate(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 evaluate(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -2096,10 +2021,10 @@ evaluate(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a>, <a
-class="reference external" href="../../test/preprocessor_deduced.cpp"
->test/preprocessor_deduced.cpp</a>, and <a class="reference external"
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a>, <a class="reference external"
+href="../../test/preprocessor_deduced.cpp">test/preprocessor_deduced.cpp</a>,
+and <a class="reference external"
 href="../../test/preprocessor_eval_category.cpp"
 >test/preprocessor_eval_category.cpp</a> test programs demonstrate proper
 usage of this macro.</p>
@@ -2237,7 +2162,7 @@ typedef boost_param_params_ ## __LINE__ ## <strong>name</strong>
 template &lt;typename Args&gt;
 typename boost_param_result_ ## __LINE__ ## <strong
 >name</strong> ## _&lt;Args&gt;::type
-    boost_param_impl ## __LINE__ ## <strong>name</strong>(Args const&);
+    boost_param_impl ## __LINE__ ## <strong>name</strong>(Args const&amp;);
 
 template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
 <em>result type</em>
@@ -2254,13 +2179,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -2282,13 +2206,12 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
@@ -2345,8 +2268,7 @@ typename boost_param_result_ ## __LINE__ ## <strong
         &gt;(std::nullptr)
       , args
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -2356,8 +2278,7 @@ class="docutils literal">forward</tt></a>&lt;
 >0</strong>])
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -2394,21 +2315,18 @@ ResultType
 >n + 1</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>0</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>0</strong>
         )
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>n</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>n</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -2459,6 +2377,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2469,8 +2389,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -2498,10 +2418,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -2540,13 +2460,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will be
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -2557,11 +2477,11 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal <tt
-class="docutils literal">static</tt> member function header.  Enclose the
-return type <tt class="docutils literal">bool</tt> in parentheses.  For each
-parameter, also enclose the expected value type in parentheses.  Since the
-value types are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal <tt class="docutils literal"
+>static</tt> member function header.  Enclose the return type <tt
+class="docutils literal">bool</tt> in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
 normal function, the order in which you specify the parameters determines
 their position.  Also, just as with a normal function, optional parameters
@@ -2598,8 +2518,8 @@ struct B
         BOOST_TEST_EQ(
             passed_by_rvalue_reference_to_const
           , U::evaluate_category&lt;2&gt;(std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;rrc0_type&gt;(rrc0))
         );
         BOOST_TEST_EQ(
             passed_by_rvalue_reference
@@ -2610,7 +2530,7 @@ class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
     }
 };
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 B::evaluate(  // positional arguments
     lvalue_const_bitset&lt;0&gt;()
@@ -2639,9 +2559,8 @@ B::evaluate(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 B::evaluate(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -2654,9 +2573,9 @@ B::evaluate(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> and <a
-class="reference external" href="../../test/preprocessor_eval_category.cpp"
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> and <a class="reference external"
+href="../../test/preprocessor_eval_category.cpp"
 >test/preprocessor_eval_category.cpp</a> test programs demonstrate proper
 usage of this macro.</p>
 </td>
@@ -2806,13 +2725,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -2832,13 +2750,12 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
@@ -2846,7 +2763,8 @@ class="docutils literal">forward</tt></a>&lt;A ## <strong
 template &lt;typename Args&gt;
 typename boost_param_result_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
-    boost_param_impl ## __LINE__ ## <strong>name</strong>(Args const& args)
+    boost_param_impl ## __LINE__ ## <strong
+>name</strong>(Args const&amp; args)
 {
     return this-&gt;boost_param_dispatch_0boost_ ## __LINE__ ## <strong
 >name</strong>(
@@ -2858,8 +2776,7 @@ typename boost_param_result_ ## __LINE__ ## <strong
         &gt;(std::nullptr)
       , args
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -2869,8 +2786,7 @@ class="docutils literal">forward</tt></a>&lt;
 >0</strong>])
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -2908,21 +2824,18 @@ ResultType
 >n + 1</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>0</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>0</strong>
         )
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>n</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>n</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -2973,6 +2886,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2983,8 +2898,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -3012,10 +2927,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -3054,13 +2969,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will be
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -3071,11 +2986,11 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal <tt
-class="docutils literal">const</tt> member function header.  Enclose the
-return type <tt class="docutils literal">bool</tt> in parentheses.  For each
-parameter, also enclose the expected value type in parentheses.  Since the
-value types are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal <tt class="docutils literal"
+>const</tt> member function header.  Enclose the return type <tt
+class="docutils literal">bool</tt> in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
 normal function, the order in which you specify the parameters determines
 their position.  Also, just as with a normal function, optional parameters
@@ -3116,8 +3031,8 @@ struct B
         BOOST_TEST_EQ(
             passed_by_rvalue_reference_to_const
           , U::evaluate_category&lt;2&gt;(std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;rrc0_type&gt;(rrc0))
         );
         BOOST_TEST_EQ(
             passed_by_rvalue_reference
@@ -3128,7 +3043,7 @@ class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
     }
 };
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 B const b = B();
 b.evaluate(  // positional arguments
@@ -3158,9 +3073,8 @@ b.evaluate(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 b.evaluate(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -3173,9 +3087,9 @@ b.evaluate(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> test program
-demonstrates proper usage of this macro.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
 </td>
 </tr>
 <tr class="field">
@@ -3322,13 +3236,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
 >name</strong>(
         boost_param_parameters_const_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -3350,13 +3263,12 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
 >name</strong>(
         boost_param_parameters_const_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
@@ -3365,7 +3277,7 @@ template &lt;typename Args&gt;
 typename boost_param_result_const_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
     boost_param_impl_const ## __LINE__ ## <strong
->name</strong>(Args const& args) const
+>name</strong>(Args const&amp; args) const
 {
     return this-&gt;
     boost_param_dispatch_const_0boost_ ## __LINE__ ## <strong>name</strong>(
@@ -3377,8 +3289,7 @@ typename boost_param_result_const_ ## __LINE__ ## <strong
         &gt;(std::nullptr)
       , args
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -3388,8 +3299,7 @@ class="docutils literal">forward</tt></a>&lt;
 >0</strong>])
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -3427,21 +3337,18 @@ ResultType
 >n + 1</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>0</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>0</strong>
         )
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>n</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>n</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -3492,6 +3399,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3502,20 +3411,19 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">tag</tt> by
-default.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">tag</tt> by default.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(y)
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(z)
 </pre>
-<p class="first">Use the macro as a substitute for a normal function call
-operator header.  Enclose the return type in parentheses.  For each parameter,
-also enclose the expected value type in parentheses.  Since the value types
-are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal function call operator
+header.  Enclose the return type in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  This is especially useful
 when implementing multiple Boost.Parameter-enabled function call operator
 overloads.</p>
@@ -3539,8 +3447,8 @@ class char_reader
         )
     )
     {
-        this->index = y;
-        this->key = z;
+        this-&gt;index = y;
+        this-&gt;key = z;
     }
 
     <a class="reference internal"
@@ -3550,41 +3458,37 @@ href="#boost-parameter-const-function-call-op-result-tag-namespace-arguments"
             (required
                 (y, (bool))
                 (z, (std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/container/map"><tt
-class="docutils literal">map</tt></a>&lt;char const*,std::<a
-class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;))
+href="http://en.cppreference.com/w/cpp/container/map"
+>map</a>&lt;char const*,std::<a class="reference external"
+href="http://en.cppreference.com/w/cpp/string/basic_string">string</a>&gt;))
             )
         )
     )
     {
         return y ? (
-            (z.find(this->key)->second)[this->index]
-        ) : this->key[this->index];
+            (z.find(this-&gt;key)-&gt;second)[this-&gt;index]
+        ) : this-&gt;key[this-&gt;index];
     }
 };
 </pre>
-<p class="first">As with regular argument-dependent lookup, the value types of
-the arguments passed in determine which function call operator overload gets
-invoked.</p>
+<p>As with regular argument-dependent lookup, the value types of the arguments
+passed in determine which function call operator overload gets invoked.</p>
 <pre class="first literal-block">
 char const* keys[] = {"foo", "bar", "baz"};
 std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/container/map"><tt
-class="docutils literal">map</tt></a>&lt;char const*,std::<a
-class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt; k2s;
+href="http://en.cppreference.com/w/cpp/container/map"
+>map</a>&lt;char const*,std::<a class="reference external"
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt; k2s;
 k2s[keys[0]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("qux");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("qux");
 k2s[keys[1]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("wmb");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("wmb");
 k2s[keys[2]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("zxc");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("zxc");
 char_reader r(keys[0]);
 
 // positional arguments
@@ -3601,11 +3505,10 @@ r(keys[2], 2);
 BOOST_TEST_EQ('c', (r(k2s, true)));
 BOOST_TEST_EQ('z', (r(k2s, false)));
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> and <a
-class="reference external" href="../../test/preprocessor_deduced.cpp"
->test/preprocessor_deduced.cpp</a> test programs demonstrate proper usage of
-this macro.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> and <a class="reference external"
+href="../../test/preprocessor_deduced.cpp">test/preprocessor_deduced.cpp</a>
+test programs demonstrate proper usage of this macro.</p>
 </td>
 </tr>
 <tr class="field">
@@ -3748,13 +3651,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## operator(
         boost_param_parameters_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -3774,20 +3676,19 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## operator(
         boost_param_parameters_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
 
 template &lt;typename Args&gt;
 typename boost_param_result_ ## __LINE__ ## operator&lt;Args&gt;::type
-    boost_param_impl ## __LINE__ ## operator(Args const& args)
+    boost_param_impl ## __LINE__ ## operator(Args const&amp; args)
 {
     return this-&gt;boost_param_dispatch_0boost_ ## __LINE__ ## operator(
         static_cast&lt;
@@ -3797,8 +3698,7 @@ typename boost_param_result_ ## __LINE__ ## operator&lt;Args&gt;::type
         &gt;(std::nullptr)
       , args
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -3808,8 +3708,7 @@ class="docutils literal">forward</tt></a>&lt;
 >0</strong>])
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -3846,21 +3745,18 @@ ResultType
 >n + 1</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>0</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>0</strong>
         )
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>n</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>n</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -3911,6 +3807,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3921,8 +3819,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -3950,10 +3848,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -3992,13 +3890,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will be
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -4009,11 +3907,11 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal <tt
-class="docutils literal">const</tt> function call operator header.  Enclose
-the return type <tt class="docutils literal">bool</tt> in parentheses.  For
-each parameter, also enclose the expected value type in parentheses.  Since
-the value types are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal <tt class="docutils literal"
+>const</tt> function call operator header.  Enclose the return type <tt
+class="docutils literal">bool</tt> in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
 normal function, the order in which you specify the parameters determines
 their position.  Also, just as with a normal function, optional parameters
@@ -4054,8 +3952,8 @@ struct B
         BOOST_TEST_EQ(
             passed_by_rvalue_reference_to_const
           , U::evaluate_category&lt;2&gt;(std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;rrc0_type&gt;(rrc0))
         );
         BOOST_TEST_EQ(
             passed_by_rvalue_reference
@@ -4066,7 +3964,7 @@ class="docutils literal">forward</tt></a>&lt;rrc0_type&gt;(rrc0))
     }
 };
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 B const b = B();
 b(  // positional arguments
@@ -4096,9 +3994,8 @@ b(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 b(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -4111,10 +4008,10 @@ b(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a>, <a
-class="reference external" href="../../test/preprocessor_deduced.cpp"
->test/preprocessor_deduced.cpp</a>, and <a class="reference external"
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a>, <a class="reference external"
+href="../../test/preprocessor_deduced.cpp">test/preprocessor_deduced.cpp</a>,
+and <a class="reference external"
 href="../../test/preprocessor_eval_cat_8.cpp"
 >test/preprocessor_eval_cat_8.cpp</a> test programs demonstrate proper usage
 of this macro.</p>
@@ -4260,13 +4157,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return this-&gt;boost_param_impl_const ## __LINE__ ## operator(
         boost_param_parameters_const_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -4286,20 +4182,19 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return this-&gt;boost_param_impl_const ## __LINE__ ## operator(
         boost_param_parameters_const_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
 
 template &lt;typename Args&gt;
 typename boost_param_result_const_ ## __LINE__ ## operator&lt;Args&gt;::type
-    boost_param_impl_const ## __LINE__ ## operator(Args const& args) const
+    boost_param_impl_const ## __LINE__ ## operator(Args const&amp; args) const
 {
     return this-&gt;
     boost_param_dispatch_const_0boost_ ## __LINE__ ## operator(
@@ -4310,8 +4205,7 @@ typename boost_param_result_const_ ## __LINE__ ## operator&lt;Args&gt;::type
         &gt;(std::nullptr)
       , args
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -4321,8 +4215,7 @@ class="docutils literal">forward</tt></a>&lt;
 >0</strong>])
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -4360,21 +4253,18 @@ ResultType
 >n + 1</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>0</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>0</strong>
         )
       , …
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt; <em
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt; <em
 >argument name</em> ## <strong>n</strong> ## _type&gt;(
             <em>argument name</em> ## <strong>n</strong>
         )
       , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;
+href="http://en.cppreference.com/w/cpp/utility/forward">forward</a>&lt;
             typename boost::parameter::value_type&lt;
                 Args
               , <em
@@ -4425,6 +4315,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a constructor that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -4435,21 +4327,20 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">tag</tt> by
-default.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">tag</tt> by default.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(y)
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(z)
 </pre>
-<p class="first">In the base class, implement a delegate constructor template
-that takes in an <a class="reference internal" href="#argumentpack"><span
-class="concept">ArgumentPack</span></a>.  You must pass the identifiers with
-leading underscores to <tt class="docutils literal">args</tt> in order to
-extract the corresponding arguments.</p>
+<p>In the base class, implement a delegate constructor template that takes in
+an <a class="reference internal" href="#argumentpack"><span class="concept"
+>ArgumentPack</span></a>.  You must pass the identifiers with leading
+underscores to <tt class="docutils literal">args</tt> in order to extract the
+corresponding arguments.</p>
 <pre class="first literal-block">
 class char_read_base
 {
@@ -4458,7 +4349,7 @@ class char_read_base
 
  public:
     template &lt;typename Args&gt;
-    explicit char_read_base(Args const& args)
+    explicit char_read_base(Args const&amp; args)
       : index(args[_y]), key(args[_z])
     {
     }
@@ -4483,11 +4374,10 @@ href="#boost-parameter-const-function-call-op-result-tag-namespace-arguments"
             (required
                 (y, (bool))
                 (z, (std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/container/map"><tt
-class="docutils literal">map</tt></a>&lt;char const*,std::<a
-class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;))
+href="http://en.cppreference.com/w/cpp/container/map"
+>map</a>&lt;char const*,std::<a class="reference external"
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;))
             )
         )
     )
@@ -4498,11 +4388,11 @@ class="docutils literal">string</tt></a>&gt;))
     }
 };
 </pre>
-<p class="first">Use the macro as a substitute for a normal constructor
-definition.  Note the lack of an explicit body.  Enclose the base type in
-parentheses.  For each parameter, also enclose the expected value type in
-parentheses.  Since the value types are mutually exclusive, you can wrap the
-parameters in a <tt class="docutils literal">(deduced …)</tt> clause.</p>
+<p>Use the macro as a substitute for a normal constructor definition.  Note
+the lack of an explicit body.  Enclose the base type in parentheses.  For each
+parameter, also enclose the expected value type in parentheses.  Since the
+value types are mutually exclusive, you can wrap the parameters in a <tt
+class="docutils literal">(deduced …)</tt> clause.</p>
 <pre class="first literal-block">
 struct char_reader : public char_read_base
 {
@@ -4516,25 +4406,24 @@ struct char_reader : public char_read_base
     )
 };
 </pre>
-<p class="first">The following <tt class="docutils literal">char_reader</tt>
-constructor calls are legal.</p>
+<p>The following <tt class="docutils literal">char_reader</tt> constructor
+calls are legal.</p>
 <pre class="first literal-block">
 char const* keys[] = {"foo", "bar", "baz"};
 std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/container/map"><tt
-class="docutils literal">map</tt></a>&lt;char const*,std::<a
-class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt; k2s;
+href="http://en.cppreference.com/w/cpp/container/map"
+>map</a>&lt;char const*,std::<a class="reference external"
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt; k2s;
 k2s[keys[0]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("qux");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("qux");
 k2s[keys[1]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("wmb");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("wmb");
 k2s[keys[2]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("zxc");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("zxc");
 
 // positional arguments
 char_reader r0(0, keys[0]);
@@ -4551,9 +4440,9 @@ char_reader r2(keys[2], 2);
 BOOST_TEST_EQ('c', (r2(k2s, true)));
 BOOST_TEST_EQ('z', (r2(k2s, false)));
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> and <a
-class="reference external" href="../../test/preprocessor_eval_category.cpp"
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> and <a class="reference external"
+href="../../test/preprocessor_eval_category.cpp"
 >test/preprocessor_eval_category.cpp</a> test programs demonstrate proper
 usage of this macro.</p>
 </td>
@@ -4670,13 +4559,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
   : <strong>impl</strong>(
         constructor_parameters ## __LINE__(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     )
 {
@@ -4690,13 +4578,12 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
   : <strong>impl</strong>(
         constructor_parameters ## __LINE__(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     )
 {
@@ -4722,6 +4609,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -4732,8 +4621,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -4761,10 +4650,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -4803,13 +4692,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will be
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -4820,19 +4709,18 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal function
-header.  Enclose the return type <tt class="docutils literal">bool</tt> in
-parentheses.  For each parameter, also enclose the expected value type in
-parentheses.  Since the value types are mutually exclusive, you can wrap the
-parameters in a <tt class="docutils literal">(deduced …)</tt>
-clause.  Otherwise, just as with a normal function, the order in which you
-specify the parameters determines their position.  However, unlike a normal
-function, default values must be specified within the function body.  Also
-within the function body, you must pass the matching identifier with the
-leading underscore to the bracket operator of <tt class="docutils literal"
->args</tt> to extract the corresponding argument, but at least this doesn't
-require <tt class="docutils literal">std::forward</tt> to preserve value
-categories.</p>
+<p>Use the macro as a substitute for a normal function header.  Enclose the
+return type <tt class="docutils literal">bool</tt> in parentheses.  For each
+parameter, also enclose the expected value type in parentheses.  Since the
+value types are mutually exclusive, you can wrap the parameters in a <tt
+class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
+normal function, the order in which you specify the parameters determines
+their position.  However, unlike a normal function, default values must be
+specified within the function body.  Also within the function body, you must
+pass the matching identifier with the leading underscore to the bracket
+operator of <tt class="docutils literal">args</tt> to extract the
+corresponding argument, but at least this doesn't require <tt
+class="docutils literal">std::forward</tt> to preserve value categories.</p>
 <pre class="first literal-block">
 BOOST_PARAMETER_BASIC_FUNCTION((bool), evaluate, kw,
     (deduced
@@ -4869,7 +4757,7 @@ BOOST_PARAMETER_BASIC_FUNCTION((bool), evaluate, kw,
     return true;
 }
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 evaluate(  // positional arguments
     lvalue_const_bitset&lt;0&gt;()
@@ -4898,9 +4786,8 @@ evaluate(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 evaluate(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -4913,9 +4800,9 @@ evaluate(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> test program
-demonstrates proper usage of this macro.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
 </td>
 </tr>
 <tr class="field">
@@ -5033,7 +4920,7 @@ typedef boost_param_params_ ## __LINE__ ## <strong>name</strong>
 template &lt;typename Args&gt;
 typename boost_param_result_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
-    boost_param_impl ## __LINE__ ## <strong>name</strong>(Args const&);
+    boost_param_impl ## __LINE__ ## <strong>name</strong>(Args const&amp;);
 
 template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
 <em>result type</em>
@@ -5050,13 +4937,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -5078,13 +4964,12 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
@@ -5092,7 +4977,8 @@ class="docutils literal">forward</tt></a>&lt;A ## <strong
 template &lt;typename Args&gt;
 typename boost_param_result_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
-    boost_param_impl ## __LINE__ ## <strong>name</strong>(Args const& args)
+    boost_param_impl ## __LINE__ ## <strong
+>name</strong>(Args const&amp; args)
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
 class="concept">ArgumentPack</span></a> type <tt class="docutils literal"
@@ -5118,6 +5004,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -5128,8 +5016,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -5157,10 +5045,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -5199,13 +5087,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will be
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -5216,11 +5104,11 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal <tt
-class="docutils literal">static</tt> member function header.  Enclose the
-return type <tt class="docutils literal">bool</tt> in parentheses.  For each
-parameter, also enclose the expected value type in parentheses.  Since the
-value types are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal <tt class="docutils literal"
+>static</tt> member function header.  Enclose the return type <tt
+class="docutils literal">bool</tt> in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
 normal function, the order in which you specify the parameters determines
 their position.  However, unlike a normal function, default values must be
@@ -5270,7 +5158,7 @@ struct B
     }
 };
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 B::evaluate(  // positional arguments
     lvalue_const_bitset&lt;0&gt;()
@@ -5299,9 +5187,8 @@ B::evaluate(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 B::evaluate(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -5314,9 +5201,9 @@ B::evaluate(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> test program
-demonstrates proper usage of this macro.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
 </td>
 </tr>
 <tr class="field">
@@ -5449,13 +5336,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -5477,13 +5363,12 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## <strong>name</strong>(
         boost_param_parameters_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
@@ -5491,7 +5376,8 @@ class="docutils literal">forward</tt></a>&lt;A ## <strong
 template &lt;typename Args&gt;
 typename boost_param_result_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
-    boost_param_impl ## __LINE__ ## <strong>name</strong>(Args const& args)
+    boost_param_impl ## __LINE__ ## <strong
+>name</strong>(Args const&amp; args)
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
 class="concept">ArgumentPack</span></a> type <tt class="docutils literal"
@@ -5517,6 +5403,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -5527,8 +5415,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -5556,10 +5444,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -5598,13 +5486,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will b
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -5615,11 +5503,11 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal <tt
-class="docutils literal">const</tt> member function header.  Enclose the
-return type <tt class="docutils literal">bool</tt> in parentheses.  For each
-parameter, also enclose the expected value type in parentheses.  Since the
-value types are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal <tt class="docutils literal"
+>const</tt> member function header.  Enclose the return type <tt
+class="docutils literal">bool</tt> in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
 normal function, the order in which you specify the parameters determines
 their position.  However, unlike a normal function, default values must be
@@ -5673,7 +5561,7 @@ struct B
     }
 };
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 B const b = B();
 b.evaluate(  // positional arguments
@@ -5703,9 +5591,8 @@ b.evaluate(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 b.evaluate(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -5718,9 +5605,9 @@ b.evaluate(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> test program
-demonstrates proper usage of this macro.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
 </td>
 </tr>
 <tr class="field">
@@ -5851,13 +5738,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
 >name</strong>(
         boost_param_parameters_const_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -5880,13 +5766,12 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
 >name</strong>(
         boost_param_parameters_const_ ## __LINE__ ## <strong>name</strong>()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
@@ -5895,7 +5780,7 @@ template &lt;typename Args&gt;
 typename boost_param_result_const_ ## __LINE__ ## <strong
 >name</strong>&lt;Args&gt;::type
     boost_param_impl_const ## __LINE__ ## <strong
->name</strong>(Args const& args) const
+>name</strong>(Args const&amp; args) const
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
 class="concept">ArgumentPack</span></a> type <tt class="docutils literal"
@@ -5921,6 +5806,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -5931,20 +5818,19 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">tag</tt> by
-default.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">tag</tt> by default.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(y)
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(z)
 </pre>
-<p class="first">Use the macro as a substitute for a normal function call
-operator header.  Enclose the return type in parentheses.  For each parameter,
-also enclose the expected value type in parentheses.  Since the value types
-are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal function call operator
+header.  Enclose the return type in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  This is especially useful
 when implementing multiple Boost.Parameter-enabled function call operator
 overloads.</p>
@@ -5979,11 +5865,9 @@ href="#boost-parameter-basic-const-function-call-op-result-tag-ns-args"
             (required
                 (y, (bool))
                 (z, (std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/container/map"><tt
-class="docutils literal">map</tt></a>&lt;char const*,std::<a
-class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;))
+href="http://en.cppreference.com/w/cpp/container/map"
+>map</a>&lt;char const*,std::<a class="reference external"
+href="http://en.cppreference.com/w/cpp/string/basic_string">string</a>&gt;))
             )
         )
     )
@@ -5994,26 +5878,24 @@ class="docutils literal">string</tt></a>&gt;))
     }
 };
 </pre>
-<p class="first">As with regular argument-dependent lookup, the value types of
-the arguments passed in determine which function call operator overload gets
-invoked.</p>
+<p>As with regular argument-dependent lookup, the value types of the arguments
+passed in determine which function call operator overload gets invoked.</p>
 <pre class="first literal-block">
 char const* keys[] = {"foo", "bar", "baz"};
 std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/container/map"><tt
-class="docutils literal">map</tt></a>&lt;char const*,std::<a
-class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt; k2s;
+href="http://en.cppreference.com/w/cpp/container/map"
+>map</a>&lt;char const*,std::<a class="reference external"
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt; k2s;
 k2s[keys[0]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("qux");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("qux");
 k2s[keys[1]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("wmb");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("wmb");
 k2s[keys[2]] = std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/string/basic_string"><tt
-class="docutils literal">string</tt></a>&gt;("zxc");
+href="http://en.cppreference.com/w/cpp/string/basic_string"
+>string</a>&gt;("zxc");
 char_reader r(keys[0]);
 
 // positional arguments
@@ -6030,9 +5912,9 @@ r(keys[2], 2);
 BOOST_TEST_EQ('c', (r(k2s, true)));
 BOOST_TEST_EQ('z', (r(k2s, false)));
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> test program
-demonstrates proper usage of this macro.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
 </td>
 </tr>
 <tr class="field">
@@ -6158,13 +6040,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## operator(
         boost_param_parameters_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -6184,20 +6065,19 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return this-&gt;boost_param_impl ## __LINE__ ## operator(
         boost_param_parameters_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
 
 template &lt;typename Args&gt;
 typename boost_param_result_ ## __LINE__ ## operator&lt;Args&gt;::type
-    boost_param_impl ## __LINE__ ## operator(Args const& args)
+    boost_param_impl ## __LINE__ ## operator(Args const&amp; args)
 </pre>
 </dd>
 </dl>
@@ -6220,6 +6100,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -6230,8 +6112,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -6259,10 +6141,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -6301,13 +6183,13 @@ struct U
     }
 };
 </pre>
-<p class="first">Define the named parameters that will comprise the argument
-specification that this macro will use.  Ensure that all their tag types are
-in the same namespace, which is <tt class="docutils literal">kw</tt> in this
-case.  The identifiers with leading underscores can be passed to the bracket
-operator of <tt class="docutils literal">args</tt> to extract the same
-argument to which the corresponding named parameter (without underscores) is
-bound, as will be shown later.</p>
+<p>Define the named parameters that will comprise the argument specification
+that this macro will use.  Ensure that all their tag types are in the same
+namespace, which is <tt class="docutils literal">kw</tt> in this case.  The
+identifiers with leading underscores can be passed to the bracket operator of
+<tt class="docutils literal">args</tt> to extract the same argument to which
+the corresponding named parameter (without underscores) is bound, as will be
+shown later.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw) in(lrc))
@@ -6318,11 +6200,11 @@ bound, as will be shown later.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a normal <tt
-class="docutils literal">const</tt> function call operator header.  Enclose
-the return type <tt class="docutils literal">bool</tt> in parentheses.  For
-each parameter, also enclose the expected value type in parentheses.  Since
-the value types are mutually exclusive, you can wrap the parameters in a <tt
+<p>Use the macro as a substitute for a normal <tt class="docutils literal"
+>const</tt> function call operator header.  Enclose the return type <tt
+class="docutils literal">bool</tt> in parentheses.  For each parameter, also
+enclose the expected value type in parentheses.  Since the value types are
+mutually exclusive, you can wrap the parameters in a <tt
 class="docutils literal">(deduced …)</tt> clause.  Otherwise, just as with a
 normal function, the order in which you specify the parameters determines
 their position.  However, unlike a normal function, default values must be
@@ -6376,7 +6258,7 @@ struct B
     }
 };
 </pre>
-<p class="first">The following function calls are legal.</p>
+<p>The following function calls are legal.</p>
 <pre class="first literal-block">
 B const b = B();
 b(  // positional arguments
@@ -6406,9 +6288,8 @@ b(  // named arguments
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="first">Because the parameters were wrapped in a <tt
-class="docutils literal">(deduced …)</tt> clause, the following function calls
-are also legal.</p>
+<p>Because the parameters were wrapped in a <tt class="docutils literal"
+>(deduced …)</tt> clause, the following function calls are also legal.</p>
 <pre class="first literal-block">
 b(  // deduced arguments
     rvalue_bitset&lt;3&gt;()
@@ -6421,9 +6302,9 @@ b(  // deduced arguments
   , lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
-href="../../test/preprocessor.cpp">test/preprocessor.cpp</a> test program
-demonstrates proper usage of this macro.</p>
+<p>The <a class="reference external" href="../../test/preprocessor.cpp"
+>test/preprocessor.cpp</a> test program demonstrates proper usage of this
+macro.</p>
 </td>
 </tr>
 <tr class="field">
@@ -6549,13 +6430,12 @@ template &lt;typename A0, …, typename A ## <strong>n</strong>&gt;
     return this-&gt;boost_param_impl_const ## __LINE__ ## operator(
         boost_param_parameters_const_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->n</strong>&gt;(a ## <strong>n</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>n</strong>&gt;(a ## <strong>n</strong>)
         )
     );
 }
@@ -6575,20 +6455,19 @@ template &lt;typename A0, …, typename A ## <strong>m</strong>&gt;
     return this-&gt;boost_param_impl_const ## __LINE__ ## operator(
         boost_param_parameters_const_ ## __LINE__ ## operator()(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A0&gt;(a0)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A0&gt;(a0)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->m</strong>&gt;(a ## <strong>m</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>m</strong>&gt;(a ## <strong>m</strong>)
         )
     );
 }
 
 template &lt;typename Args&gt;
 typename boost_param_result_const_ ## __LINE__ ## operator&lt;Args&gt;::type
-    boost_param_impl_const ## __LINE__ ## operator(Args const& args) const
+    boost_param_impl_const ## __LINE__ ## operator(Args const&amp; args) const
 </pre>
 </dd>
 </dl>
@@ -6609,6 +6488,7 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function that can take in named arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -6619,8 +6499,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -6648,10 +6528,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -6690,8 +6570,8 @@ struct U
     }
 };
 </pre>
-<p class="first">Named parameters are required when invoking the function;
-however, none of their tags need to be in the same namespace.</p>
+<p>Named parameters are required when invoking the function; however, none of
+their tags need to be in the same namespace.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw0) in(lrc))
@@ -6702,9 +6582,8 @@ however, none of their tags need to be in the same namespace.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw3) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a variadic function
-header.  Enclose the return type <tt class="docutils literal">bool</tt> in
-parentheses.</p>
+<p>Use the macro as a substitute for a variadic function header.  Enclose the
+return type <tt class="docutils literal">bool</tt> in parentheses.</p>
 <pre class="first literal-block">
 BOOST_PARAMETER_NO_SPEC_FUNCTION((bool), evaluate)
 {
@@ -6730,8 +6609,7 @@ BOOST_PARAMETER_NO_SPEC_FUNCTION((bool), evaluate)
     return true;
 }
 </pre>
-<p class="first">To invoke the function, bind all its arguments to named
-parameters.</p>
+<p>To invoke the function, bind all its arguments to named parameters.</p>
 <pre class="first literal-block">
 evaluate(
     _rr0 = rvalue_bitset&lt;3&gt;()
@@ -6744,7 +6622,7 @@ evaluate(
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
+<p>The <a class="reference external"
 href="../../test/preprocessor_eval_cat_no_spec.cpp"
 >test/preprocessor_eval_cat_no_spec.cpp</a> test program demonstrates proper
 usage of this macro.</p>
@@ -6787,13 +6665,12 @@ template &lt;typename ResultType, typename Args&gt;
 ResultType
     boost_param_no_spec_impl ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
-      , Args const& args
+      , Args const&amp; args
     );
 
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 inline typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">lazy_enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>&lt;
     <a class="reference internal" href="#are-tagged-arguments"
 >are_tagged_arguments</a>&lt;TaggedArg0,TaggedArgs...&gt;
   , boost_param_no_spec_result_ ## __LINE__ ## <strong>name</strong>&lt;
@@ -6822,7 +6699,7 @@ template &lt;typename ResultType, typename Args&gt;
 ResultType
     boost_param_no_spec_impl ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
-      , Args const& args
+      , Args const&amp; args
     )
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
@@ -6848,6 +6725,7 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a member function that can take in named arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -6858,10 +6736,10 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">When designing a front-end class template whose back-end is
-configurable via parameterized inheritance, it can be useful to omit argument
-specifiers from a named-parameter member function so that the delegate member
-functions of the back-end classes can enforce their own specifications.</p>
+<p>When designing a front-end class template whose back-end is configurable
+via parameterized inheritance, it can be useful to omit argument specifiers
+from a named-parameter member function so that the delegate member functions
+of the back-end classes can enforce their own specifications.</p>
 <pre class="first literal-block">
 template &lt;typename B&gt;
 struct frontend : B
@@ -6876,8 +6754,8 @@ struct frontend : B
     }
 };
 </pre>
-<p class="first">Named parameters are required when invoking the member
-function; however, none of their tags need to be in the same namespace.</p>
+<p>Named parameters are required when invoking the member function; however,
+none of their tags need to be in the same namespace.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(a0)
@@ -6886,9 +6764,9 @@ function; however, none of their tags need to be in the same namespace.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(a2)
 </pre>
-<p class="first">For this example, each of the back-end class templates
-requires its own parameter to be present in the argument pack.  In practice,
-such parameters should be optional, with default values.</p>
+<p>For this example, each of the back-end class templates requires its own
+parameter to be present in the argument pack.  In practice, such parameters
+should be optional, with default values.</p>
 <pre class="first literal-block">
 template &lt;typename T&gt;
 class backend0
@@ -6961,8 +6839,8 @@ class backend2 : public B
     }
 };
 </pre>
-<p class="first">This example shows that while <tt class="docutils literal"
->backend0</tt> must always be the root base class template and that <tt
+<p>This example shows that while <tt class="docutils literal">backend0</tt>
+must always be the root base class template and that <tt
 class="docutils literal">frontend</tt> must always be the most derived class
 template, the other back-ends can be chained together in different orders.</p>
 <pre class="first literal-block">
@@ -6979,7 +6857,7 @@ BOOST_TEST_EQ(composed_obj0.get_a0(), composed_obj1.get_a0());
 BOOST_TEST_EQ(composed_obj0.get_a1(), composed_obj1.get_a1());
 BOOST_TEST_EQ(composed_obj0.get_a2(), composed_obj1.get_a2());
 </pre>
-<p class="last">The <a class="reference external"
+<p>The <a class="reference external"
 href="../../test/parameterized_inheritance.cpp"
 >test/parameterized_inheritance.cpp</a> and <a class="reference external"
 href="../../test/preprocessor_eval_cat_no_spec.cpp"
@@ -7025,8 +6903,7 @@ struct boost_param_no_spec_result_ ## __LINE__ ## <strong>name</strong>
 
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 inline typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">lazy_enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>&lt;
     <a class="reference internal" href="#are-tagged-arguments"
 >are_tagged_arguments</a>&lt;TaggedArg0,TaggedArgs...&gt;
   , boost_param_no_spec_result_ ## __LINE__ ## <strong>name</strong>&lt;
@@ -7056,7 +6933,7 @@ template &lt;typename ResultType, typename Args&gt;
 ResultType
     boost_param_no_spec_impl ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
-      , Args const& args
+      , Args const&amp; args
     )
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
@@ -7082,6 +6959,7 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a member function that can take in named arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7092,8 +6970,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -7121,10 +6999,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -7163,8 +7041,8 @@ struct U
     }
 };
 </pre>
-<p class="first">Named parameters are required when invoking the member
-function; however, none of their tags need to be in the same namespace.</p>
+<p>Named parameters are required when invoking the member function; however,
+none of their tags need to be in the same namespace.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw0) in(lrc))
@@ -7175,10 +7053,10 @@ function; however, none of their tags need to be in the same namespace.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw3) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a variadic function
-header.  Enclose the return type <tt class="docutils literal">bool</tt> in
-parentheses.  The macro will qualify the function with the <tt
-class="docutils literal">const</tt> keyword.</p>
+<p>Use the macro as a substitute for a variadic function header.  Enclose the
+return type <tt class="docutils literal">bool</tt> in parentheses.  The macro
+will qualify the function with the <tt class="docutils literal">const</tt>
+keyword.</p>
 <pre class="first literal-block">
 struct D
 {
@@ -7213,8 +7091,8 @@ struct D
     }
 };
 </pre>
-<p class="first">To invoke the member function, bind all its arguments to
-named parameters.</p>
+<p>To invoke the member function, bind all its arguments to named
+parameters.</p>
 <pre class="first literal-block">
 D const d = D();
 d.evaluate_m(
@@ -7228,7 +7106,7 @@ d.evaluate_m(
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
+<p>The <a class="reference external"
 href="../../test/preprocessor_eval_cat_no_spec.cpp"
 >test/preprocessor_eval_cat_no_spec.cpp</a> test program demonstrates proper
 usage of this macro.</p>
@@ -7300,7 +7178,7 @@ template &lt;typename ResultType, typename Args&gt;
 ResultType
     boost_param_no_spec_impl_const ## __LINE__ ## <strong>name</strong>(
         (ResultType(*)())
-      , Args const& args
+      , Args const&amp; args
     ) const
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
@@ -7326,6 +7204,7 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function call operator that can take in named arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7336,11 +7215,10 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">When designing a front-end class template whose back-end is
-configurable via parameterized inheritance, it can be useful to omit argument
-specifiers from a named-parameter function call operator so that the delegate
-member functions of the back-end classes can enforce their own
-specifications.</p>
+<p>When designing a front-end class template whose back-end is configurable
+via parameterized inheritance, it can be useful to omit argument specifiers
+from a named-parameter function call operator so that the delegate member
+functions of the back-end classes can enforce their own specifications.</p>
 <pre class="first literal-block">
 template &lt;typename B&gt;
 struct frontend : B
@@ -7355,8 +7233,8 @@ struct frontend : B
     }
 };
 </pre>
-<p class="first">Named parameters are required when invoking the function call
-operator; however, none of their tags need to be in the same namespace.</p>
+<p>Named parameters are required when invoking the function call operator;
+however, none of their tags need to be in the same namespace.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(a0)
@@ -7365,9 +7243,9 @@ operator; however, none of their tags need to be in the same namespace.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(a2)
 </pre>
-<p class="first">For this example, each of the back-end class templates
-requires its own parameter to be present in the argument pack.  In practice,
-such parameters should be optional, with default values.</p>
+<p>For this example, each of the back-end class templates requires its own
+parameter to be present in the argument pack.  In practice, such parameters
+should be optional, with default values.</p>
 <pre class="first literal-block">
 template &lt;typename T&gt;
 class backend0
@@ -7440,8 +7318,8 @@ class backend2 : public B
     }
 };
 </pre>
-<p class="first">This example shows that while <tt class="docutils literal"
->backend0</tt> must always be the root base class template and that <tt
+<p>This example shows that while <tt class="docutils literal">backend0</tt>
+must always be the root base class template and that <tt
 class="docutils literal">frontend</tt> must always be the most derived class
 template, the other back-ends can be chained together in different orders.</p>
 <pre class="first literal-block">
@@ -7458,7 +7336,7 @@ BOOST_TEST_EQ(composed_obj0.get_a0(), composed_obj1.get_a0());
 BOOST_TEST_EQ(composed_obj0.get_a1(), composed_obj1.get_a1());
 BOOST_TEST_EQ(composed_obj0.get_a2(), composed_obj1.get_a2());
 </pre>
-<p class="last">The <a class="reference external"
+<p>The <a class="reference external"
 href="../../test/parameterized_inheritance.cpp"
 >test/parameterized_inheritance.cpp</a> and <a class="reference external"
 href="../../test/preprocessor_eval_cat_no_spec.cpp"
@@ -7499,8 +7377,7 @@ struct boost_param_no_spec_result_ ## __LINE__ ## operator
 
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 inline typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">lazy_enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>&lt;
     <a class="reference internal" href="#are-tagged-arguments"
 >are_tagged_arguments</a>&lt;TaggedArg0,TaggedArgs...&gt;
   , boost_param_no_spec_result_ ## __LINE__ ## operator&lt;
@@ -7527,7 +7404,7 @@ template &lt;typename ResultType, typename Args&gt;
 ResultType
     boost_param_no_spec_impl ## __LINE__ ## operator(
         (ResultType(*)())
-      , Args const& args
+      , Args const&amp; args
     )
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
@@ -7553,6 +7430,7 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a function call operator that can take in named arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7563,8 +7441,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following function templates
-falls under a different value category.</p>
+<p>The return type of each of the following function templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -7592,10 +7470,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-value category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -7634,8 +7512,8 @@ struct U
     }
 };
 </pre>
-<p class="first">Named parameters are required when invoking the function call
-operator; however, none of their tags need to be in the same namespace.</p>
+<p>Named parameters are required when invoking the function call operator;
+however, none of their tags need to be in the same namespace.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw0) in(lrc))
@@ -7646,9 +7524,9 @@ operator; however, none of their tags need to be in the same namespace.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw3) consume(rr))
 </pre>
-<p class="first">Use the macro as a substitute for a variadic function call
-operator header.  Enclose the return type <tt class="docutils literal"
->bool</tt> in parentheses.  The macro will qualify the function with the <tt
+<p>Use the macro as a substitute for a variadic function call operator
+header.  Enclose the return type <tt class="docutils literal">bool</tt> in
+parentheses.  The macro will qualify the function with the <tt
 class="docutils literal">const</tt> keyword.</p>
 <pre class="first literal-block">
 struct D
@@ -7684,8 +7562,8 @@ struct D
     }
 };
 </pre>
-<p class="first">To invoke the function call operator, bind all its arguments
-to named parameters.</p>
+<p>To invoke the function call operator, bind all its arguments to named
+parameters.</p>
 <pre class="first literal-block">
 D const d = D();
 d(
@@ -7699,7 +7577,7 @@ d(
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
+<p>The <a class="reference external"
 href="../../test/preprocessor_eval_cat_no_spec.cpp"
 >test/preprocessor_eval_cat_no_spec.cpp</a> test program demonstrates proper
 usage of this macro.</p>
@@ -7738,8 +7616,7 @@ struct boost_param_no_spec_result_const_ ## __LINE__ ## operator
 
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 inline typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html"><tt
-class="docutils literal">lazy_enable_if</tt></a>&lt;
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>&lt;
     <a class="reference internal" href="#are-tagged-arguments"
 >are_tagged_arguments</a>&lt;TaggedArg0,TaggedArgs...&gt;
   , boost_param_no_spec_result_const_ ## __LINE__ ## operator&lt;
@@ -7769,7 +7646,7 @@ template &lt;typename ResultType, typename Args&gt;
 ResultType
     boost_param_no_spec_impl_const ## __LINE__ ## operator(
         (ResultType(*)())
-      , Args const& args
+      , Args const&amp; args
     ) const
 </pre>
 <p>Only the <a class="reference internal" href="#argumentpack"><span
@@ -7795,6 +7672,7 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a constructor that can take in named arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7805,10 +7683,10 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">When designing a front-end class template whose back-end is
-configurable via parameterized inheritance, it can be useful to omit argument
-specifiers from a named-parameter constructor so that the delegate
-constructors of the back-end classes can enforce their own specifications.</p>
+<p>When designing a front-end class template whose back-end is configurable
+via parameterized inheritance, it can be useful to omit argument specifiers
+from a named-parameter constructor so that the delegate constructors of the
+back-end classes can enforce their own specifications.</p>
 <pre class="first literal-block">
 template &lt;typename B&gt;
 struct frontend : B
@@ -7816,8 +7694,8 @@ struct frontend : B
     BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR(frontend, (B))
 };
 </pre>
-<p class="first">Named parameters are required when invoking the constructor;
-however, none of their tags need to be in the same namespace.</p>
+<p>Named parameters are required when invoking the constructor; however, none
+of their tags need to be in the same namespace.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(a0)
@@ -7826,9 +7704,9 @@ however, none of their tags need to be in the same namespace.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>(a2)
 </pre>
-<p class="first">For this example, each of the back-end class templates
-requires its own parameter to be present in the argument pack.  In practice,
-such parameters should be optional, with default values.</p>
+<p>For this example, each of the back-end class templates requires its own
+parameter to be present in the argument pack.  In practice, such parameters
+should be optional, with default values.</p>
 <pre class="first literal-block">
 struct _enabler
 {
@@ -7909,8 +7787,8 @@ href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
     }
 };
 </pre>
-<p class="first">This example shows that while <tt class="docutils literal"
->backend0</tt> must always be the root base class template and that <tt
+<p>This example shows that while <tt class="docutils literal">backend0</tt>
+must always be the root base class template and that <tt
 class="docutils literal">frontend</tt> must always be the most derived class
 template, the other back-ends can be chained together in different orders.</p>
 <pre class="first literal-block">
@@ -7925,7 +7803,7 @@ BOOST_TEST_EQ(composed_obj0.get_a0(), composed_obj1.get_a0());
 BOOST_TEST_EQ(composed_obj0.get_a1(), composed_obj1.get_a1());
 BOOST_TEST_EQ(composed_obj0.get_a2(), composed_obj1.get_a2());
 </pre>
-<p class="last">The <a class="reference external"
+<p>The <a class="reference external"
 href="../../test/parameterized_inheritance.cpp"
 >test/parameterized_inheritance.cpp</a> and <a class="reference external"
 href="../../test/preprocessor_eval_cat_no_spec.cpp"
@@ -7997,6 +7875,7 @@ href="../../../../boost/parameter/preprocessor.hpp"
 </tr>
 </tbody>
 </table>
+<p>Generates a constructor that can take in named arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -8007,8 +7886,8 @@ href="../../../../boost/parameter/preprocessor.hpp"
 <tr>
 <td>&nbsp;</td>
 <td class="field-body">
-<p class="first">The return type of each of the following functon templates
-falls under a different reference category.</p>
+<p>The return type of each of the following functon templates falls under a
+different value category.</p>
 <pre class="first literal-block">
 template &lt;std::size_t N&gt;
 std::bitset&lt;N + 1&gt; rvalue_bitset()
@@ -8036,10 +7915,10 @@ std::bitset&lt;N + 1&gt; const&amp; lvalue_const_bitset()
     return clset;
 }
 </pre>
-<p class="first">The <tt class="docutils literal">U::evaluate_category</tt>
-static member function template has a simple job: to return the correct
-reference category when passed in an object returned by one of the functions
-defined above.  Assume that <a class="reference internal"
+<p>The <tt class="docutils literal">U::evaluate_category</tt> static member
+function template has a simple job: to return the correct value category when
+passed in an object returned by one of the functions defined above.  Assume
+that <a class="reference internal"
 href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
 >BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is defined.</p>
 <pre class="first literal-block">
@@ -8078,8 +7957,8 @@ struct U
     }
 };
 </pre>
-<p class="first">Named parameters are required when invoking the constructor;
-however, none of their tags need to be in the same namespace.</p>
+<p>Named parameters are required when invoking the constructor; however, none
+of their tags need to be in the same namespace.</p>
 <pre class="first literal-block">
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_lrc, kw0) in(lrc))
@@ -8090,7 +7969,7 @@ however, none of their tags need to be in the same namespace.</p>
 <a class="reference internal" href="#boost-parameter-name-name"
 >BOOST_PARAMETER_NAME</a>((_rr, kw3) consume(rr))
 </pre>
-<p class="first">Unlike <a class="reference internal"
+<p>Unlike <a class="reference internal"
 href="#boost-parameter-no-spec-constructor-cls-impl"><tt
 class="docutils literal">BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR</tt></a>, this
 macro doesn't require a base class, only a delegate function to which the
@@ -8100,8 +7979,6 @@ href="#argumentpack"><span class="concept">ArgumentPack</span></a>.</p>
 struct D
 {
     BOOST_PARAMETER_NO_SPEC_NO_BASE_CONSTRUCTOR(D, D::_evaluate)
-    {
-    }
 
  private:
     template &lt;typename Args&gt;
@@ -8132,8 +8009,7 @@ struct D
     }
 };
 </pre>
-<p class="first">To invoke the constructor, bind all its arguments to named
-parameters.</p>
+<p>To invoke the constructor, bind all its arguments to named parameters.</p>
 <pre class="first literal-block">
 D dp0(
     _rr0 = rvalue_bitset&lt;3&gt;()
@@ -8146,7 +8022,7 @@ D dp1(
   , _lrc0 = lvalue_const_bitset&lt;0&gt;()
 );
 </pre>
-<p class="last">The <a class="reference external"
+<p>The <a class="reference external"
 href="../../test/preprocessor_eval_cat_no_spec.cpp"
 >test/preprocessor_eval_cat_no_spec.cpp</a> test program demonstrates proper
 usage of this macro.</p>
@@ -8486,16 +8362,15 @@ r
     return <strong>name</strong>_with_named_params(
         pk(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A1&gt;(a1)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A1&gt;(a1)
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A2&gt;(a2)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A2&gt;(a2)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->l</strong>&gt;(a ## <strong>l</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>l</strong>&gt;(a ## <strong>l</strong>)
         )
     );
 }
@@ -8526,21 +8401,20 @@ href="../../../preprocessor/doc/ref/inc.html">BOOST_PP_INC</a>(<strong
     return <strong>name</strong>_with_named_params(
         pk(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A1&gt;(a1)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A1&gt;(a1)
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A2&gt;(a2)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A2&gt;(a2)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->l</strong>&gt;(a ## <strong>l</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>l</strong>&gt;(a ## <strong>l</strong>)
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <a
-class="reference external" href="../../../preprocessor/doc/ref/inc.html"
->BOOST_PP_INC</a>(<strong>l</strong>)&gt;(a ## <a class="reference external"
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <a class="reference external"
+href="../../../preprocessor/doc/ref/inc.html">BOOST_PP_INC</a>(<strong
+>l</strong>)&gt;(a ## <a class="reference external"
 href="../../../preprocessor/doc/ref/inc.html">BOOST_PP_INC</a>(<strong
 >l</strong>))
         )
@@ -8561,16 +8435,15 @@ r
     return <strong>name</strong>_with_named_params(
         pk(
             std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A1&gt;(a1)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A1&gt;(a1)
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A2&gt;(a2)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A2&gt;(a2)
           , …
           , std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/utility/forward"><tt
-class="docutils literal">forward</tt></a>&lt;A ## <strong
->h</strong>&gt;(a ## <strong>h</strong>)
+href="http://en.cppreference.com/w/cpp/utility/forward"
+>forward</a>&lt;A ## <strong>h</strong>&gt;(a ## <strong>h</strong>)
         )
     );
 }
@@ -9025,9 +8898,8 @@ class="docutils literal">BOOST_NO_RESULT_OF</tt></a> is <tt
 class="docutils literal">#defined</tt>, <tt class="docutils literal"
 >boost::</tt><a class="reference external"
 href="../../../utility/utility.htm#result_of"><tt class="docutils literal"
->result_of</tt></a><tt class="docutils literal"><span class="pre"
->&lt;F()&gt;::type</span></tt> is replaced by <tt class="docutils literal"
-><span class="pre">F::result_type</span></tt>.</td></tr>
+>result_of</tt></a><tt class="docutils literal">&lt;F()&gt;::type</tt> is
+replaced by <tt class="docutils literal">F::result_type</tt>.</td></tr>
 </tbody>
 </table>
 </div>

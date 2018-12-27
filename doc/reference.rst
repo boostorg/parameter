@@ -1048,6 +1048,9 @@ using the Parameter library by eliminating repetitive boilerplate.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.
+
 :Example usage:
 The return type of each of the following function templates falls under a
 different value category.
@@ -1498,6 +1501,9 @@ Approximate expansion:
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.
+
 :Example usage:
 The return type of each of the following function templates falls under a
 different value category.
@@ -1912,6 +1918,9 @@ Approximate expansion:
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -2330,6 +2339,9 @@ Approximate expansion:
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.
+
 :Example usage:
 Define the named parameters that will comprise the argument specification that
 this macro will use.  Ensure that all their tag types are in the same
@@ -2640,6 +2652,9 @@ Approximate expansion:
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -3062,6 +3077,9 @@ Approximate expansion:
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a constructor that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.
+
 :Example usage:
 Define the named parameters that will comprise the argument specification that
 this macro will use.  Ensure that all their tag types are in the same
@@ -3272,6 +3290,9 @@ Approximate expansion:
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -3600,6 +3621,9 @@ available for use within the function body.
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -3932,6 +3956,9 @@ available for use within the function body.
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a member function that can take in positional arguments, composed
+arguments, named arguments, and deduced arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -4268,6 +4295,9 @@ available for use within the function body.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.
+
 :Example usage:
 Define the named parameters that will comprise the argument specification that
 this macro will use.  Ensure that all their tag types are in the same
@@ -4490,6 +4520,9 @@ available for use within the function call operator body.
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a function call operator that can take in positional arguments,
+composed arguments, named arguments, and deduced arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -4823,6 +4856,8 @@ available for use within the function call operator body.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a function that can take in named arguments.
+
 :Example usage:
 The return type of each of the following function templates falls under a
 different value category.
@@ -5022,6 +5057,8 @@ available for use within the function body.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a member function that can take in named arguments.
+
 :Example usage:
 When designing a front-end class template whose back-end is configurable via
 parameterized inheritance, it can be useful to omit argument specifiers from
@@ -5215,6 +5252,8 @@ available for use within the function body.
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a member function that can take in named arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -5419,6 +5458,8 @@ available for use within the function body.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a function call operator that can take in named arguments.
+
 :Example usage:
 When designing a front-end class template whose back-end is configurable via
 parameterized inheritance, it can be useful to omit argument specifiers from
@@ -5608,6 +5649,8 @@ available for use within the function body.
 :Defined in: `boost/parameter/preprocessor.hpp`__
 
 __ ../../../../boost/parameter/preprocessor.hpp
+
+Generates a function call operator that can take in named arguments.
 
 :Example usage:
 The return type of each of the following function templates falls under a
@@ -5814,6 +5857,8 @@ available for use within the function body.
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a constructor that can take in named arguments.
+
 :Example usage:
 When designing a front-end class template whose back-end is configurable via
 parameterized inheritance, it can be useful to omit argument specifiers from
@@ -5972,8 +6017,10 @@ Approximate expansion:
 
 __ ../../../../boost/parameter/preprocessor.hpp
 
+Generates a constructor that can take in named arguments.
+
 :Example usage:
-The return type of each of the following functon templates falls under a
+The return type of each of the following function templates falls under a
 different value category.
 
 .. parsed-literal::
