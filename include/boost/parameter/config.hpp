@@ -15,13 +15,9 @@
 // SFINAE support, needed explicitly by tagged_argument & keyword & cast;
 // correct function template ordering, needed by the code generation macros;
 // rvalue references, needed throughout; variadic templates, needed by
-// parameters; function template default arguments, needed by the code
-// generation macros; and the ability to handle multiple parameter packs,
-// needed by parameters.  Older versions of GCC either don't have the latter
-// ability or cannot disambiguate between keyword's overloaded
-// operators.  Older versions of Clang either fail to compile due to
-// differences in length between parameter packs 'Args' and 'args' or fail at
-// runtime due to segmentation faults.
+// parameters; and the ability to handle multiple parameter packs, needed by
+// parameters.  Older versions of GCC either don't have the latter ability or
+// cannot disambiguate between keyword's overloaded operators.
 // -- Cromwell D. Enage
 #if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
     !defined(BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING) && \
@@ -29,14 +25,8 @@
     !defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) && \
     !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && \
     !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
-    !defined(BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS) && \
-    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && !( \
-        defined(BOOST_CLANG) && (1 == BOOST_CLANG) && ( \
-            (__clang_major__ < 3) || ( \
-                (3 == __clang_major__) && (__clang_minor__ < 2) \
-            ) \
-        ) \
-    ) && !BOOST_WORKAROUND(BOOST_GCC, < 40900)
+    !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
+    !BOOST_WORKAROUND(BOOST_GCC, < 40900)
 #define BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 #endif
 
