@@ -6653,6 +6653,26 @@ perfect forwarding is supported, ``8`` otherwise.
 .. _BOOST_MPL_LIMIT_VECTOR_SIZE: ../../../mpl/doc/refmanual/limit-vector-size.html
 .. _`Boost.MPL`: ../../../mpl/doc/index.html
 
+``BOOST_PARAMETER_NO_SPEC_MAX_ARITY``
+-------------------------------------
+
+If |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``, then
+determines the maximum number of arguments supported by the function call
+operator of the no-template-argument |parameters| specialization and by the
+|BOOST_PARAMETER_NO_SPEC_FUNCTION|, |BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION|,
+|BOOST_PARAMETER_NO_SPEC_CONST_MEMBER_FUNCTION|,
+|BOOST_PARAMETER_NO_SPEC_FUNCTION_CALL_OPERATOR|,
+|BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR|,
+|BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR|, and
+|BOOST_PARAMETER_NO_SPEC_NO_BASE_CONSTRUCTOR| code generation macros.
+
+:Defined in: `boost/parameter/parameters.hpp`__
+
+__ ../../../../boost/parameter/parameters.hpp
+
+:Default Value: ``20``
+:Minimum Value: ``1``
+
 ``BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY``
 --------------------------------------------------------
 
@@ -6693,6 +6713,10 @@ undefined.
 then the macro |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| will be left
 undefined.
 
+#. If `Boost.Config`_ defines the macro
+|BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS|_, then the macro
+|BOOST_PARAMETER_HAS_PERFECT_FORWARDING| will be left undefined.
+
 #. If `Boost.Fusion`_ defines the macro |BOOST_FUSION_HAS_VARIADIC_LIST|_,
 if this library defines the macro |BOOST_PARAMETER_HAS_PERFECT_FORWARDING|,
 and if |BOOST_PARAMETER_VARIADIC_MPL_SEQUENCE| is left undefined, then the
@@ -6723,6 +6747,8 @@ the macro |BOOST_PARAMETER_MAX_ARITY| as if this library defines the macro
 .. _BOOST_NO_CXX11_RVALUE_REFERENCES: ../../../config/doc/html/boost_config/boost_macro_reference.html
 .. |BOOST_NO_CXX11_VARIADIC_TEMPLATES| replace:: ``BOOST_NO_CXX11_VARIADIC_TEMPLATES``
 .. _BOOST_NO_CXX11_VARIADIC_TEMPLATES: ../../../config/doc/html/boost_config/boost_macro_reference.html
+.. |BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS| replace:: ``BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS``
+.. _BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS: ../../../config/doc/html/boost_config/boost_macro_reference.html
 .. |BOOST_FUSION_HAS_VARIADIC_LIST| replace:: ``BOOST_FUSION_HAS_VARIADIC_LIST``
 .. _BOOST_FUSION_HAS_VARIADIC_LIST: ../../../../boost/fusion/container/list/list_fwd.hpp
 .. |BOOST_FUSION_HAS_VARIADIC_DEQUE| replace:: ``BOOST_FUSION_HAS_VARIADIC_DEQUE``

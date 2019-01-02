@@ -309,6 +309,12 @@ namespace boost { namespace parameter {
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #endif
 
+// TODO: Move to <boost/paramter/config.hpp>
+// once PR #41 is accepted and merged.
+#if !defined(BOOST_PARAMETER_NO_SPEC_MAX_ARITY)
+#define BOOST_PARAMETER_NO_SPEC_MAX_ARITY 20
+#endif
+
 #include <boost/parameter/aux_/preprocessor/no_perfect_forwarding_begin.hpp>
 
 namespace boost { namespace parameter {
@@ -588,7 +594,7 @@ namespace boost { namespace parameter {
 
         BOOST_PP_REPEAT_FROM_TO(
             1
-          , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)
+          , BOOST_PP_INC(BOOST_PARAMETER_NO_SPEC_MAX_ARITY)
           , BOOST_PARAMETER_make_simple_arg_list_function_call_op
           , TaggedArg
         )

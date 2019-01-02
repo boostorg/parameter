@@ -514,7 +514,7 @@
 #define BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR(class_, base)                    \
     BOOST_PP_REPEAT_FROM_TO(                                                 \
         1                                                                    \
-      , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)                              \
+      , BOOST_PP_INC(BOOST_PARAMETER_NO_SPEC_MAX_ARITY)                      \
       , BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR_OVERLOAD_Z                       \
       , (class_, base)                                                       \
     )
@@ -526,7 +526,7 @@
 #define BOOST_PARAMETER_NO_SPEC_NO_BASE_CONSTRUCTOR(class_, func)            \
     BOOST_PP_REPEAT_FROM_TO(                                                 \
         1                                                                    \
-      , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)                              \
+      , BOOST_PP_INC(BOOST_PARAMETER_NO_SPEC_MAX_ARITY)                      \
       , BOOST_PARAMETER_NO_SPEC_NO_BASE_CONSTRUCTOR_OVERLOAD_Z               \
       , (class_, func)                                                       \
     )
@@ -537,7 +537,7 @@
 #define BOOST_PARAMETER_NO_SPEC_FUNCTION_OVERLOAD(name, impl, is_m, c)       \
     BOOST_PP_REPEAT_FROM_TO(                                                 \
         1                                                                    \
-      , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)                              \
+      , BOOST_PP_INC(BOOST_PARAMETER_NO_SPEC_MAX_ARITY)                      \
       , BOOST_PARAMETER_NO_SPEC_FUNCTION_OVERLOAD_Z                          \
       , (name, impl, is_m, c)                                                \
     )

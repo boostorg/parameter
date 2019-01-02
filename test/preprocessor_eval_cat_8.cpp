@@ -8,6 +8,12 @@
 #if (BOOST_PARAMETER_MAX_ARITY < 8)
 #error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
 #endif
+#if ( \
+        defined(__MINGW32__) || \
+        !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+    ) && !defined(BOOST_MSVC) && (BOOST_PARAMETER_NO_SPEC_MAX_ARITY < 8)
+#error Define BOOST_PARAMETER_NO_SPEC_MAX_ARITY as 8 or greater.
+#endif
 
 #include <boost/parameter/name.hpp>
 

@@ -71,6 +71,15 @@ alias parameter_standard_tests
         :
             <preserve-target-tests>off
     ]
+    [ run parameterized_inheritance.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=3
+        :
+        :
+            <preserve-target-tests>off
+    ]
     [ run preprocessor_eval_category.cpp
         :
         :
@@ -85,7 +94,7 @@ alias parameter_standard_tests
         :
         :
         :
-            <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=8
         :
         :
             <preserve-target-tests>off
@@ -136,15 +145,6 @@ alias parameter_standard_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-        :
-        :
-            <preserve-target-tests>off
-    ]
-    [ run parameterized_inheritance.cpp
-        :
-        :
-        :
-            <define>BOOST_PARAMETER_MAX_ARITY=3
         :
         :
             <preserve-target-tests>off
@@ -596,6 +596,7 @@ alias parameter_evaluate_category_10
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
             evaluate_category_10_gcc_4_8_linux
@@ -615,6 +616,7 @@ alias parameter_evaluate_category_10
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
             evaluate_category_10_mingw
@@ -633,6 +635,7 @@ alias parameter_evaluate_category_10
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
             evaluate_category_10_cxx98
@@ -650,6 +653,7 @@ alias parameter_evaluate_category_10
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
             evaluate_category_10_cxx03
@@ -667,6 +671,7 @@ alias parameter_evaluate_category_10
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=10
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=10
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=11
         :
         :
@@ -681,6 +686,7 @@ alias parameter_preprocessor_eval_cat_8
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=8
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=0
         :
             preproc_eval_cat_8_mingw
@@ -699,6 +705,7 @@ alias parameter_preprocessor_eval_cat_8
         :
         :
             <define>BOOST_PARAMETER_MAX_ARITY=8
+            <define>BOOST_PARAMETER_NO_SPEC_MAX_ARITY=8
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
         :
         :

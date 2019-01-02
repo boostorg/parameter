@@ -8,6 +8,15 @@
 #if (BOOST_PARAMETER_MAX_ARITY < 10)
 #error Define BOOST_PARAMETER_MAX_ARITY as 10 or greater.
 #endif
+#if ( \
+        !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+        defined(__MINGW32__) \
+    ) && ( \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+        !(10 < BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY) \
+    ) && (BOOST_PARAMETER_NO_SPEC_MAX_ARITY < 10)
+#error Define BOOST_PARAMETER_NO_SPEC_MAX_ARITY as 10 or greater.
+#endif
 
 #include <boost/parameter/name.hpp>
 
