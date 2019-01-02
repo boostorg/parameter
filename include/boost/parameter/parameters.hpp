@@ -13,13 +13,70 @@
 
 namespace boost { namespace parameter { namespace aux {
 
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    struct make_simple_arg_list_actual;
+
     // The make_arg_list<> metafunction produces a reversed arg_list,
     // so pass the arguments to the arg_list constructor reversed in turn.
     template <typename ArgList, typename ...Args>
     struct arg_list_factory;
 }}} // namespace boost::parameter::aux
 
+namespace boost { namespace parameter {
+
+    template <typename ...Spec>
+    struct parameters;
+}} // namespace boost::parameter
+
 #include <boost/parameter/aux_/arg_list.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename TaggedArg0>
+    struct make_simple_arg_list_actual<TaggedArg0>
+    {
+        typedef ::boost::parameter::aux::arg_list<TaggedArg0> type;
+    };
+
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    struct make_simple_arg_list_actual
+    {
+        typedef ::boost::parameter::aux::arg_list<
+            TaggedArg0
+          , typename ::boost::parameter::aux
+            ::make_simple_arg_list_actual<TaggedArgs...>::type
+        > type;
+    };
+}}} // namespace boost::parameter::aux
+
+namespace boost { namespace parameter {
+
+    template <>
+    struct parameters<>
+    {
+        inline ::boost::parameter::aux::empty_arg_list operator()() const
+        {
+            return ::boost::parameter::aux::empty_arg_list();
+        }
+
+        template <typename TaggedArg0, typename ...TaggedArgs>
+        inline typename ::boost::parameter::aux
+        ::make_simple_arg_list_actual<TaggedArg0,TaggedArgs...>::type
+            operator()(
+                TaggedArg0 const& arg0
+              , TaggedArgs const&... args
+            ) const
+        {
+            return typename ::boost::parameter::aux
+            ::make_simple_arg_list_actual<TaggedArg0,TaggedArgs...>::type(
+                ::boost::parameter::aux::value_type_is_not_void()
+              , arg0
+              , args...
+            );
+        }
+    };
+}} // namespace boost::parameter
+
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <utility>
@@ -69,7 +126,6 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/aux_/pack/make_parameter_spec_items.hpp>
 #include <boost/parameter/aux_/pack/tag_keyword_arg.hpp>
 #include <boost/parameter/aux_/pack/tag_template_keyword_arg.hpp>
-#include <boost/mpl/bool.hpp>
 #include <boost/mpl/pair.hpp>
 #include <boost/mpl/identity.hpp>
 
@@ -220,8 +276,9 @@ namespace boost { namespace parameter {
 #include <boost/parameter/aux_/pack/tag_template_keyword_arg.hpp>
 #include <boost/parameter/aux_/preprocessor/binary_seq_for_each.hpp>
 #include <boost/preprocessor/arithmetic/inc.hpp>
-#include <boost/preprocessor/repetition/enum_shifted.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/selection/min.hpp>
 
 #if ( \
@@ -234,7 +291,6 @@ namespace boost { namespace parameter {
 #include <boost/preprocessor/arithmetic/sub.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
-#include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/repetition/enum_trailing_params.hpp>
 #endif
 
@@ -258,8 +314,7 @@ namespace boost { namespace parameter {
 namespace boost { namespace parameter {
 
     template <
-        typename PS0
-      , BOOST_PP_ENUM_SHIFTED(
+        BOOST_PP_ENUM(
             BOOST_PARAMETER_MAX_ARITY, BOOST_PARAMETER_template_args, PS
         )
     >
@@ -521,6 +576,22 @@ namespace boost { namespace parameter {
 #include BOOST_PP_ITERATE()
 #endif
 #endif  // exponential overloads
+    };
+
+    template <>
+    struct parameters<>
+    {
+        inline ::boost::parameter::aux::empty_arg_list operator()() const
+        {
+            return ::boost::parameter::aux::empty_arg_list();
+        }
+
+        BOOST_PP_REPEAT_FROM_TO(
+            1
+          , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)
+          , BOOST_PARAMETER_make_simple_arg_list_function_call_op
+          , TaggedArg
+        )
     };
 }} // namespace boost::parameter
 
