@@ -11,6 +11,7 @@
 #include <boost/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(BOOST_MSVC, == 1310)
+#include <boost/parameter/aux_/arg_list.hpp>
 #include <boost/parameter/aux_/augment_predicate.hpp>
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -22,6 +23,22 @@
 #endif
 
 namespace boost { namespace parameter { namespace aux {
+
+#if BOOST_WORKAROUND(BOOST_MSVC, == 1310)
+    template <typename ArgList, typename ParameterRequirements, typename Bound>
+    struct satisfies_impl
+      : ::boost::mpl::apply_wrap2<
+            ::boost::parameter::aux::augment_predicate<
+                typename ParameterRequirements::predicate
+              , typename ArgList::reference
+              , typename ArgList::key_type
+            >
+          , Bound
+          , ArgList
+        >
+    {
+    };
+#endif
 
     // Returns mpl::true_ iff the given ParameterRequirements are satisfied by
     // ArgList.
@@ -41,14 +58,17 @@ namespace boost { namespace parameter { namespace aux {
         typedef typename ::boost::mpl::eval_if<
             ::boost::is_same<bound,::boost::parameter::void_>
           , typename ParameterRequirements::has_default
-          , ::boost::mpl::apply_wrap2<
-                ::boost::parameter::aux::augment_predicate<
-                    typename ParameterRequirements::predicate
-                  , typename ArgList::reference
-                  , typename ArgList::key_type
+          , ::boost::mpl::eval_if<
+                ::boost::is_same<
+                    ArgList
+                  , ::boost::parameter::aux::empty_arg_list
                 >
-              , bound
-              , ArgList
+              , ::boost::mpl::false_
+              , ::boost::parameter::aux::satisfies_impl<
+                    ArgList
+                  , ParameterRequirements
+                  , bound
+                >
             >
         >::type type;
 #else   // !BOOST_WORKAROUND(BOOST_MSVC, == 1310)
@@ -83,7 +103,7 @@ namespace boost { namespace parameter { namespace aux {
             ArgList
           , typename ::boost::parameter::aux
             ::as_parameter_requirements<ParameterSpec>::type
-        >
+        >::type
     {
     };
 }}} // namespace boost::parameter::aux

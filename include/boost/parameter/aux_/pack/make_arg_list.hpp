@@ -16,6 +16,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename UsedArgs
       , typename ArgumentPack
       , typename Error
+      , typename EmitErrors
     >
     struct make_arg_list_aux;
 }}} // namespace boost::parameter::aux
@@ -54,6 +55,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename argument
 #endif
       , typename Error
+      , typename EmitErrors
     >
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
     struct make_arg_list00
@@ -114,6 +116,7 @@ namespace boost { namespace parameter { namespace aux {
               , DeducedArgs
               , used_args
               , TagFn
+              , EmitErrors
             >
         >::type deduced_data;
 
@@ -147,7 +150,11 @@ namespace boost { namespace parameter { namespace aux {
         typedef typename ::boost::mpl::if_<
             ::boost::is_same<tagged,::boost::parameter::void_>
           , ArgumentPack
+#if defined(BOOST_NO_SFINAE) || BOOST_WORKAROUND(BOOST_MSVC, < 1800)
           , ::boost::parameter::aux::arg_list<tagged,ArgumentPack>
+#else
+          , ::boost::parameter::aux::arg_list<tagged,ArgumentPack,EmitErrors>
+#endif
         >::type argument_pack;
 
         typedef typename ::boost::parameter::aux::make_arg_list_aux<
@@ -158,6 +165,7 @@ namespace boost { namespace parameter { namespace aux {
           , typename deduced_data::second
           , argument_pack
           , error
+          , EmitErrors
         >::type type;
     };
 
@@ -170,6 +178,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename UsedArgs
       , typename ArgumentPack
       , typename Error
+      , typename EmitErrors
     >
     struct make_arg_list0
     {
@@ -184,6 +193,7 @@ namespace boost { namespace parameter { namespace aux {
               , ArgumentPack
               , typename List::arg const
               , Error
+              , EmitErrors
             >
           , ::boost::parameter::aux::make_arg_list00<
                 List
@@ -194,6 +204,7 @@ namespace boost { namespace parameter { namespace aux {
               , ArgumentPack
               , typename List::arg
               , Error
+              , EmitErrors
             >
         >::type type;
     };
@@ -226,6 +237,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename DeducedSet
       , typename ArgumentPack
       , typename Error
+      , typename EmitErrors
     >
     struct make_arg_list_aux
       : ::boost::mpl::eval_if<
@@ -239,6 +251,7 @@ namespace boost { namespace parameter { namespace aux {
               , DeducedSet
               , ArgumentPack
               , Error
+              , EmitErrors
             >
         >
     {
@@ -266,6 +279,7 @@ namespace boost { namespace parameter { namespace aux {
           , ::boost::parameter::aux::set0
           , ::boost::parameter::aux::empty_arg_list
           , ::boost::parameter::void_
+          , EmitErrors
         >
     {
     };

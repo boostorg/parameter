@@ -14,6 +14,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename DeducedArgs
       , typename UsedArgs
       , typename TagFn
+      , typename EmitErrors
     >
     struct deduce_tag;
 }}} // namespace boost::parameter::aux
@@ -38,6 +39,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename DeducedArgs
       , typename UsedArgs
       , typename TagFn
+      , typename EmitErrors
     >
     struct deduce_tag0
     {
@@ -59,9 +61,13 @@ namespace boost { namespace parameter { namespace aux {
                     UsedArgs
                   , typename ::boost::parameter::aux::tag_type<spec>::type
                 >::type
-              , ::boost::mpl::if_<
+              , ::boost::mpl::eval_if<
                     condition
-                  , ::boost::mpl::false_
+                  , ::boost::mpl::if_<
+                        EmitErrors
+                      , ::boost::mpl::false_
+                      , ::boost::mpl::true_
+                    >
                   , ::boost::mpl::true_
                 >
               , ::boost::mpl::true_
@@ -77,6 +83,7 @@ namespace boost { namespace parameter { namespace aux {
               , typename DeducedArgs::tail
               , UsedArgs
               , TagFn
+              , EmitErrors
             >
         >::type type;
     };
@@ -108,6 +115,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename DeducedArgs
       , typename UsedArgs
       , typename TagFn
+      , typename EmitErrors
     >
     struct deduce_tag
       : ::boost::mpl::eval_if<
@@ -119,6 +127,7 @@ namespace boost { namespace parameter { namespace aux {
               , DeducedArgs
               , UsedArgs
               , TagFn
+              , EmitErrors
             >
         >
     {

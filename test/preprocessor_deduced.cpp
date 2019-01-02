@@ -10,11 +10,13 @@
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#include <map>
 #include <string>
 #include "basics.hpp"
 
 #if !defined(BOOST_NO_SFINAE)
 #include <boost/core/enable_if.hpp>
+#include <boost/type_traits/is_same.hpp>
 #endif
 
 namespace test {
@@ -30,7 +32,7 @@ namespace test {
     //   template1< r* ( template2<x> ) >
     //
     // Workaround: factor template2<x> into separate typedefs
-    struct predicate1
+    struct predicate_int
     {
         template <typename From, typename Args>
         struct apply
@@ -43,7 +45,7 @@ namespace test {
         };
     };
 
-    struct predicate2
+    struct predicate_string
     {
         template <typename From, typename Args>
         struct apply
@@ -116,7 +118,7 @@ namespace test {
 
 #if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
     // SunPro workaround; see above
-    struct predicate3
+    struct predicate_X
     {
         template <typename From, typename Args>
         struct apply
@@ -135,11 +137,11 @@ namespace test {
         )
         (deduced
             (required
-                (x, *(test::predicate1))
-                (y, *(test::predicate2))
+                (x, *(test::predicate_int))
+                (y, *(test::predicate_string))
             )
             (optional
-                (z, *(test::predicate3), test::X())
+                (z, *(test::predicate_X), test::X())
             )
         )
     )
@@ -170,7 +172,7 @@ namespace test {
     BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
         (deduced
             (required
-                (x, *(test::predicate2))
+                (x, *(test::predicate_string))
             )
         )
     )
@@ -206,6 +208,63 @@ namespace test {
     {
         return 0;
     }
+
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) || \
+    !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    // Test support for two different Boost.Parameter-enabled
+    // function call operator overloads.
+    class char_read_base
+    {
+        int index;
+        char const* key;
+
+     public:
+        template <typename Args>
+        explicit char_read_base(Args const& args)
+          : index(args[test::_y]), key(args[test::_z])
+        {
+        }
+
+        BOOST_PARAMETER_FUNCTION_CALL_OPERATOR((void), test::tag,
+            (deduced
+                (required
+                    (y, (int))
+                    (z, (char const*))
+                )
+            )
+        )
+        {
+            this->index = y;
+            this->key = z;
+        }
+
+        BOOST_PARAMETER_CONST_FUNCTION_CALL_OPERATOR((char), test::tag,
+            (deduced
+                (required
+                    (y, (bool))
+                    (z, (std::map<char const*,std::string>))
+                )
+            )
+        )
+        {
+            return y ? (
+                (z.find(this->key)->second)[this->index]
+            ) : this->key[this->index];
+        }
+    };
+
+    struct char_reader : public char_read_base
+    {
+        BOOST_PARAMETER_CONSTRUCTOR(char_reader, (char_read_base), test::tag,
+            (deduced
+                (required
+                    (y, (int))
+                    (z, (char const*))
+                )
+            )
+        )
+    };
+#endif  // MSVC-11.0-
 #endif  // BOOST_NO_SFINAE
 } // namespace test
 
@@ -287,9 +346,26 @@ int main()
     );
 
 #if !defined(BOOST_NO_SFINAE)
-    BOOST_TEST(test::sfinae("foo") == 1);
-    BOOST_TEST(test::sfinae(0) == 0);
-#endif
+    char const* keys[] = {"foo", "bar", "baz"};
+    BOOST_TEST_EQ(1, test::sfinae(keys[0]));
+    BOOST_TEST_EQ(0, test::sfinae(0));
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) || \
+    !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    std::map<char const*,std::string> k2s;
+    k2s[keys[0]] = std::string("qux");
+    k2s[keys[1]] = std::string("wmb");
+    k2s[keys[2]] = std::string("zxc");
+    test::char_reader r(keys[0], 0);
+    BOOST_TEST_EQ('q', (r(k2s, true)));
+    BOOST_TEST_EQ('f', (r(k2s, false)));
+    r(keys[1], 1);
+    BOOST_TEST_EQ('m', (r(k2s, true)));
+    BOOST_TEST_EQ('a', (r(k2s, false)));
+    r(keys[2], 2);
+    BOOST_TEST_EQ('c', (r(k2s, true)));
+    BOOST_TEST_EQ('z', (r(k2s, false)));
+#endif  // MSVC-11.0-
+#endif  // BOOST_NO_SFINAE
 
     return boost::report_errors();
 }
