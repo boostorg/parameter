@@ -51,7 +51,8 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/bool.hpp>
 #include <boost/tti/detail/dnullptr.hpp>
 
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
+    !BOOST_WORKAROUND(BOOST_GCC, < 40000)
 #include <boost/mpl/eval_if.hpp>
 #endif
 
@@ -83,7 +84,8 @@ namespace boost { namespace parameter { namespace aux {
         value> type;
     };
 
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) || \
+    BOOST_WORKAROUND(BOOST_GCC, < 40000)
     template <
         typename T
       , typename = typename ::boost::parameter::aux
@@ -103,7 +105,7 @@ namespace boost { namespace parameter { namespace aux {
     struct unwrap_cv_reference<T,::boost::mpl::true_> : T
     {
     };
-#else   // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#else   // no Borland or GCC 3- workarounds needed
     // Needed for unwrap_cv_reference below. T might be const, so
     // eval_if<> might fail because of deriving from T const on EDG.
     template <typename T>
@@ -123,7 +125,7 @@ namespace boost { namespace parameter { namespace aux {
         >
     {
     };
-#endif  // Borland workarounds needed.
+#endif  // Borland or GCC 3- workarounds needed
 }}} // namespace boost::parameter::aux
 
 #endif  // include guard
