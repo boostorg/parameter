@@ -5,12 +5,11 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
-    (BOOST_PARAMETER_MAX_ARITY < 8)
+#if (BOOST_PARAMETER_MAX_ARITY < 8)
 #error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
 #endif
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/name.hpp>
 
 namespace test {
 
@@ -35,14 +34,23 @@ namespace test {
 #include <boost/type_traits/is_convertible.hpp>
 #include "evaluate_category.hpp"
 
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if !defined(__MINGW32__) && defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#include <boost/parameter/preprocessor.hpp>
 #include <utility>
+#elif defined(BOOST_MSVC)
+#include <boost/parameter/preprocessor.hpp>
+#else
+#include <boost/parameter/preprocessor_no_spec.hpp>
 #endif
 
 namespace test {
 
     struct C
     {
+#if ( \
+        !defined(__MINGW32__) && \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+    ) || defined(BOOST_MSVC)
         typedef boost::mpl::if_<
             boost::is_convertible<boost::mpl::_,std::bitset<1> >
           , boost::mpl::true_
@@ -100,57 +108,130 @@ namespace test {
                 )
             )
         )
+#else
+        BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR((bool))
+#endif  // msvc, or perfect forwarding support and not mingw
         {
+#if ( \
+        !defined(__MINGW32__) && \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+    ) || defined(BOOST_MSVC)
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<0>(lrc0)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<0>(lrc0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference
-              , U::evaluate_category<1>(lr0)
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<1>(lr0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<4>(lrc1)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<4>(lrc1)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference
-              , U::evaluate_category<5>(lr1)
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<5>(lr1)
             );
+#else   // mingw, or no perfect forwarding support and not msvc
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<0>(args[test::_lrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<1>(args[test::_lr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<4>(args[test::_lrc1])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference
+              , test::U::evaluate_category<5>(
+                    args[test::_lr1 | test::lvalue_bitset<5>()]
+                )
+            );
+#endif  // msvc, or perfect forwarding support and not mingw
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined(__MINGW32__)
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference_to_const
-              , U::evaluate_category<2>(std::forward<rrc0_type>(rrc0))
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<2>(args[test::_rrc0])
             );
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference
-              , U::evaluate_category<3>(std::forward<rr0_type>(rr0))
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<3>(args[test::_rr0])
             );
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference_to_const
-              , U::evaluate_category<6>(std::forward<rrc1_type>(rrc1))
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<6>(
+                    args[test::_rrc1 | test::rvalue_const_bitset<6>()]
+                )
             );
             BOOST_TEST_EQ(
-                passed_by_rvalue_reference
-              , U::evaluate_category<7>(std::forward<rr1_type>(rr1))
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<7>(
+                    args[test::_rr1 | test::rvalue_bitset<7>()]
+                )
             );
+#else   // !defined(__MINGW32__)
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<2>(std::forward<rrc0_type>(rrc0))
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<3>(std::forward<rr0_type>(rr0))
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference_to_const
+              , test::U::evaluate_category<6>(std::forward<rrc1_type>(rrc1))
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_rvalue_reference
+              , test::U::evaluate_category<7>(std::forward<rr1_type>(rr1))
+            );
+#endif  // __MINGW32__
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined(BOOST_MSVC)
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<2>(rrc0)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<2>(rrc0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<3>(rr0)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<3>(rr0)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<6>(rrc1)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<6>(rrc1)
             );
             BOOST_TEST_EQ(
-                passed_by_lvalue_reference_to_const
-              , U::evaluate_category<7>(rr1)
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<7>(rr1)
             );
+#else   // !defined(BOOST_MSVC)
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<2>(args[test::_rrc0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<3>(args[test::_rr0])
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<6>(
+                    args[test::_rrc1 | test::rvalue_const_bitset<6>()]
+                )
+            );
+            BOOST_TEST_EQ(
+                test::passed_by_lvalue_reference_to_const
+              , test::U::evaluate_category<7>(
+                    args[test::_rr1 | test::rvalue_bitset<7>()]
+                )
+            );
+#endif  // BOOST_MSVC
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
             return true;
@@ -163,6 +244,10 @@ int main()
     test::C cp0;
     test::C cp1;
 
+#if ( \
+        !defined(__MINGW32__) && \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+    ) || defined(BOOST_MSVC)
     cp0(
         test::lvalue_const_bitset<4>()
       , test::lvalue_const_bitset<0>()
@@ -188,6 +273,33 @@ int main()
       , test::rvalue_bitset<7>()
       , test::lvalue_const_bitset<0>()
     );
+#else   // mingw, or no perfect forwarding support and not msvc
+    cp0(
+        test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+      , test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+    );
+    cp0(
+        test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+      , test::_rrc1 = test::rvalue_const_bitset<6>()
+      , test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+    );
+    cp1(
+        test::_lr0 = test::lvalue_bitset<1>()
+      , test::_rrc0 = test::rvalue_const_bitset<2>()
+      , test::_rr0 = test::rvalue_bitset<3>()
+      , test::_lrc1 = test::lvalue_const_bitset<4>()
+      , test::_lr1 = test::lvalue_bitset<5>()
+      , test::_rrc1 = test::rvalue_const_bitset<6>()
+      , test::_rr1 = test::rvalue_bitset<7>()
+      , test::_lrc0 = test::lvalue_const_bitset<0>()
+    );
+#endif  // msvc, or perfect forwarding support and not mingw
     return boost::report_errors();
 }
 
