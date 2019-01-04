@@ -26,6 +26,7 @@ namespace test {
 } // namespace test
 
 #include <boost/parameter/is_argument_pack.hpp>
+#include <boost/mpl/has_key.hpp>
 #include <boost/core/lightweight_test.hpp>
 
 namespace test {
@@ -45,7 +46,6 @@ namespace test {
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/int.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/has_key.hpp>
 #include <boost/mpl/key_type.hpp>
 #include <boost/mpl/order.hpp>
 #include <boost/mpl/count.hpp>
