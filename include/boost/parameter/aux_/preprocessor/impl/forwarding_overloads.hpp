@@ -47,23 +47,29 @@
 // Expands to a 0-arity forwarding function, whose job is to pass an empty
 // pack to the front-end implementation function.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_Z(z, n, data)            \
-    BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(3, 1, data))  \
-    inline                                                                   \
-    BOOST_PARAMETER_FUNCTION_RESULT_NAME(BOOST_PP_TUPLE_ELEM(3, 1, data))<   \
+    BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(4, 1, data))  \
+    inline BOOST_PARAMETER_FUNCTION_RESULT_NAME(                             \
+        BOOST_PP_TUPLE_ELEM(4, 1, data)                                      \
+      , BOOST_PP_TUPLE_ELEM(4, 3, data)                                      \
+    )<                                                                       \
         ::boost::parameter::aux::argument_pack<                              \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
+                BOOST_PP_TUPLE_ELEM(4, 1, data)                              \
+              , BOOST_PP_TUPLE_ELEM(4, 3, data)                              \
             )                                                                \
         >::type                                                              \
     >::type                                                                  \
     BOOST_PARAMETER_MEMBER_FUNCTION_NAME(BOOST_PP_TUPLE_ELEM(3, 0, data))()  \
-    BOOST_PP_EXPR_IF(BOOST_PP_TUPLE_ELEM(3, 2, data), const)                 \
+    BOOST_PP_EXPR_IF(BOOST_PP_TUPLE_ELEM(4, 3, data), const)                 \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_IMPL_NAME(                           \
-            BOOST_PP_TUPLE_ELEM(3, 1, data)                                  \
+        return BOOST_PP_EXPR_IF(BOOST_PP_TUPLE_ELEM(4, 2, data), this->)     \
+        BOOST_PARAMETER_FUNCTION_IMPL_NAME(                                  \
+            BOOST_PP_TUPLE_ELEM(4, 1, data)                                  \
+          , BOOST_PP_TUPLE_ELEM(4, 3, data)                                  \
         )(                                                                   \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
+                BOOST_PP_TUPLE_ELEM(4, 1, data)                              \
+              , BOOST_PP_TUPLE_ELEM(4, 3, data)                              \
             )()()                                                            \
         );                                                                   \
     }
@@ -78,12 +84,15 @@
 // into a pack for the front-end implementation function to take in.
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_1_Z(z, n, data)            \
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename ParameterArgumentType)>  \
-    BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(3, 1, data))  \
-    inline typename                                                          \
-    BOOST_PARAMETER_FUNCTION_RESULT_NAME(BOOST_PP_TUPLE_ELEM(3, 1, data))<   \
+    BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(BOOST_PP_TUPLE_ELEM(4, 1, data))  \
+    inline typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(                    \
+        BOOST_PP_TUPLE_ELEM(4, 1, data)                                      \
+      , BOOST_PP_TUPLE_ELEM(4, 3, data)                                      \
+    )<                                                                       \
         typename ::boost::parameter::aux::argument_pack<                     \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
+                BOOST_PP_TUPLE_ELEM(4, 1, data)                              \
+              , BOOST_PP_TUPLE_ELEM(4, 3, data)                              \
             )                                                                \
           , BOOST_PP_CAT(BOOST_PP_ENUM_, z)(                                 \
                 n                                                            \
@@ -92,23 +101,27 @@
             )                                                                \
         >::type                                                              \
     >::type                                                                  \
-    BOOST_PARAMETER_MEMBER_FUNCTION_NAME(BOOST_PP_TUPLE_ELEM(3, 0, data))(   \
+    BOOST_PARAMETER_MEMBER_FUNCTION_NAME(BOOST_PP_TUPLE_ELEM(4, 0, data))(   \
         BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, ParameterArgumentType, && a)     \
         BOOST_PARAMETER_FUNCTION_FORWARD_MATCH_Z(                            \
             z                                                                \
           , BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
+                BOOST_PP_TUPLE_ELEM(4, 1, data)                              \
+              , BOOST_PP_TUPLE_ELEM(4, 3, data)                              \
             )                                                                \
           , n                                                                \
           , ParameterArgumentType                                            \
         )                                                                    \
-    ) BOOST_PP_EXPR_IF(BOOST_PP_TUPLE_ELEM(3, 2, data), const)               \
+    ) BOOST_PP_EXPR_IF(BOOST_PP_TUPLE_ELEM(4, 3, data), const)               \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_IMPL_NAME(                           \
-            BOOST_PP_TUPLE_ELEM(3, 1, data)                                  \
+        return BOOST_PP_EXPR_IF(BOOST_PP_TUPLE_ELEM(4, 2, data), this->)     \
+        BOOST_PARAMETER_FUNCTION_IMPL_NAME(                                  \
+            BOOST_PP_TUPLE_ELEM(4, 1, data)                                  \
+          , BOOST_PP_TUPLE_ELEM(4, 3, data)                                  \
         )(                                                                   \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, data)                              \
+                BOOST_PP_TUPLE_ELEM(4, 1, data)                              \
+              , BOOST_PP_TUPLE_ELEM(4, 3, data)                              \
             )()(                                                             \
                 BOOST_PP_CAT(BOOST_PP_ENUM_, z)(                             \
                     n                                                        \
@@ -169,12 +182,21 @@
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 
 // Helper macro for BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS.
-#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS_AUX(name, impl, range, c) \
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS_AUX(nm, impl, r, is_m, c) \
     BOOST_PP_REPEAT_FROM_TO(                                                 \
-        BOOST_PP_TUPLE_ELEM(2, 0, range)                                     \
-      , BOOST_PP_TUPLE_ELEM(2, 1, range)                                     \
+        BOOST_PP_TUPLE_ELEM(2, 0, r)                                         \
+      , BOOST_PP_TUPLE_ELEM(2, 1, r)                                         \
       , BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_Z                          \
-      , (name, impl, c)                                                      \
+      , (                                                                    \
+            nm                                                               \
+          , impl                                                             \
+          , BOOST_PP_IF(                                                     \
+                BOOST_PARAMETER_MEMBER_FUNCTION_IS_STATIC(nm)                \
+              , 0                                                            \
+              , is_m                                                         \
+            )                                                                \
+          , c                                                                \
+        )                                                                    \
     )
 /**/
 
@@ -192,9 +214,9 @@
 
 // Expands to the layer of forwarding functions for the function with the
 // specified name, whose arguments determine the range of arities.
-#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, args, const_) \
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, a, is_m, c)   \
     BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS_AUX(                          \
-        name, impl, BOOST_PARAMETER_ARITY_RANGE(args), const_                \
+        name, impl, BOOST_PARAMETER_ARITY_RANGE(a), is_m, c                  \
     )
 /**/
 
@@ -236,41 +258,58 @@
 #define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_0_ARITY(z, n, seq)         \
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(                                  \
         BOOST_PP_TUPLE_ELEM(                                                 \
-            3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+            4, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
         )                                                                    \
     )                                                                        \
     inline BOOST_PARAMETER_FUNCTION_RESULT_NAME(                             \
         BOOST_PP_TUPLE_ELEM(                                                 \
-            3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+            4, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+        )                                                                    \
+      , BOOST_PP_TUPLE_ELEM(                                                 \
+            4, 3, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
         )                                                                    \
     )<                                                                       \
         ::boost::parameter::aux::argument_pack<                              \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
                 BOOST_PP_TUPLE_ELEM(                                         \
-                    3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
+                    4, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
+                )                                                            \
+              , BOOST_PP_TUPLE_ELEM(                                         \
+                    4, 3, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
                 )                                                            \
             )                                                                \
         >::type                                                              \
     >::type                                                                  \
     BOOST_PARAMETER_MEMBER_FUNCTION_NAME(                                    \
         BOOST_PP_TUPLE_ELEM(                                                 \
-            3, 0, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+            4, 0, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
         )                                                                    \
     )() BOOST_PP_EXPR_IF(                                                    \
         BOOST_PP_TUPLE_ELEM(                                                 \
-            3, 2, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
+            4, 3, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))                  \
         )                                                                    \
       , const                                                                \
     )                                                                        \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_IMPL_NAME(                           \
+        return BOOST_PP_EXPR_IF(                                             \
             BOOST_PP_TUPLE_ELEM(                                             \
-                3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))              \
+                4, 2, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))              \
+            )                                                                \
+          , this->                                                           \
+        ) BOOST_PARAMETER_FUNCTION_IMPL_NAME(                                \
+            BOOST_PP_TUPLE_ELEM(                                             \
+                4, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))              \
+            )                                                                \
+          , BOOST_PP_TUPLE_ELEM(                                             \
+                4, 3, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))              \
             )                                                                \
         )(                                                                   \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
                 BOOST_PP_TUPLE_ELEM(                                         \
-                    3, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
+                    4, 1, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
+                )                                                            \
+              , BOOST_PP_TUPLE_ELEM(                                         \
+                    4, 3, BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_TAIL(seq))          \
                 )                                                            \
             )()()                                                            \
         );                                                                   \
@@ -332,14 +371,16 @@
         )                                                                    \
     >                                                                        \
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(                                  \
-        BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))                    \
+        BOOST_PP_TUPLE_ELEM(4, 1, BOOST_PP_SEQ_HEAD(seq))                    \
     )                                                                        \
     inline typename BOOST_PARAMETER_FUNCTION_RESULT_NAME(                    \
-        BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))                    \
+        BOOST_PP_TUPLE_ELEM(4, 1, BOOST_PP_SEQ_HEAD(seq))                    \
+      , BOOST_PP_TUPLE_ELEM(4, 3, BOOST_PP_SEQ_HEAD(seq))                    \
     )<                                                                       \
         typename ::boost::parameter::aux::argument_pack<                     \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))            \
+                BOOST_PP_TUPLE_ELEM(4, 1, BOOST_PP_SEQ_HEAD(seq))            \
+              , BOOST_PP_TUPLE_ELEM(4, 3, BOOST_PP_SEQ_HEAD(seq))            \
             )                                                                \
           , BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                       \
                 BOOST_PP_SEQ_TAIL(seq), (ParameterArgumentType)              \
@@ -347,27 +388,33 @@
         >::type                                                              \
     >::type                                                                  \
     BOOST_PARAMETER_MEMBER_FUNCTION_NAME(                                    \
-        BOOST_PP_TUPLE_ELEM(3, 0, BOOST_PP_SEQ_HEAD(seq))                    \
+        BOOST_PP_TUPLE_ELEM(4, 0, BOOST_PP_SEQ_HEAD(seq))                    \
     )(                                                                       \
         BOOST_PARAMETER_AUX_PP_BINARY_SEQ_TO_ARGS(                           \
             BOOST_PP_SEQ_TAIL(seq), (ParameterArgumentType)(a)               \
         )                                                                    \
         BOOST_PARAMETER_FUNCTION_FORWARD_MATCH(                              \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))            \
+                BOOST_PP_TUPLE_ELEM(4, 1, BOOST_PP_SEQ_HEAD(seq))            \
+              , BOOST_PP_TUPLE_ELEM(4, 3, BOOST_PP_SEQ_HEAD(seq))            \
             )                                                                \
           , BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq))                        \
           , ParameterArgumentType                                            \
         )                                                                    \
     ) BOOST_PP_EXPR_IF(                                                      \
-        BOOST_PP_TUPLE_ELEM(3, 2, BOOST_PP_SEQ_HEAD(seq)), const             \
+        BOOST_PP_TUPLE_ELEM(4, 3, BOOST_PP_SEQ_HEAD(seq)), const             \
     )                                                                        \
     {                                                                        \
-        return BOOST_PARAMETER_FUNCTION_IMPL_NAME(                           \
-            BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))                \
+        return BOOST_PP_EXPR_IF(                                             \
+            BOOST_PP_TUPLE_ELEM(4, 2, BOOST_PP_SEQ_HEAD(seq))                \
+          , this->                                                           \
+        ) BOOST_PARAMETER_FUNCTION_IMPL_NAME(                                \
+            BOOST_PP_TUPLE_ELEM(4, 1, BOOST_PP_SEQ_HEAD(seq))                \
+          , BOOST_PP_TUPLE_ELEM(4, 3, BOOST_PP_SEQ_HEAD(seq))                \
         )(                                                                   \
             BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(                     \
-                BOOST_PP_TUPLE_ELEM(3, 1, BOOST_PP_SEQ_HEAD(seq))            \
+                BOOST_PP_TUPLE_ELEM(4, 1, BOOST_PP_SEQ_HEAD(seq))            \
+              , BOOST_PP_TUPLE_ELEM(4, 3, BOOST_PP_SEQ_HEAD(seq))            \
             )()(                                                             \
                 BOOST_PP_ENUM_PARAMS(                                        \
                     BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_TAIL(seq)), a             \
@@ -415,12 +462,21 @@
 /**/
 
 // Helper macro for BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS.
-#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS_AUX(name, impl, range, c) \
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS_AUX(nm, impl, r, is_m, c) \
     BOOST_PP_REPEAT_FROM_TO(                                                 \
-        BOOST_PP_TUPLE_ELEM(2, 0, range)                                     \
-      , BOOST_PP_TUPLE_ELEM(2, 1, range)                                     \
+        BOOST_PP_TUPLE_ELEM(2, 0, r)                                         \
+      , BOOST_PP_TUPLE_ELEM(2, 1, r)                                         \
       , BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOAD_Z                          \
-      , (name, impl, c)                                                      \
+      , (                                                                    \
+            nm                                                               \
+          , impl                                                             \
+          , BOOST_PP_IF(                                                     \
+                BOOST_PARAMETER_MEMBER_FUNCTION_IS_STATIC(impl)              \
+              , 0                                                            \
+              , is_m                                                         \
+            )                                                                \
+          , c                                                                \
+        )                                                                    \
     )
 /**/
 
@@ -438,12 +494,13 @@
 
 // Expands to the layer of forwarding functions for the function with the
 // specified name, whose arguments determine the range of arities.
-#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, args, const_) \
+#define BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS(name, impl, a, is_m, c)   \
     BOOST_PARAMETER_FUNCTION_FORWARD_OVERLOADS_AUX(                          \
         name                                                                 \
       , impl                                                                 \
-      , BOOST_PARAMETER_ARITY_RANGE(args)                                    \
-      , const_                                                               \
+      , BOOST_PARAMETER_ARITY_RANGE(a)                                       \
+      , is_m                                                                 \
+      , c                                                                    \
     )
 /**/
 
