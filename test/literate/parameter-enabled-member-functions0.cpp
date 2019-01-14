@@ -17,3 +17,13 @@ struct callable2
     }
 };
 
+#include <boost/core/lightweight_test.hpp>
+
+int main()
+{
+    callable2 c2;
+    callable2 const& c2_const = c2;
+    c2_const.call(1, 2);
+    return boost::report_errors();
+}
+

@@ -16,3 +16,12 @@ struct somebody
     }
 };
 
+#include <boost/core/lightweight_test.hpp>
+
+int main()
+{
+    somebody::f();
+    somebody::f(4);
+    return boost::report_errors();
+}
+

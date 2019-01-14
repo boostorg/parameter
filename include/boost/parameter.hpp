@@ -9,6 +9,7 @@
 #define BOOST_PARAMETER_050401_HPP
 
 #include <boost/parameter/parameters.hpp>
+#include <boost/parameter/are_tagged_arguments.hpp>
 #include <boost/parameter/is_argument_pack.hpp>
 #include <boost/parameter/required.hpp>
 #include <boost/parameter/optional.hpp>
@@ -21,7 +22,9 @@
 #include <boost/parameter/macros.hpp>
 #include <boost/parameter/match.hpp>
 #include <boost/parameter/name.hpp>
+#include <boost/parameter/compose.hpp>
 #include <boost/parameter/preprocessor.hpp>
+#include <boost/parameter/preprocessor_no_spec.hpp>
 
 #endif  // include guard
 

@@ -12,10 +12,11 @@ namespace boost { namespace parameter { namespace aux {
         typename List
       , typename DeducedArgs
       , typename TagFn
-      , typename Positional
+      , typename IsPositional
       , typename UsedArgs
       , typename ArgumentPack
       , typename Error
+      , typename EmitsErrors
     >
     struct make_arg_list_aux;
 }}} // namespace boost::parameter::aux
@@ -47,117 +48,126 @@ namespace boost { namespace parameter { namespace aux {
         typename List
       , typename DeducedArgs
       , typename TagFn
-      , typename Positional
+      , typename IsPositional
       , typename UsedArgs
       , typename ArgumentPack
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-      , typename argument
+      , typename _argument
 #endif
       , typename Error
+      , typename EmitsErrors
     >
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-    struct make_arg_list00
+    class make_arg_list00
 #else
-    struct make_arg_list0
+    class make_arg_list0
 #endif
     {
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        typedef typename List::arg argument;
+        typedef typename List::arg _argument;
 #endif
         typedef typename ::boost::remove_const<
-            typename ::boost::remove_reference<argument>::type
-        >::type arg_type;
-        typedef typename List::spec parameter_spec;
+            typename ::boost::remove_reference<_argument>::type
+        >::type _arg_type;
+        typedef typename List::spec _parameter_spec;
         typedef typename ::boost::parameter::aux
-        ::tag_type<parameter_spec>::type tag_;
+        ::tag_type<_parameter_spec>::type _tag;
         typedef ::boost::parameter::aux
-        ::is_named_argument<argument> is_tagged;
+        ::is_named_argument<_argument> _is_tagged;
 
         // If this argument is either explicitly tagged or a deduced
         // parameter, then turn off positional matching.
         typedef typename ::boost::mpl::eval_if<
-            Positional
+            IsPositional
           , ::boost::mpl::eval_if<
-                ::boost::parameter::aux::is_deduced<parameter_spec>
+                ::boost::parameter::aux::is_deduced<_parameter_spec>
               , ::boost::mpl::false_
               , ::boost::mpl::if_<
-                    is_tagged
+                    _is_tagged
                   , ::boost::mpl::false_
                   , ::boost::mpl::true_
                 >
             >
           , ::boost::mpl::false_
-        >::type positional;
+        >::type _is_positional;
 
         // If this parameter is explicitly tagged, then add it to the
         // used-parmeters set.  We only really need to add parameters
         // that are deduced, but we would need a way to check if
         // a given tag corresponds to a deduced parameter spec.
         typedef typename ::boost::mpl::eval_if<
-            is_tagged
-          , ::boost::parameter::aux::insert_tagged<UsedArgs,arg_type>
+            _is_tagged
+          , ::boost::parameter::aux::insert_tagged<UsedArgs,_arg_type>
           , ::boost::mpl::identity<UsedArgs>
-        >::type used_args;
+        >::type _used_args;
 
         // If this parameter is neither explicitly tagged nor positionally
         // matched, then deduce the tag from the deduced parameter specs.
         typedef typename ::boost::mpl::eval_if<
             typename ::boost::mpl::if_<
-                is_tagged
+                _is_tagged
               , ::boost::mpl::true_
-              , positional
+              , _is_positional
             >::type
-          , ::boost::mpl::pair< ::boost::parameter::void_,used_args>
+          , ::boost::mpl::pair< ::boost::parameter::void_,_used_args>
           , ::boost::parameter::aux::deduce_tag<
-                argument
+                _argument
               , ArgumentPack
               , DeducedArgs
-              , used_args
+              , _used_args
               , TagFn
+              , EmitsErrors
             >
-        >::type deduced_data;
+        >::type _deduced_data;
 
         // If this parameter is explicitly tagged ...
         typedef typename ::boost::mpl::eval_if<
-            is_tagged
+            _is_tagged
             // ... just use it
-          , ::boost::mpl::identity<arg_type>
+          , ::boost::mpl::identity<_arg_type>
             // ... else ...
           , ::boost::mpl::eval_if<
                 // if positional matching is turned on ...
-                positional
+                _is_positional
                 // ... tag it positionally
-              , ::boost::mpl::apply_wrap2<TagFn,tag_,argument>
+              , ::boost::mpl::apply_wrap2<TagFn,_tag,_argument>
                 // ... else, use the deduced tag
-              , ::boost::mpl::first<deduced_data>
+              , ::boost::mpl::first<_deduced_data>
             >
-        >::type tagged;
+        >::type _tagged;
 
         // Build the arg_list incrementally, prepending new nodes.
         typedef typename ::boost::mpl::if_<
             typename ::boost::mpl::if_<
                 ::boost::is_same<Error,::boost::parameter::void_>
-              , ::boost::is_same<tagged,::boost::parameter::void_>
+              , ::boost::is_same<_tagged,::boost::parameter::void_>
               , ::boost::mpl::false_
             >::type
-          , ::boost::parameter::aux::unmatched_argument<argument>
+          , ::boost::parameter::aux::unmatched_argument<_argument>
           , ::boost::parameter::void_
         >::type error;
 
         typedef typename ::boost::mpl::if_<
-            ::boost::is_same<tagged,::boost::parameter::void_>
+            ::boost::is_same<_tagged,::boost::parameter::void_>
           , ArgumentPack
-          , ::boost::parameter::aux::arg_list<tagged,ArgumentPack>
-        >::type argument_pack;
+#if defined(BOOST_NO_SFINAE) || BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+          , ::boost::parameter::aux::arg_list<_tagged,ArgumentPack>
+#else
+          , ::boost::parameter::aux
+            ::arg_list<_tagged,ArgumentPack,EmitsErrors>
+#endif
+        >::type _argument_pack;
 
+     public:
         typedef typename ::boost::parameter::aux::make_arg_list_aux<
             typename List::tail
           , DeducedArgs
           , TagFn
-          , positional
-          , typename deduced_data::second
-          , argument_pack
+          , _is_positional
+          , typename _deduced_data::second
+          , _argument_pack
           , error
+          , EmitsErrors
         >::type type;
     };
 
@@ -166,10 +176,11 @@ namespace boost { namespace parameter { namespace aux {
         typename List
       , typename DeducedArgs
       , typename TagFn
-      , typename Positional
+      , typename IsPositional
       , typename UsedArgs
       , typename ArgumentPack
       , typename Error
+      , typename EmitsErrors
     >
     struct make_arg_list0
     {
@@ -179,21 +190,23 @@ namespace boost { namespace parameter { namespace aux {
                 List
               , DeducedArgs
               , TagFn
-              , Positional
+              , IsPositional
               , UsedArgs
               , ArgumentPack
               , typename List::arg const
               , Error
+              , EmitsErrors
             >
           , ::boost::parameter::aux::make_arg_list00<
                 List
               , DeducedArgs
               , TagFn
-              , Positional
+              , IsPositional
               , UsedArgs
               , ArgumentPack
               , typename List::arg
               , Error
+              , EmitsErrors
             >
         >::type type;
     };
@@ -211,7 +224,7 @@ namespace boost { namespace parameter { namespace aux {
     //   TagFn:        A metafunction class used to tag positional or deduced
     //                 arguments with a keyword tag.
     //
-    //   Positional:   An mpl::bool_<> specialization indicating if positional
+    //   IsPositional: An mpl::bool_<> specialization indicating if positional
     //                 matching is to be performed.
     //
     //   DeducedSet:   An mpl::set<> containing the keyword tags used so far.
@@ -222,10 +235,11 @@ namespace boost { namespace parameter { namespace aux {
         typename List
       , typename DeducedArgs
       , typename TagFn
-      , typename Positional
+      , typename IsPositional
       , typename DeducedSet
       , typename ArgumentPack
       , typename Error
+      , typename EmitsErrors
     >
     struct make_arg_list_aux
       : ::boost::mpl::eval_if<
@@ -235,10 +249,11 @@ namespace boost { namespace parameter { namespace aux {
                 List
               , DeducedArgs
               , TagFn
-              , Positional
+              , IsPositional
               , DeducedSet
               , ArgumentPack
               , Error
+              , EmitsErrors
             >
         >
     {
@@ -255,7 +270,7 @@ namespace boost { namespace parameter { namespace aux {
         typename List
       , typename DeducedArgs
       , typename TagFn
-      , typename EmitErrors = ::boost::mpl::true_
+      , typename EmitsErrors = ::boost::mpl::true_
     >
     struct make_arg_list
       : ::boost::parameter::aux::make_arg_list_aux<
@@ -266,6 +281,7 @@ namespace boost { namespace parameter { namespace aux {
           , ::boost::parameter::aux::set0
           , ::boost::parameter::aux::empty_arg_list
           , ::boost::parameter::void_
+          , EmitsErrors
         >
     {
     };

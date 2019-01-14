@@ -203,6 +203,17 @@ matrix:
             - llvm-toolchain-trusty-5.0
 
     - os: linux
+      compiler: clang++-6.0
+      env: TOOLSET=clang COMPILER=clang++-6.0 CXXSTD=03,11,14,1z
+      addons:
+        apt:
+          packages:
+            - clang-6.0
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-6.0
+
+    - os: linux
       compiler: clang++
       env: TOOLSET=clang COMPILER=clang++ CXXSTD=03,11,14,1z
       addons:
