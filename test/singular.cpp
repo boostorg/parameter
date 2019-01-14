@@ -27,6 +27,7 @@ namespace test {
 
 #include <boost/parameter/is_argument_pack.hpp>
 #include <boost/mpl/has_key.hpp>
+#include <boost/mpl/assert.hpp>
 #include <boost/core/lightweight_test.hpp>
 
 namespace test {
@@ -50,7 +51,6 @@ namespace test {
 #include <boost/mpl/order.hpp>
 #include <boost/mpl/count.hpp>
 #include <boost/mpl/equal_to.hpp>
-#include <boost/mpl/assert.hpp>
 
 namespace test {
 
