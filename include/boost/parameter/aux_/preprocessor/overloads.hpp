@@ -18,7 +18,7 @@
 //         >
 //      , unnamed_list
 //     >::type
-//     operator()(A0 const& a0, A1 const& a1) const
+//         operator()(A0 const& a0, A1 const& a1) const
 //     {
 //         typedef typename ::boost::mpl::apply_wrap1<
 //             ::boost::parameter::aux::make_arg_list<
@@ -69,7 +69,7 @@ template <BOOST_PP_ENUM_PARAMS(N, typename A)>
 typename ::boost::mpl::first<
     typename BOOST_PARAMETER_arg_list(N)::type
 >::type
-operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, A, & a)) const
+    operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, A, & a)) const
 {
     typedef typename BOOST_PARAMETER_arg_list(N)::type result;
     typedef typename ::boost::mpl::first<result>::type result_type;
@@ -79,7 +79,7 @@ operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, A, & a)) const
     return result_type(
         BOOST_PP_ENUM(N, BOOST_PARAMETER_arg_pack_init, BOOST_PP_DEC(N))
         BOOST_PP_ENUM_TRAILING_PARAMS(
-            BOOST_PP_SUB(BOOST_PARAMETER_MAX_ARITY, N)
+            BOOST_PP_SUB(BOOST_PARAMETER_COMPOSE_MAX_ARITY, N)
           , ::boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT
         )
     );

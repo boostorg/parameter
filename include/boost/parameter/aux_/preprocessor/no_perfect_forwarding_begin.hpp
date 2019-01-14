@@ -141,7 +141,7 @@
             )                                                                \
             BOOST_PP_ENUM_TRAILING_PARAMS(                                   \
                 BOOST_PP_SUB(                                                \
-                    BOOST_PARAMETER_MAX_ARITY                                \
+                    BOOST_PARAMETER_COMPOSE_MAX_ARITY                        \
                   , BOOST_PP_DEC(BOOST_PP_SEQ_SIZE(seq))                     \
                 )                                                            \
               , ::boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT \

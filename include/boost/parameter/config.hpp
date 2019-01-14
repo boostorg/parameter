@@ -64,6 +64,15 @@
 #if !defined(BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY)
 #define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY 0
 #endif
+#if !defined(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+// Some tests cause MSVC-11.0 and earlier to run out of heap space
+// if the value is set any higher. -- Cromwell D. Enage
+#define BOOST_PARAMETER_COMPOSE_MAX_ARITY 20
+#else
+#define BOOST_PARAMETER_COMPOSE_MAX_ARITY 64
+#endif
+#endif  // BOOST_PARAMETER_COMPOSE_MAX_ARITY
 #if !defined(BOOST_PARAMETER_MAX_ARITY)
 #define BOOST_PARAMETER_MAX_ARITY 8
 #endif
