@@ -154,7 +154,7 @@ namespace boost { namespace parameter { namespace aux {
     template <
         typename TaggedArg
       , typename Next = ::boost::parameter::aux::empty_arg_list
-      , typename EmitErrors = ::boost::mpl::true_
+      , typename EmitsErrors = ::boost::mpl::true_
     >
     class arg_list : public Next
     {
@@ -289,7 +289,7 @@ namespace boost { namespace parameter { namespace aux {
         > _has_unique_key;
 
         BOOST_MPL_ASSERT_MSG(
-            !(EmitErrors::value) || (_has_unique_key::value)
+            !(EmitsErrors::value) || (_has_unique_key::value)
           , duplicate_keyword
           , (key_type)
         );
@@ -367,7 +367,7 @@ namespace boost { namespace parameter { namespace aux {
         template <typename HasDefault, typename Predicate, typename ArgPack>
         static typename ::boost::lazy_enable_if<
             typename ::boost::mpl::if_<
-                EmitErrors
+                EmitsErrors
               , ::boost::mpl::true_
               , _has_unique_key
             >::type
@@ -555,7 +555,7 @@ namespace boost { namespace parameter { namespace aux {
     template <
         typename TaggedArg
       , typename Next = ::boost::parameter::aux::empty_arg_list
-      , typename EmitErrors = ::boost::mpl::true_
+      , typename EmitsErrors = ::boost::mpl::true_
     >
     class arg_list : public Next
     {
@@ -656,7 +656,7 @@ namespace boost { namespace parameter { namespace aux {
         > _has_unique_key;
 
         BOOST_MPL_ASSERT_MSG(
-            !(EmitErrors::value) || (_has_unique_key::value)
+            !(EmitsErrors::value) || (_has_unique_key::value)
           , duplicate_keyword
           , (key_type)
         );
@@ -830,7 +830,7 @@ namespace boost { namespace parameter { namespace aux {
 #if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
         ::boost::lazy_enable_if<
             typename ::boost::mpl::if_<
-                EmitErrors
+                EmitsErrors
               , ::boost::mpl::true_
               , _has_unique_key
             >::type,
