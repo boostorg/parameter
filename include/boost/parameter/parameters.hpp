@@ -187,7 +187,7 @@ namespace boost { namespace parameter {
               , ::boost::parameter::aux::tag_keyword_arg
             >::type
         >::type
-        operator()(A0&& a0, Args&& ...args) const
+            operator()(A0&& a0, Args&& ...args) const
         {
             typedef typename ::boost::parameter::aux::make_arg_list<
                 typename ::boost::parameter::aux::make_parameter_spec_items<
@@ -266,7 +266,9 @@ namespace boost { namespace parameter {
     template <
         typename PS0
       , BOOST_PP_ENUM_SHIFTED(
-            BOOST_PARAMETER_MAX_ARITY, BOOST_PARAMETER_template_args, PS
+            BOOST_PARAMETER_MAX_ARITY
+          , BOOST_PARAMETER_template_args
+          , PS
         )
     >
     struct parameters
@@ -318,7 +320,7 @@ namespace boost { namespace parameter {
             >
         {
         };
-#endif  // SFINAE enabled, not Borland.
+#endif  // SFINAE enabled, not Borland
 
         // Specializations are to be used as an optional argument
         // to eliminate overloads via SFINAE.
@@ -363,7 +365,7 @@ namespace boost { namespace parameter {
                 BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, PS)
             > type;
         };
-#endif  // SFINAE enabled, not Borland.
+#endif  // SFINAE enabled, not Borland
 
         // Metafunction that returns an ArgumentPack.
 
@@ -374,7 +376,7 @@ namespace boost { namespace parameter {
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
             // Borland simply can't handle default arguments in member
             // class templates.  People wishing to write portable code can
-            // explicitly specify BOOST_PARAMETER_MAX_ARITY arguments
+            // explicitly specify BOOST_PARAMETER_MAX_ARITY arguments.
             BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, typename A)
 #else
             BOOST_PP_ENUM_BINARY_PARAMS(
@@ -442,7 +444,7 @@ namespace boost { namespace parameter {
 #endif
 #else   // (0 == BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY)
         template <typename A0>
-        typename ::boost::mpl::first<
+        inline typename ::boost::mpl::first<
             typename ::boost::parameter::aux::make_arg_list<
                 ::boost::parameter::aux::item<
                     PS0,A0
@@ -451,7 +453,7 @@ namespace boost { namespace parameter {
               , ::boost::parameter::aux::tag_keyword_arg_ref
             >::type
         >::type
-        operator()(A0& a0) const
+            operator()(A0& a0) const
         {
             typedef typename ::boost::parameter::aux::make_arg_list<
                 ::boost::parameter::aux::item<
@@ -469,14 +471,14 @@ namespace boost { namespace parameter {
                 a0
                 // , void_(), void_(), void_() ...
                 BOOST_PP_ENUM_TRAILING_PARAMS(
-                    BOOST_PP_SUB(BOOST_PARAMETER_MAX_ARITY, 1)
+                    BOOST_PP_SUB(BOOST_PARAMETER_COMPOSE_MAX_ARITY, 1)
                   , ::boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT
                 )
             );
         }
 
         template <typename A0, typename A1>
-        typename ::boost::mpl::first<
+        inline typename ::boost::mpl::first<
             typename ::boost::parameter::aux::make_arg_list<
                 ::boost::parameter::aux::item<
                     PS0,A0
@@ -488,7 +490,7 @@ namespace boost { namespace parameter {
               , ::boost::parameter::aux::tag_keyword_arg_ref
             >::type
         >::type
-        operator()(A0& a0, A1& a1) const
+            operator()(A0& a0, A1& a1) const
         {
             typedef typename ::boost::parameter::aux::make_arg_list<
                 ::boost::parameter::aux::item<
@@ -510,7 +512,7 @@ namespace boost { namespace parameter {
               , a0
                 // , void_(), void_() ...
                 BOOST_PP_ENUM_TRAILING_PARAMS(
-                    BOOST_PP_SUB(BOOST_PARAMETER_MAX_ARITY, 2)
+                    BOOST_PP_SUB(BOOST_PARAMETER_COMPOSE_MAX_ARITY, 2)
                   , ::boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT
                 )
             );

@@ -5,9 +5,18 @@
 
 #include <boost/parameter/config.hpp>
 
+#if ( \
+        !defined(__MINGW32__) && \
+        defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) \
+    ) || defined(BOOST_MSVC)
 #if (BOOST_PARAMETER_MAX_ARITY < 8)
 #error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
 #endif
+#else   // mingw, or no perfect forwarding support and not msvc
+#if (BOOST_PARAMETER_COMPOSE_MAX_ARITY < 8)
+#error Define BOOST_PARAMETER_COMPOSE_MAX_ARITY as 8 or greater.
+#endif
+#endif  // msvc, or perfect forwarding support and not mingw
 
 #include <boost/parameter/name.hpp>
 
