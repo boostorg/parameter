@@ -10,19 +10,23 @@
 
 // Accessor macros for the input tuple to the dispatch macros.
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_BASE_NAME(x)                       \
-    BOOST_PP_TUPLE_ELEM(4, 0, x)
+    BOOST_PP_TUPLE_ELEM(5, 0, x)
 /**/
 
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_SPLIT_ARGS(x)                      \
-    BOOST_PP_TUPLE_ELEM(4, 1, x)
+    BOOST_PP_TUPLE_ELEM(5, 1, x)
+/**/
+
+#define BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                       \
+    BOOST_PP_TUPLE_ELEM(5, 2, x)
 /**/
 
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x)                        \
-    BOOST_PP_TUPLE_ELEM(4, 2, x)
+    BOOST_PP_TUPLE_ELEM(5, 3, x)
 /**/
 
 #define BOOST_PARAMETER_FUNCTION_DISPATCH_TAG_NAMESPACE(x)                   \
-    BOOST_PP_TUPLE_ELEM(4, 3, x)
+    BOOST_PP_TUPLE_ELEM(5, 4, x)
 /**/
 
 #endif  // include guard
