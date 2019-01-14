@@ -2098,7 +2098,8 @@ The simplest |ArgumentPack| is the result of assigning into a keyword object::
     template <typename ArgumentPack>
     int print_index(ArgumentPack const& args)
     {
-        std::cout << "index = " << args[_index] << std::endl;
+        std::cout << "index = " << args[_index];
+        std::cout << std::endl;
         return 0;
     }
 
@@ -2118,7 +2119,8 @@ arguments to ``print_name_and_index``::
     template <typename ArgumentPack>
     int print_name_and_index(ArgumentPack const& args)
     {
-        std::cout << "name = " << args[_name] << "; ";
+        std::cout << "name = " << args[_name];
+        std::cout << "; ";
         return print_index(args);
     }
 
@@ -2585,7 +2587,7 @@ the Parameter library to see how it fares on your favorite
 compiler.  Additionally, you may need to be aware of the following
 issues and workarounds for particular compilers.
 
-.. _`regression test results`: http://www.boost.org/regression/release/user/parameter.html
+.. _`regression test results`: http\://www.boost.org/regression/release/user/parameter.html
 
 --------------------------
 Perfect Forwarding Support
@@ -2595,13 +2597,13 @@ If your compiler supports `perfect forwarding`_, then the Parameter library
 will ``#define`` the macro ``BOOST_PARAMETER_HAS_PERFECT_FORWARDING`` unless
 you disable it manually.  If your compiler does not provide this support, then
 ``parameter::parameters::operator()`` will treat rvalue references as lvalue
-const references to work around the `forwarding problem`_, so in certain cases
-you must wrap |boost_ref|_ or |std_ref|_ around any arguments that will be
-bound to out parameters.  The |evaluate_category|_ and
+``const`` references to work around the `forwarding problem`_, so in certain
+cases you must wrap |boost_ref|_ or |std_ref|_ around any arguments that will
+be bound to out parameters.  The |evaluate_category|_ and
 |preprocessor_eval_category|_ test programs demonstrate this support.
 
-.. _`perfect forwarding`: http://www.justsoftwaresolutions.co.uk/cplusplus/rvalue_references_and_perfect_forwarding.html
-.. _`forwarding problem`: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2002/n1385.htm
+.. _`perfect forwarding`: http\://www.justsoftwaresolutions.co.uk/cplusplus/rvalue_references_and_perfect_forwarding.html
+.. _`forwarding problem`: http\://www.open-std.org/jtc1/sc22/wg21/docs/papers/2002/n1385.htm
 .. |boost_ref| replace:: ``boost\:\:ref``
 .. _boost_ref: ../../../core/doc/html/core/ref.html
 .. |std_ref| replace:: ``std\:\:ref``
