@@ -145,7 +145,7 @@ namespace boost { namespace parameter { namespace aux {
             >::type
           , ::boost::parameter::aux::unmatched_argument<_argument>
           , ::boost::parameter::void_
-        >::type error;
+        >::type _error;
 
         typedef typename ::boost::mpl::if_<
             ::boost::is_same<_tagged,::boost::parameter::void_>
@@ -166,7 +166,7 @@ namespace boost { namespace parameter { namespace aux {
           , _is_positional
           , typename _deduced_data::second
           , _argument_pack
-          , error
+          , _error
           , EmitsErrors
         >::type type;
     };

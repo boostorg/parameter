@@ -5,8 +5,9 @@
 
 #include <boost/parameter/config.hpp>
 
-#if (BOOST_PARAMETER_MAX_ARITY < 8)
-#error Define BOOST_PARAMETER_MAX_ARITY as 8 or greater.
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_COMPOSE_MAX_ARITY < 8)
+#error Define BOOST_PARAMETER_COMPOSE_MAX_ARITY as 8 or greater.
 #endif
 
 #include <boost/parameter/name.hpp>
@@ -157,7 +158,7 @@ namespace test {
 
     struct B
     {
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
         B()
         {
@@ -261,7 +262,7 @@ namespace test {
 
     struct C : B
     {
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
         C() : B()
         {
@@ -399,7 +400,7 @@ int main()
     char baz_arr[4] = "qux";
     typedef char char_arr[4];
 
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && ( \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && ( \
         BOOST_WORKAROUND(BOOST_GCC, < 40000) || \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1800) \
     )
@@ -425,7 +426,7 @@ int main()
       , test::_lrc0 = test::lvalue_const_str()[0]
     );
 
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
     // MSVC-12+ treats static_cast<char_arr&&>(baz_arr) as an lvalue.
     test::C cp0;

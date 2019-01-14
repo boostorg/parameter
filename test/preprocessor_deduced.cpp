@@ -64,8 +64,8 @@ namespace test {
         )
         (deduced
             (required
-                (x, *(test::predicate1))
-                (y, *(test::predicate2))
+                (x, *(test::predicate_int))
+                (y, *(test::predicate_string))
             )
         )
     )
@@ -209,7 +209,7 @@ namespace test {
         return 0;
     }
 
-#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) || \
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) || \
     !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // Test support for two different Boost.Parameter-enabled
     // function call operator overloads.
@@ -349,7 +349,7 @@ int main()
     char const* keys[] = {"foo", "bar", "baz"};
     BOOST_TEST_EQ(1, test::sfinae(keys[0]));
     BOOST_TEST_EQ(0, test::sfinae(0));
-#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) || \
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) || \
     !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     std::map<char const*,std::string> k2s;
     k2s[keys[0]] = std::string("qux");

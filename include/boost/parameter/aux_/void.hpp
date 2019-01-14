@@ -6,12 +6,17 @@
 #ifndef BOOST_PARAMETER_VOID_050329_HPP
 #define BOOST_PARAMETER_VOID_050329_HPP
 
+#include <boost/config.hpp>
+
 namespace boost { namespace parameter { 
 
     // A placemarker for "no argument passed."
     // MAINTAINER NOTE: Do not make this into a metafunction
     struct void_
     {
+        inline BOOST_CONSTEXPR void_()
+        {
+        }
     };
 }} // namespace boost::parameter
 

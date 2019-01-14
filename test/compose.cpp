@@ -6,6 +6,7 @@
 
 #include <boost/parameter/nested_keyword.hpp>
 #include <boost/parameter/name.hpp>
+#include <boost/parameter/config.hpp>
 
 namespace param {
 
@@ -34,8 +35,6 @@ namespace param {
 #include <boost/mpl/equal_to.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/config.hpp>
-#include <boost/config/workaround.hpp>
 
 #if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
 #include <boost/function.hpp>
@@ -377,9 +376,9 @@ namespace test {
 
 #include <boost/core/lightweight_test.hpp>
 
-int main()
+void test_compose0()
 {
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails without this workaround.
@@ -393,7 +392,7 @@ int main()
 #endif
     BOOST_TEST_EQ(1, a.i);
     BOOST_TEST_EQ(13, a.j);
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails without this workaround.
@@ -408,7 +407,7 @@ int main()
     BOOST_TEST_EQ(13, b0.j);
     BOOST_TEST_EQ(4.0f, b0.k());
     BOOST_TEST_EQ(2.5, b0.l());
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
     BOOST_WORKAROUND(BOOST_MSVC, < 1800)
     // MSVC 11.0 on AppVeyor fails without this workaround.
@@ -459,6 +458,123 @@ int main()
     BOOST_TEST_EQ(p2.second, h1.k.second);
     p1.first = 1;
     BOOST_TEST_EQ(p1.first, h1.j.first);
+}
+
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    (2 < BOOST_PARAMETER_COMPOSE_MAX_ARITY)
+#include <boost/parameter/compose.hpp>
+
+void test_compose1()
+{
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
+    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    // MSVC 11.0 on AppVeyor fails without this workaround.
+    test::A a(boost::parameter::compose(
+        param::a0 = 1
+      , param::a1 = 13
+      , param::_a2 = std::function<double()>(test::D)
+    ));
+#else
+    test::A a(boost::parameter::compose(
+        param::a0 = 1
+      , param::a1 = 13
+      , param::_a2 = test::D
+    ));
+#endif
+    BOOST_TEST_EQ(1, a.i);
+    BOOST_TEST_EQ(13, a.j);
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
+    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    // MSVC 11.0 on AppVeyor fails without this workaround.
+    test::B b0(boost::parameter::compose(
+        param::tag::a1::a_one = 13
+      , param::_a2 = std::function<float()>(test::F)
+    ));
+#else
+    test::B b0(boost::parameter::compose(
+        param::tag::a1::a_one = 13
+      , param::_a2 = test::F
+    ));
+#endif
+    BOOST_TEST_EQ(1, b0.i);
+    BOOST_TEST_EQ(13, b0.j);
+    BOOST_TEST_EQ(4.0f, b0.k());
+    BOOST_TEST_EQ(2.5, b0.l());
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
+    BOOST_WORKAROUND(BOOST_MSVC, >= 1700) && \
+    BOOST_WORKAROUND(BOOST_MSVC, < 1800)
+    // MSVC 11.0 on AppVeyor fails without this workaround.
+    test::B b1(boost::parameter::compose(
+        param::_a3 = std::function<double()>(test::D)
+      , param::a1 = 13
+    ));
+#else
+    test::B b1(boost::parameter::compose(
+        param::_a3 = test::D
+      , param::a1 = 13
+    ));
+#endif
+    BOOST_TEST_EQ(1, b1.i);
+    BOOST_TEST_EQ(13, b1.j);
+    BOOST_TEST_EQ(4.625f, b1.k());
+    BOOST_TEST_EQ(198.9, b1.l());
+    int x = 23;
+    int const y = 42;
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_0)
+    test::G g(boost::parameter::compose(
+        param::_lr = 15
+      , param::_rr = 16
+      , param::_lrc = y
+    ));
+#else
+    test::G g(boost::parameter::compose(
+        param::_lr = x
+      , param::_rr = 16
+      , param::_lrc = y
+    ));
+#endif
+    BOOST_TEST_EQ(16, g.i);
+    BOOST_TEST_EQ(23, g.j);
+    BOOST_TEST_EQ(42, g.k);
+    x = 1;
+    BOOST_TEST_EQ(1, g.j);
+    std::pair<int,int> p1(8, 9);
+    std::pair<int,int> const p2(11, 12);
+    test::H h0(boost::parameter::compose(param::_lr = p1, param::_lrc = p2));
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_1)
+    test::H h1(boost::parameter::compose(
+        param::_lr = p2
+      , param::_rr = std::make_pair(7, 10)
+      , param::_lrc = p2
+    ));
+#else
+    test::H h1(boost::parameter::compose(
+        param::_lr = p1
+      , param::_rr = std::make_pair(7, 10)
+      , param::_lrc = p2
+    ));
+#endif
+    BOOST_TEST_EQ(h0.i.first, h1.i.first);
+    BOOST_TEST_EQ(h0.i.second, h1.i.second);
+    BOOST_TEST_EQ(p1.first, h1.j.first);
+    BOOST_TEST_EQ(p1.second, h1.j.second);
+    BOOST_TEST_EQ(p2.first, h1.k.first);
+    BOOST_TEST_EQ(p2.second, h1.k.second);
+    p1.first = 1;
+    BOOST_TEST_EQ(p1.first, h1.j.first);
+}
+
+#endif  // can invoke boost::parameter::compose
+
+int main()
+{
+    test_compose0();
+#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) || \
+    (2 < BOOST_PARAMETER_COMPOSE_MAX_ARITY)
+    test_compose1();
+#endif
     return boost::report_errors();
 }
 
