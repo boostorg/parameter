@@ -14,6 +14,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename DeducedArgs
       , typename UsedArgs
       , typename TagFn
+      , typename EmitsErrors
     >
     struct deduce_tag;
 }}} // namespace boost::parameter::aux
@@ -38,45 +39,53 @@ namespace boost { namespace parameter { namespace aux {
       , typename DeducedArgs
       , typename UsedArgs
       , typename TagFn
+      , typename EmitsErrors
     >
-    struct deduce_tag0
+    class deduce_tag0
     {
-        typedef typename DeducedArgs::spec spec;
+        typedef typename DeducedArgs::spec _spec;
 
         typedef typename ::boost::mpl::apply_wrap2<
             typename ::boost::mpl::lambda<
-                typename spec::predicate
+                typename _spec::predicate
               , ::boost::parameter::aux::lambda_tag
             >::type
           , Argument
           , ArgumentPack
-        >::type condition;
+        >::type _condition;
 
         // Deduced parameter matches several arguments.
         BOOST_MPL_ASSERT((
             typename ::boost::mpl::eval_if<
                 typename ::boost::parameter::aux::has_key_<
                     UsedArgs
-                  , typename ::boost::parameter::aux::tag_type<spec>::type
+                  , typename ::boost::parameter::aux::tag_type<_spec>::type
                 >::type
-              , ::boost::mpl::if_<
-                    condition
-                  , ::boost::mpl::false_
+              , ::boost::mpl::eval_if<
+                    _condition
+                  , ::boost::mpl::if_<
+                        EmitsErrors
+                      , ::boost::mpl::false_
+                      , ::boost::mpl::true_
+                    >
                   , ::boost::mpl::true_
                 >
               , ::boost::mpl::true_
             >::type
         ));
 
+     public:
         typedef typename ::boost::mpl::eval_if<
-            condition
-          , ::boost::parameter::aux::tag_deduced<UsedArgs,spec,Argument,TagFn>
+            _condition
+          , ::boost::parameter::aux
+            ::tag_deduced<UsedArgs,_spec,Argument,TagFn>
           , ::boost::parameter::aux::deduce_tag<
                 Argument
               , ArgumentPack
               , typename DeducedArgs::tail
               , UsedArgs
               , TagFn
+              , EmitsErrors
             >
         >::type type;
     };
@@ -108,6 +117,7 @@ namespace boost { namespace parameter { namespace aux {
       , typename DeducedArgs
       , typename UsedArgs
       , typename TagFn
+      , typename EmitsErrors
     >
     struct deduce_tag
       : ::boost::mpl::eval_if<
@@ -119,6 +129,7 @@ namespace boost { namespace parameter { namespace aux {
               , DeducedArgs
               , UsedArgs
               , TagFn
+              , EmitsErrors
             >
         >
     {
