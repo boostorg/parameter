@@ -43,7 +43,8 @@ namespace test {
 
 int main()
 {
-    int x = test::new_window("alert", test::_width=10, test::_titlebar=false);
+    char const* alert_s = "alert";
+    int x = test::new_window(alert_s, test::_width=10, test::_titlebar=false);
     test::Foo* foo = new test::Foo();
     test::smart_ptr<
         test::Foo

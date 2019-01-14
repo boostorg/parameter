@@ -44,14 +44,21 @@ void f()
 #include <boost/mpl/eval_if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 
+char const*& blank_char_ptr()
+{
+    static char const* larr = "";
+    return larr;
+}
+
 BOOST_PARAMETER_FUNCTION(
-    (void), def, tag,
+    (bool), def, tag,
     (required (name,(char const*)) (func,*) )  // nondeduced
     (deduced
         (optional
-            (docstring, (char const*), "")
+            (docstring, (char const*), blank_char_ptr())
             (keywords
-              , *(is_keyword_expression<boost::mpl::_>) // see 5
+                // see 5
+              , *(is_keyword_expression<boost::mpl::_>)
               , no_keywords()
             )
             (policies
@@ -60,7 +67,8 @@ BOOST_PARAMETER_FUNCTION(
                         boost::is_convertible<boost::mpl::_,char const*>
                       , boost::mpl::false_
                       , boost::mpl::if_<
-                            is_keyword_expression<boost::mpl::_> // see 5
+                            // see 5
+                            is_keyword_expression<boost::mpl::_>
                           , boost::mpl::false_
                           , boost::mpl::true_
                         >
@@ -72,16 +80,18 @@ BOOST_PARAMETER_FUNCTION(
     )
 )
 {
+    return true;
 }
 
 #include <boost/core/lightweight_test.hpp>
 
 int main()
 {
-    def("f", &f, some_policies, "Documentation for f");
-    def("f", &f, "Documentation for f", some_policies);
+    char const* f_name = "f";
+    def(f_name, &f, some_policies, "Documentation for f");
+    def(f_name, &f, "Documentation for f", some_policies);
     def(
-        "f"
+        f_name
       , &f
       , _policies = some_policies
       , "Documentation for f"
