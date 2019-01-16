@@ -47,6 +47,11 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/utility.hpp>
+#endif
+
 namespace boost { namespace parameter { namespace aux {
 
     template <typename Args>
@@ -58,6 +63,11 @@ namespace boost { namespace parameter { namespace aux {
             typedef typename ::boost::mpl
             ::if_<B,T,::boost::mpl::true_>::type type;
         };
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        template <typename T, typename B>
+        using fn = ::boost::mp11::mp_if<B,T,::boost::mp11::mp_true>;
+#endif
     };
 }}} // namespace boost::parameter::aux
 
@@ -86,14 +96,54 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/mpl/apply.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/remove_const.hpp>
-#include <boost/type_traits/remove_reference.hpp>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/list.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
     template <typename Target, typename Source, typename Args>
+    struct apply_target_fn
+    {
+        using type = ::boost::mp11
+        ::mp_apply_q<Target,::boost::mp11::mp_list<Source,Args> >;
+    };
+}}} // namespace boost::parameter::aux
+
+#endif
+
+#include <boost/mpl/apply.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/parameter/aux_/has_nested_template_fn.hpp>
+#include <type_traits>
+#else
+#include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+#endif
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename Target, typename Source, typename Args>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    using is_target_same_as_source = ::std::is_same<
+        typename ::std::remove_const<
+            typename ::std::remove_reference<
+                typename ::boost::mp11::mp_if<
+                    ::boost::parameter::aux::has_nested_template_fn<Target>
+                  , ::boost::parameter::aux
+                    ::apply_target_fn<Target,Source,Args>
+                  , ::boost::mpl::apply2<
+                        ::boost::parameter::aux::as_placeholder_expr<Target>
+                      , Source
+                      , Args
+                    >
+                >::type
+            >::type
+        >::type
+      , typename ::std::remove_const<Source>::type
+    >;
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
     struct is_target_same_as_source
       : ::boost::mpl::if_<
             ::boost::is_same<
@@ -114,10 +164,13 @@ namespace boost { namespace parameter { namespace aux {
         >::type
     {
     };
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 }}} // namespace boost::parameter::aux
 
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/is_const.hpp>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -130,15 +183,27 @@ namespace boost { namespace parameter { namespace aux {
         typedef ::boost::parameter::aux::cast_convert<Source,Target> _self;
 
      public:
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using type = typename ::boost::mp11::mp_if<
+            ::std::is_const<Source>
+          , ::std::add_const<Target>
+          , ::std::remove_const<Target>
+        >::type;
+#else
         typedef typename boost::mpl::eval_if<
             ::boost::is_const<Source>
           , ::boost::add_const<Target>
           , ::boost::remove_const<Target>
         >::type type;
+#endif
 
      private:
         inline static typename _self::type
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            _copy(typename ::std::remove_const<Target>::type value)
+#else
             _copy(typename ::boost::remove_const<Target>::type value)
+#endif
         {
             return value;
         }
@@ -151,6 +216,20 @@ namespace boost { namespace parameter { namespace aux {
     };
 
     template <typename Target, typename Source, typename Args>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    using cast_impl = ::std::remove_reference<
+        typename ::boost::mp11::mp_if<
+            ::boost::parameter::aux::has_nested_template_fn<Target>
+          , ::boost::parameter::aux
+            ::is_target_same_as_source<Target,Source,Args>
+          , ::boost::mpl::apply2<
+                ::boost::parameter::aux::as_placeholder_expr<Target>
+              , Source
+              , Args
+            >
+        >::type
+    >;
+#else
     struct cast_impl
       : ::boost::remove_reference<
             typename ::boost::mpl::apply2<
@@ -161,6 +240,7 @@ namespace boost { namespace parameter { namespace aux {
         >
     {
     };
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 }}} // namespace boost::parameter::aux
 
 #include <boost/mpl/eval_if.hpp>
@@ -180,23 +260,52 @@ namespace boost { namespace parameter { namespace aux {
                     ::boost::parameter::aux
                     ::is_target_same_as_source<Target,T,Args>
                   , ::boost::mpl::identity<T>
-                  , ::boost::parameter::aux::cast_impl<
-                        Target
-                      , T
-                      , Args
-                    >
+                  , ::boost::parameter::aux::cast_impl<Target,T,Args>
                 >
               , ::boost::parameter::aux
                 ::is_target_same_as_source<Target,T,Args>
             >::type type;
         };
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        template <typename T, typename B>
+        using fn = typename ::boost::mp11::mp_if<
+            B
+          , ::boost::mp11::mp_if<
+                ::boost::parameter::aux
+                ::is_target_same_as_source<Target,T,Args>
+              , ::boost::mp11::mp_identity<T>
+              , ::boost::parameter::aux::cast_impl<Target,T,Args>
+            >
+          , ::boost::parameter::aux
+            ::is_target_same_as_source<Target,T,Args>
+        >::type;
+#endif
     };
 }}} // namespace boost::parameter::aux
 
-#include <boost/mpl/apply_wrap.hpp>
 #include <boost/parameter/value_type.hpp>
 
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mpl/apply_wrap.hpp>
+#endif
+
 // Expands to the target type of the argument as indicated by the predicate.
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#define BOOST_PARAMETER_FUNCTION_CAST_T(tag, predicate, args)                \
+    ::boost::mp11::mp_apply_q<                                               \
+        ::boost::parameter::aux::cast<void predicate, args>                  \
+      , ::boost::mp11::mp_list<                                              \
+            typename ::boost::parameter::value_type<                         \
+                args                                                         \
+              , tag                                                          \
+              , ::boost::parameter::aux::use_default_tag                     \
+            >::type                                                          \
+          , ::boost::mp11::mp_true                                           \
+        >                                                                    \
+    >
+/**/
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #define BOOST_PARAMETER_FUNCTION_CAST_T(tag, predicate, args)                \
     typename ::boost::mpl::apply_wrap2<                                      \
         ::boost::parameter::aux::cast<void predicate, args>                  \
@@ -208,9 +317,25 @@ namespace boost { namespace parameter { namespace aux {
       , ::boost::mpl::true_                                                  \
     >::type
 /**/
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 // Expands to boost::mpl::true_ if and only if the argument's source and
 // target types are the same.
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#define BOOST_PARAMETER_FUNCTION_CAST_B(tag, predicate, args)                \
+    ::boost::mp11::mp_apply_q<                                               \
+        ::boost::parameter::aux::cast<void predicate, args>                  \
+      , ::boost::mp11::mp_list<                                              \
+            typename ::boost::parameter::value_type<                         \
+                args                                                         \
+              , tag                                                          \
+              , ::boost::parameter::aux::use_default_tag                     \
+            >::type                                                          \
+          , ::boost::mp11::mp_false                                          \
+        >                                                                    \
+    >
+/**/
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #define BOOST_PARAMETER_FUNCTION_CAST_B(tag, predicate, args)                \
     typename ::boost::mpl::apply_wrap2<                                      \
         ::boost::parameter::aux::cast<void predicate, args>                  \
@@ -222,6 +347,7 @@ namespace boost { namespace parameter { namespace aux {
       , ::boost::mpl::false_                                                 \
     >::type
 /**/
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 #include <boost/core/enable_if.hpp>
 #include <utility>
@@ -252,6 +378,17 @@ namespace boost { namespace parameter { namespace aux {
 
     template <typename T, typename B>
     inline typename ::boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        ::boost::mp11::mp_if<
+            B
+          , ::boost::mp11::mp_if<
+                ::std::is_const<T>
+              , ::boost::mp11::mp_false
+              , ::boost::mp11::mp_true
+            >
+          , ::boost::mp11::mp_false
+        >
+#else
         typename ::boost::mpl::eval_if<
             B
           , ::boost::mpl::if_<
@@ -261,6 +398,7 @@ namespace boost { namespace parameter { namespace aux {
             >
           , ::boost::mpl::false_
         >::type
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
       , T&
     >::type
         forward(T& t)
@@ -275,6 +413,17 @@ namespace boost { namespace parameter { namespace aux {
 
     template <typename T, typename B>
     inline typename ::boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        ::boost::mp11::mp_if<
+            B
+          , ::boost::mp11::mp_if<
+                ::std::is_scalar<T>
+              , ::boost::mp11::mp_false
+              , ::boost::mp11::mp_true
+            >
+          , ::boost::mp11::mp_false
+        >
+#else
         typename ::boost::mpl::eval_if<
             B
           , ::boost::mpl::if_<
@@ -284,6 +433,7 @@ namespace boost { namespace parameter { namespace aux {
             >
           , ::boost::mpl::false_
         >::type
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
       , T const&&
     >::type
         forward(T const&& t)
@@ -293,6 +443,17 @@ namespace boost { namespace parameter { namespace aux {
 
     template <typename T, typename B>
     inline typename ::boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        ::boost::mp11::mp_if<
+            B
+          , ::boost::mp11::mp_if<
+                ::std::is_scalar<T>
+              , ::boost::mp11::mp_false
+              , ::boost::mp11::mp_true
+            >
+          , ::boost::mp11::mp_false
+        >
+#else
         typename ::boost::mpl::eval_if<
             B
           , ::boost::mpl::if_<
@@ -302,6 +463,7 @@ namespace boost { namespace parameter { namespace aux {
             >
           , ::boost::mpl::false_
         >::type
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
       , T&&
     >::type
         forward(T&& t)

@@ -8,8 +8,46 @@
 
 #include <boost/parameter/config.hpp>
 
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/list.hpp>
 
+namespace boost { namespace parameter { namespace aux {
+
+    typedef ::boost::mp11::mp_list<> set0;
+}}} // namespace boost::parameter::aux
+
+#include <boost/mp11/algorithm.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename S, typename K>
+    struct insert_
+    {
+        using type = ::boost::mp11::mp_insert_c<S,0,K>;
+    };
+}}} // namespace boost::parameter::aux
+
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename Set, typename K>
+    struct has_key_
+    {
+        using type = ::boost::mp11::mp_if<
+            ::boost::mp11::mp_empty<Set>
+          , ::boost::mp11::mp_false
+          , ::std::is_same<
+                ::boost::mp11::mp_find<Set,K>
+              , ::boost::mp11::mp_size<Set>
+            >
+        >;
+    };
+}}} // namespace boost::parameter::aux
+
+#elif BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 #include <boost/mpl/list.hpp>
 
 namespace boost { namespace parameter { namespace aux {
@@ -47,8 +85,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#else   // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-
+#else   // !BOOST_PARAMETER_CAN_USE_MP11 && Borland workarounds not needed
 #include <boost/mpl/set/set0.hpp>
 
 namespace boost { namespace parameter { namespace aux {
@@ -76,6 +113,6 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
-#endif  // Borland workarounds needed.
+#endif  // BOOST_PARAMETER_CAN_USE_MP11 || Borland workarounds needed
 #endif  // include guard
 

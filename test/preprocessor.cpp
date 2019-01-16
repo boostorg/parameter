@@ -3,13 +3,18 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/config.hpp>
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/binding.hpp>
+#include <boost/parameter/config.hpp>
+#include "basics.hpp"
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include "basics.hpp"
+#endif
 
 namespace test {
 
@@ -28,6 +33,12 @@ namespace test {
             Args,test::tag::index,int&
         >::type index_type;
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            std::is_same<index_type,int&>::value
+          , "index_type == int&"
+        );
+#else
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
                 boost::is_same<index_type,int&>
@@ -35,6 +46,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
+#endif
 
         args[test::_tester](
             args[test::_name]
@@ -47,7 +59,10 @@ namespace test {
 } // namespace test
 
 #include <boost/parameter/value_type.hpp>
+
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/remove_const.hpp>
+#endif
 
 namespace test {
 
@@ -66,6 +81,15 @@ namespace test {
             Args,test::tag::index,int
         >::type index_type;
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            std::is_same<
+                typename std::remove_const<index_type>::type
+              , int
+            >::value
+          , "remove_const<index_type>::type == int"
+        );
+#else
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
                 boost::is_same<
@@ -76,6 +100,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
+#endif
 
         args[test::_tester](
             args[test::_name]
@@ -87,7 +112,9 @@ namespace test {
     }
 } // namespace test
 
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/remove_reference.hpp>
+#endif
 
 namespace test {
 
@@ -102,7 +129,17 @@ namespace test {
         )
     )
     {
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            std::is_same<
+                typename std::remove_const<
+                    typename std::remove_reference<index_type>::type
+                >::type
+              , int
+            >::value
+          , "remove_cref<index_type>::type == int"
+        );
+#elif !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
@@ -116,7 +153,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
-#endif  // Borland/MSVC workarounds not needed.
+#endif  // BOOST_PARAMETER_CAN_USE_MP11 || Borland/MSVC workarounds not needed
 
         tester(name, value, index);
 
@@ -134,7 +171,17 @@ namespace test {
         )
     )
     {
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            std::is_same<
+                typename std::remove_const<
+                    typename std::remove_reference<index_type>::type
+                >::type
+              , int
+            >::value
+          , "remove_cref<index_type>::type == int"
+        );
+#elif !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
@@ -148,7 +195,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
-#endif  // Borland/MSVC workarounds not needed.
+#endif  // BOOST_PARAMETER_CAN_USE_MP11 || Borland/MSVC workarounds not needed
 
         tester(name, value, index);
 
@@ -161,7 +208,10 @@ namespace test {
 #if !defined(BOOST_NO_SFINAE)
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#endif
 #endif
 
 namespace test {
@@ -217,11 +267,15 @@ namespace test {
             Args const& args
 #if !defined(BOOST_NO_SFINAE)
           , typename boost::disable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                std::is_base_of<base_1,Args>
+#else
                 typename boost::mpl::if_<
                     boost::is_base_of<base_1,Args>
                   , boost::mpl::true_
                   , boost::mpl::false_
                 >::type
+#endif
             >::type* = BOOST_TTI_DETAIL_NULLPTR
 #endif  // BOOST_NO_SFINAE
         )
@@ -380,11 +434,15 @@ namespace test {
     // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        std::is_same<int,A0>
+#else
         typename boost::mpl::if_<
             boost::is_same<int,A0>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
+#endif
       , int
     >::type
         sfinae(A0 const& a0)
@@ -396,6 +454,9 @@ namespace test {
     struct predicate
     {
         template <typename T, typename Args>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using fn = std::is_convertible<T,std::string>;
+#else
         struct apply
           : boost::mpl::if_<
                 boost::is_convertible<T,std::string>
@@ -404,6 +465,7 @@ namespace test {
             >
         {
         };
+#endif
 
         BOOST_PARAMETER_BASIC_CONST_FUNCTION_CALL_OPERATOR((bool), test::tag,
             (required
@@ -433,11 +495,15 @@ namespace test {
     // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        std::is_same<int,A0>
+#else
         typename boost::mpl::if_<
             boost::is_same<int,A0>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
+#endif
       , int
     >::type
         sfinae1(A0 const& a0)

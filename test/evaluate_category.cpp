@@ -44,9 +44,14 @@ namespace test {
     };
 } // namespace test
 
-#include <boost/type_traits/is_scalar.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include "evaluate_category.hpp"
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
+#include <boost/type_traits/is_scalar.hpp>
+#endif
 
 namespace test {
 
@@ -66,7 +71,11 @@ namespace test {
             );
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            if (std::is_scalar<T>::value)
+#else
             if (boost::is_scalar<T>::value)
+#endif
             {
                 BOOST_TEST_EQ(
                     test::passed_by_lvalue_reference_to_const
@@ -108,17 +117,29 @@ namespace test {
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/bind.hpp>
+#endif
+
 namespace test {
 
     struct e_parameters
       : boost::parameter::parameters<
             boost::parameter::required<
                 boost::parameter::deduced<test::keywords::lrc0>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+              , boost::mp11::mp_bind<
+                    std::is_convertible
+                  , boost::mp11::_1
+                  , float
+                >
+#else
               , boost::mpl::if_<
                     boost::is_convertible<boost::mpl::_1,float>
                   , boost::mpl::true_
                   , boost::mpl::false_
                 >
+#endif
             >
           , boost::parameter::required<
                 boost::parameter::deduced<test::keywords::lr0>
@@ -138,7 +159,10 @@ namespace test {
 } // namespace test
 
 #include <boost/parameter/value_type.hpp>
+
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/remove_const.hpp>
+#endif
 
 namespace test {
 
@@ -147,6 +171,28 @@ namespace test {
         template <typename Args>
         static void evaluate(Args const& args)
         {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            BOOST_TEST((
+                test::passed_by_lvalue_reference_to_const == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::lrc0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_lrc0])
+            ));
+            BOOST_TEST((
+                test::passed_by_lvalue_reference == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::lr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_lr0])
+            ));
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
@@ -167,8 +213,20 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_lr0])
             ));
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            BOOST_TEST((
+                test::passed_by_rvalue_reference == test::A<
+                    typename std::remove_const<
+                        typename boost::parameter::value_type<
+                            Args
+                          , test::keywords::rr0
+                        >::type
+                    >::type
+                >::evaluate_category(args[test::_rr0])
+            ));
+#elif defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST((
                 test::passed_by_rvalue_reference == test::A<
                     typename boost::remove_const<
@@ -179,7 +237,7 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#else   // no MP11 or perfect forwarding support
             BOOST_TEST((
                 test::passed_by_lvalue_reference_to_const == test::A<
                     typename boost::remove_const<
@@ -190,7 +248,7 @@ namespace test {
                     >::type
                 >::evaluate_category(args[test::_rr0])
             ));
-#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#endif  // MP11 or perfect forwarding support
         }
     };
 } // namespace test

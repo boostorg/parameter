@@ -20,9 +20,15 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #include <boost/parameter/aux_/arg_list.hpp>
+#include <utility>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+#else
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <utility>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -35,14 +41,23 @@ namespace boost { namespace parameter { namespace aux {
             reverse(ReversedArgs&&... reversed_args)
         {
             return ArgList(
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                ::boost::mp11::mp_if<
+                    ::std::is_same<
+#else
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
+#endif
                         typename ArgList::tagged_arg::value_type
                       , ::boost::parameter::void_
                     >
                   , ::boost::parameter::aux::value_type_is_void
                   , ::boost::parameter::aux::value_type_is_not_void
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                >()
+#else
                 >::type()
+#endif
               , ::std::forward<ReversedArgs>(reversed_args)...
             );
         }
@@ -70,14 +85,19 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/aux_/pack/make_parameter_spec_items.hpp>
 #include <boost/parameter/aux_/pack/tag_keyword_arg.hpp>
 #include <boost/parameter/aux_/pack/tag_template_keyword_arg.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/list.hpp>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/pair.hpp>
 #include <boost/mpl/identity.hpp>
+#endif
 
 #if !defined(BOOST_PARAMETER_VARIADIC_MPL_SEQUENCE)
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
-#include <boost/mp11/list.hpp>
-#include <boost/mp11/mpl.hpp>
+//#include <boost/mp11/mpl.hpp>
 #define BOOST_PARAMETER_VARIADIC_MPL_SEQUENCE ::boost::mp11::mp_list
 #else
 #include <boost/fusion/container/list/list_fwd.hpp>
@@ -123,6 +143,7 @@ namespace boost { namespace parameter {
         // (no nested ::type).
         template <typename ArgumentPackAndError>
         struct match_base
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
           : ::boost::mpl::if_<
                 typename ::boost::parameter::aux::match_parameters_base_cond<
                     ArgumentPackAndError
@@ -133,7 +154,20 @@ namespace boost { namespace parameter {
                 >
               , ::boost::parameter::void_
             >
+#endif
         {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            using type = ::boost::mp11::mp_if<
+                typename ::boost::parameter::aux::match_parameters_base_cond<
+                    ArgumentPackAndError
+                  , parameter_spec
+                >::type
+              , ::boost::mp11::mp_identity<
+                    ::boost::parameter::parameters<Spec...>
+                >
+              , ::boost::parameter::void_
+            >;
+#endif
         };
 
         // Specializations are to be used as an optional argument
@@ -148,7 +182,11 @@ namespace boost { namespace parameter {
                   , deduced_list
                   , ::boost::parameter::aux::tag_keyword_arg
                     // Don't emit errors when doing SFINAE.
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                  , ::boost::mp11::mp_false
+#else
                   , ::boost::mpl::false_
+#endif
                 >::type
             >::type
         {
@@ -157,6 +195,7 @@ namespace boost { namespace parameter {
         // Metafunction that returns an ArgumentPack.
         template <typename ...Args>
         struct bind
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
           : ::boost::mpl::first<
                 typename ::boost::parameter::aux::make_arg_list<
                     typename ::boost::parameter::aux
@@ -165,7 +204,19 @@ namespace boost { namespace parameter {
                   , ::boost::parameter::aux::tag_template_keyword_arg
                 >::type
             >
+#endif
         {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            using type = ::boost::mp11::mp_at_c<
+                typename ::boost::parameter::aux::make_arg_list<
+                    typename ::boost::parameter::aux
+                    ::make_parameter_spec_items<parameter_spec,Args...>::type
+                  , deduced_list
+                  , ::boost::parameter::aux::tag_template_keyword_arg
+                >::type
+              , 0
+            >;
+#endif
         };
 
         // The function call operator is used to build an arg_list that
@@ -177,34 +228,43 @@ namespace boost { namespace parameter {
         }
 
         template <typename A0, typename ...Args>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        inline ::boost::mp11::mp_at_c<
+#else
         inline typename ::boost::mpl::first<
+#endif
             typename ::boost::parameter::aux::make_arg_list<
-                typename ::boost::parameter::aux::make_parameter_spec_items<
-                    parameter_spec
-                  , A0
-                  , Args...
-                >::type
+                typename ::boost::parameter::aux
+                ::make_parameter_spec_items<parameter_spec,A0,Args...>::type
               , deduced_list
               , ::boost::parameter::aux::tag_keyword_arg
             >::type
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+          , 0
+        >
+#else
         >::type
+#endif
             operator()(A0&& a0, Args&& ...args) const
         {
             typedef typename ::boost::parameter::aux::make_arg_list<
-                typename ::boost::parameter::aux::make_parameter_spec_items<
-                    parameter_spec
-                  , A0
-                  , Args...
-                >::type
+                typename ::boost::parameter::aux
+                ::make_parameter_spec_items<parameter_spec,A0,Args...>::type
               , deduced_list
               , ::boost::parameter::aux::tag_keyword_arg
             >::type list_error_pair;
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            using result_type = ::boost::mp11::mp_at_c<list_error_pair,0>;
+
+            using error = ::boost::mp11::mp_at_c<list_error_pair,1>;
+#else
             typedef typename ::boost::mpl
             ::first<list_error_pair>::type result_type;
 
             typedef typename ::boost::mpl
             ::second<list_error_pair>::type error;
+#endif
 
             error();
 

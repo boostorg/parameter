@@ -175,11 +175,14 @@ library.
 An |ArgumentPack| is a collection of |tagged reference|\ s to the actual
 arguments passed to a function.  Every |ArgumentPack| is also a valid `MPL
 Forward Sequence`_ and `MPL Associative Sequence`_ consisting of the |keyword
-tag type|\ s in its |tagged reference|\ s.  The |singular_cpp|_,
-|compose_cpp|_, and |mpl_cpp|_ test programs demonstrate this functionality.
+tag type|\ s in its |tagged reference|\ s.  If |BOOST_PARAMETER_CAN_USE_MP11|
+is defined, then every |ArgumentPack| is also a valid `Boost.MP11`_ list.  The
+|singular_cpp|_, |compose_cpp|_, and |mpl_cpp|_ test programs demonstrate this
+functionality.
 
 .. _`MPL Forward Sequence`: ../../../mpl/doc/refmanual/forward-sequence.html
 .. _`MPL Associative Sequence`: ../../../mpl/doc/refmanual/associative-sequence.html
+.. _`Boost.MP11`: ../../../mp11/doc/html/mp11.html
 .. |singular_cpp| replace:: singular.cpp
 .. _singular_cpp: ../../test/singular.cpp
 .. |compose_cpp| replace:: compose.cpp
@@ -981,6 +984,60 @@ define the range constructor.
 
 .. _`disable_if`: ../../../core/doc/html/core/enable_if.html
 
+``are_tagged_arguments_mp11``
+-----------------------------
+
+:Defined in: `boost/parameter/are_tagged_arguments.hpp`__ if
+|BOOST_PARAMETER_CAN_USE_MP11| is defined
+
+__ ../../../../boost/parameter/are_tagged_arguments.hpp
+
+.. parsed-literal::
+
+    template <typename T0, typename ...Pack>
+    struct are_tagged_arguments_mp11  // : mp11::mp_true or mp11::mp_false
+    {
+    };
+
+:Returns:
+``mp11::mp_true`` if ``T0`` and all elements in parameter pack ``Pack`` are
+|tagged reference| types, ``mp11::mp_false`` otherwise.
+
+:Example usage:
+When implementing a Boost.Parameter-enabled constructor for a container that
+conforms to the C++ standard, one needs to remember that the standard requires
+the presence of other constructors that are typically defined as templates,
+such as range constructors.  To avoid overload ambiguities between the two
+constructors, use this metafunction in conjunction with ``disable_if`` to
+define the range constructor.
+
+.. parsed-literal::
+
+    template <typename B>
+    class frontend : public B
+    {
+        struct _enabler
+        {
+        };
+
+     public:
+        |BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR|_(frontend, (B))
+
+        template <typename Iterator>
+        frontend(
+            Iterator itr
+          , Iterator itr_end
+          , typename boost::`disable_if`_<
+                are_tagged_arguments_mp11<Iterator>
+              , _enabler
+            >::type = _enabler()
+        ) : B(itr, itr_end)
+        {
+        }
+    };
+
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+
 ``is_argument_pack``
 --------------------
 
@@ -1047,6 +1104,74 @@ in conjunction with ``enable_if``.
     };
 
 .. _`is_convertible`: ../../../type_traits/doc/html/boost_typetraits/is_convertible.html
+
+``is_argument_pack_mp11``
+-------------------------
+
+:Defined in: `boost/parameter/is_argument_pack.hpp`__ if
+|BOOST_PARAMETER_CAN_USE_MP11| is defined
+
+__ ../../../../boost/parameter/is_argument_pack.hpp
+
+.. parsed-literal::
+
+    template <typename T>
+    struct is_argument_pack_mp11  // : mp11::mp_true or mp11::mp_false
+    {
+    };
+
+:Returns:
+``mp11::mp_true`` if ``T`` is a model of |ArgumentPack|_, ``mp11::mp_false``
+otherwise.
+
+:Example usage:
+To avoid overload ambiguities between a constructor that takes in an
+|ArgumentPack|_ and a templated conversion constructor, use this metafunction
+in conjunction with ``enable_if``.
+
+.. parsed-literal::
+
+    |BOOST_PARAMETER_NAME|_(a0)
+
+    template <typename T>
+    class backend0
+    {
+        struct _enabler
+        {
+        };
+
+        T a0;
+
+     public:
+        template <typename ArgPack>
+        explicit backend0(
+            ArgPack const& args
+          , typename boost::`enable_if`_<
+                is_argument_pack_mp11<ArgPack>
+              , _enabler
+            >::type = _enabler()
+        ) : a0(args[_a0])
+        {
+        }
+
+        template <typename U>
+        backend0(
+            backend0<U> const& copy
+          , typename boost::`enable_if`_<
+                std::`is_convertible`_<U,T>
+              , _enabler
+            >::type = _enabler()
+        ) : a0(copy.get_a0())
+        {
+        }
+
+        T const& get_a0() const
+        {
+            return this->a0;
+        }
+    };
+
+.. _`is_convertible`: http\://en.cppreference.com/w/cpp/types/is_convertible
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -6331,6 +6456,18 @@ Expands to:
             typedef *unspecified* _;
             typedef *unspecified* _1;
             typedef boost::parameter::*qualifier* ## _reference qualifier;
+
+            // The following definitions are available only when
+            // |BOOST_PARAMETER_CAN_USE_MP11|_ is defined.
+
+            template <typename ArgumentPack>
+            using binding_fn = typename |binding|_<
+                ArgumentPack
+              , *tag-name*
+            >::type;
+
+            template <typename ArgumentPack>
+            using fn = typename |value_type|_<ArgumentPack, *tag-name*>::type;
         };
     }
 
@@ -6378,6 +6515,18 @@ Expands to:
             typedef *unspecified* _;
             typedef *unspecified* _1;
             typedef boost::parameter::*qualifier* ## _reference qualifier;
+
+            // The following definitions are available only when
+            // |BOOST_PARAMETER_CAN_USE_MP11|_ is defined.
+
+            template <typename ArgumentPack>
+            using binding_fn = typename |binding|_<
+                ArgumentPack
+              , *tag-name*
+            >::type;
+
+            template <typename ArgumentPack>
+            using fn = typename |value_type|_<ArgumentPack, *tag-name*>::type;
         };
     }
 
@@ -6430,6 +6579,18 @@ Expands to:
             typedef *unspecified* _1;
             typedef boost::parameter::*qualifier* ## _reference qualifier;
             static |keyword|_<*tag-name*> const& *alias*;
+
+            // The following definitions are available only when
+            // |BOOST_PARAMETER_CAN_USE_MP11|_ is defined.
+
+            template <typename ArgumentPack>
+            using binding_fn = typename |binding|_<
+                ArgumentPack
+              , *tag-name*
+            >::type;
+
+            template <typename ArgumentPack>
+            using fn = typename |value_type|_<ArgumentPack, *tag-name*>::type;
         };
 
         |keyword|_<*tag-name*> const& tag::*tag-name*::*alias*
@@ -6609,6 +6770,18 @@ Expands to:
             typedef *unspecified* _;
             typedef *unspecified* _1;
             typedef boost::parameter::forward_reference qualifier;
+
+            // The following definitions are available only when
+            // |BOOST_PARAMETER_CAN_USE_MP11|_ is defined.
+
+            template <typename ArgumentPack>
+            using binding_fn = typename |binding|_<
+                ArgumentPack
+              , *k*
+            >::type;
+
+            template <typename ArgumentPack>
+            using fn = typename |value_type|_<ArgumentPack, *k*>::type;
         };
     }
 
@@ -6692,8 +6865,10 @@ both |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| and
 --------------------------------
 
 Determines whether or not the library can use `Boost.MP11`_, a C++11
-metaprogramming library.  Users can manually disable this macro by
-``#defining`` the |BOOST_PARAMETER_DISABLE_MP11_USAGE| macro or the
+metaprogramming library, and therefore determines whether or not the library
+defines the |are_tagged_arguments_mp11| and |is_argument_pack_mp11|
+metafunctions.  Users can manually disable this macro by ``#defining`` the
+|BOOST_PARAMETER_DISABLE_MP11_USAGE| macro or the
 |BOOST_PARAMETER_DISABLE_PERFECT_FORWARDING| macro.  Otherwise, the library
 will ``#define`` this macro if and only if it is not already defined, if
 |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is defined, and if the configuration
@@ -6702,6 +6877,12 @@ macros |BOOST_NO_CXX11_CONSTEXPR|_, |BOOST_NO_CXX11_DECLTYPE_N3276|_,
 |BOOST_NO_CXX11_STATIC_ASSERT|_, |BOOST_NO_CXX11_HDR_TYPE_TRAITS|_,
 |BOOST_NO_CXX11_HDR_INITIALIZER_LIST|_, and |BOOST_NO_CXX11_HDR_TUPLE|_
 are not already defined by `Boost.Config`_.
+
+.. Admonition:: Usage Note
+
+`Boost.MP11`_ and `Boost.MPL`_ are **not** mutually exclusive.  It's perfectly
+acceptable to specify deduced parameters using both quoted metafunctions and
+metafunction classes, for example.  See |evaluate_category_cpp|_.
 
 .. |BOOST_PARAMETER_CAN_USE_MP11| replace:: ``BOOST_PARAMETER_CAN_USE_MP11``
 .. |BOOST_PARAMETER_DISABLE_MP11_USAGE| replace:: ``BOOST_PARAMETER_DISABLE_MP11_USAGE``
@@ -6725,10 +6906,235 @@ are not already defined by `Boost.Config`_.
 .. _BOOST_NO_CXX11_HDR_TUPLE: ../../../config/doc/html/boost_config/boost_macro_reference.html
 .. _`Boost.MP11`: ../../../mp11/doc/html/mp11.html
 .. _`Boost.Config`: ../../../config/doc/html/index.html
+.. |evaluate_category_cpp| replace:: evaluate_category.cpp
+.. _evaluate_category_cpp: ../../test/evaluate_category.cpp
 
 :Defined in: `boost/parameter/config.hpp`__
 
 __ ../../../../boost/parameter/config.hpp
+
+:Example usage:
+Given the following definitions::
+
+    |BOOST_PARAMETER_NAME|_(x)
+
+    template <typename A0>
+    typename boost::`enable_if`_<std::`is_same`_<int,A0>,int>::type
+        sfinae(A0 const& a0)
+    {
+        return 0;
+    }
+
+.. _`is_same`: http\://en.cppreference.com/w/cpp/types/is_same
+
+`Boost.MP11`_ allows deduced parameters to be defined more succinctly::
+
+    template <typename T, typename Args>
+    using predicate = std::`is_convertible`_<T,char const\*>;
+
+    |BOOST_PARAMETER_FUNCTION|_((int), sfinae, tag,
+        (deduced
+            (optional
+                (x
+                  , \*(boost::mp11::mp_quote<predicate>)
+                  , static_cast<char const\*>(std::`nullptr`_)
+                )
+            )
+        )
+    )
+    {
+        return 1;
+    }
+
+.. _`is_convertible`: http\://en.cppreference.com/w/cpp/types/is_convertible
+
+Without `Boost.MP11`_, deduced parameter definitions tend to be more verbose::
+
+    struct predicate
+    {
+        template <typename T, typename Args>
+        struct apply
+          : boost::mpl::if_<
+                boost::`is_convertible`_<T,char const\*>
+              , boost::mpl::true_
+              , boost::mpl::false_
+            >
+        {
+        };
+    };
+
+    |BOOST_PARAMETER_FUNCTION|_((int), sfinae, tag,
+        (deduced
+            (optional
+                (x
+                  , \*(predicate)
+                  , static_cast<char const\*>(std::`nullptr`_)
+                )
+            )
+        )
+    )
+    {
+        return 1;
+    }
+
+.. _`is_convertible`: ../../../type_traits/doc/html/boost_typetraits/is_convertible.html
+.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
+
+Either way, the following assertions will succeed::
+
+    assert(1 == sfinae());
+    assert(1 == sfinae("foo"));
+    assert(0 == sfinae(1));
+
+As another example, given the following declarations and definitions::
+
+    |BOOST_PARAMETER_NAME|_(x)
+    |BOOST_PARAMETER_NAME|_(y)
+
+    template <typename E, typename Args>
+    void check0(E const& e, Args const& args);
+
+    template <typename P, typename E, typename ...Args>
+    void check(E const& e, Args const&... args)
+    {
+        check0(e, P()(args...));
+    }
+
+Argument packs qualify as `Boost.MP11`_-style lists containing
+|keyword tag type|\ s::
+
+    template <typename Args>
+    struct some_functor
+    {
+        template <typename K>
+        void operator()(K&&) const
+        {
+            // K is one of tag::x, tag::y, etc.
+        }
+    };
+
+    template <typename E, typename Args>
+    void check0(E const& e, Args const& args)
+    {
+        boost::mp11::mp_for_each<E>(some_functor<Args>());
+    }
+
+The first check determines whether or not the argument type of ``_y`` is the
+same as the reference type of ``_x``, while the second check determines
+whether or not the argument type of ``_y`` is convertible to the value type of
+``_x``.  Here, it's possible to access the reference and value result types of
+indexing an argument pack a little more directly::
+
+    // Use mp_bind on tag::x::binding_fn to access the reference type of _x.
+    // Here, boost::mp11::_1 will be bound to the argument type of _y.
+    // Regardless, boost::mp11::_2 will be bound to the argument pack type.
+    check<
+        |parameters|_<
+            tag::x
+          , |optional|_<
+                |deduced|_<tag::y>
+              , boost::mp11::mp_bind<
+                    std::`is_same`_
+                  , boost::mp11::_1
+                  , boost::mp11::mp_bind<
+                        tag::x::binding_fn
+                      , boost::mp11::_2
+                    >
+                >
+            >
+        >
+    >((_x = 0, _y = 1), 0, 1);
+
+    // Use mp_bind_q on tag::x to access the value type of _x.
+    check<
+        |parameters|_<
+            tag::x
+          , |optional|_<
+                |deduced|_<tag::y>
+              , boost::mp11::mp_bind<
+                    std::`is_convertible`_
+                  , boost::mp11::_1
+                  , boost::mp11::mp_bind_q<tag::x,boost::mp11::_2>
+                >
+            >
+        >
+    >((_x = 0U, _y = 1U), 0U, 1U);
+
+.. _`is_convertible`: http\://en.cppreference.com/w/cpp/types/is_convertible
+.. _`is_same`: http\://en.cppreference.com/w/cpp/types/is_same
+
+Argument packs still qualify as `Boost.MPL`_-style lists containing
+|keyword tag type|\ s::
+
+    template <typename Args>
+    struct some_functor
+    {
+        template <typename K>
+        void operator()(K) const
+        {
+            // K is one of tag::x, tag::y, etc.
+        }
+    };
+
+    template <typename E, typename Args>
+    void check0(E const& e, Args const& args)
+    {
+        boost::mpl::for_each<E>(some_functor<Args>());
+    }
+
+However, without `Boost.MP11`_, the corresponding checks become a little more
+verbose::
+
+    check<
+        |parameters|_<
+            tag::x
+          , |optional|_<
+                |deduced|_<tag::y>
+              , boost::mpl::if_<
+                    boost::`is_same`_<
+                        boost::`add_lvalue_reference`_<boost::mpl::_1>
+                      , |binding|_<boost::mpl::_2,tag::x>
+                    >
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >
+            >
+        >
+    >((_x = 0, _y = 1), 0, 1);
+
+    // Use tag::x::_ or tag::x::_1 to access the value type of _x.
+    check<
+        |parameters|_<
+            tag::x
+          , |optional|_<
+                |deduced|_<tag::y>
+              , boost::mpl::if_<
+                    boost::`is_convertible`_<boost::mpl::_1,tag::x::_1>
+                  , boost::mpl::true_
+                  , boost::mpl::false_
+                >
+            >
+        >
+    >((_x = 0U, _y = 1U), 0U, 1U);
+
+.. _`add_lvalue_reference`: ../../../type_traits/doc/html/boost_typetraits/add_lvalue_reference.html
+.. _`is_convertible`: ../../../type_traits/doc/html/boost_typetraits/is_convertible.html
+.. _`is_same`: ../../../type_traits/doc/html/boost_typetraits/is_same.html
+
+The |singular_cpp|_, |compose_cpp|_, |optional_deduced_sfinae_cpp|_, and
+|deduced_dep_pred_cpp|_ test programs demonstrate proper usage of this
+macro.
+
+.. _`Boost.MP11`: ../../../mp11/doc/html/mp11.html
+.. _`Boost.MPL`: ../../../mpl/doc/index.html
+.. |singular_cpp| replace:: singular.cpp
+.. _singular_cpp: ../../test/singular.cpp
+.. |compose_cpp| replace:: compose.cpp
+.. _compose_cpp: ../../test/compose.cpp
+.. |optional_deduced_sfinae_cpp| replace:: optional_deduced_sfinae.cpp
+.. _optional_deduced_sfinae_cpp: ../../test/optional_deduced_sfinae.cpp
+.. |deduced_dep_pred_cpp| replace:: deduced_dependent_predicate.cpp
+.. _deduced_dep_pred_cpp: ../../test/deduced_dependent_predicate.cpp
 
 ``BOOST_PARAMETER_DISABLE_MP11_USAGE``
 --------------------------------------
@@ -6736,7 +7142,8 @@ __ ../../../../boost/parameter/config.hpp
 It may be necessary to disable usage of `Boost.MP11`_ for compilers that
 cannot support it.  Users can ``#define`` this macro either in their project
 settings or before including any library header files.  Doing so will leave
-|BOOST_PARAMETER_CAN_USE_MP11| undefined.
+|BOOST_PARAMETER_CAN_USE_MP11| undefined and the |are_tagged_arguments_mp11|
+and |is_argument_pack_mp11| metafunctions unavailable.
 
 .. |BOOST_PARAMETER_CAN_USE_MP11| replace:: ``BOOST_PARAMETER_CAN_USE_MP11``
 .. _`Boost.MP11`: ../../../mp11/doc/html/mp11.html

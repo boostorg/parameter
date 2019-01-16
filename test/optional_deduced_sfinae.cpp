@@ -17,17 +17,38 @@ as 2 or greater.
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/if.hpp>
 #include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <string>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/type_traits/is_convertible.hpp>
+#endif
 
 namespace test {
 
     BOOST_PARAMETER_NAME(x)
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    template <typename T, typename Args>
+    using predicate = std::is_convertible<T,char const*>;
+
+    BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
+        (deduced
+            (optional
+                (x
+                  , *(boost::mp11::mp_quote<test::predicate>)
+                  , static_cast<char const*>(BOOST_TTI_DETAIL_NULLPTR)
+                )
+            )
+        )
+    )
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
     struct predicate
     {
         template <typename T, typename Args>
@@ -51,17 +72,22 @@ namespace test {
             )
         )
     )
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
     {
         return 1;
     }
 
     template <typename A0>
     typename boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        std::is_same<int,A0>
+#else
         typename boost::mpl::if_<
             boost::is_same<int,A0>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
+#endif
       , int
     >::type
         sfinae(A0 const& a0)

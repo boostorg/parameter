@@ -58,10 +58,15 @@ namespace test {
 } // namespace test
 
 #include <boost/parameter/preprocessor.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#endif
 
 namespace test {
 
@@ -74,6 +79,16 @@ namespace test {
         )
     )
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            std::is_convertible<x_type,long>::value
+          , "is_convertible<x_type,long>"
+        );
+        static_assert(
+            std::is_convertible<y_type,long>::value
+          , "is_convertible<y_type,long>"
+        );
+#else
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
                 boost::is_convertible<x_type,long>
@@ -88,6 +103,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
         return 0;
     }
 } // namespace test
@@ -102,6 +118,12 @@ namespace test {
         )
     )
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            std::is_convertible<x_type,test::count_instances>::value
+          , "is_convertible<x_type,test::count_instances>"
+        );
+#else
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
                 boost::is_convertible<x_type,test::count_instances>
@@ -109,6 +131,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
+#endif
         x.noop();
 #if !BOOST_WORKAROUND(BOOST_GCC, < 40000)
         BOOST_TEST_LT(0, test::count_instances::count);
@@ -122,6 +145,12 @@ namespace test {
         )
     )
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            std::is_convertible<x_type,test::count_instances const>::value
+          , "is_convertible<x_type,test::count_instances const>"
+        );
+#else
         BOOST_MPL_ASSERT((
             typename boost::mpl::if_<
                 boost::is_convertible<x_type,test::count_instances const>
@@ -129,6 +158,7 @@ namespace test {
               , boost::mpl::false_
             >::type
         ));
+#endif
         x.noop();
 #if !BOOST_WORKAROUND(BOOST_GCC, < 40000)
         BOOST_TEST_EQ(1, test::count_instances::count);

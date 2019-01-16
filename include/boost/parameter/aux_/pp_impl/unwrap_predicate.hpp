@@ -14,8 +14,7 @@ namespace boost { namespace parameter { namespace aux {
     struct unwrap_predicate;
 }}} // namespace boost::parameter::aux
 
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/always.hpp>
+#include <boost/parameter/aux_/always_true_predicate.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -23,7 +22,7 @@ namespace boost { namespace parameter { namespace aux {
     template <>
     struct unwrap_predicate<void*>
     {
-        typedef ::boost::mpl::always< ::boost::mpl::true_> type;
+        typedef ::boost::parameter::aux::always_true_predicate type;
     };
 }}} // namespace boost::parameter::aux
 
@@ -51,9 +50,15 @@ namespace boost { namespace parameter { namespace aux {
 #endif   // SunProCC workarounds needed.
 }}} // namespace boost::parameter::aux
 
-#include <boost/mpl/placeholders.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
+#include <boost/mpl/placeholders.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -62,11 +67,29 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Target>
     struct unwrap_predicate<void (Target)>
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        struct type
+        {
+            template <typename Argument, typename ArgumentPack>
+            struct apply
+              : ::boost::mpl::if_<
+                    ::std::is_convertible<Argument,Target>
+                  , ::boost::mpl::true_
+                  , ::boost::mpl::false_
+                >
+            {
+            };
+
+            template <typename Argument, typename ArgumentPack>
+            using fn = ::std::is_convertible<Argument,Target>;
+        };
+#else
         typedef ::boost::mpl::if_<
             ::boost::is_convertible< ::boost::mpl::_,Target>
           , ::boost::mpl::true_
           , ::boost::mpl::false_
         > type;
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
     };
 }}} // namespace boost::parameter::aux
 

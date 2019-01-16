@@ -55,6 +55,13 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <utility>
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+#endif
+
 namespace boost { namespace parameter { namespace aux {
 
     // Terminates arg_list<> and represents an empty list.  Since this is just
@@ -83,6 +90,11 @@ namespace boost { namespace parameter { namespace aux {
             {
                 typedef Default type;
             };
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            template <typename KW, typename Default, typename Reference>
+            using fn = Default;
+#endif
         };
 
         // Terminator for has_key, indicating that the keyword is unique.
@@ -155,10 +167,22 @@ namespace boost { namespace parameter { namespace aux {
     template <
         typename TaggedArg
       , typename Next = ::boost::parameter::aux::empty_arg_list
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+      , typename EmitsErrors = ::boost::mp11::mp_true
+#else
       , typename EmitsErrors = ::boost::mpl::true_
+#endif
     >
     class arg_list : public Next
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using _holds_maybe = typename ::boost::parameter::aux
+        ::is_maybe<typename TaggedArg::value_type>::type;
+#else
+        typedef typename ::boost::parameter::aux
+        ::is_maybe<typename TaggedArg::value_type>::type _holds_maybe;
+#endif
+
         TaggedArg arg;      // Stores the argument
 
      public:
@@ -166,21 +190,33 @@ namespace boost { namespace parameter { namespace aux {
         typedef ::boost::parameter::aux::arg_list<TaggedArg,Next> self;
         typedef typename TaggedArg::key_type key_type;
 
-        typedef typename ::boost::parameter::aux
-        ::is_maybe<typename TaggedArg::value_type>::type holds_maybe;
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using reference = typename ::boost::mp11::mp_if<
+            _holds_maybe
+          , ::boost::parameter::aux
+            ::get_reference<typename TaggedArg::value_type>
+          , ::boost::parameter::aux::get_reference<TaggedArg>
+        >::type;
 
+        using value_type = ::boost::mp11::mp_if<
+            _holds_maybe
+          , reference
+          , typename TaggedArg::value_type
+        >;
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
         typedef typename ::boost::mpl::eval_if<
-            holds_maybe
+            _holds_maybe
           , ::boost::parameter::aux
             ::get_reference<typename TaggedArg::value_type>
           , ::boost::parameter::aux::get_reference<TaggedArg>
         >::type reference;
 
         typedef typename ::boost::mpl::if_<
-            holds_maybe
+            _holds_maybe
           , reference
           , typename TaggedArg::value_type
         >::type value_type;
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
         // Create a new list by prepending arg to a copy of tail.  Used when
         // incrementally building this structure with the comma operator.
@@ -200,14 +236,23 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::value_type_is_not_void
           , A0&& a0
         ) : Next(
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                ::boost::mp11::mp_if<
+                    ::std::is_same<
+#else
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
+#endif
                         typename Next::tagged_arg::value_type
                       , ::boost::parameter::void_
                     >
                   , ::boost::parameter::aux::value_type_is_void
                   , ::boost::parameter::aux::value_type_is_not_void
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                >()
+#else
                 >::type()
+#endif
             )
           , arg(::std::forward<A0>(a0))
         {
@@ -218,14 +263,23 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::value_type_is_void
           , Args&&... args
         ) : Next(
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                ::boost::mp11::mp_if<
+                    ::std::is_same<
+#else
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
+#endif
                         typename Next::tagged_arg::value_type
                       , ::boost::parameter::void_
                     >
                   , ::boost::parameter::aux::value_type_is_void
                   , ::boost::parameter::aux::value_type_is_not_void
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                >()
+#else
                 >::type()
+#endif
               , ::std::forward<Args>(args)...
             )
           , arg(::boost::parameter::aux::void_reference())
@@ -239,14 +293,23 @@ namespace boost { namespace parameter { namespace aux {
           , A1&& a1
           , Args&&... args
         ) : Next(
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                ::boost::mp11::mp_if<
+                    ::std::is_same<
+#else
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
+#endif
                         typename Next::tagged_arg::value_type
                       , ::boost::parameter::void_
                     >
                   , ::boost::parameter::aux::value_type_is_void
                   , ::boost::parameter::aux::value_type_is_not_void
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                >()
+#else
                 >::type()
+#endif
               , ::std::forward<A1>(a1)
               , ::std::forward<Args>(args)...
             )
@@ -267,14 +330,22 @@ namespace boost { namespace parameter { namespace aux {
                 typedef typename ::boost::mpl::eval_if<
                     ::boost::is_same<KW,key_type>
                   , ::boost::mpl::if_<Reference,reference,value_type>
-                  , ::boost::mpl::apply_wrap3<
-                        next_binding
-                      , KW
-                      , Default
-                      , Reference
-                    >
+                  , ::boost::mpl
+                    ::apply_wrap3<next_binding,KW,Default,Reference>
                 >::type type;
             };
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            template <typename KW, typename Default, typename Reference>
+            using fn = ::boost::mp11::mp_if<
+                ::std::is_same<KW,key_type>
+              , ::boost::mp11::mp_if<Reference,reference,value_type>
+              , ::boost::mp11::mp_apply_q<
+                    next_binding
+                  , ::boost::mp11::mp_list<KW,Default,Reference>
+                >
+            >;
+#endif
         };
 
         // Overload for key_type, so the assert below will fire
@@ -283,21 +354,35 @@ namespace boost { namespace parameter { namespace aux {
         using Next::has_key;
 
      private:
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using _has_unique_key = ::boost::mp11::mp_bool<
+#else
         typedef ::boost::mpl::bool_<
+#endif
             sizeof(
                 Next::has_key(
                     static_cast<key_type*>(BOOST_TTI_DETAIL_NULLPTR)
                 )
             ) == sizeof(::boost::parameter::aux::no_tag)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        >;
+#else
         > _has_unique_key;
+#endif
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(
+            !(EmitsErrors::value) || (_has_unique_key::value)
+          , "duplicate keyword"
+        );
+#else
         BOOST_MPL_ASSERT_MSG(
             !(EmitsErrors::value) || (_has_unique_key::value)
           , duplicate_keyword
           , (key_type)
         );
+#endif
 
-     public:
         //
         // Begin implementation of indexing operators
         // for looking up specific arguments by name.
@@ -306,14 +391,22 @@ namespace boost { namespace parameter { namespace aux {
         // Helpers that handle the case when TaggedArg is empty<T>.
         template <typename D>
         inline BOOST_CONSTEXPR reference
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            get_default(D const&, ::boost::mp11::mp_false) const
+#else
             get_default(D const&, ::boost::mpl::false_) const
+#endif
         {
             return this->arg.get_value();
         }
 
         template <typename D>
         inline BOOST_CONSTEXPR reference
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            get_default(D const& d, ::boost::mp11::mp_true) const
+#else
             get_default(D const& d, ::boost::mpl::true_) const
+#endif
         {
             return (
                 this->arg.get_value()
@@ -322,18 +415,19 @@ namespace boost { namespace parameter { namespace aux {
             );
         }
 
+     public:
         inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<key_type> const&) const
         {
-#if !defined(BOOST_NO_CXX14_CONSTEXPR) && \
-    !defined(BOOST_NO_CXX11_STATIC_ASSERT)
-            static_assert(!holds_maybe::value, "must not hold maybe");
+#if defined(BOOST_PARAMETER_CAN_USE_MP11) && \
+    !defined(BOOST_NO_CXX14_CONSTEXPR)
+            static_assert(!_holds_maybe::value, "must not hold maybe");
 #elif !( \
         BOOST_WORKAROUND(BOOST_GCC, >= 40700) && \
         BOOST_WORKAROUND(BOOST_GCC, < 40900) \
     ) && !BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
     !BOOST_WORKAROUND(BOOST_MSVC, < 1910)
-            BOOST_MPL_ASSERT_NOT((holds_maybe));
+            BOOST_MPL_ASSERT_NOT((_holds_maybe));
 #endif
             return this->arg.get_value();
         }
@@ -344,7 +438,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::default_<key_type,Default> const& d
             ) const
         {
-            return this->get_default(d, holds_maybe());
+            return this->get_default(d, _holds_maybe());
         }
 
         template <typename Default>
@@ -353,7 +447,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::default_r_<key_type,Default> const& d
             ) const
         {
-            return this->get_default(d, holds_maybe());
+            return this->get_default(d, _holds_maybe());
         }
 
         template <typename Default>
@@ -362,15 +456,15 @@ namespace boost { namespace parameter { namespace aux {
                 BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
         {
-#if !defined(BOOST_NO_CXX14_CONSTEXPR) && \
-    !defined(BOOST_NO_CXX11_STATIC_ASSERT)
-            static_assert(!holds_maybe::value, "must not hold maybe");
+#if defined(BOOST_PARAMETER_CAN_USE_MP11) && \
+    !defined(BOOST_NO_CXX14_CONSTEXPR)
+            static_assert(!_holds_maybe::value, "must not hold maybe");
 #elif !( \
         BOOST_WORKAROUND(BOOST_GCC, >= 40700) && \
         BOOST_WORKAROUND(BOOST_GCC, < 40900) \
     ) && !BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
     !BOOST_WORKAROUND(BOOST_MSVC, < 1910)
-            BOOST_MPL_ASSERT_NOT((holds_maybe));
+            BOOST_MPL_ASSERT_NOT((_holds_maybe));
 #endif
             return this->arg.get_value();
         }
@@ -389,14 +483,24 @@ namespace boost { namespace parameter { namespace aux {
         // and never really called, so a declaration is enough.
         template <typename HasDefault, typename Predicate, typename ArgPack>
         static BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            ::boost::mp11::mp_if<
+                EmitsErrors
+              , ::boost::mp11::mp_true
+              , _has_unique_key
+            >
+          , ::boost::parameter::aux::augment_predicate_mp11<
+#else
             typename ::boost::mpl::if_<
                 EmitsErrors
               , ::boost::mpl::true_
               , _has_unique_key
             >::type
-          , ::boost::mpl::apply_wrap2<
-                ::boost::parameter::aux
-                ::augment_predicate<Predicate,reference,key_type>
+          , ::boost::parameter::aux::augment_predicate<
+#endif
+                Predicate
+              , reference
+              , key_type
               , value_type
               , ArgPack
             >
@@ -583,6 +687,9 @@ namespace boost { namespace parameter { namespace aux {
     >
     class arg_list : public Next
     {
+        typedef typename ::boost::parameter::aux
+        ::is_maybe<typename TaggedArg::value_type>::type _holds_maybe;
+
         TaggedArg arg;      // Stores the argument
 
      public:
@@ -590,18 +697,15 @@ namespace boost { namespace parameter { namespace aux {
         typedef ::boost::parameter::aux::arg_list<TaggedArg,Next> self;
         typedef typename TaggedArg::key_type key_type;
 
-        typedef typename ::boost::parameter::aux
-        ::is_maybe<typename TaggedArg::value_type>::type holds_maybe;
-
         typedef typename ::boost::mpl::eval_if<
-            holds_maybe
+            _holds_maybe
           , ::boost::parameter::aux
             ::get_reference<typename TaggedArg::value_type>
           , ::boost::parameter::aux::get_reference<TaggedArg>
         >::type reference;
 
         typedef typename ::boost::mpl::if_<
-            holds_maybe
+            _holds_maybe
           , reference
           , typename TaggedArg::value_type
         >::type value_type;
@@ -671,6 +775,7 @@ namespace boost { namespace parameter { namespace aux {
         static ::boost::parameter::aux::yes_tag has_key(key_type*);
         using Next::has_key;
 
+     private:
 #if defined(BOOST_NO_SFINAE) || BOOST_WORKAROUND(BOOST_MSVC, < 1800)
         BOOST_MPL_ASSERT_MSG(
             sizeof(
@@ -682,7 +787,6 @@ namespace boost { namespace parameter { namespace aux {
           , (key_type)
         );
 #else
-     private:
         typedef ::boost::mpl::bool_<
             sizeof(
                 Next::has_key(
@@ -699,7 +803,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif  // SFINAE/MSVC workarounds needed
 #endif  // Borland workarounds not needed
 
-     public:
+     private:
         //
         // Begin implementation of indexing operators
         // for looking up specific arguments by name.
@@ -724,6 +828,7 @@ namespace boost { namespace parameter { namespace aux {
             );
         }
 
+     public:
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         // These older compilers don't support the overload set creation
         // idiom well, so we need to do all the return type calculation
@@ -803,7 +908,7 @@ namespace boost { namespace parameter { namespace aux {
         inline BOOST_CONSTEXPR reference
             get(::boost::parameter::keyword<key_type> const&) const
         {
-            BOOST_MPL_ASSERT_NOT((holds_maybe));
+            BOOST_MPL_ASSERT_NOT((_holds_maybe));
             return this->arg.get_value();
         }
 
@@ -813,7 +918,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::default_<key_type,Default> const& d
             ) const
         {
-            return this->get_default(d, holds_maybe());
+            return this->get_default(d, _holds_maybe());
         }
 
         template <typename Default>
@@ -828,7 +933,7 @@ namespace boost { namespace parameter { namespace aux {
         inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<key_type> const&) const
         {
-            BOOST_MPL_ASSERT_NOT((holds_maybe));
+            BOOST_MPL_ASSERT_NOT((_holds_maybe));
             return this->arg.get_value();
         }
 
@@ -838,7 +943,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::default_<key_type,Default> const& d
             ) const
         {
-            return this->get_default(d, holds_maybe());
+            return this->get_default(d, _holds_maybe());
         }
 
         template <typename Default>
@@ -847,7 +952,7 @@ namespace boost { namespace parameter { namespace aux {
                 BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
         {
-            BOOST_MPL_ASSERT_NOT((holds_maybe));
+            BOOST_MPL_ASSERT_NOT((_holds_maybe));
             return this->arg.get_value();
         }
 
@@ -873,9 +978,10 @@ namespace boost { namespace parameter { namespace aux {
               , _has_unique_key
             >::type,
 #endif
-            ::boost::mpl::apply_wrap2<
-                ::boost::parameter::aux
-                ::augment_predicate<Predicate,reference,key_type>
+            ::boost::parameter::aux::augment_predicate<
+                Predicate
+              , reference
+              , key_type
               , value_type
               , ArgPack
 #if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
@@ -922,6 +1028,157 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+
+namespace boost { namespace mp11 { namespace detail {
+
+    template <>
+    struct mp_is_list_impl< ::boost::parameter::aux::empty_arg_list>
+    {
+        using type = ::boost::mp11::mp_true;
+    };
+
+    template <typename TaggedArg, typename Next, typename EmitsErrors>
+    struct mp_is_list_impl<
+        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
+    >
+    {
+        using type = ::boost::mp11::mp_true;
+    };
+
+    template <>
+    struct mp_size_impl< ::boost::parameter::aux::empty_arg_list>
+    {
+        using type = ::boost::mp11::mp_size_t<0>;
+    };
+
+    template <typename TaggedArg, typename Next, typename EmitsErrors>
+    struct mp_size_impl<
+        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
+    >
+    {
+        using size_minus_1 = typename ::boost::mp11::detail
+        ::mp_size_impl<Next>::type;
+        using type = ::boost::mp11::mp_size_t<size_minus_1::value + 1>;
+    };
+
+    template <typename TaggedArg, typename Next, typename EmitsErrors>
+    struct mp_front_impl<
+        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
+    >
+    {
+        using type = typename TaggedArg::key_type;
+    };
+
+    template <typename TaggedArg, typename Next, typename EmitsErrors>
+    struct mp_pop_front_impl<
+        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
+    >
+    {
+        using type = Next;
+    };
+
+    template <template <typename ...> class B>
+    struct mp_rename_impl< ::boost::parameter::aux::empty_arg_list,B>
+    {
+        using type = B<>;
+    };
+
+    template <
+        typename TaggedArg
+      , typename Next
+      , typename EmitsErrors
+      , template <typename ...> class B
+    >
+    struct mp_rename_impl<
+        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
+      , B
+    >
+    {
+        using type = ::boost::mp11::mp_push_back<
+            typename ::boost::mp11::detail::mp_rename_impl<Next,B>::type
+          , typename TaggedArg::key_type
+        >;
+    };
+}}} // namespace boost::mp11::detail
+
+#include <boost/mp11/algorithm.hpp>
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename ArgListNext, typename Tag>
+    struct mp_find_no
+    {
+        using find_next = typename ::boost::mp11::detail
+        ::mp_find_impl<ArgListNext,Tag>::type;
+        using type = ::boost::mp11::mp_size_t<find_next::value + 1>;
+    };
+}}} // namespace boost::parameter::aux
+
+namespace boost { namespace mp11 { namespace detail {
+
+    template <typename Tag>
+    struct mp_count_impl< ::boost::parameter::aux::empty_arg_list,Tag>
+    {
+        using type = ::boost::mp11::mp_size_t<0>;
+    };
+
+    template <typename TA, typename Next, typename EE, typename Tag>
+    struct mp_count_impl<
+        ::boost::parameter::aux::arg_list<TA,Next,EE>
+      , Tag
+    >
+    {
+        using next_count = typename ::boost::mp11::detail
+        ::mp_count_impl<Next,Tag>::type;
+        using type = ::boost::mp11::mp_size_t<
+            (
+                ::std::is_same<typename TA::key_type,Tag>::value ? 1 : 0
+            ) + next_count::value
+        >;
+    };
+
+    template <typename Tag>
+    struct mp_find_impl< ::boost::parameter::aux::empty_arg_list,Tag>
+    {
+        using type = ::boost::mp11::mp_size_t<0>;
+    };
+
+    template <typename TA, typename Next, typename EE, typename Tag>
+    struct mp_find_impl<
+        ::boost::parameter::aux::arg_list<TA,Next,EE>
+      , Tag
+    >
+    {
+        using type = typename ::boost::mp11::mp_if<
+            ::std::is_same<typename TA::key_type,Tag>
+          , ::boost::mp11::mp_identity< ::boost::mp11::mp_size_t<0> >
+          , ::boost::parameter::aux::mp_find_no<Next,Tag>
+        >::type;
+    };
+
+    template <typename TaggedArg, typename Next, typename EmitsErrors>
+    struct mp_at_c_impl<
+        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
+      , 0
+    >
+    {
+        using type = typename TaggedArg::key_type;
+    };
+
+    template <typename TA, typename Next, typename EE, ::std::size_t I>
+    struct mp_at_c_impl<
+        ::boost::parameter::aux::arg_list<TA,Next,EE>
+      , I
+    >
+    {
+        using type = typename ::boost::mp11::detail
+        ::mp_at_c_impl<Next,I - 1>::type;
+    };
+}}} // namespace boost::mp11::detail
+
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 #include <boost/mpl/iterator_tags.hpp>
 
