@@ -7,16 +7,21 @@
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <map>
 #include <string>
 #include "basics.hpp"
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/core/enable_if.hpp>
+#include <type_traits>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/type_traits/is_convertible.hpp>
 #if !defined(BOOST_NO_SFINAE)
 #include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
+#endif
 #endif
 
 namespace test {
@@ -26,12 +31,26 @@ namespace test {
     BOOST_PARAMETER_NAME(y)
     BOOST_PARAMETER_NAME(z)
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    // Sun has problems with this syntax:
-    //
-    //   template1< r* ( template2<x> ) >
-    //
-    // Workaround: factor template2<x> into separate typedefs
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    template <typename To>
+    struct predicate
+    {
+        template <typename From, typename Args>
+        using fn = std::is_convertible<From,To>;
+    };
+
+    BOOST_PARAMETER_FUNCTION((int), f, test::tag,
+        (required
+            (expected, *)
+        )
+        (deduced
+            (required
+                (x, *(test::predicate<int>))
+                (y, *(test::predicate<std::string>))
+            )
+        )
+    )
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
     struct predicate_int
     {
         template <typename From, typename Args>
@@ -69,33 +88,7 @@ namespace test {
             )
         )
     )
-#else   // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    template <typename To>
-    struct predicate
-    {
-        template <typename From, typename Args>
-        struct apply
-          : boost::mpl::if_<
-                boost::is_convertible<From,To>
-              , boost::mpl::true_
-              , boost::mpl::false_
-            >
-        {
-        };
-    };
-
-    BOOST_PARAMETER_FUNCTION((int), f, test::tag,
-        (required
-            (expected, *)
-        )
-        (deduced
-            (required
-                (x, *(test::predicate<int>))
-                (y, *(test::predicate<std::string>))
-            )
-        )
-    )
-#endif  // SunPro CC workarounds needed.
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
     {
         BOOST_TEST(test::equal(x, boost::tuples::get<0>(expected)));
         BOOST_TEST(test::equal(y, boost::tuples::get<1>(expected)));
@@ -116,8 +109,22 @@ namespace test {
         int x;
     };
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    // SunPro workaround; see above
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    BOOST_PARAMETER_FUNCTION((int), g, test::tag,
+        (required
+            (expected, *)
+        )
+        (deduced
+            (required
+                (x, *(test::predicate<int>))
+                (y, *(test::predicate<std::string>))
+            )
+            (optional
+                (z, *(test::predicate<test::X>), test::X())
+            )
+        )
+    )
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
     struct predicate_X
     {
         template <typename From, typename Args>
@@ -145,22 +152,7 @@ namespace test {
             )
         )
     )
-#else   // !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
-    BOOST_PARAMETER_FUNCTION((int), g, test::tag,
-        (required
-            (expected, *)
-        )
-        (deduced
-            (required
-                (x, *(test::predicate<int>))
-                (y, *(test::predicate<std::string>))
-            )
-            (optional
-                (z, *(test::predicate<test::X>), test::X())
-            )
-        )
-    )
-#endif  // SunPro CC workarounds needed.
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
     {
         BOOST_TEST(test::equal(x, boost::tuples::get<0>(expected)));
         BOOST_TEST(test::equal(y, boost::tuples::get<1>(expected)));
@@ -168,11 +160,11 @@ namespace test {
         return 1;
     }
 
-#if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x580))
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
     BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
         (deduced
             (required
-                (x, *(test::predicate_string))
+                (x, *(test::predicate<std::string>))
             )
         )
     )
@@ -180,7 +172,7 @@ namespace test {
     BOOST_PARAMETER_FUNCTION((int), sfinae, test::tag,
         (deduced
             (required
-                (x, *(test::predicate<std::string>))
+                (x, *(test::predicate_string))
             )
         )
     )
@@ -197,11 +189,15 @@ namespace test {
     // about SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0>
     typename boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        std::is_same<int,A0>
+#else
         typename boost::mpl::if_<
             boost::is_same<int,A0>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
+#endif
       , int
     >::type
         sfinae(A0 const& a0)

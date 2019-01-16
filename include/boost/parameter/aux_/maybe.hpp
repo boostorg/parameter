@@ -43,28 +43,42 @@ namespace boost { namespace parameter { namespace aux {
 
 #include <boost/parameter/aux_/is_maybe.hpp>
 #include <boost/optional/optional.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/type_traits/remove_cv.hpp>
-
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 #include <boost/type_traits/add_const.hpp>
 #endif
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 namespace boost { namespace parameter { namespace aux {
 
     template <typename T>
     struct maybe : ::boost::parameter::aux::maybe_base
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        typedef typename ::std::add_lvalue_reference<
+            typename ::std::add_const<T>::type
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
         typedef typename ::boost::add_lvalue_reference<
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
             T const
 #else
             typename ::boost::add_const<T>::type
 #endif
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
         >::type reference;
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        typedef typename ::std::remove_cv<
+            typename ::std::remove_reference<reference>::type
+#else
         typedef typename ::boost::remove_cv<
             BOOST_DEDUCED_TYPENAME ::boost::remove_reference<reference>::type
+#endif
         >::type non_cv_value;
 
         inline explicit maybe(T value_) : value(value_), constructed(false)

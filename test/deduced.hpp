@@ -7,8 +7,18 @@
 #ifndef BOOST_DEDUCED_060920_HPP
 #define BOOST_DEDUCED_060920_HPP
 
-#include <boost/mpl/for_each.hpp>
+#include <boost/parameter/config.hpp>
 #include "basics.hpp"
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/algorithm.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/for_each.hpp>
+#include <boost/mpl/assert.hpp>
+#include <boost/type_traits/is_same.hpp>
+#endif
 
 namespace test {
 
@@ -19,16 +29,26 @@ namespace test {
     not_present_tag not_present;
 
     template <typename E, typename ArgPack>
-    struct assert_expected
+    class assert_expected
     {
+        E const& _expected;
+        ArgPack const& _args;
+
+     public:
         assert_expected(E const& e, ArgPack const& args_)
-          : expected(e), args(args_)
+          : _expected(e), _args(args_)
         {
         }
 
         template <typename T>
-        bool check_not_present(T const&) const
+        static bool check_not_present(T const&)
         {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            static_assert(
+                std::is_same<T,test::not_present_tag>::value
+              , "T == test::not_present_tag"
+            );
+#else
             BOOST_MPL_ASSERT((
                 typename boost::mpl::if_<
                     boost::is_same<T,test::not_present_tag>
@@ -36,37 +56,45 @@ namespace test {
                   , boost::mpl::false_
                 >::type
             ));
+#endif
             return true;
         }
 
         template <typename K>
         bool check1(K const& k, test::not_present_tag const& t, long) const
         {
-            return check_not_present(args[k | t]);
+            return assert_expected<E,ArgPack>::check_not_present(
+                this->_args[k | t]
+            );
         }
 
         template <typename K, typename Expected>
-        bool check1(K const& k, Expected const& expected, int) const
+        bool check1(K const& k, Expected const& e, int) const
         {
-            return test::equal(args[k], expected);
+            return test::equal(this->_args[k], e);
         }
 
         template <typename K>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        void operator()(K&&) const
+#else
         void operator()(K) const
+#endif
         {
             boost::parameter::keyword<K> const&
                 k = boost::parameter::keyword<K>::instance;
-            BOOST_TEST(check1(k, expected[k], 0L));
+            BOOST_TEST(this->check1(k, this->_expected[k], 0L));
         }
-
-        E const& expected;
-        ArgPack const& args;
     };
 
-    template <typename E, typename ArgPack>
-    void check0(E const& e, ArgPack const& args)
+    template <typename E, typename A>
+    void check0(E const& e, A const& args)
     {
-        boost::mpl::for_each<E>(test::assert_expected<E,ArgPack>(e, args));
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        boost::mp11::mp_for_each<E>(test::assert_expected<E,A>(e, args));
+#else
+        boost::mpl::for_each<E>(test::assert_expected<E,A>(e, args));
+#endif
     }
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)

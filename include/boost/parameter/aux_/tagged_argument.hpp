@@ -15,13 +15,46 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #include <boost/parameter/keyword_fwd.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+#endif
+
 namespace boost { namespace parameter { namespace aux {
 
     template <typename Keyword, typename Arg>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    using tagged_argument_type = ::boost::mp11::mp_if<
+        ::boost::mp11::mp_if<
+            ::std::is_scalar<Arg>
+          , ::boost::mp11::mp_false
+          , ::std::is_same<
+                typename Keyword::qualifier
+              , ::boost::parameter::consume_reference
+            >
+        >
+      , ::boost::parameter::aux::error_lvalue_bound_to_consume_parameter
+      , ::boost::mp11::mp_if<
+            ::std::is_const<Arg>
+          , ::boost::mp11::mp_if<
+                ::std::is_same<
+                    typename Keyword::qualifier
+                  , ::boost::parameter::out_reference
+                >
+              , ::boost::parameter::aux
+                ::error_const_lvalue_bound_to_out_parameter
+              , ::std::remove_const<Arg>
+            >
+          , ::boost::mp11::mp_identity<Arg>
+        >
+    >;
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
     struct tagged_argument_type
       : ::boost::mpl::eval_if<
             ::boost::is_same<
@@ -33,6 +66,7 @@ namespace boost { namespace parameter { namespace aux {
         >
     {
     };
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 }}} // namespace boost::parameter::aux
 
 #include <boost/parameter/aux_/tagged_argument_fwd.hpp>
@@ -41,7 +75,6 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/parameter/aux_/arg_list.hpp>
 #include <boost/parameter/aux_/result_of0.hpp>
-#include <boost/parameter/config.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
@@ -69,6 +102,10 @@ namespace boost { namespace parameter { namespace aux {
     class tagged_argument
       : public ::boost::parameter::aux::tagged_argument_base
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using arg_type = typename ::boost::parameter::aux
+        ::tagged_argument_type<Keyword,Arg>::type;
+#else
         typedef typename ::boost::mpl::eval_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<Arg>
@@ -85,12 +122,20 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::mpl::identity<Arg>
             >
         >::type arg_type;
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
      public:
         typedef Keyword key_type;
 
         // Wrap plain (non-UDT) function objects in either
         // a boost::function or a std::function. -- Cromwell D. Enage
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using value_type = ::boost::mp11::mp_if<
+            ::std::is_function<arg_type>
+          , ::std::function<arg_type>
+          , Arg
+        >;
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
         typedef typename ::boost::mpl::if_<
             ::boost::is_function<arg_type>
 #if defined(BOOST_NO_CXX11_HDR_FUNCTIONAL)
@@ -100,26 +145,43 @@ namespace boost { namespace parameter { namespace aux {
 #endif
           , Arg
         >::type value_type;
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
         // If Arg is void_, then this type will evaluate to void_&.  If the
         // supplied argument is a plain function, then this type will evaluate
         // to a reference-to-const function wrapper type.  If the supplied
         // argument is an lvalue, then Arg will be deduced to the lvalue
         // reference. -- Cromwell D. Enage
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using reference = ::boost::mp11::mp_if<
+            ::std::is_function<arg_type>
+          , value_type const&
+          , Arg&
+        >;
+#else
         typedef typename ::boost::mpl::if_<
             ::boost::is_function<arg_type>
           , value_type const&
           , Arg&
         >::type reference;
+#endif
 
      private:
         // Store plain functions by value, everything else by reference.
         // -- Cromwell D. Enage
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        ::boost::mp11::mp_if<
+            ::std::is_function<arg_type>
+          , value_type
+          , reference
+        > value;
+#else
         typename ::boost::mpl::if_<
             ::boost::is_function<arg_type>
           , value_type
           , reference
         >::type value;
+#endif
 
      public:
         inline explicit BOOST_CONSTEXPR tagged_argument(reference x)
@@ -139,13 +201,22 @@ namespace boost { namespace parameter { namespace aux {
         {
             template <typename KW, typename Default, typename Reference>
             struct apply
-            {
-                typedef typename ::boost::mpl::eval_if<
+              : ::boost::mpl::eval_if<
                     ::boost::is_same<KW,key_type>
                   , ::boost::mpl::if_<Reference,reference,value_type>
                   , ::boost::mpl::identity<Default>
-                >::type type;
+                >
+            {
             };
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            template <typename KW, typename Default, typename Reference>
+            using fn = ::boost::mp11::mp_if<
+                ::std::is_same<KW,key_type>
+              , ::boost::mp11::mp_if<Reference,reference,value_type>
+              , Default
+            >;
+#endif
         };
 
         // Comma operator to compose argument list without using parameters<>.
@@ -283,12 +354,28 @@ namespace boost { namespace parameter { namespace aux {
         typedef ::boost::parameter::aux::arg_list_tag tag;
     };
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    template <typename Keyword>
+    using tagged_argument_rref_key = ::boost::mp11::mp_if<
+        ::std::is_same<
+            typename Keyword::qualifier
+          , ::boost::parameter::out_reference
+        >
+      , ::boost::parameter::aux::error_rvalue_bound_to_out_parameter
+      , ::boost::mp11::mp_identity<Keyword>
+    >;
+#endif
+
     // Holds an rvalue reference to an argument of type Arg associated with
     // keyword Keyword
     template <typename Keyword, typename Arg>
     struct tagged_argument_rref
       : ::boost::parameter::aux::tagged_argument_base
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using key_type = typename ::boost::parameter::aux
+        ::tagged_argument_rref_key<Keyword>::type;
+#else
         typedef typename ::boost::mpl::eval_if<
             ::boost::is_same<
                 typename Keyword::qualifier
@@ -297,6 +384,7 @@ namespace boost { namespace parameter { namespace aux {
           , ::boost::parameter::aux::error_rvalue_bound_to_out_parameter
           , ::boost::mpl::identity<Keyword>
         >::type key_type;
+#endif
         typedef Arg value_type;
         typedef Arg&& reference;
 
@@ -329,6 +417,15 @@ namespace boost { namespace parameter { namespace aux {
                   , ::boost::mpl::identity<Default>
                 >::type type;
             };
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+            template <typename KW, typename Default, typename Reference>
+            using fn = ::boost::mp11::mp_if<
+                ::std::is_same<KW,key_type>
+              , ::boost::mp11::mp_if<Reference,reference,value_type>
+              , Default
+            >;
+#endif
         };
 
         // Comma operator to compose argument list without using parameters<>.
@@ -736,5 +833,164 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/list.hpp>
+
+namespace boost { namespace mp11 { namespace detail {
+
+    template <typename Keyword, typename Arg>
+    struct mp_size_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<1>;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_size_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<1>;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_front_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+    >
+    {
+        using type = Keyword;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_front_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+    >
+    {
+        using type = Keyword;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_pop_front_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+    >
+    {
+        using type = ::boost::parameter::aux::empty_arg_list;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_pop_front_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+    >
+    {
+        using type = ::boost::parameter::aux::empty_arg_list;
+    };
+
+    template <typename Keyword, typename Arg, template <typename ...> class B>
+    struct mp_rename_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+      , B
+    >
+    {
+        using type = B<Keyword>;
+    };
+
+    template <typename Keyword, typename Arg, template <typename ...> class B>
+    struct mp_rename_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+      , B
+    >
+    {
+        using type = B<Keyword>;
+    };
+}}} // namespace boost::mp11::detail
+
+#include <boost/mp11/algorithm.hpp>
+
+namespace boost { namespace mp11 { namespace detail {
+
+    template <typename Keyword, typename Arg, typename Tag>
+    struct mp_count_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+      , Tag
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<
+            ::std::is_same<Keyword,Tag>::value ? 1 : 0
+        >;
+    };
+
+    template <typename Keyword, typename Arg, typename Tag>
+    struct mp_count_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+      , Tag
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<
+            ::std::is_same<Keyword,Tag>::value ? 1 : 0
+        >;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_find_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+      , Keyword
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<0>;
+    };
+
+    template <typename Keyword, typename Arg, typename Tag>
+    struct mp_find_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+      , Tag
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<
+            ::std::is_same<Keyword,Tag>::value ? 0 : 1
+        >;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_find_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+      , Keyword
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<0>;
+    };
+
+    template <typename Keyword, typename Arg, typename Tag>
+    struct mp_find_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+      , Tag
+    >
+    {
+        using type = ::boost::mp11::mp_size_t<
+            ::std::is_same<Keyword,Tag>::value ? 0 : 1
+        >;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_at_c_impl<
+        ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+      , 0
+    >
+    {
+        using type = Keyword;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct mp_at_c_impl<
+        ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+      , 0
+    >
+    {
+        using type = Keyword;
+    };
+}}} // namespace boost::mp11::detail
+
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 #endif  // include guard
 

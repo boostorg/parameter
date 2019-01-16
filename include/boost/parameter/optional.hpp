@@ -32,18 +32,33 @@ namespace boost { namespace parameter {
     };
 }}
 
+#include <boost/parameter/config.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+#else
 #include <boost/mpl/bool.hpp>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
     template <typename T>
-    struct is_optional : ::boost::mpl::false_
+    struct is_optional
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+      : ::boost::mp11::mp_false
+#else
+      : ::boost::mpl::false_
+#endif
     {
     };
 
     template <typename Tag, typename Predicate>
     struct is_optional< ::boost::parameter::optional<Tag,Predicate> >
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+      : ::boost::mp11::mp_true
+#else
       : ::boost::mpl::true_
+#endif
     {
     };
 }}} // namespace boost::parameter::aux

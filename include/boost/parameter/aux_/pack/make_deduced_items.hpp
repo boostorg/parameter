@@ -9,13 +9,31 @@
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/parameter/aux_/pack/deduced_item.hpp>
 #include <boost/parameter/deduced.hpp>
+#include <boost/parameter/config.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+#else
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/type_traits/is_same.hpp>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
     template <typename Spec, typename Tail>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    using make_deduced_items = ::boost::mp11::mp_if<
+        ::std::is_same<Spec,::boost::parameter::void_>
+      , ::boost::mp11::mp_identity< ::boost::parameter::void_>
+      , ::boost::mp11::mp_if<
+            ::boost::parameter::aux::is_deduced<Spec>
+          , ::boost::parameter::aux::make_deduced_item<Spec,Tail>
+          , Tail
+        >
+    >;
+#else
     struct make_deduced_items
       : ::boost::mpl::eval_if<
             ::boost::is_same<Spec,::boost::parameter::void_>
@@ -28,6 +46,7 @@ namespace boost { namespace parameter { namespace aux {
         >
     {
     };
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 }}} // namespace boost::parameter::aux
 
 #endif  // include guard

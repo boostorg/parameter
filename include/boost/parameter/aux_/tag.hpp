@@ -10,9 +10,56 @@
 #include <boost/parameter/aux_/unwrap_cv_reference.hpp>
 #include <boost/parameter/aux_/tagged_argument.hpp>
 #include <boost/parameter/config.hpp>
-#include <boost/mpl/bool.hpp>
 
-#if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11) && \
+    !BOOST_WORKAROUND(BOOST_MSVC, >= 1910)
+// MSVC-14.1+ assigns rvalue references to tagged_argument instances
+// instead of tagged_argument_rref instances with this code.
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+
+namespace boost { namespace parameter { namespace aux { 
+
+    template <typename Keyword, typename Arg>
+    struct tag_if_lvalue_reference
+    {
+        typedef ::boost::parameter::aux::tagged_argument<
+            Keyword
+          , typename ::boost::parameter::aux::unwrap_cv_reference<Arg>::type
+        > type;
+    };
+
+    template <typename Keyword, typename Arg>
+    struct tag_if_scalar
+    {
+        typedef ::boost::parameter::aux
+        ::tagged_argument<Keyword,typename ::std::add_const<Arg>::type> type;
+    };
+
+    template <typename Keyword, typename Arg>
+    using tag_if_otherwise = ::boost::mp11::mp_if<
+        ::std::is_scalar<typename ::std::remove_const<Arg>::type>
+      , ::boost::parameter::aux::tag_if_scalar<Keyword,Arg>
+      , ::boost::mp11::mp_identity<
+            ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+        >
+    >;
+
+    template <typename Keyword, typename Arg>
+    using tag = ::boost::mp11::mp_if<
+        ::boost::mp11::mp_if<
+            ::std::is_lvalue_reference<Arg>
+          , ::boost::mp11::mp_true
+          , ::boost::parameter::aux::is_cv_reference_wrapper<Arg>
+        >
+      , ::boost::parameter::aux::tag_if_lvalue_reference<Keyword,Arg>
+      , ::boost::parameter::aux::tag_if_otherwise<Keyword,Arg>
+    >;
+}}} // namespace boost::parameter::aux_
+
+#elif defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
@@ -54,38 +101,38 @@ namespace boost { namespace parameter { namespace aux {
 
     template <
         typename Keyword
-      , typename ActualArg
+      , typename Arg
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
       , typename = typename ::boost::parameter::aux
-        ::is_cv_reference_wrapper<ActualArg>::type
+        ::is_cv_reference_wrapper<Arg>::type
 #endif
     >
     struct tag
     {
         typedef ::boost::parameter::aux::tagged_argument<
             Keyword
-          , typename ::boost::parameter::aux
-            ::unwrap_cv_reference<ActualArg>::type
+          , typename ::boost::parameter::aux::unwrap_cv_reference<Arg>::type
         > type;
     };
 }}} // namespace boost::parameter::aux_
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#include <boost/mpl/bool.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 
 namespace boost { namespace parameter { namespace aux { 
 
-    template <typename Keyword, typename ActualArg>
-    struct tag<Keyword,ActualArg,::boost::mpl::false_>
+    template <typename Keyword, typename Arg>
+    struct tag<Keyword,Arg,::boost::mpl::false_>
     {
         typedef ::boost::parameter::aux::tagged_argument<
             Keyword
-          , typename ::boost::remove_reference<ActualArg>::type
+          , typename ::boost::remove_reference<Arg>::type
         > type;
     };
 }}} // namespace boost::parameter::aux_
 
 #endif  // Borland workarounds needed.
-#endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+#endif  // MP11 or perfect forwarding support
 #endif  // include guard
 

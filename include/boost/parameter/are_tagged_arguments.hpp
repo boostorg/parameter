@@ -43,6 +43,20 @@ namespace boost { namespace parameter {
     };
 }} // namespace boost::parameter
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+
+namespace boost { namespace parameter {
+
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    using are_tagged_arguments_mp11 = ::boost::mp11::mp_bool<
+        ::boost::parameter
+        ::are_tagged_arguments<TaggedArg0,TaggedArgs...>::value
+    >;
+}} // namespace boost::parameter
+
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
+
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 #define BOOST_PARAMETER_ARE_TAGGED_ARGUMENTS_END_Z(z, n, false_t) , false_t>

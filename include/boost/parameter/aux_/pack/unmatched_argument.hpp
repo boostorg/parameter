@@ -6,16 +6,25 @@
 #ifndef BOOST_PARAMETER_AUX_PACK_UNMATCHED_ARGUMENT_HPP
 #define BOOST_PARAMETER_AUX_PACK_UNMATCHED_ARGUMENT_HPP
 
+#include <boost/parameter/config.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
     template <typename T>
     struct unmatched_argument
     {
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        static_assert(::std::is_same<T,void>::value, "T == void");
+#else
         BOOST_MPL_ASSERT((
             typename ::boost::mpl::if_<
                 ::boost::is_same<T,void>
@@ -23,6 +32,7 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::mpl::false_
             >::type
         ));
+#endif
         typedef int type;
     }; 
 }}} // namespace boost::parameter::aux

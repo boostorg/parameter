@@ -49,7 +49,12 @@ namespace boost { namespace parameter {
 
     template <typename TaggedArg0, typename ...TaggedArgs>
     inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        ::boost::parameter
+        ::are_tagged_arguments_mp11<TaggedArg0,TaggedArgs...>
+#else
         ::boost::parameter::are_tagged_arguments<TaggedArg0,TaggedArgs...>
+#endif
       , ::boost::parameter::aux
         ::compose_arg_list<TaggedArg0,TaggedArgs...>
     >::type
