@@ -1086,7 +1086,7 @@ Unlike the |tagged reference| comma operator, the ``compose()`` function is
 variadic, as mentioned before.  However, the |tagged reference| comma operator
 can be invoked indefinitely and therefore does not limit the size of the
 resulting |ArgumentPack|, while the ``compose()`` function cannot take in more
-than |BOOST_PARAMETER_MAX_ARITY| arguments for compilers that do not
+than |BOOST_PARAMETER_COMPOSE_MAX_ARITY| arguments for compilers that do not
 support perfect forwarding.
 
 :Requires: ``t0`` and all elements in ``args`` must be |tagged reference|
@@ -6825,10 +6825,31 @@ __ ../../../../boost/parameter/config.hpp
 :Default Value: |BOOST_MPL_LIMIT_VECTOR_SIZE|_ (defined by `Boost.MPL`_) if
 perfect forwarding is supported, ``8`` otherwise.
 :Minimum Value: ``2``
+:Maximum Value: |BOOST_PARAMETER_COMPOSE_MAX_ARITY|
 
 .. |BOOST_MPL_LIMIT_VECTOR_SIZE| replace:: ``BOOST_MPL_LIMIT_VECTOR_SIZE``
 .. _BOOST_MPL_LIMIT_VECTOR_SIZE: ../../../mpl/doc/refmanual/limit-vector-size.html
 .. _`Boost.MPL`: ../../../mpl/doc/index.html
+
+``BOOST_PARAMETER_COMPOSE_MAX_ARITY``
+-------------------------------------
+
+If |BOOST_PARAMETER_HAS_PERFECT_FORWARDING| is **not** ``#defined``, then
+determines the maximum number of arguments supported by the |compose| function
+and by the |BOOST_PARAMETER_NO_SPEC_FUNCTION|,
+|BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION|,
+|BOOST_PARAMETER_NO_SPEC_CONST_MEMBER_FUNCTION|,
+|BOOST_PARAMETER_NO_SPEC_FUNCTION_CALL_OPERATOR|,
+|BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR|,
+|BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR|, and
+|BOOST_PARAMETER_NO_SPEC_NO_BASE_CONSTRUCTOR| code generation macros.
+
+:Defined in: `boost/parameter/config.hpp`__
+
+__ ../../../../boost/parameter/config.hpp
+
+:Default Value: ``20`` for a few older compilers, ``64`` otherwise
+:Minimum Value: ``2``
 
 ``BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY``
 --------------------------------------------------------

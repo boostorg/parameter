@@ -250,12 +250,15 @@ id="id85">8.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 <li><a class="reference internal" href="#boost-parameter-max-arity"
 id="id86">8.6&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_MAX_ARITY</tt></a></li>
+<li><a class="reference internal" href="#boost-parameter-compose-max-arity"
+id="id87">8.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+>BOOST_PARAMETER_COMPOSE_MAX_ARITY</tt></a></li>
 <li><a class="reference internal"
 href="#boost-parameter-exponential-overload-threshold-arity"
-id="id88">8.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+id="id88">8.8&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY</tt></a></li>
 <li><a class="reference internal" href="#outside-of-this-library"
-id="id89">8.8&nbsp;&nbsp;&nbsp;...Outside Of This Library</a></li>
+id="id89">8.9&nbsp;&nbsp;&nbsp;...Outside Of This Library</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#tutorial"
@@ -1890,8 +1893,8 @@ operator can be invoked indefinitely and therefore does not limit the size of
 the resulting <a class="reference internal" href="#argumentpack"><span
 class="concept">ArgumentPack</span></a>, while the <tt
 class="docutils literal">compose()</tt> function cannot take in more than <a
-class="reference internal" href="#boost-parameter-max-arity"><tt
-class="docutils literal">BOOST_PARAMETER_MAX_ARITY</tt></a> arguments
+class="reference internal" href="#boost-parameter-compose-max-arity"><tt
+class="docutils literal">BOOST_PARAMETER_COMPOSE_MAX_ARITY</tt></a> arguments
 for compilers that do not support perfect forwarding.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -9382,11 +9385,77 @@ href="../../../mpl/doc/refmanual/limit-vector-size.html"
 <th class="field-name">Minimum Value:</th>
 <td class="field-body"><tt class="docutils literal">2</tt></td>
 </tr>
+<tr class="field">
+<th class="field-name">Maximum Value:</th>
+<td class="field-body"><a class="reference internal"
+href="#boost-parameter-compose-max-arity"><tt class="docutils literal"
+>BOOST_PARAMETER_COMPOSE_MAX_ARITY</tt></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="boost-parameter-compose-max-arity">
+<h2><a class="toc-backref" href="#id87">8.7&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">BOOST_PARAMETER_COMPOSE_MAX_ARITY</tt></a></h2>
+<p>If <a class="reference internal"
+href="#boost-parameter-has-perfect-forwarding"><tt class="docutils literal"
+>BOOST_PARAMETER_HAS_PERFECT_FORWARDING</tt></a> is <strong>not</strong>
+<tt class="docutils literal">#defined</tt>, then determines the maximum number
+of arguments supported by the <a class="reference internal" href="#compose"
+><tt class="docutils literal">compose</tt></a> function and by the <a
+class="reference internal"
+href="#boost-parameter-no-spec-function-result-name"><tt
+class="docutils literal">BOOST_PARAMETER_NO_SPEC_FUNCTION</tt></a>, <a
+class="reference internal"
+href="#boost-parameter-no-spec-member-function-result-name"><tt
+class="docutils literal">BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION</tt></a>, <a
+class="reference internal"
+href="#boost-parameter-no-spec-c-mem-function-result-name"><tt
+class="docutils literal">BOOST_PARAMETER_NO_SPEC_CONST_MEMBER_FUNCTION</tt></a
+>, <a class="reference internal"
+href="#boost-parameter-no-spec-function-call-op-result"><tt
+class="docutils literal">BOOST_PARAMETER_NO_SPEC_FUNCTION_CALL_OPERATOR</tt
+></a>, <a class="reference internal"
+href="#boost-parameter-no-spec-const-func-call-op-result"><tt
+class="docutils literal"
+>BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR</tt></a>, <a
+class="reference internal"
+href="#boost-parameter-no-spec-constructor-cls-impl"><tt
+class="docutils literal">BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR</tt></a>, and <a
+class="reference internal"
+href="#boost-parameter-no-spec-no-base-ctor-cls-func"><tt
+class="docutils literal">BOOST_PARAMETER_NO_SPEC_NO_BASE_CONSTRUCTOR</tt></a>
+code generation macros.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/config.hpp"
+>boost/parameter/config.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Default Value:</th>
+<td class="field-body"><tt class="docutils literal">20</tt> for a few older
+compilers, <tt class="docutils literal">64</tt> otherwise</td>
+</tr>
+<tr class="field">
+<th class="field-name">Minimum Value:</th>
+<td class="field-body"><tt class="docutils literal">2</tt></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="boost-parameter-exponential-overload-threshold-arity"
-><h2><a class="toc-backref" href="#id88">8.7&nbsp;&nbsp;&nbsp;<tt
+><h2><a class="toc-backref" href="#id88">8.8&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal"
 >BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY</tt></a></h2>
 <p>If this library does <strong>not</strong> support perfect forwarding,
@@ -9428,7 +9497,7 @@ href="../../../../boost/parameter/config.hpp"
 </table>
 </div>
 <div class="section" id="outside-of-this-library"
-><h2><a class="toc-backref" href="#id89">8.8&nbsp;&nbsp;&nbsp;...Outside Of
+><h2><a class="toc-backref" href="#id89">8.9&nbsp;&nbsp;&nbsp;...Outside Of
 This Library</a></h2>
 <ol>
 <li>If <a class="reference external"
