@@ -64,8 +64,8 @@ namespace test {
         )
         (deduced
             (required
-                (x, *(test::predicate1))
-                (y, *(test::predicate2))
+                (x, *(test::predicate_int))
+                (y, *(test::predicate_string))
             )
         )
     )
