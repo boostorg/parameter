@@ -447,11 +447,11 @@ namespace boost { namespace parameter { namespace aux {
         {
         }
 
-        // Constructor taking BOOST_PARAMETER_MAX_ARITY empty_arg_list
+        // Constructor taking BOOST_PARAMETER_COMPOSE_MAX_ARITY empty_arg_list
         // arguments; this makes initialization.
         inline empty_arg_list(
             BOOST_PP_ENUM_PARAMS(
-                BOOST_PARAMETER_MAX_ARITY
+                BOOST_PARAMETER_COMPOSE_MAX_ARITY
               , ::boost::parameter::void_ BOOST_PP_INTERCEPT
             )
         )
@@ -488,7 +488,7 @@ namespace boost { namespace parameter { namespace aux {
                 typedef ::boost::parameter::aux::empty_arg_list type;
             };
         };
-#endif  // Borland workarounds needed.
+#endif  // Borland workarounds needed
 
         // If either of these operators are called, it means there is no
         // argument in the list that matches the supplied keyword.  Just
@@ -592,14 +592,24 @@ namespace boost { namespace parameter { namespace aux {
         // Store the arguments in successive nodes of this list.
         template <
             // typename A0, typename A1, ...
-            BOOST_PP_ENUM_PARAMS(BOOST_PARAMETER_MAX_ARITY, typename A)
+            BOOST_PP_ENUM_PARAMS(
+                BOOST_PARAMETER_COMPOSE_MAX_ARITY
+              , typename A
+            )
         >
         inline arg_list(
             // A0& a0, A1& a1, ...
-            BOOST_PP_ENUM_BINARY_PARAMS(BOOST_PARAMETER_MAX_ARITY, A, & a)
+            BOOST_PP_ENUM_BINARY_PARAMS(
+                BOOST_PARAMETER_COMPOSE_MAX_ARITY
+              , A
+              , & a
+            )
         ) : Next(
                 // a1, a2, ...
-                BOOST_PP_ENUM_SHIFTED_PARAMS(BOOST_PARAMETER_MAX_ARITY, a)
+                BOOST_PP_ENUM_SHIFTED_PARAMS(
+                    BOOST_PARAMETER_COMPOSE_MAX_ARITY
+                  , a
+                )
               , ::boost::parameter::aux::void_reference()
             )
           , arg(a0)
@@ -660,8 +670,8 @@ namespace boost { namespace parameter { namespace aux {
           , duplicate_keyword
           , (key_type)
         );
-#endif
-#endif  // Borland workarounds not needed.
+#endif  // SFINAE/MSVC workarounds needed
+#endif  // Borland workarounds not needed
 
      public:
         //
@@ -856,7 +866,7 @@ namespace boost { namespace parameter { namespace aux {
         // Builds an overload set including satisfies functions defined
         // in base classes.
         using Next::satisfies;
-#endif  // Borland workarounds needed.
+#endif  // Borland workarounds needed
 
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.

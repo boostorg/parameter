@@ -71,7 +71,7 @@ namespace boost { namespace parameter {
         BOOST_PP_ENUM_PARAMS_Z(z, n, prefix)                                 \
         BOOST_PP_ENUM_TRAILING_PARAMS_Z(                                     \
             z                                                                \
-          , BOOST_PP_SUB(BOOST_PARAMETER_MAX_ARITY, n)                       \
+          , BOOST_PP_SUB(BOOST_PARAMETER_COMPOSE_MAX_ARITY, n)               \
           , ::boost::parameter::void_ BOOST_PP_INTERCEPT                     \
         )                                                                    \
     > : BOOST_PP_CAT(BOOST_PP_REPEAT_, z)(                                   \
@@ -96,7 +96,7 @@ namespace boost { namespace parameter {
 
     template <
         BOOST_PP_ENUM_BINARY_PARAMS(
-            BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)
+            BOOST_PP_INC(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
           , typename TaggedArg
           , = ::boost::parameter::void_ BOOST_PP_INTERCEPT
         )
@@ -110,7 +110,7 @@ namespace boost { namespace parameter {
 
     BOOST_PP_REPEAT_FROM_TO(
         1
-      , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)
+      , BOOST_PP_INC(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
       , BOOST_PARAMETER_ARE_TAGGED_ARGUMENTS_OVERLOADS_Z
       , TaggedArg
     )

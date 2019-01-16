@@ -1,4 +1,4 @@
-// Copyright Cromwell D. Enage 2018.
+// Copyright Cromwell D. Enage 2019.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -103,7 +103,7 @@ namespace boost { namespace parameter {
             BOOST_PP_ENUM_PARAMS_Z(z, n, a)                                  \
             BOOST_PP_ENUM_TRAILING_PARAMS_Z(                                 \
                 z                                                            \
-              , BOOST_PP_SUB(BOOST_PARAMETER_MAX_ARITY, n)                   \
+              , BOOST_PP_SUB(BOOST_PARAMETER_COMPOSE_MAX_ARITY, n)           \
               , ::boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT \
             )                                                                \
         );                                                                   \
@@ -126,7 +126,7 @@ namespace boost { namespace parameter {
             BOOST_PP_ENUM_PARAMS_Z(z, n, a)                                  \
             BOOST_PP_ENUM_TRAILING_PARAMS_Z(                                 \
                 z                                                            \
-              , BOOST_PP_SUB(BOOST_PARAMETER_MAX_ARITY, n)                   \
+              , BOOST_PP_SUB(BOOST_PARAMETER_COMPOSE_MAX_ARITY, n)           \
               , ::boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT \
             )                                                                \
         );                                                                   \
@@ -141,7 +141,7 @@ namespace boost { namespace parameter {
 
     BOOST_PP_REPEAT_FROM_TO(
         1
-      , BOOST_PP_INC(BOOST_PARAMETER_MAX_ARITY)
+      , BOOST_PP_INC(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
       , BOOST_PARAMETER_compose_arg_list_function_overload
       , TaggedArg
     )
