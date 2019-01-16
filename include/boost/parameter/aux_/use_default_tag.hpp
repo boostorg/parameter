@@ -6,11 +6,19 @@
 #ifndef BOOST_PARAMETER_USE_DEFAULT_TAG_HPP
 #define BOOST_PARAMETER_USE_DEFAULT_TAG_HPP
 
+#include <boost/config.hpp>
+
 namespace boost { namespace parameter { namespace aux {
 
     struct use_default_tag
     {
-        inline use_default_tag operator()() const
+        inline BOOST_CONSTEXPR BOOST_DEFAULTED_FUNCTION(use_default_tag(), {})
+
+        inline BOOST_CONSTEXPR BOOST_DEFAULTED_FUNCTION(
+            use_default_tag(use_default_tag const&), {}
+        )
+
+        inline BOOST_CONSTEXPR use_default_tag operator()() const
         {
             return *this;
         }

@@ -45,8 +45,12 @@ namespace boost { namespace parameter {
     {
         typedef Tag tag;
 
+        inline BOOST_CONSTEXPR keyword()
+        {
+        }
+
         template <typename T>
-        inline typename ::boost::lazy_enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<T>
               , ::boost::mpl::true_
@@ -67,7 +71,7 @@ namespace boost { namespace parameter {
                 >
             >::type
           , ::boost::parameter::aux::tag<Tag,T const&>
-        >::type BOOST_CONSTEXPR
+        >::type
             operator=(T const& x) const
         {
             typedef typename ::boost::parameter::aux
@@ -76,7 +80,7 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline typename ::boost::enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<Default>
               , ::boost::mpl::true_
@@ -104,7 +108,7 @@ namespace boost { namespace parameter {
         }
 
         template <typename T>
-        inline typename ::boost::lazy_enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
@@ -125,7 +129,7 @@ namespace boost { namespace parameter {
               , ::boost::mpl::false_
             >::type
           , ::boost::parameter::aux::tag<Tag,T&>
-        >::type BOOST_CONSTEXPR
+        >::type
             operator=(T& x) const
         {
             typedef typename ::boost::parameter::aux
@@ -134,7 +138,7 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline typename ::boost::enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
@@ -162,7 +166,8 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline ::boost::parameter::aux::lazy_default<Tag,Default const>
+        inline BOOST_CONSTEXPR
+        ::boost::parameter::aux::lazy_default<Tag,Default const>
             operator||(Default const& d) const
         {
             return ::boost::parameter::aux
@@ -170,14 +175,15 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline ::boost::parameter::aux::lazy_default<Tag,Default>
+        inline BOOST_CONSTEXPR
+        ::boost::parameter::aux::lazy_default<Tag,Default>
             operator||(Default& d) const
         {
             return ::boost::parameter::aux::lazy_default<Tag,Default>(d);
         }
 
         template <typename T>
-        inline typename ::boost::lazy_enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<T>
               , ::boost::mpl::false_
@@ -198,7 +204,7 @@ namespace boost { namespace parameter {
                 >
             >::type
           , ::boost::parameter::aux::tag<Tag,T const>
-        >::type BOOST_CONSTEXPR
+        >::type
             operator=(T const&& x) const
         {
             typedef typename ::boost::parameter::aux
@@ -207,7 +213,7 @@ namespace boost { namespace parameter {
         }
 
         template <typename T>
-        inline typename ::boost::lazy_enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<T>
               , ::boost::mpl::false_
@@ -228,7 +234,7 @@ namespace boost { namespace parameter {
                 >
             >::type
           , ::boost::parameter::aux::tag<Tag,T>
-        >::type BOOST_CONSTEXPR
+        >::type
             operator=(T&& x) const
         {
             typedef typename ::boost::parameter::aux::tag<Tag,T>::type result;
@@ -236,7 +242,7 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline typename ::boost::enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<Default>
               , ::boost::mpl::false_
@@ -266,7 +272,7 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline typename ::boost::enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<Default>
               , ::boost::mpl::false_
@@ -348,11 +354,15 @@ namespace boost { namespace parameter {
     {
         typedef Tag tag;
 
+        inline BOOST_CONSTEXPR keyword()
+        {
+        }
+
         template <typename T>
 #if defined(BOOST_NO_SFINAE)
         inline typename ::boost::parameter::aux::tag<Tag,T const&>::type
 #else
-        inline typename ::boost::lazy_enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<T>
               , ::boost::mpl::true_
@@ -373,7 +383,7 @@ namespace boost { namespace parameter {
                 >
             >::type
           , ::boost::parameter::aux::tag<Tag,T const&>
-        >::type BOOST_CONSTEXPR
+        >::type
 #endif  // BOOST_NO_SFINAE
             operator=(T const& x) const
         {
@@ -386,7 +396,7 @@ namespace boost { namespace parameter {
 #if defined(BOOST_NO_SFINAE)
         inline ::boost::parameter::aux::default_<Tag,Default const>
 #else
-        inline typename ::boost::enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
                 ::boost::is_scalar<Default>
               , ::boost::mpl::true_
@@ -418,7 +428,7 @@ namespace boost { namespace parameter {
 #if defined(BOOST_NO_SFINAE)
         inline typename ::boost::parameter::aux::tag<Tag,T&>::type
 #else
-        inline typename ::boost::lazy_enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
             typename ::boost::mpl::eval_if<
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
@@ -439,7 +449,7 @@ namespace boost { namespace parameter {
               , ::boost::mpl::false_
             >::type
           , ::boost::parameter::aux::tag<Tag,T&>
-        >::type BOOST_CONSTEXPR
+        >::type
 #endif  // BOOST_NO_SFINAE
             operator=(T& x) const
         {
@@ -452,7 +462,7 @@ namespace boost { namespace parameter {
 #if defined(BOOST_NO_SFINAE)
         inline ::boost::parameter::aux::default_<Tag,Default>
 #else
-        inline typename ::boost::enable_if<
+        inline BOOST_CONSTEXPR typename ::boost::enable_if<
             typename ::boost::mpl::eval_if<
                 typename ::boost::mpl::if_<
                     ::boost::is_same<
@@ -481,7 +491,8 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline ::boost::parameter::aux::lazy_default<Tag,Default const>
+        inline BOOST_CONSTEXPR
+        ::boost::parameter::aux::lazy_default<Tag,Default const>
             operator||(Default const& d) const
         {
             return ::boost::parameter::aux
@@ -489,7 +500,8 @@ namespace boost { namespace parameter {
         }
 
         template <typename Default>
-        inline ::boost::parameter::aux::lazy_default<Tag,Default>
+        inline BOOST_CONSTEXPR
+        ::boost::parameter::aux::lazy_default<Tag,Default>
             operator||(Default& d) const
         {
             return ::boost::parameter::aux::lazy_default<Tag,Default>(d);
@@ -528,7 +540,7 @@ namespace boost { namespace parameter {
     {                                                                        \
         struct name                                                          \
         {                                                                    \
-            static char const* keyword_name()                                \
+            static BOOST_CONSTEXPR char const* keyword_name()                \
             {                                                                \
                 return #name;                                                \
             }                                                                \

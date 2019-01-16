@@ -8,6 +8,7 @@
 #define BOOST_PARAMETER_NAME_060806_HPP
 
 #include <boost/parameter/aux_/name.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
 #define BOOST_PARAMETER_NAME_TAG(tag_namespace, tag, q)                      \
@@ -15,7 +16,7 @@
     {                                                                        \
         struct tag                                                           \
         {                                                                    \
-            static char const* keyword_name()                                \
+            static BOOST_CONSTEXPR char const* keyword_name()                \
             {                                                                \
                 return BOOST_PP_STRINGIZE(tag);                              \
             }                                                                \
