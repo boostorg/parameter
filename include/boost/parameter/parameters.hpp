@@ -31,7 +31,8 @@ namespace boost { namespace parameter { namespace aux {
     struct arg_list_factory<ArgList>
     {
         template <typename ...ReversedArgs>
-        static inline ArgList reverse(ReversedArgs&&... reversed_args)
+        static inline BOOST_CONSTEXPR ArgList
+            reverse(ReversedArgs&&... reversed_args)
         {
             return ArgList(
                 typename ::boost::mpl::if_<
@@ -51,7 +52,7 @@ namespace boost { namespace parameter { namespace aux {
     struct arg_list_factory<ArgList,A0,Args...>
     {
         template <typename ...ReversedArgs>
-        static inline ArgList
+        static inline BOOST_CONSTEXPR ArgList
             reverse(A0&& a0, Args&&... args, ReversedArgs&&... reversed_args)
         {
             return ::boost::parameter::aux

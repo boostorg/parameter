@@ -5,17 +5,16 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if (BOOST_PARAMETER_MAX_ARITY < 4)
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
-#if (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 5)
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 5)
 #error Define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY \
 as 5 or greater.
 #endif
-#endif
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/name.hpp>
 
 namespace test {
 
@@ -29,6 +28,8 @@ namespace test {
 #endif
 } // namespace test
 
+#include <boost/parameter/preprocessor.hpp>
+#include <boost/parameter/value_type.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -230,7 +231,7 @@ namespace test {
 
     struct B
     {
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
         B()
         {
@@ -282,7 +283,7 @@ namespace test {
             (deduced
                 (optional
                     (rrc0, (float), 0.0f)
-                    (lr0, (char const*), baz)
+                    (lr0, (char const*), test::baz)
                     (rr0
                       , *(test::string_predicate<test::kw::lr0>)
                       , std::string(lr0)
@@ -393,7 +394,7 @@ namespace test {
 
     struct C : B
     {
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
         C() : B()
         {
@@ -490,7 +491,7 @@ int main()
     char baz_arr[4] = "qux";
     typedef char char_arr[4];
 
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
     // MSVC-12+ treats static_cast<char_arr&&>(baz_arr) as an lvalue.
 #else
@@ -523,7 +524,7 @@ int main()
       , test::rvalue_const_float()
     );
 
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
     // MSVC-12+ treats static_cast<char_arr&&>(baz_arr) as an lvalue.
     test::C cp0;

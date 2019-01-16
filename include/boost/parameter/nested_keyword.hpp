@@ -8,6 +8,7 @@
 
 #include <boost/parameter/aux_/name.hpp>
 #include <boost/parameter/keyword.hpp>
+#include <boost/parameter/config.hpp>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
@@ -17,7 +18,7 @@
         template <int Dummy = 0>                                             \
         struct BOOST_PP_CAT(name, _)                                         \
         {                                                                    \
-            static char const* keyword_name()                                \
+            static BOOST_CONSTEXPR char const* keyword_name()                \
             {                                                                \
                 return BOOST_PP_STRINGIZE(name);                             \
             }                                                                \

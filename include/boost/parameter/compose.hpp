@@ -10,7 +10,7 @@
 
 namespace boost { namespace parameter {
 
-    inline ::boost::parameter::aux::empty_arg_list compose()
+    inline BOOST_CONSTEXPR ::boost::parameter::aux::empty_arg_list compose()
     {
         return ::boost::parameter::aux::empty_arg_list();
     }
@@ -48,7 +48,7 @@ namespace boost { namespace parameter { namespace aux {
 namespace boost { namespace parameter {
 
     template <typename TaggedArg0, typename ...TaggedArgs>
-    inline typename ::boost::lazy_enable_if<
+    inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
         ::boost::parameter::are_tagged_arguments<TaggedArg0,TaggedArgs...>
       , ::boost::parameter::aux
         ::compose_arg_list<TaggedArg0,TaggedArgs...>
@@ -95,7 +95,7 @@ namespace boost { namespace parameter {
 #if defined(BOOST_NO_SFINAE)
 #define BOOST_PARAMETER_compose_arg_list_function_overload(z, n, prefix)     \
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename prefix)>                 \
-    inline                                                                   \
+    inline BOOST_CONSTEXPR                                                   \
     BOOST_PARAMETER_compose_arg_list_type(z, n, prefix)                      \
         compose(BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, prefix, const& a))       \
     {                                                                        \
@@ -115,7 +115,7 @@ namespace boost { namespace parameter {
 
 #define BOOST_PARAMETER_compose_arg_list_function_overload(z, n, prefix)     \
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename prefix)>                 \
-    inline typename ::boost::enable_if<                                      \
+    inline BOOST_CONSTEXPR typename ::boost::enable_if<                      \
         ::boost::parameter                                                   \
         ::are_tagged_arguments<BOOST_PP_ENUM_PARAMS_Z(z, n, prefix)>         \
       , BOOST_PARAMETER_compose_arg_list_type(z, n, prefix)                  \

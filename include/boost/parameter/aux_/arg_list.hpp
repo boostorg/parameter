@@ -69,7 +69,7 @@ namespace boost { namespace parameter { namespace aux {
 
         // Variadic constructor also serves as default constructor.
         template <typename ...Args>
-        inline empty_arg_list(Args&&...)
+        inline BOOST_CONSTEXPR empty_arg_list(Args&&...)
         {
         }
 
@@ -87,20 +87,20 @@ namespace boost { namespace parameter { namespace aux {
 
         // Terminator for has_key, indicating that the keyword is unique.
         template <typename KW>
-        static ::boost::parameter::aux::no_tag has_key(KW*);
+        static BOOST_CONSTEXPR ::boost::parameter::aux::no_tag has_key(KW*);
 
         // If either of these operators are called, it means there is no
         // argument in the list that matches the supplied keyword.  Just
         // return the default value.
         template <typename K, typename Default>
-        inline Default&
+        inline BOOST_CONSTEXPR Default&
             operator[](::boost::parameter::aux::default_<K,Default> x) const
         {
             return x.value;
         }
 
         template <typename K, typename Default>
-        inline Default&&
+        inline BOOST_CONSTEXPR Default&&
             operator[](::boost::parameter::aux::default_r_<K,Default> x) const
         {
             return ::std::forward<Default>(x.value);
@@ -110,7 +110,8 @@ namespace boost { namespace parameter { namespace aux {
         // list that matches the supplied keyword.  Just evaluate and return
         // the default value.
         template <typename K, typename F>
-        inline typename ::boost::parameter::aux::result_of0<F>::type
+        inline BOOST_CONSTEXPR
+        typename ::boost::parameter::aux::result_of0<F>::type
             operator[](BOOST_PARAMETER_lazy_default_fallback<K,F> x) const
         {
             return x.compute_default();
@@ -121,7 +122,7 @@ namespace boost { namespace parameter { namespace aux {
         // has a default, we indicate that the actual arguments don't
         // match the function's requirements.
         template <typename ParameterRequirements, typename ArgPack>
-        static typename ParameterRequirements::has_default
+        static BOOST_CONSTEXPR typename ParameterRequirements::has_default
             satisfies(ParameterRequirements*, ArgPack*);
 
         // MPL sequence support
@@ -183,8 +184,10 @@ namespace boost { namespace parameter { namespace aux {
 
         // Create a new list by prepending arg to a copy of tail.  Used when
         // incrementally building this structure with the comma operator.
-        inline arg_list(TaggedArg const& head, Next const& tail)
-          : Next(tail), arg(head)
+        inline BOOST_CONSTEXPR arg_list(
+            TaggedArg const& head
+          , Next const& tail
+        ) : Next(tail), arg(head)
         {
         }
 
@@ -193,7 +196,7 @@ namespace boost { namespace parameter { namespace aux {
         // to the Next constructor, or store the first argument and forward
         // the rest. -- Cromwell D. Enage
         template <typename A0>
-        inline arg_list(
+        inline BOOST_CONSTEXPR arg_list(
             ::boost::parameter::aux::value_type_is_not_void
           , A0&& a0
         ) : Next(
@@ -211,7 +214,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename ...Args>
-        inline arg_list(
+        inline BOOST_CONSTEXPR arg_list(
             ::boost::parameter::aux::value_type_is_void
           , Args&&... args
         ) : Next(
@@ -230,7 +233,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename A0, typename A1, typename ...Args>
-        inline arg_list(
+        inline BOOST_CONSTEXPR arg_list(
             ::boost::parameter::aux::value_type_is_not_void
           , A0&& a0
           , A1&& a1
@@ -302,13 +305,15 @@ namespace boost { namespace parameter { namespace aux {
 
         // Helpers that handle the case when TaggedArg is empty<T>.
         template <typename D>
-        inline reference get_default(D const&, ::boost::mpl::false_) const
+        inline BOOST_CONSTEXPR reference
+            get_default(D const&, ::boost::mpl::false_) const
         {
             return this->arg.get_value();
         }
 
         template <typename D>
-        inline reference get_default(D const& d, ::boost::mpl::true_) const
+        inline BOOST_CONSTEXPR reference
+            get_default(D const& d, ::boost::mpl::true_) const
         {
             return (
                 this->arg.get_value()
@@ -317,15 +322,24 @@ namespace boost { namespace parameter { namespace aux {
             );
         }
 
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<key_type> const&) const
         {
+#if !defined(BOOST_NO_CXX14_CONSTEXPR) && \
+    !defined(BOOST_NO_CXX11_STATIC_ASSERT)
+            static_assert(!holds_maybe::value, "must not hold maybe");
+#elif !( \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40700) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 40900) \
+    ) && !BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
+    !BOOST_WORKAROUND(BOOST_MSVC, < 1910)
             BOOST_MPL_ASSERT_NOT((holds_maybe));
+#endif
             return this->arg.get_value();
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::default_<key_type,Default> const& d
             ) const
@@ -334,7 +348,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::default_r_<key_type,Default> const& d
             ) const
@@ -343,12 +357,21 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
         {
+#if !defined(BOOST_NO_CXX14_CONSTEXPR) && \
+    !defined(BOOST_NO_CXX11_STATIC_ASSERT)
+            static_assert(!holds_maybe::value, "must not hold maybe");
+#elif !( \
+        BOOST_WORKAROUND(BOOST_GCC, >= 40700) && \
+        BOOST_WORKAROUND(BOOST_GCC, < 40900) \
+    ) && !BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
+    !BOOST_WORKAROUND(BOOST_MSVC, < 1910)
             BOOST_MPL_ASSERT_NOT((holds_maybe));
+#endif
             return this->arg.get_value();
         }
 
@@ -365,7 +388,7 @@ namespace boost { namespace parameter { namespace aux {
         // satisfied by TaggedArg.  Used only for compile-time computation
         // and never really called, so a declaration is enough.
         template <typename HasDefault, typename Predicate, typename ArgPack>
-        static typename ::boost::lazy_enable_if<
+        static BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
             typename ::boost::mpl::if_<
                 EmitsErrors
               , ::boost::mpl::true_
@@ -394,7 +417,7 @@ namespace boost { namespace parameter { namespace aux {
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
         template <typename KW, typename T2>
-        inline ::boost::parameter::aux::arg_list<
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::arg_list<
             ::boost::parameter::aux::tagged_argument<KW,T2>
           , self
         >
@@ -409,7 +432,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename T2>
-        inline ::boost::parameter::aux::arg_list<
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::arg_list<
             ::boost::parameter::aux::tagged_argument_rref<KW,T2>
           , self
         >
@@ -443,13 +466,13 @@ namespace boost { namespace parameter { namespace aux {
     // feel for what's really happening here.
     struct empty_arg_list
     {
-        inline empty_arg_list()
+        inline BOOST_CONSTEXPR empty_arg_list()
         {
         }
 
         // Constructor taking BOOST_PARAMETER_COMPOSE_MAX_ARITY empty_arg_list
         // arguments; this makes initialization.
-        inline empty_arg_list(
+        inline BOOST_CONSTEXPR empty_arg_list(
             BOOST_PP_ENUM_PARAMS(
                 BOOST_PARAMETER_COMPOSE_MAX_ARITY
               , ::boost::parameter::void_ BOOST_PP_INTERCEPT
@@ -472,7 +495,7 @@ namespace boost { namespace parameter { namespace aux {
 
         // Terminator for has_key, indicating that the keyword is unique.
         template <typename KW>
-        static ::boost::parameter::aux::no_tag has_key(KW*);
+        static BOOST_CONSTEXPR ::boost::parameter::aux::no_tag has_key(KW*);
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         // The overload set technique doesn't work with these older compilers,
@@ -494,7 +517,7 @@ namespace boost { namespace parameter { namespace aux {
         // argument in the list that matches the supplied keyword.  Just
         // return the default value.
         template <typename K, typename Default>
-        inline Default&
+        inline BOOST_CONSTEXPR Default&
             operator[](::boost::parameter::aux::default_<K,Default> x) const
         {
             return x.value;
@@ -504,7 +527,8 @@ namespace boost { namespace parameter { namespace aux {
         // list that matches the supplied keyword.  Just evaluate and return
         // the default value.
         template <typename K, typename F>
-        inline typename ::boost::parameter::aux::result_of0<F>::type
+        inline BOOST_CONSTEXPR
+        typename ::boost::parameter::aux::result_of0<F>::type
             operator[](BOOST_PARAMETER_lazy_default_fallback<K,F> x) const
         {
             return x.compute_default();
@@ -515,7 +539,7 @@ namespace boost { namespace parameter { namespace aux {
         // has a default, we indicate that the actual arguments don't
         // match the function's requirements.
         template <typename ParameterRequirements, typename ArgPack>
-        static typename ParameterRequirements::has_default
+        static BOOST_CONSTEXPR typename ParameterRequirements::has_default
             satisfies(ParameterRequirements*, ArgPack*);
 
         // MPL sequence support
@@ -584,8 +608,10 @@ namespace boost { namespace parameter { namespace aux {
 
         // Create a new list by prepending arg to a copy of tail.  Used when
         // incrementally building this structure with the comma operator.
-        inline arg_list(TaggedArg const& head, Next const& tail)
-          : Next(tail), arg(head)
+        inline BOOST_CONSTEXPR arg_list(
+            TaggedArg const& head
+          , Next const& tail
+        ) : Next(tail), arg(head)
         {
         }
 
@@ -597,7 +623,7 @@ namespace boost { namespace parameter { namespace aux {
               , typename A
             )
         >
-        inline arg_list(
+        inline BOOST_CONSTEXPR arg_list(
             // A0& a0, A1& a1, ...
             BOOST_PP_ENUM_BINARY_PARAMS(
                 BOOST_PARAMETER_COMPOSE_MAX_ARITY
@@ -681,13 +707,15 @@ namespace boost { namespace parameter { namespace aux {
 
         // Helpers that handle the case when TaggedArg is empty<T>.
         template <typename D>
-        inline reference get_default(D const&, ::boost::mpl::false_) const
+        inline BOOST_CONSTEXPR reference
+            get_default(D const&, ::boost::mpl::false_) const
         {
             return this->arg.get_value();
         }
 
         template <typename D>
-        inline reference get_default(D const& d, ::boost::mpl::true_) const
+        inline BOOST_CONSTEXPR reference
+            get_default(D const& d, ::boost::mpl::true_) const
         {
             return (
                 this->arg.get_value()
@@ -723,7 +751,7 @@ namespace boost { namespace parameter { namespace aux {
         // Outer indexing operators that dispatch to the right node's
         // get() function.
         template <typename KW>
-        inline typename ::boost::mpl::apply_wrap3<
+        inline BOOST_CONSTEXPR typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , ::boost::parameter::void_
@@ -737,7 +765,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename Default>
-        inline typename ::boost::mpl::apply_wrap3<
+        inline BOOST_CONSTEXPR typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , Default&
@@ -753,7 +781,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename F>
-        inline typename ::boost::mpl::apply_wrap3<
+        inline BOOST_CONSTEXPR typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , typename ::boost::parameter::aux::result_of0<F>::type
@@ -772,7 +800,7 @@ namespace boost { namespace parameter { namespace aux {
         // indicating no matching argument was passed, the default is
         // returned, or if no default_ or lazy_default was passed, compilation
         // fails.
-        inline reference
+        inline BOOST_CONSTEXPR reference
             get(::boost::parameter::keyword<key_type> const&) const
         {
             BOOST_MPL_ASSERT_NOT((holds_maybe));
@@ -780,7 +808,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             get(
                 ::boost::parameter::aux::default_<key_type,Default> const& d
             ) const
@@ -789,7 +817,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             get(
                 BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
@@ -797,7 +825,7 @@ namespace boost { namespace parameter { namespace aux {
             return this->arg.get_value();
         }
 #else   // !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<key_type> const&) const
         {
             BOOST_MPL_ASSERT_NOT((holds_maybe));
@@ -805,7 +833,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::default_<key_type,Default> const& d
             ) const
@@ -814,7 +842,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
@@ -836,7 +864,7 @@ namespace boost { namespace parameter { namespace aux {
         // satisfied by TaggedArg.  Used only for compile-time computation
         // and never really called, so a declaration is enough.
         template <typename HasDefault, typename Predicate, typename ArgPack>
-        static typename
+        static BOOST_CONSTEXPR typename
 #if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
         ::boost::lazy_enable_if<
             typename ::boost::mpl::if_<
@@ -871,7 +899,7 @@ namespace boost { namespace parameter { namespace aux {
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
         template <typename KW, typename T2>
-        inline ::boost::parameter::aux::arg_list<
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::arg_list<
             ::boost::parameter::aux::tagged_argument<KW,T2>
           , self
         >

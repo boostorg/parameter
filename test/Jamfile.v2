@@ -392,6 +392,16 @@ alias parameter_literate_tests
         :
             <preserve-target-tests>off
     ]
+    [ run literate/parameter-enabled-function-call-operators0.cpp
+        :
+        :
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=2
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=3
+        :
+        :
+            <preserve-target-tests>off
+    ]
     [ run literate/parameter-enabled-member-functions0.cpp
         :
         :
@@ -764,7 +774,7 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_deduced_fail_msvc08
     ]
@@ -779,7 +789,7 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_deduced_fail_msvc09
     ]
@@ -794,7 +804,7 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_deduced_fail_msvc10
     ]
@@ -808,7 +818,7 @@ alias parameter_vendor_specific_fail_tests
     [ compile-fail compose.cpp
         :
             <define>BOOST_PARAMETER_COMPOSE_MAX_ARITY=3
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             compose_fail_msvc11
     ]
@@ -816,7 +826,7 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_deduced_fail_msvc11
     ]
@@ -831,7 +841,7 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             evaluate_category_fail_msvc12
     ]
@@ -839,14 +849,14 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=8
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_eval_cat_fail_msvc12
     ]
     [ compile-fail preprocessor_eval_cat_no_spec.cpp
         :
             <define>BOOST_PARAMETER_COMPOSE_MAX_ARITY=8
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_eval_cat_no_spec_fail_msvc12
     ]
@@ -861,7 +871,7 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             evaluate_category_fail_msvc14_0
     ]
@@ -869,14 +879,14 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=8
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_eval_cat_fail_msvc14_0
     ]
     [ compile-fail preprocessor_eval_cat_no_spec.cpp
         :
             <define>BOOST_PARAMETER_COMPOSE_MAX_ARITY=8
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_eval_cat_no_spec_fail_msvc14_0
     ]
@@ -891,7 +901,7 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             evaluate_category_fail_msvc14_1
     ]
@@ -899,14 +909,14 @@ alias parameter_vendor_specific_fail_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=8
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=9
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_eval_cat_fail_msvc14_1
     ]
     [ compile-fail preprocessor_eval_cat_no_spec.cpp
         :
             <define>BOOST_PARAMETER_COMPOSE_MAX_ARITY=8
-            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC
         :
             preproc_eval_cat_no_spec_fail_msvc14_1
     ]

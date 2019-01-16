@@ -5,17 +5,16 @@
 
 #include <boost/parameter/config.hpp>
 
-#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 #if (BOOST_PARAMETER_MAX_ARITY < 4)
 #error Define BOOST_PARAMETER_MAX_ARITY as 4 or greater.
 #endif
-#if (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 5)
+#if !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING) && \
+    (BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY < 5)
 #error Define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY \
 as 5 or greater.
 #endif
-#endif
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/name.hpp>
 
 namespace test {
 
@@ -27,6 +26,12 @@ namespace test {
 #else
     BOOST_PARAMETER_NAME((_rr0, keywords) rr0)
 #endif
+} // namespace test
+
+#include <boost/parameter/parameters.hpp>
+#include <boost/parameter/required.hpp>
+
+namespace test {
 
     struct f_parameters
       : boost::parameter::parameters<
@@ -53,11 +58,11 @@ namespace test {
         {
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , A<T>::evaluate_category(args[test::_lrc0])
+              , test::A<T>::evaluate_category(args[test::_lrc0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference
-              , A<T>::evaluate_category(args[test::_lr0])
+              , test::A<T>::evaluate_category(args[test::_lr0])
             );
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
@@ -65,38 +70,39 @@ namespace test {
             {
                 BOOST_TEST_EQ(
                     test::passed_by_lvalue_reference_to_const
-                  , A<T>::evaluate_category(args[test::_rrc0])
+                  , test::A<T>::evaluate_category(args[test::_rrc0])
                 );
                 BOOST_TEST_EQ(
                     test::passed_by_lvalue_reference_to_const
-                  , A<T>::evaluate_category(args[test::_rr0])
+                  , test::A<T>::evaluate_category(args[test::_rr0])
                 );
             }
             else
             {
                 BOOST_TEST_EQ(
                     test::passed_by_rvalue_reference_to_const
-                  , A<T>::evaluate_category(args[test::_rrc0])
+                  , test::A<T>::evaluate_category(args[test::_rrc0])
                 );
                 BOOST_TEST_EQ(
                     test::passed_by_rvalue_reference
-                  , A<T>::evaluate_category(args[test::_rr0])
+                  , test::A<T>::evaluate_category(args[test::_rr0])
                 );
             }
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , A<T>::evaluate_category(args[test::_rrc0])
+              , test::A<T>::evaluate_category(args[test::_rrc0])
             );
             BOOST_TEST_EQ(
                 test::passed_by_lvalue_reference_to_const
-              , A<T>::evaluate_category(args[test::_rr0])
+              , test::A<T>::evaluate_category(args[test::_rr0])
             );
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
         }
     };
 } // namespace test
 
+#include <boost/parameter/deduced.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/if.hpp>
@@ -131,6 +137,7 @@ namespace test {
     };
 } // namespace test
 
+#include <boost/parameter/value_type.hpp>
 #include <boost/type_traits/remove_const.hpp>
 
 namespace test {
@@ -236,7 +243,7 @@ int main()
     char baz_arr[4] = "qux";
     typedef char char_arr[4];
 
-#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_MSVC) && \
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) && \
     BOOST_WORKAROUND(BOOST_MSVC, >= 1800)
     // MSVC-12+ treats static_cast<char_arr&&>(baz_arr) as an lvalue.
 #else
