@@ -122,11 +122,12 @@ namespace boost { namespace parameter { namespace aux {
         >::type value;
 
      public:
-        inline explicit tagged_argument(reference x) : value(x)
+        inline explicit BOOST_CONSTEXPR tagged_argument(reference x)
+          : value(x)
         {
         }
 
-        inline tagged_argument(tagged_argument const& copy)
+        inline BOOST_CONSTEXPR tagged_argument(tagged_argument const& copy)
           : value(copy.value)
         {
         }
@@ -150,7 +151,7 @@ namespace boost { namespace parameter { namespace aux {
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
         template <typename Keyword2, typename Arg2>
-        inline ::boost::parameter::aux::arg_list<
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::arg_list<
             ::boost::parameter::aux::tagged_argument<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
@@ -175,7 +176,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Keyword2, typename Arg2>
-        inline ::boost::parameter::aux::arg_list<
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::arg_list<
             ::boost::parameter::aux::tagged_argument<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
@@ -201,19 +202,19 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         // Accessor interface.
-        inline reference get_value() const
+        inline BOOST_CONSTEXPR reference get_value() const
         {
             return this->value;
         }
 
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<Keyword> const&) const
         {
             return this->get_value();
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::default_<key_type,Default> const&
             ) const
@@ -222,7 +223,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename F>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::lazy_default<key_type,F> const&
             ) const
@@ -231,7 +232,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename Default>
-        inline Default&
+        inline BOOST_CONSTEXPR Default&
             operator[](
                 ::boost::parameter::aux::default_<KW,Default> const& x
             ) const
@@ -240,7 +241,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename Default>
-        inline Default&&
+        inline BOOST_CONSTEXPR Default&&
             operator[](
                 ::boost::parameter::aux::default_r_<KW,Default> const& x
             ) const
@@ -249,7 +250,8 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename F>
-        inline typename ::boost::parameter::aux::result_of0<F>::type
+        inline BOOST_CONSTEXPR
+        typename ::boost::parameter::aux::result_of0<F>::type
             operator[](
                 ::boost::parameter::aux::lazy_default<KW,F> const& x
             ) const
@@ -258,11 +260,12 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename ParameterRequirements>
-        static typename ParameterRequirements::has_default
+        static BOOST_CONSTEXPR typename ParameterRequirements::has_default
             satisfies(ParameterRequirements*);
 
         template <typename HasDefault, typename Predicate>
-        static typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
+        static BOOST_CONSTEXPR
+        typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
             satisfies(
                 ::boost::parameter::aux::parameter_requirements<
                     key_type
@@ -301,13 +304,14 @@ namespace boost { namespace parameter { namespace aux {
         reference value;
 
      public:
-        inline explicit tagged_argument_rref(reference x)
+        inline explicit BOOST_CONSTEXPR tagged_argument_rref(reference x)
           : value(::std::forward<Arg>(x))
         {
         }
 
-        inline tagged_argument_rref(tagged_argument_rref const& copy)
-          : value(::std::forward<Arg>(copy.value))
+        inline BOOST_CONSTEXPR tagged_argument_rref(
+            tagged_argument_rref const& copy
+        ) : value(::std::forward<Arg>(copy.value))
         {
         }
 
@@ -330,7 +334,7 @@ namespace boost { namespace parameter { namespace aux {
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
         template <typename Keyword2, typename Arg2>
-        inline ::boost::parameter::aux::arg_list<
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::arg_list<
             ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
@@ -355,7 +359,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Keyword2, typename Arg2>
-        inline ::boost::parameter::aux::arg_list<
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::arg_list<
             ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
@@ -384,19 +388,19 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         // Accessor interface.
-        inline reference get_value() const
+        inline BOOST_CONSTEXPR reference get_value() const
         {
             return ::std::forward<Arg>(this->value);
         }
 
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<Keyword> const&) const
         {
             return this->get_value();
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::default_<key_type,Default> const&
             ) const
@@ -405,7 +409,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::default_r_<key_type,Default> const&
             ) const
@@ -414,7 +418,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename F>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::lazy_default<key_type,F> const&
             ) const
@@ -423,7 +427,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename Default>
-        inline Default&
+        inline BOOST_CONSTEXPR Default&
             operator[](
                 ::boost::parameter::aux::default_<KW,Default> const& x
             ) const
@@ -432,7 +436,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename Default>
-        inline Default&&
+        inline BOOST_CONSTEXPR Default&&
             operator[](
                 ::boost::parameter::aux::default_r_<KW,Default> const& x
             ) const
@@ -441,7 +445,8 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename F>
-        inline typename ::boost::parameter::aux::result_of0<F>::type
+        inline BOOST_CONSTEXPR
+        typename ::boost::parameter::aux::result_of0<F>::type
             operator[](
                 ::boost::parameter::aux::lazy_default<KW,F> const& x
             ) const
@@ -450,11 +455,12 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename ParameterRequirements>
-        static typename ParameterRequirements::has_default
+        static BOOST_CONSTEXPR typename ParameterRequirements::has_default
             satisfies(ParameterRequirements*);
 
         template <typename HasDefault, typename Predicate>
-        static typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
+        static BOOST_CONSTEXPR
+        typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
             satisfies(
                 ::boost::parameter::aux::parameter_requirements<
                     key_type
@@ -524,11 +530,12 @@ namespace boost { namespace parameter { namespace aux {
         >::type value;
 
      public:
-        inline explicit tagged_argument(reference x) : value(x)
+        inline explicit BOOST_CONSTEXPR tagged_argument(reference x)
+          : value(x)
         {
         }
 
-        inline tagged_argument(tagged_argument const& copy)
+        inline BOOST_CONSTEXPR tagged_argument(tagged_argument const& copy)
           : value(copy.value)
         {
         }
@@ -577,12 +584,12 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         // Accessor interface.
-        inline reference get_value() const
+        inline BOOST_CONSTEXPR reference get_value() const
         {
             return this->value;
         }
 
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<Keyword> const&) const
         {
             return this->get_value();
@@ -591,7 +598,7 @@ namespace boost { namespace parameter { namespace aux {
 #if defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) || \
     BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         template <typename KW, typename Default>
-        inline Default&
+        inline BOOST_CONSTEXPR Default&
             get_with_default(
                 ::boost::parameter::aux::default_<KW,Default> const& x
               , int
@@ -601,7 +608,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             get_with_default(
                 ::boost::parameter::aux::default_<key_type,Default> const&
               , long
@@ -611,7 +618,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename Default>
-        inline typename ::boost::mpl::apply_wrap3<
+        inline BOOST_CONSTEXPR typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , Default&
@@ -625,7 +632,8 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename F>
-        inline typename ::boost::parameter::aux::result_of0<F>::type
+        inline BOOST_CONSTEXPR
+        typename ::boost::parameter::aux::result_of0<F>::type
             get_with_lazy_default(
                 ::boost::parameter::aux::lazy_default<KW,F> const& x
               , int
@@ -635,7 +643,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename F>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             get_with_lazy_default(
                 ::boost::parameter::aux::lazy_default<key_type,F> const&
               , long
@@ -645,7 +653,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename F>
-        inline typename ::boost::mpl::apply_wrap3<
+        inline BOOST_CONSTEXPR typename ::boost::mpl::apply_wrap3<
             binding
           , KW
           , typename ::boost::parameter::aux::result_of0<F>::type
@@ -659,7 +667,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 #else   // No function template ordering or Borland workarounds needed.
         template <typename Default>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::default_<key_type,Default> const&
             ) const
@@ -668,7 +676,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename F>
-        inline reference
+        inline BOOST_CONSTEXPR reference
             operator[](
                 ::boost::parameter::aux::lazy_default<key_type,F> const&
             ) const
@@ -677,7 +685,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename Default>
-        inline Default&
+        inline BOOST_CONSTEXPR Default&
             operator[](
                 ::boost::parameter::aux::default_<KW,Default> const& x
             ) const
@@ -686,7 +694,8 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename KW, typename F>
-        inline typename ::boost::parameter::aux::result_of0<F>::type
+        inline BOOST_CONSTEXPR
+        typename ::boost::parameter::aux::result_of0<F>::type
             operator[](
                 ::boost::parameter::aux::lazy_default<KW,F> const& x
             ) const
@@ -695,11 +704,12 @@ namespace boost { namespace parameter { namespace aux {
         }
 
         template <typename ParameterRequirements>
-        static typename ParameterRequirements::has_default
+        static BOOST_CONSTEXPR typename ParameterRequirements::has_default
             satisfies(ParameterRequirements*);
 
         template <typename HasDefault, typename Predicate>
-        static typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
+        static BOOST_CONSTEXPR
+        typename ::boost::mpl::apply_wrap1<Predicate,value_type>::type
             satisfies(
                 ::boost::parameter::aux::parameter_requirements<
                     key_type

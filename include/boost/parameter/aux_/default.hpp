@@ -14,7 +14,7 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Keyword, typename Value>
     struct default_
     {
-        inline default_(Value& x) : value(x)
+        inline BOOST_CONSTEXPR default_(Value& x) : value(x)
         {
         }
 
@@ -36,7 +36,7 @@ namespace boost { namespace parameter { namespace aux {
     template <typename KW, typename DefaultComputer>
     struct lazy_default_base
     {
-        inline lazy_default_base(DefaultComputer& x)
+        inline BOOST_CONSTEXPR lazy_default_base(DefaultComputer& x)
           : compute_default(x)
         {
         }
@@ -48,7 +48,7 @@ namespace boost { namespace parameter { namespace aux {
     struct lazy_default
       : ::boost::parameter::aux::lazy_default_base<KW,DefaultComputer>
     {
-        inline lazy_default(DefaultComputer& x)
+        inline BOOST_CONSTEXPR lazy_default(DefaultComputer& x)
           : ::boost::parameter::aux::lazy_default_base<KW,DefaultComputer>(x)
         {
         }
@@ -57,7 +57,8 @@ namespace boost { namespace parameter { namespace aux {
     template <typename KW, typename DefaultComputer>
     struct lazy_default
     {
-        inline lazy_default(DefaultComputer& x) : compute_default(x)
+        inline BOOST_CONSTEXPR lazy_default(DefaultComputer& x)
+          : compute_default(x)
         {
         }
 
@@ -85,7 +86,8 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Keyword, typename Value>
     struct default_r_
     {
-        inline default_r_(Value&& x) : value(::std::forward<Value>(x))
+        inline BOOST_CONSTEXPR default_r_(Value&& x)
+          : value(::std::forward<Value>(x))
         {
         }
 
