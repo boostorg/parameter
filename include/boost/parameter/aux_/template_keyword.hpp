@@ -15,6 +15,22 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #include <boost/parameter/config.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename T>
+    using is_template_keyword = ::std::is_base_of<
+        ::boost::parameter::aux::template_keyword_base
+      , typename ::std::remove_const<
+            typename ::std::remove_reference<T>::type
+        >::type
+    >;
+}}} // namespace boost::parameter::aux
+
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -58,7 +74,7 @@ namespace boost { namespace parameter { namespace aux {
             >
           , ::boost::mpl::true_
           , ::boost::mpl::false_
-#else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
+#else
             ::boost::is_lvalue_reference<T>
           , ::boost::mpl::false_
           , ::boost::parameter::aux::is_template_keyword_aux<T>
@@ -68,5 +84,6 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 #endif  // include guard
 

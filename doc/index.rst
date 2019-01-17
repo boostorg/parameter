@@ -2613,6 +2613,26 @@ be bound to out parameters.  The |evaluate_category|_ and
 .. |preprocessor_eval_category| replace:: preprocessor_eval_category.cpp
 .. _preprocessor_eval_category: ../../test/preprocessor_eval_category.cpp
 
+------------------
+Boost.MP11 Support
+------------------
+
+If your compiler is sufficiently compliant with the C++11 standard, then the
+Parameter library will ``#define`` the macro ``BOOST_PARAMETER_CAN_USE_MP11``
+unless you disable it manually.  The |singular_cpp|_, |compose_cpp|_,
+|optional_deduced_sfinae_cpp|_, and |deduced_dep_pred_cpp|_ test programs
+demonstrate support for `Boost.MP11`_.
+
+.. _`Boost.MP11`: ../../../mp11/doc/html/mp11.html
+.. |singular_cpp| replace:: singular.cpp
+.. _singular_cpp: ../../test/singular.cpp
+.. |compose_cpp| replace:: compose.cpp
+.. _compose_cpp: ../../test/compose.cpp
+.. |optional_deduced_sfinae_cpp| replace:: optional_deduced_sfinae.cpp
+.. _optional_deduced_sfinae_cpp: ../../test/optional_deduced_sfinae.cpp
+.. |deduced_dep_pred_cpp| replace:: deduced_dependent_predicate.cpp
+.. _deduced_dep_pred_cpp: ../../test/deduced_dependent_predicate.cpp
+
 -----------------
 No SFINAE Support
 -----------------

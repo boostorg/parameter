@@ -24,6 +24,7 @@ namespace test {
     BOOST_PARAMETER_NAME(z)
 } // namespace test
 
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
@@ -44,16 +45,38 @@ namespace test {
     };
 } // namespace test
 
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
+
 #include <boost/parameter/parameters.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/bind.hpp>
+#include <type_traits>
+#endif
 
 namespace test {
 
     struct f_parameters // vc6 is happier with inheritance than with a typedef
       : boost::parameter::parameters<
             boost::parameter::required<test::tag::w>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+          , boost::parameter::optional<
+                test::tag::x
+              , boost::mp11::mp_bind<std::is_convertible,boost::mp11::_1,int>
+            >
+          , boost::parameter::optional<
+                test::tag::y
+              , boost::mp11::mp_bind<std::is_convertible,boost::mp11::_1,int>
+            >
+          , boost::parameter::optional<
+                test::tag::z
+              , boost::mp11::mp_bind<std::is_convertible,boost::mp11::_1,int>
+            >
+#else
           , boost::parameter::optional<test::tag::x,test::f_predicate>
           , boost::parameter::optional<test::tag::y,test::f_predicate>
           , boost::parameter::optional<test::tag::z,test::f_predicate>
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
         >
     {
     };

@@ -10,11 +10,17 @@
 #include <boost/parameter/aux_/pack/tag_keyword_arg.hpp>
 #include <boost/parameter/aux_/pack/make_arg_list.hpp>
 #include <boost/parameter/config.hpp>
-#include <boost/mpl/pair.hpp>
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-
 #include <boost/parameter/aux_/pack/make_parameter_spec_items.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/list.hpp>
+#else
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/pair.hpp>
+#endif
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -28,19 +34,28 @@ namespace boost { namespace parameter { namespace aux {
             >::type
           , typename Parameters::deduced_list
           , ::boost::parameter::aux::tag_keyword_arg
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+          , ::boost::mp11::mp_false
+#else
           , ::boost::mpl::false_
+#endif
         >::type result;
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using type = ::boost::mp11::mp_at_c<result,0>;
+#else
         typedef typename ::boost::mpl::first<result>::type type;
+#endif
     };
 }}} // namespace boost::parameter::aux
 
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-
 #include <boost/parameter/aux_/void.hpp>
 #include <boost/parameter/aux_/pack/make_items.hpp>
 #include <boost/parameter/aux_/preprocessor/no_perfect_forwarding_begin.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 #include <boost/preprocessor/repetition/enum_trailing_binary_params.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/pair.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 

@@ -35,7 +35,6 @@ namespace boost { namespace parameter { namespace aux {
 
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
-
 #include <boost/parameter/aux_/lambda_tag.hpp>
 #include <boost/mpl/lambda.hpp>
 #include <boost/mpl/bind.hpp>
@@ -74,5 +73,21 @@ namespace boost { namespace mpl {
     >
 /**/
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#define BOOST_PARAMETER_TAG_MP11_PLACEHOLDER_VALUE(name, tag)                \
+    template <typename ArgumentPack>                                         \
+    using name = typename ::boost::parameter                                 \
+    ::value_type<ArgumentPack,tag,::boost::parameter::void_>::type
+/**/
+
+#include <boost/parameter/binding.hpp>
+
+#define BOOST_PARAMETER_TAG_MP11_PLACEHOLDER_BINDING(name, tag)              \
+    template <typename ArgumentPack>                                         \
+    using name = typename ::boost::parameter                                 \
+    ::binding<ArgumentPack,tag,::boost::parameter::void_>::type
+/**/
+
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 #endif  // include guard
 

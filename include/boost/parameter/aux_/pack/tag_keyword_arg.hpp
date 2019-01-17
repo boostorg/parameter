@@ -7,6 +7,7 @@
 #define BOOST_PARAMETER_AUX_PACK_TAG_KEYWORD_ARG_HPP
 
 #include <boost/parameter/aux_/tag.hpp>
+#include <boost/parameter/config.hpp>
 
 namespace boost { namespace parameter { namespace aux {
 
@@ -17,6 +18,11 @@ namespace boost { namespace parameter { namespace aux {
         {
             typedef typename ::boost::parameter::aux::tag<K,T>::type type;
         };
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        template <typename K, typename T>
+        using fn = typename ::boost::parameter::aux::tag<K,T>::type;
+#endif
     };
 }}} // namespace boost::parameter::aux
 

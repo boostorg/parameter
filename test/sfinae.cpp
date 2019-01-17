@@ -15,7 +15,7 @@ as 3 or greater.
 #endif
 #endif
 
-#include <boost/parameter.hpp>
+#include <boost/parameter/name.hpp>
 
 namespace test {
 
@@ -23,9 +23,13 @@ namespace test {
     BOOST_PARAMETER_NAME((value, keywords) in(value))
 } // namespace test
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#endif
 
 namespace test {
 
@@ -33,6 +37,9 @@ namespace test {
     struct f_predicate
     {
         template <typename From, typename Args>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using fn = std::is_convertible<From,To>;
+#else
         struct apply
           : boost::mpl::if_<
                 boost::is_convertible<From,To>
@@ -41,9 +48,12 @@ namespace test {
             >
         {
         };
+#endif
     };
 } // namespace test
 
+#include <boost/parameter/parameters.hpp>
+#include <boost/parameter/optional.hpp>
 #include <string>
 
 namespace test {
@@ -116,9 +126,11 @@ namespace test {
 
 #if !defined(BOOST_NO_SFINAE) && \
     !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x592))
-
 #include <boost/core/enable_if.hpp>
+
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/is_same.hpp>
+#endif
 
 namespace test {
 
@@ -129,11 +141,15 @@ namespace test {
     // SFINAE-enabled code will work, except of course the SFINAE.
     template <typename A0, typename A1>
     typename boost::enable_if<
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        std::is_same<int,A0>
+#else
         typename boost::mpl::if_<
             boost::is_same<int,A0>
           , boost::mpl::true_
           , boost::mpl::false_
         >::type
+#endif
       , int
     >::type
         f(A0 const& a0, A1 const& a1)

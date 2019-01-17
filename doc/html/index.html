@@ -186,14 +186,16 @@ id="id39">5&nbsp;&nbsp;&nbsp;Portability Considerations</a>
 <ul class="auto-toc">
 <li><a class="reference internal" href="#perfect-forwarding-support"
 id="id40">5.1&nbsp;&nbsp;&nbsp;Perfect Forwarding Support</a></li>
+<li><a class="reference internal" href="#boost-mp11-support"
+id="id41">5.1&nbsp;&nbsp;&nbsp;Boost.MP11 Support</a></li>
 <li><a class="reference internal" href="#no-sfinae-support"
-id="id42">5.2&nbsp;&nbsp;&nbsp;No SFINAE Support</a></li>
+id="id42">5.3&nbsp;&nbsp;&nbsp;No SFINAE Support</a></li>
 <li><a class="reference internal" href="#no-support-for-result-of"
-id="id43">5.3&nbsp;&nbsp;&nbsp;No Support for
+id="id43">5.4&nbsp;&nbsp;&nbsp;No Support for
 <tt class="docutils literal">result_of</tt></a></li>
 <li><a class="reference internal"
 href="#compiler-can-t-see-references-in-unnamed-namespace"
-id="id44">5.4&nbsp;&nbsp;&nbsp;Compiler Can't See References In Unnamed
+id="id44">5.5&nbsp;&nbsp;&nbsp;Compiler Can't See References In Unnamed
 Namespace</a></li>
 </ul>
 </li>
@@ -2644,8 +2646,26 @@ href="../../test/preprocessor_eval_category.cpp"
 >test/preprocessor_eval_category.cpp</a> test programs demonstrate this
 support.</p>
 </div>
+<div class="section" id="boost-mp11-support">
+<h2><a class="toc-backref" href="#id41">5.2&nbsp;&nbsp;&nbsp;Boost.MP11
+Support</a></h2>
+<p>If your compiler is sufficiently compliant with the C++11 standard, then
+the Parameter library will <tt class="docutils literal">#define</tt> the macro
+<a class="reference external"
+href="reference.html#boost-parameter-can-use-mp11"><tt
+class="docutils literal">BOOST_PARAMETER_CAN_USE_MP11</tt></a> unless you
+disable it manually.  The <a class="reference external"
+href="../../test/singular.cpp">test/singular.cpp</a>, <a
+class="reference external" href="../../test/compose.cpp">test/compose.cpp</a>,
+<a class="reference external" href="../../test/optional_deduced_sfinae.cpp"
+>test/optional_deduced_sfinae.cpp</a>, and <a class="reference external"
+href="../../test/deduced_dependent_predicate.cpp"
+>test/deduced_dependent_predicate.cpp</a> test programs demonstrate support
+for <a class="reference external" href="../../../mp11/doc/html/mp11.html"
+>Boost.MP11</a>.</p>
+</div>
 <div class="section" id="no-sfinae-support">
-<h2><a class="toc-backref" href="#id42">5.2&nbsp;&nbsp;&nbsp;No SFINAE
+<h2><a class="toc-backref" href="#id42">5.3&nbsp;&nbsp;&nbsp;No SFINAE
 Support</a></h2>
 <p>Some older compilers don't support SFINAE.  If your compiler meets
 that criterion, then Boost headers will
@@ -2655,7 +2675,7 @@ functions won't be removed from the overload set based on their
 signatures.</p>
 </div>
 <div class="section" id="no-support-for-result-of">
-<h2><a class="toc-backref" href="#id43">5.3&nbsp;&nbsp;&nbsp;No Support
+<h2><a class="toc-backref" href="#id43">5.4&nbsp;&nbsp;&nbsp;No Support
 for</a> <a class="reference external"
 href="../../../utility/utility.htm#result_of"
 ><tt class="docutils literal">result_of</tt></a></h2>
@@ -2703,7 +2723,7 @@ are unspecified, the workaround is to use
 .. |BOOST_PARAMETER_MATCH| replace:: ``BOOST_PARAMETER_MATCH`` -->
 </div>
 <div class="section" id="compiler-can-t-see-references-in-unnamed-namespace">
-<h2><a class="toc-backref" href="#id44">5.4&nbsp;&nbsp;&nbsp;Compiler Can't
+<h2><a class="toc-backref" href="#id44">5.5&nbsp;&nbsp;&nbsp;Compiler Can't
 See References In Unnamed Namespace</a></h2>
 <p>If you use Microsoft Visual C++ 6.x, you may find that the compiler has
 trouble finding your keyword objects.  This problem has been observed, but

@@ -224,11 +224,16 @@ namespace test {
 } // namespace test
 
 #include <boost/parameter/value_type.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
+#endif
 
 namespace test {
 
@@ -236,6 +241,24 @@ namespace test {
     struct string_predicate
     {
         template <typename Arg, typename Args>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using fn = std::is_convertible<
+            Arg
+          , std::basic_string<
+                typename std::remove_const<
+                    typename std::remove_pointer<
+                        typename boost::parameter::value_type<
+                            Args
+                          , CharConstPtrParamTag
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
+                          , char const*
+#endif
+                        >::type
+                    >::type
+                >::type
+            >
+        >;
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
         struct apply
           : boost::mpl::if_<
                 boost::is_convertible<
@@ -259,6 +282,7 @@ namespace test {
             >
         {
         };
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
     };
 } // namespace test
 

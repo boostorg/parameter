@@ -3,14 +3,19 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/parameter/config.hpp>
 #include <boost/parameter/parameters.hpp>
 #include <boost/parameter/name.hpp>
 #include <boost/parameter/binding.hpp>
+#include <boost/parameter/config.hpp>
+#include "deduced.hpp"
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
-#include "deduced.hpp"
+#endif
 
 #if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
 #include <boost/tti/detail/dnullptr.hpp>
@@ -26,6 +31,9 @@ namespace test {
     struct predicate
     {
         template <typename From, typename Args>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using fn = std::is_convertible<From,To>;
+#else
         struct apply
           : boost::mpl::if_<
                 boost::is_convertible<From,To>
@@ -34,6 +42,7 @@ namespace test {
             >
         {
         };
+#endif
     };
 } // namespace test
 

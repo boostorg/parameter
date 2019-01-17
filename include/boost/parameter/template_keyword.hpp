@@ -8,6 +8,13 @@
 #define BOOST_PARAMETER_TEMPLATE_KEYWORD_HPP
 
 #include <boost/parameter/aux_/template_keyword.hpp>
+#include <boost/parameter/config.hpp>
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/integral.hpp>
+#include <boost/mp11/utility.hpp>
+#include <type_traits>
+#else
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -15,6 +22,7 @@
 #include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/is_array.hpp>
+#endif
 
 namespace boost { namespace parameter { 
 
@@ -39,6 +47,18 @@ namespace boost { namespace parameter {
         // Simply making reference == value_type& would break all the
         // legacy code that uses binding<...> to access named template
         // parameters. -- David Abrahams
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        using reference = typename ::boost::mp11::mp_eval_if<
+            ::boost::mp11::mp_if<
+                ::std::is_function<value_type>
+              , ::boost::mp11::mp_true
+              , ::std::is_array<value_type>
+            >
+          , ::std::add_lvalue_reference<value_type>
+          , ::boost::mp11::mp_identity
+          , value_type
+        >::type;
+#else
         typedef typename ::boost::mpl::eval_if<
             typename ::boost::mpl::if_<
                 ::boost::is_function<value_type>
@@ -48,6 +68,7 @@ namespace boost { namespace parameter {
           , ::boost::add_lvalue_reference<value_type>
           , ::boost::mpl::identity<value_type>
         >::type reference;
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
     };
 }} // namespace boost::parameter
 

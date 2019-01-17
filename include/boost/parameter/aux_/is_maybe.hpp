@@ -13,6 +13,19 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <type_traits>
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename T>
+    using is_maybe = ::std::is_base_of<
+        ::boost::parameter::aux::maybe_base
+      , typename ::std::remove_const<T>::type
+    >;
+}}} // namespace boost::parameter::aux
+
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_base_of.hpp>
@@ -34,5 +47,6 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 #endif  // include guard
 
