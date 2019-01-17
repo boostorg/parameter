@@ -220,7 +220,7 @@ namespace test {
 #include <boost/mpl/if.hpp>
 
 #if !defined(BOOST_NO_SFINAE)
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #endif
@@ -248,7 +248,7 @@ namespace test {
                   , boost::mpl::true_
                   , boost::mpl::false_
                 >::type
-            >::type* = BOOST_TTI_DETAIL_NULLPTR
+            >::type* = BOOST_PARAMETER_AUX_PP_NULLPTR
 #endif  // BOOST_NO_SFINAE
         )
         {
