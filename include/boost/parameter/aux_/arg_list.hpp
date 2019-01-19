@@ -673,7 +673,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif
 
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #endif
 
 namespace boost { namespace parameter { namespace aux {
@@ -780,7 +780,7 @@ namespace boost { namespace parameter { namespace aux {
         BOOST_MPL_ASSERT_MSG(
             sizeof(
                 Next::has_key(
-                    static_cast<key_type*>(BOOST_TTI_DETAIL_NULLPTR)
+                    static_cast<key_type*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
                 )
             ) == sizeof(::boost::parameter::aux::no_tag)
           , duplicate_keyword
@@ -790,7 +790,7 @@ namespace boost { namespace parameter { namespace aux {
         typedef ::boost::mpl::bool_<
             sizeof(
                 Next::has_key(
-                    static_cast<key_type*>(BOOST_TTI_DETAIL_NULLPTR)
+                    static_cast<key_type*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
                 )
             ) == sizeof(::boost::parameter::aux::no_tag)
         > _has_unique_key;

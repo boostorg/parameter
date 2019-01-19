@@ -48,7 +48,7 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 #endif
 
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 
 #if defined(BOOST_PARAMETER_CAN_USE_MP11) && !( \
         BOOST_WORKAROUND(BOOST_MSVC, >= 1900) && \
@@ -80,7 +80,7 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::is_cv_reference_wrapper_check(
                 static_cast<
                     typename ::std::remove_reference<T>::type*
-                >(BOOST_TTI_DETAIL_NULLPTR)
+                >(BOOST_PARAMETER_AUX_PP_NULLPTR)
             )
         ) == sizeof(::boost::parameter::aux::yes_tag)
     >;
@@ -112,7 +112,7 @@ namespace boost { namespace parameter { namespace aux {
                     ::boost::parameter::aux::is_cv_reference_wrapper_check(
                         static_cast<
                             typename ::boost::remove_reference<T>::type*
-                        >(BOOST_TTI_DETAIL_NULLPTR)
+                        >(BOOST_PARAMETER_AUX_PP_NULLPTR)
                     )
                 ) == sizeof(::boost::parameter::aux::yes_tag)
             )

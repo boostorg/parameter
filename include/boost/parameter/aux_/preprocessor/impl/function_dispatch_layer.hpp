@@ -263,7 +263,7 @@
 /**/
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
 
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 
 // Expands to three dispatch functions that take in all required parameters
 // and the first n optional parameters.  The third dispatch function bears
@@ -303,7 +303,7 @@
             BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                   \
           , this->                                                           \
         ) BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                      \
-            static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
+            static_cast<ResultType(*)()>(BOOST_PARAMETER_AUX_PP_NULLPTR)     \
           , args                                                             \
           , 0L                                                               \
             BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_REPEAT(                    \
@@ -329,7 +329,7 @@
             BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                   \
           , this->                                                           \
         ) BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 0)(                      \
-            static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
+            static_cast<ResultType(*)()>(BOOST_PARAMETER_AUX_PP_NULLPTR)     \
           , args                                                             \
           , 0L                                                               \
             BOOST_PARAMETER_FUNCTION_DISPATCH_ARG_REPEAT(                    \
@@ -359,7 +359,7 @@
             BOOST_PARAMETER_FUNCTION_DISPATCH_IS_MEMBER(x)                   \
           , this->                                                           \
         ) BOOST_PARAMETER_FUNCTION_DISPATCH_NAME(x, 1)(                      \
-            static_cast<ResultType(*)()>(BOOST_TTI_DETAIL_NULLPTR)           \
+            static_cast<ResultType(*)()>(BOOST_PARAMETER_AUX_PP_NULLPTR)     \
           , (args                                                            \
               , BOOST_PARAMETER_FUNCTION_DISPATCH_DEFAULT(                   \
                     n                                                        \
@@ -434,7 +434,7 @@
                     BOOST_PARAMETER_FUNCTION_DISPATCH_BASE_NAME(x)           \
                   , BOOST_PARAMETER_FUNCTION_DISPATCH_IS_CONST(x)            \
                 )<Args>::type(*)()                                           \
-            >(BOOST_TTI_DETAIL_NULLPTR)                                      \
+            >(BOOST_PARAMETER_AUX_PP_NULLPTR)                                \
           , args                                                             \
           , 0L                                                               \
             BOOST_PP_SEQ_FOR_EACH(                                           \

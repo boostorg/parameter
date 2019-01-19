@@ -206,7 +206,7 @@ namespace test {
 #include <string>
 
 #if !defined(BOOST_NO_SFINAE)
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #include <boost/core/enable_if.hpp>
 #if !defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/type_traits/is_base_of.hpp>
@@ -231,7 +231,7 @@ namespace test {
                   , boost::mpl::true_
                   , boost::mpl::false_
                 >::type
-            >::type* = BOOST_TTI_DETAIL_NULLPTR
+            >::type* = BOOST_PARAMETER_AUX_PP_NULLPTR
 #endif  // BOOST_NO_SFINAE
         ) : f(args[test::_value | 1.f]), i(args[test::_index | 2])
         {
@@ -276,7 +276,7 @@ namespace test {
                   , boost::mpl::false_
                 >::type
 #endif
-            >::type* = BOOST_TTI_DETAIL_NULLPTR
+            >::type* = BOOST_PARAMETER_AUX_PP_NULLPTR
 #endif  // BOOST_NO_SFINAE
         )
         {

@@ -111,7 +111,7 @@
 /**/
 #endif  // BOOST_PARAMETER_CAN_USE_MP11
 
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #include <boost/preprocessor/control/expr_if.hpp>
 
 // Exapnds to a variadic function that is enabled if and only if
@@ -136,7 +136,7 @@
                 typename BOOST_PARAMETER_NO_SPEC_FUNCTION_RESULT_NAME(       \
                     impl, c                                                  \
                 )<TaggedArg0,TaggedArgs...>::type(*)()                       \
-            >(BOOST_TTI_DETAIL_NULLPTR)                                      \
+            >(BOOST_PARAMETER_AUX_PP_NULLPTR)                                \
           , ::boost::parameter::compose(arg0, args...)                       \
         );                                                                   \
     }
@@ -161,7 +161,7 @@
                 typename BOOST_PARAMETER_NO_SPEC_FUNCTION_RESULT_NAME(       \
                     impl, c                                                  \
                 )<TaggedArg0,TaggedArgs...>::type(*)()                       \
-            >(BOOST_TTI_DETAIL_NULLPTR)                                      \
+            >(BOOST_PARAMETER_AUX_PP_NULLPTR)                                \
           , ::boost::parameter::compose(arg0, args...)                       \
         );                                                                   \
     }
