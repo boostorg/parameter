@@ -16,8 +16,8 @@ as 2 or greater.
 
 #include <boost/parameter/preprocessor.hpp>
 #include <boost/parameter/name.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
 #include <string>
 
@@ -43,7 +43,7 @@ namespace test {
             (optional
                 (x
                   , *(boost::mp11::mp_quote<test::predicate>)
-                  , static_cast<char const*>(BOOST_TTI_DETAIL_NULLPTR)
+                  , static_cast<char const*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
                 )
             )
         )
@@ -67,7 +67,7 @@ namespace test {
             (optional
                 (x
                   , *(test::predicate)
-                  , static_cast<char const*>(BOOST_TTI_DETAIL_NULLPTR)
+                  , static_cast<char const*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
                 )
             )
         )

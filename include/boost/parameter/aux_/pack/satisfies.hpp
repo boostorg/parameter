@@ -22,7 +22,7 @@
 #include <boost/mpl/bool.hpp>
 #endif
 #include <boost/parameter/aux_/yesno.hpp>
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #endif  // MSVC-7.1 workarounds needed
 
 namespace boost { namespace parameter { namespace aux {
@@ -50,9 +50,9 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::to_yesno(
                 ArgList::satisfies(
                     static_cast<ParameterRequirements*>(
-                        BOOST_TTI_DETAIL_NULLPTR
+                        BOOST_PARAMETER_AUX_PP_NULLPTR
                     )
-                  , static_cast<ArgList*>(BOOST_TTI_DETAIL_NULLPTR)
+                  , static_cast<ArgList*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
                 )
             )
         ) == sizeof(::boost::parameter::aux::yes_tag)
@@ -94,9 +94,9 @@ namespace boost { namespace parameter { namespace aux {
                     ::boost::parameter::aux::to_yesno(
                         ArgList::satisfies(
                             static_cast<ParameterRequirements*>(
-                                BOOST_TTI_DETAIL_NULLPTR
+                                BOOST_PARAMETER_AUX_PP_NULLPTR
                             )
-                          , static_cast<ArgList*>(BOOST_TTI_DETAIL_NULLPTR)
+                          , static_cast<ArgList*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
                         )
                     )
                 ) == sizeof(::boost::parameter::aux::yes_tag)

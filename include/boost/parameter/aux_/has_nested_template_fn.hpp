@@ -7,8 +7,8 @@
 #define BOOST_PARAMETER_AUX_HAS_NESTED_TEMPLATE_FN_HPP
 
 #include <boost/parameter/aux_/yesno.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #include <boost/parameter/config.hpp>
-#include <boost/tti/detail/dnullptr.hpp>
 
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mp11/integral.hpp>
@@ -45,7 +45,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::mp11::mp_identity<U> const volatile*
               , ::boost::parameter::aux::has_nested_template_fn_variadic<
                     U::template fn
-                >* = BOOST_TTI_DETAIL_NULLPTR
+                >* = BOOST_PARAMETER_AUX_PP_NULLPTR
             );
 #else
         template <typename U>
@@ -54,7 +54,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::mpl::identity<U> const volatile*
               , ::boost::parameter::aux::has_nested_template_fn_arity_2<
                     U::template fn
-                >* = BOOST_TTI_DETAIL_NULLPTR
+                >* = BOOST_PARAMETER_AUX_PP_NULLPTR
             );
 #endif
 
@@ -73,7 +73,7 @@ namespace boost { namespace parameter { namespace aux {
 #else
                         ::boost::mpl::identity<T> const volatile*
 #endif
-                    >(BOOST_TTI_DETAIL_NULLPTR)
+                    >(BOOST_PARAMETER_AUX_PP_NULLPTR)
                 )
             ) == sizeof(::boost::parameter::aux::yes_tag)
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)

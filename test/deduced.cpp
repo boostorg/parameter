@@ -18,7 +18,7 @@
 #endif
 
 #if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
-#include <boost/tti/detail/dnullptr.hpp>
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #endif
 
 namespace test {
@@ -156,7 +156,7 @@ int main()
 #if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
     // Fails because boost::parameter::aux::make_arg_list<> evaluates
     // boost::parameter::aux::is_named_argument<> to boost::mpl::false_
-    // for static_cast<long*>(BOOST_TTI_DETAIL_NULLPTR).
+    // for static_cast<long*>(BOOST_PARAMETER_AUX_PP_NULLPTR).
     test::check<
         boost::parameter::parameters<
             test::tag::x
@@ -172,7 +172,7 @@ int main()
     >(
         (test::_x = 0, test::_y = 1, test::_z = std::string("foo"))
       , test::_x = 0
-      , static_cast<long*>(BOOST_TTI_DETAIL_NULLPTR)
+      , static_cast<long*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
       , 1
     );
 #endif
