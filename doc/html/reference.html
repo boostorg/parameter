@@ -106,15 +106,9 @@ src="../../../../boost.png" /></a></p>
 <li><a class="reference internal" href="#are-tagged-arguments" id="id49"
 >5.4&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >are_tagged_arguments</tt></a></li>
-<li><a class="reference internal" href="#are-tagged-arguments-mp11" id="id49"
+<li><a class="reference internal" href="#is-argument-pack" id="id50"
 >5.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
->are_tagged_arguments_mp11</tt></a></li>
-<li><a class="reference internal" href="#is-argument-pack" id="id51"
->5.6&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >is_argument_pack</tt></a></li>
-<li><a class="reference internal" href="#is-argument-pack-mp11" id="id52"
->5.7&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
->is_argument_pack_mp11</tt></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#function-templates" id="id53"
@@ -406,17 +400,12 @@ href="../../../mpl/doc/refmanual/associative-sequence.html"><span
 class="concept">MPL Associative Sequence</span></a> consisting of the <a
 class="reference internal" href="#keyword-tag-type">keyword tag type</a>s in
 its <a class="reference internal" href="#tagged-reference">tagged
-reference</a>s.  If <a class="reference internal"
-href="#boost-parameter-can-use-mp11"><tt class="docutils literal"
->BOOST_PARAMETER_CAN_USE_MP11</tt></a> is defined, then every <span
-class="concept">ArgumentPack</span> is also a valid <a
-class="reference external" href="../../../mp11/doc/html/mp11.html"
->Boost.MP11</a> list.  The <a class="reference external"
-href="../../test/singular.cpp">test/singular.cpp</a>, <a
-class="reference external" href="../../test/compose.cpp"
->test/compose.cpp</a>, and <a class="reference external"
-href="../../test/mpl.cpp">test/mpl.cpp</a> test programs demonstrate this
-functionality.</p>
+reference</a>s.  The <a
+class="reference external" href="../../test/singular.cpp"
+>test/singular.cpp</a>, <a class="reference external"
+href="../../test/compose.cpp">test/compose.cpp</a>, and <a
+class="reference external" href="../../test/mpl.cpp">test/mpl.cpp</a> test
+programs demonstrate this functionality.</p>
 <div class="section" id="requirements">
 <h3>Requirements</h3>
 <p>In the table below,</p>
@@ -1740,91 +1729,8 @@ href="../../../core/doc/html/core/enable_if.html">disable_if</a>&lt;
 </tbody>
 </table>
 </div>
-<div class="section" id="are-tagged-arguments-mp11">
-<h2><a class="toc-backref" href="#id50">5.5&nbsp;&nbsp;&nbsp;<tt
-class="docutils literal">are_tagged_arguments_mp11</tt></a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field">
-<th class="field-name">Defined in:</th>
-<td class="field-body"><a class="reference external"
-href="../../../../boost/parameter/are_tagged_arguments.hpp"
->boost/parameter/are_tagged_arguments.hpp</a> if <a class="reference internal"
-href="#boost-parameter-can-use-mp11"><tt class="docutils literal"
->BOOST_PARAMETER_CAN_USE_MP11</tt></a> is defined</td>
-</tr>
-</tbody>
-</table>
-<pre class="literal-block">
-template &lt;typename T0, typename ...Pack&gt;
-struct are_tagged_arguments_mp11  // : mp11::mp_true or mp11::mp_false
-{
-};
-</pre>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field">
-<th class="field-name" colspan="2">Returns:</th>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td class="field-body"><tt class="docutils literal">mp11::mp_true</tt> if <tt
-class="docutils literal">T0</tt> and all elements in parameter pack <tt
-class="docutils literal">Pack</tt> are <a class="reference internal"
-href="#tagged-reference">tagged reference</a> types, <tt
-class="docutils literal">mp11::mp_false</tt> otherwise.</td>
-</tr>
-<tr class="field">
-<th class="field-name" colspan="2">Example usage:</th>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td class="field-body">
-<p class="first">When implementing a Boost.Parameter-enabled constructor for a
-container that conforms to the C++ standard, one needs to remember that the
-standard requires the presence of other constructors that are typically
-defined as templates, such as range constructors.  To avoid overload
-ambiguities between the two constructors, use this metafunction in conjunction
-with <tt class="docutils literal">disable_if</tt> to define the range
-constructor.</p>
-<pre class="first literal-block">
-template &lt;typename B&gt;
-class frontend : public B
-{
-    struct _enabler
-    {
-    };
-
- public:
-    <a class="reference internal"
-href="#boost-parameter-no-spec-constructor-cls-impl"
->BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR</a>(frontend, (B))
-
-    template &lt;typename Iterator&gt;
-    frontend(
-        Iterator itr
-      , Iterator itr_end
-      , typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html">disable_if</a>&lt;
-            are_tagged_arguments_mp11&lt;Iterator&gt;
-          , _enabler
-        &gt;::type = _enabler()
-    ) : B(itr, itr_end)
-    {
-    }
-};
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="section" id="is-argument-pack">
-<h2><a class="toc-backref" href="#id51">5.6&nbsp;&nbsp;&nbsp;<tt
+<h2><a class="toc-backref" href="#id50">5.5&nbsp;&nbsp;&nbsp;<tt
 class="docutils literal">is_argument_pack</tt></a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1902,105 +1808,6 @@ href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
 href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
             boost::<a class="reference external"
 href="../../../type_traits/doc/html/boost_typetraits/is_convertible.html"
->is_convertible</a>&lt;U,T&gt;
-          , _enabler
-        &gt;::type = _enabler()
-    ) : a0(copy.get_a0())
-    {
-    }
-
-    T const&amp; get_a0() const
-    {
-        return this-&gt;a0;
-    }
-};
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="is-argument-pack-mp11">
-<h2><a class="toc-backref" href="#id52">5.7&nbsp;&nbsp;&nbsp;<tt
-class="docutils literal">is_argument_pack_mp11</tt></a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field">
-<th class="field-name">Defined in:</th>
-<td class="field-body"><a class="reference external"
-href="../../../../boost/parameter/is_argument_pack.hpp"
->boost/parameter/is_argument_pack.hpp</a> if <a class="reference internal"
-href="#boost-parameter-can-use-mp11"><tt class="docutils literal"
->BOOST_PARAMETER_CAN_USE_MP11</tt></a> is defined</td>
-</tr>
-</tbody>
-</table>
-<pre class="literal-block">
-template &lt;typename T&gt;
-struct is_argument_pack_mp11  // : mp11::mp_true or mp11::mp_false
-{
-};
-</pre>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field">
-<th class="field-name" colspan="2">Returns:</th>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td class="field-body"><tt class="docutils literal">mp11::mp_true</tt> if <tt
-class="docutils literal">T</tt> is a model of <a class="reference internal"
-href="#argumentpack"><span class="concept">ArgumentPack</span></a>, <tt
-class="docutils literal">mp11::mp_false</tt> otherwise.</td>
-</tr>
-<tr class="field">
-<th class="field-name" colspan="2">Example usage:</th>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td class="field-body">
-<p class="first">To avoid overload ambiguities between a constructor that
-takes in an <a class="reference internal" href="#argumentpack"><span
-class="concept">ArgumentPack</span></a> and a templated conversion
-constructor, use this metafunction in conjunction with <tt
-class="docutils literal">enable_if</tt>.</p>
-<pre class="first literal-block">
-<a class="reference internal" href="#boost-parameter-name-name"
->BOOST_PARAMETER_NAME</a>(a0)
-
-template &lt;typename T&gt;
-class backend0
-{
-    struct _enabler
-    {
-    };
-
-    T a0;
-
- public:
-    template &lt;typename ArgPack&gt;
-    explicit backend0(
-        ArgPack const&amp; args
-      , typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
-            is_argument_pack_mp11&lt;ArgPack&gt;
-          , _enabler
-        &gt;::type = _enabler()
-    ) : a0(args[_a0])
-    {
-    }
-
-    template &lt;typename U&gt;
-    backend0(
-        backend0&lt;U&gt; const&amp; copy
-      , typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
-            std::<a class="reference external"
-href="http://en.cppreference.com/w/cpp/types/is_convertible"
 >is_convertible</a>&lt;U,T&gt;
           , _enabler
         &gt;::type = _enabler()
