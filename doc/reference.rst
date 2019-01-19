@@ -1629,7 +1629,7 @@ Approximate expansion:
                 typename boost_param_result\_ ## __LINE__ ## **name**\ <
                     Args
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , args
           , std::`forward`_<
                 typename |value_type|_<
@@ -1664,7 +1664,7 @@ Approximate expansion:
         )
     {
         return boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
-            static_cast<ResultType(\*)()>(std::`nullptr`_)
+            static_cast<ResultType(\*)()>(`nullptr`_)
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
             )
@@ -2049,7 +2049,7 @@ Approximate expansion:
                 typename boost_param_result\_ ## __LINE__ ## **name**\ <
                     Args
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , args
           , std::`forward`_<
                 typename |value_type|_<
@@ -2084,7 +2084,7 @@ Approximate expansion:
         )
     {
         return this->boost_param_dispatch_0boost\_ ## __LINE__ ## **name**\ (
-            static_cast<ResultType(\*)()>(std::`nullptr`_)
+            static_cast<ResultType(\*)()>(`nullptr`_)
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
             )
@@ -2470,7 +2470,7 @@ Approximate expansion:
                 typename boost_param_result_const\_ ## __LINE__ ## **name**\ <
                     Args
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , args
           , std::`forward`_<
                 typename |value_type|_<
@@ -2506,7 +2506,7 @@ Approximate expansion:
     {
         return this->
         boost_param_dispatch_const_0boost\_ ## __LINE__ ## **name**\ (
-            static_cast<ResultType(\*)()>(std::`nullptr`_)
+            static_cast<ResultType(\*)()>(`nullptr`_)
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
             )
@@ -2786,7 +2786,7 @@ Approximate expansion:
                 typename boost_param_result\_ ## __LINE__ ## operator<
                     Args
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , args
           , std::`forward`_<
                 typename |value_type|_<
@@ -2821,7 +2821,7 @@ Approximate expansion:
         )
     {
         return this->boost_param_dispatch_0boost\_ ## __LINE__ ## operator(
-            static_cast<ResultType(\*)()>(std::`nullptr`_)
+            static_cast<ResultType(\*)()>(`nullptr`_)
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
             )
@@ -3211,7 +3211,7 @@ Approximate expansion:
                 typename boost_param_result_const\_ ## __LINE__ ## operator<
                     Args
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , args
           , std::`forward`_<
                 typename |value_type|_<
@@ -3247,7 +3247,7 @@ Approximate expansion:
     {
         return this->
         boost_param_dispatch_const_0boost\_ ## __LINE__ ## operator(
-            static_cast<ResultType(\*)()>(std::`nullptr`_)
+            static_cast<ResultType(\*)()>(`nullptr`_)
           , (args, *keyword object of optional parameter* ## **n + 1** =
                 *default value of optional parameter* ## **n + 1**
             )
@@ -5256,7 +5256,7 @@ Approximate expansion:
                     TaggedArg0
                   , TaggedArgs...
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , |compose|_(arg0, args...)
         );
     }
@@ -5453,7 +5453,7 @@ Approximate expansion:
                     TaggedArg0
                   , TaggedArgs...
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , |compose|_(arg0, args...)
         );
     }
@@ -5660,7 +5660,7 @@ Approximate expansion:
                     TaggedArg0
                   , TaggedArgs...
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , |compose|_(arg0, args...)
         );
     }
@@ -5853,7 +5853,7 @@ Approximate expansion:
                     TaggedArg0
                   , TaggedArgs...
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , |compose|_(arg0, args...)
         );
     }
@@ -6062,7 +6062,7 @@ Approximate expansion:
                     TaggedArg0
                   , TaggedArgs...
                 >::type(\*)()
-            >(std::`nullptr`_)
+            >(`nullptr`_)
           , |compose|_(arg0, args...)
         );
     }
@@ -6937,7 +6937,7 @@ Given the following definitions::
             (optional
                 (x
                   , \*(boost::mp11::mp_quote<predicate>)
-                  , static_cast<char const\*>(std::`nullptr`_)
+                  , static_cast<char const\*>(`nullptr`_)
                 )
             )
         )
@@ -6968,7 +6968,7 @@ Without `Boost.MP11`_, deduced parameter definitions tend to be more verbose::
             (optional
                 (x
                   , \*(predicate)
-                  , static_cast<char const\*>(std::`nullptr`_)
+                  , static_cast<char const\*>(`nullptr`_)
                 )
             )
         )
