@@ -13,7 +13,7 @@
 #include <boost/type_traits/add_pointer.hpp>
 #include "basics.hpp"
 
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mp11/list.hpp>
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/mpl.hpp>
@@ -21,7 +21,7 @@
 
 namespace test {
 
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
     template <typename Set>
     struct assert_in_set_0
     {
@@ -49,7 +49,7 @@ namespace test {
     template <typename Expected, typename Args>
     void f_impl(Args const& p BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected))
     {
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
         static_assert(
             boost::mp11::mp_size<Expected>::value == boost::mp11::mp_size<
                 Args
@@ -128,7 +128,7 @@ namespace test {
         typedef test::tag::value value_;
         typedef test::tag::index index_;
 
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
         test::f<
             boost::mp11::mp_list<tester_,name_,value_,index_>
         >(1, 2, 3, 4);

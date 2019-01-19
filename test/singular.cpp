@@ -31,7 +31,7 @@ namespace test {
 #include <boost/mpl/assert.hpp>
 #include <boost/core/lightweight_test.hpp>
 
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mp11/map.hpp>
 #include <type_traits>
 #endif
