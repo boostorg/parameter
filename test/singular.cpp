@@ -31,8 +31,9 @@ namespace test {
 #include <boost/mpl/assert.hpp>
 #include <boost/core/lightweight_test.hpp>
 
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
-#include <boost/mp11/algorithm.hpp>
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/map.hpp>
+#include <type_traits>
 #endif
 
 namespace test {
@@ -40,22 +41,17 @@ namespace test {
     template <typename ArgumentPack, typename K, typename T>
     void check0(ArgumentPack const& p, K const& kw, T const& value)
     {
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
         static_assert(
-            boost::parameter::is_argument_pack_mp11<ArgumentPack>::value
-          , "p must model the ArgumentPack concept"
-        );
-        static_assert(
-            !boost::mp11::mp_contains<ArgumentPack,test::tag::z>::value
+            !boost::mp11::mp_map_contains<ArgumentPack,test::tag::z>::value
           , "test::tag::z must not be in ArgumentPack"
         );
         static_assert(
-            0 == boost::mp11::mp_count<ArgumentPack,test::tag::z>::value
-          , "typename K::tag must not be found in ArgumentPack"
-        );
-        static_assert(
-            1 == boost::mp11::mp_find<ArgumentPack,test::tag::z>::value
-          , "typename K::tag must not be found in ArgumentPack"
+            std::is_same<
+                boost::mp11::mp_map_find<ArgumentPack,test::tag::z>
+              , void
+            >::value
+          , "test::tag::z must not be found in ArgumentPack"
         );
 #endif  // BOOST_PARAMETER_CAN_USE_MP11
         BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgumentPack>));
@@ -81,26 +77,28 @@ namespace test {
     template <typename ArgumentPack, typename K, typename T>
     void check1(ArgumentPack const& p, K const& kw, T const& value)
     {
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
         static_assert(
-            boost::parameter::is_argument_pack_mp11<ArgumentPack>::value
-          , "p must model the ArgumentPack concept"
-        );
-        static_assert(
-            boost::mp11::mp_contains<ArgumentPack,typename K::tag>::value
+            boost::mp11::mp_map_contains<ArgumentPack,typename K::tag>::value
           , "typename K::tag must be in ArgumentPack"
         );
         static_assert(
-            !boost::mp11::mp_contains<ArgumentPack,test::tag::z>::value
+            !boost::mp11::mp_map_contains<ArgumentPack,test::tag::z>::value
           , "test::tag::z must not be in ArgumentPack"
         );
         static_assert(
-            1 == boost::mp11::mp_count<ArgumentPack,typename K::tag>::value
-          , "typename K::tag must be in ArgumentPack exactly once"
+            !std::is_same<
+                boost::mp11::mp_map_find<ArgumentPack,typename K::tag>
+              , void
+            >::value
+          , "typename K::tag must be found in ArgumentPack"
         );
         static_assert(
-            0 == boost::mp11::mp_find<ArgumentPack,typename K::tag>::value
-          , "typename K::tag must be in ArgumentPack at index 0"
+            std::is_same<
+                boost::mp11::mp_map_find<ArgumentPack,test::tag::z>
+              , void
+            >::value
+          , "test::tag::z must not be found in ArgumentPack"
         );
 #endif  // BOOST_PARAMETER_CAN_USE_MP11
         BOOST_MPL_ASSERT((boost::parameter::is_argument_pack<ArgumentPack>));
