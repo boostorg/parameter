@@ -52,7 +52,6 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/aux_/default.hpp>
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
-
 #include <utility>
 
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
@@ -144,6 +143,7 @@ namespace boost { namespace parameter { namespace aux {
     };
 }}} // namespace boost::parameter::aux
 
+#include <boost/parameter/aux_/preprocessor/nullptr.hpp>
 #include <boost/parameter/aux_/yesno.hpp>
 #include <boost/parameter/aux_/is_maybe.hpp>
 #include <boost/parameter/aux_/tagged_argument_fwd.hpp>
@@ -156,7 +156,6 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/tti/detail/dnullptr.hpp>
 #include <boost/core/enable_if.hpp>
 
 namespace boost { namespace parameter { namespace aux {
@@ -361,7 +360,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif
             sizeof(
                 Next::has_key(
-                    static_cast<key_type*>(BOOST_TTI_DETAIL_NULLPTR)
+                    static_cast<key_type*>(BOOST_PARAMETER_AUX_PP_NULLPTR)
                 )
             ) == sizeof(::boost::parameter::aux::no_tag)
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
@@ -1028,157 +1027,6 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
-
-#if defined(BOOST_PARAMETER_CAN_USE_MP11)
-
-namespace boost { namespace mp11 { namespace detail {
-
-    template <>
-    struct mp_is_list_impl< ::boost::parameter::aux::empty_arg_list>
-    {
-        using type = ::boost::mp11::mp_true;
-    };
-
-    template <typename TaggedArg, typename Next, typename EmitsErrors>
-    struct mp_is_list_impl<
-        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
-    >
-    {
-        using type = ::boost::mp11::mp_true;
-    };
-
-    template <>
-    struct mp_size_impl< ::boost::parameter::aux::empty_arg_list>
-    {
-        using type = ::boost::mp11::mp_size_t<0>;
-    };
-
-    template <typename TaggedArg, typename Next, typename EmitsErrors>
-    struct mp_size_impl<
-        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
-    >
-    {
-        using size_minus_1 = typename ::boost::mp11::detail
-        ::mp_size_impl<Next>::type;
-        using type = ::boost::mp11::mp_size_t<size_minus_1::value + 1>;
-    };
-
-    template <typename TaggedArg, typename Next, typename EmitsErrors>
-    struct mp_front_impl<
-        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
-    >
-    {
-        using type = typename TaggedArg::key_type;
-    };
-
-    template <typename TaggedArg, typename Next, typename EmitsErrors>
-    struct mp_pop_front_impl<
-        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
-    >
-    {
-        using type = Next;
-    };
-
-    template <template <typename ...> class B>
-    struct mp_rename_impl< ::boost::parameter::aux::empty_arg_list,B>
-    {
-        using type = B<>;
-    };
-
-    template <
-        typename TaggedArg
-      , typename Next
-      , typename EmitsErrors
-      , template <typename ...> class B
-    >
-    struct mp_rename_impl<
-        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
-      , B
-    >
-    {
-        using type = ::boost::mp11::mp_push_back<
-            typename ::boost::mp11::detail::mp_rename_impl<Next,B>::type
-          , typename TaggedArg::key_type
-        >;
-    };
-}}} // namespace boost::mp11::detail
-
-#include <boost/mp11/algorithm.hpp>
-
-namespace boost { namespace parameter { namespace aux {
-
-    template <typename ArgListNext, typename Tag>
-    struct mp_find_no
-    {
-        using find_next = typename ::boost::mp11::detail
-        ::mp_find_impl<ArgListNext,Tag>::type;
-        using type = ::boost::mp11::mp_size_t<find_next::value + 1>;
-    };
-}}} // namespace boost::parameter::aux
-
-namespace boost { namespace mp11 { namespace detail {
-
-    template <typename Tag>
-    struct mp_count_impl< ::boost::parameter::aux::empty_arg_list,Tag>
-    {
-        using type = ::boost::mp11::mp_size_t<0>;
-    };
-
-    template <typename TA, typename Next, typename EE, typename Tag>
-    struct mp_count_impl<
-        ::boost::parameter::aux::arg_list<TA,Next,EE>
-      , Tag
-    >
-    {
-        using next_count = typename ::boost::mp11::detail
-        ::mp_count_impl<Next,Tag>::type;
-        using type = ::boost::mp11::mp_size_t<
-            (
-                ::std::is_same<typename TA::key_type,Tag>::value ? 1 : 0
-            ) + next_count::value
-        >;
-    };
-
-    template <typename Tag>
-    struct mp_find_impl< ::boost::parameter::aux::empty_arg_list,Tag>
-    {
-        using type = ::boost::mp11::mp_size_t<0>;
-    };
-
-    template <typename TA, typename Next, typename EE, typename Tag>
-    struct mp_find_impl<
-        ::boost::parameter::aux::arg_list<TA,Next,EE>
-      , Tag
-    >
-    {
-        using type = typename ::boost::mp11::mp_if<
-            ::std::is_same<typename TA::key_type,Tag>
-          , ::boost::mp11::mp_identity< ::boost::mp11::mp_size_t<0> >
-          , ::boost::parameter::aux::mp_find_no<Next,Tag>
-        >::type;
-    };
-
-    template <typename TaggedArg, typename Next, typename EmitsErrors>
-    struct mp_at_c_impl<
-        ::boost::parameter::aux::arg_list<TaggedArg,Next,EmitsErrors>
-      , 0
-    >
-    {
-        using type = typename TaggedArg::key_type;
-    };
-
-    template <typename TA, typename Next, typename EE, ::std::size_t I>
-    struct mp_at_c_impl<
-        ::boost::parameter::aux::arg_list<TA,Next,EE>
-      , I
-    >
-    {
-        using type = typename ::boost::mp11::detail
-        ::mp_at_c_impl<Next,I - 1>::type;
-    };
-}}} // namespace boost::mp11::detail
-
-#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 #include <boost/mpl/iterator_tags.hpp>
 
