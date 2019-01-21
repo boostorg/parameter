@@ -24,17 +24,22 @@ namespace boost { namespace parameter { namespace aux {
     template <typename Keyword, typename Arg>
     struct tag_if_lvalue_reference
     {
-        typedef ::boost::parameter::aux::tagged_argument<
-            Keyword
-          , typename ::boost::parameter::aux::unwrap_cv_reference<Arg>::type
-        > type;
+        using type = ::boost::parameter::aux::tagged_argument_list_of_1<
+            ::boost::parameter::aux::tagged_argument<
+                Keyword
+              , typename ::boost::parameter::aux
+                ::unwrap_cv_reference<Arg>::type
+            >
+        >;
     };
 
     template <typename Keyword, typename Arg>
     struct tag_if_scalar
     {
-        typedef ::boost::parameter::aux
-        ::tagged_argument<Keyword,typename ::std::add_const<Arg>::type> type;
+        using type = ::boost::parameter::aux::tagged_argument_list_of_1<
+            ::boost::parameter::aux
+            ::tagged_argument<Keyword,typename ::std::add_const<Arg>::type>
+        >;
     };
 
     template <typename Keyword, typename Arg>
@@ -42,7 +47,9 @@ namespace boost { namespace parameter { namespace aux {
         ::std::is_scalar<typename ::std::remove_const<Arg>::type>
       , ::boost::parameter::aux::tag_if_scalar<Keyword,Arg>
       , ::boost::mp11::mp_identity<
-            ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+            ::boost::parameter::aux::tagged_argument_list_of_1<
+                ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+            >
         >
     >;
 
@@ -84,12 +91,27 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::parameter::aux::is_cv_reference_wrapper<ActualArg>
             >::type
           , ::boost::mpl::identity<
-                ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                ::boost::parameter::aux::tagged_argument_list_of_1<
+#endif
+                    ::boost::parameter::aux::tagged_argument<Keyword,Arg>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+                >
+#endif
             >
           , ::boost::mpl::if_<
                 ::boost::is_scalar<MutArg>
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+              , ::boost::parameter::aux::tagged_argument_list_of_1<
+                    ::boost::parameter::aux::tagged_argument<Keyword,ConstArg>
+                >
+              , ::boost::parameter::aux::tagged_argument_list_of_1<
+                    ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+                >
+#else
               , ::boost::parameter::aux::tagged_argument<Keyword,ConstArg>
               , ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
+#endif
             >
         >::type type;
     };

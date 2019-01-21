@@ -22,6 +22,18 @@ namespace boost { namespace parameter {
 
 namespace boost { namespace parameter { namespace aux {
 
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    template <typename ...TaggedArgs>
+    struct compose_arg_list
+    {
+        using type = ::boost::parameter::aux::flat_like_arg_list<
+            ::boost::parameter::aux::flat_like_arg_tuple<
+                typename TaggedArgs::base_type::key_type
+              , typename TaggedArgs::base_type
+            >...
+        >;
+    };
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
     template <typename TaggedArg0, typename ...TaggedArgs>
     struct compose_arg_list;
 
@@ -40,6 +52,7 @@ namespace boost { namespace parameter { namespace aux {
             ::compose_arg_list<TaggedArgs...>::type
         > type;
     };
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 }}} // namespace boost::parameter::aux
 
 #include <boost/parameter/are_tagged_arguments.hpp>
