@@ -197,11 +197,8 @@ namespace boost { namespace parameter { namespace aux {
           , ::boost::parameter::aux::get_reference<TaggedArg>
         >::type;
 
-        using value_type = ::boost::mp11::mp_if<
-            _holds_maybe
-          , reference
-          , typename TaggedArg::value_type
-        >;
+        using value_type = ::boost::mp11
+        ::mp_if<_holds_maybe,reference,typename TaggedArg::value_type>;
 #else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
         typedef typename ::boost::mpl::eval_if<
             _holds_maybe
@@ -418,8 +415,8 @@ namespace boost { namespace parameter { namespace aux {
         inline BOOST_CONSTEXPR reference
             operator[](::boost::parameter::keyword<key_type> const&) const
         {
-#if defined(BOOST_PARAMETER_CAN_USE_MP11) && \
-    !defined(BOOST_NO_CXX14_CONSTEXPR)
+#if !defined(BOOST_NO_CXX14_CONSTEXPR)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
             static_assert(!_holds_maybe::value, "must not hold maybe");
 #elif !( \
         BOOST_WORKAROUND(BOOST_GCC, >= 40700) && \
@@ -427,6 +424,7 @@ namespace boost { namespace parameter { namespace aux {
     ) && !BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
     !BOOST_WORKAROUND(BOOST_MSVC, < 1910)
             BOOST_MPL_ASSERT_NOT((_holds_maybe));
+#endif
 #endif
             return this->arg.get_value();
         }
@@ -455,8 +453,8 @@ namespace boost { namespace parameter { namespace aux {
                 BOOST_PARAMETER_lazy_default_fallback<key_type,Default> const&
             ) const
         {
-#if defined(BOOST_PARAMETER_CAN_USE_MP11) && \
-    !defined(BOOST_NO_CXX14_CONSTEXPR)
+#if !defined(BOOST_NO_CXX14_CONSTEXPR)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
             static_assert(!_holds_maybe::value, "must not hold maybe");
 #elif !( \
         BOOST_WORKAROUND(BOOST_GCC, >= 40700) && \
@@ -464,6 +462,7 @@ namespace boost { namespace parameter { namespace aux {
     ) && !BOOST_WORKAROUND(BOOST_GCC, >= 50000) && \
     !BOOST_WORKAROUND(BOOST_MSVC, < 1910)
             BOOST_MPL_ASSERT_NOT((_holds_maybe));
+#endif
 #endif
             return this->arg.get_value();
         }
@@ -1027,6 +1026,131 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename ...ArgTuples>
+    struct arg_list_cons;
+
+    template <>
+    struct arg_list_cons<>
+    {
+        using type = ::boost::parameter::aux::empty_arg_list;
+    };
+
+    template <typename ArgTuple0, typename ...Tuples>
+    struct arg_list_cons<ArgTuple0,Tuples...>
+    {
+        using type = ::boost::parameter::aux::arg_list<
+            typename ArgTuple0::tagged_arg
+          , typename ::boost::parameter::aux::arg_list_cons<Tuples...>::type
+          , typename ArgTuple0::emits_errors
+        >;
+    };
+
+    template <
+        typename Keyword
+      , typename TaggedArg
+      , typename EmitsErrors = ::boost::mp11::mp_true
+    >
+    struct flat_like_arg_tuple
+    {
+        using tagged_arg = TaggedArg;
+        using emits_errors = EmitsErrors;
+    };
+
+    template <typename ...ArgTuples>
+    class flat_like_arg_list
+      : public ::boost::parameter::aux::arg_list_cons<ArgTuples...>::type
+    {
+        using _base_type = typename ::boost::parameter::aux
+        ::arg_list_cons<ArgTuples...>::type;
+
+     public:
+        inline BOOST_CONSTEXPR flat_like_arg_list(
+            typename _base_type::tagged_arg const& head
+          , typename _base_type::tail_type const& tail
+        ) : _base_type(head, tail)
+        {
+        }
+
+        template <typename ...Args>
+        inline BOOST_CONSTEXPR flat_like_arg_list(Args&&... args)
+          : _base_type(::std::forward<Args>(args)...)
+        {
+        }
+
+        using _base_type::operator[];
+        using _base_type::satisfies;
+
+        // Comma operator to compose argument list without using parameters<>.
+        // Useful for argument lists with undetermined length.
+        template <typename TaggedArg>
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::flat_like_arg_list<
+            ::boost::parameter::aux::flat_like_arg_tuple<
+                typename TaggedArg::base_type::key_type
+              , typename TaggedArg::base_type
+            >
+          , ArgTuples...
+        >
+            operator,(TaggedArg const& x) const
+        {
+            return ::boost::parameter::aux::flat_like_arg_list<
+                ::boost::parameter::aux::flat_like_arg_tuple<
+                    typename TaggedArg::base_type::key_type
+                  , typename TaggedArg::base_type
+                >
+              , ArgTuples...
+            >(
+                static_cast<typename TaggedArg::base_type const&>(x)
+              , static_cast<_base_type const&>(*this)
+            );
+        }
+    };
+
+    template <>
+    class flat_like_arg_list<>
+      : public ::boost::parameter::aux::empty_arg_list
+    {
+        using _base_type = ::boost::parameter::aux::empty_arg_list;
+
+     public:
+        template <typename ...Args>
+        inline BOOST_CONSTEXPR flat_like_arg_list(Args&&... args)
+          : _base_type(::std::forward<Args>(args)...)
+        {
+        }
+
+        using _base_type::operator[];
+        using _base_type::satisfies;
+
+        // Comma operator to compose argument list without using parameters<>.
+        // Useful for argument lists with undetermined length.
+        template <typename TaggedArg>
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::flat_like_arg_list<
+            ::boost::parameter::aux::flat_like_arg_tuple<
+                typename TaggedArg::base_type::key_type
+              , typename TaggedArg::base_type
+            >
+        >
+            operator,(TaggedArg const& x) const
+        {
+            return ::boost::parameter::aux::flat_like_arg_list<
+                ::boost::parameter::aux::flat_like_arg_tuple<
+                    typename TaggedArg::base_type::key_type
+                  , typename TaggedArg::base_type
+                >
+            >(
+                static_cast<typename TaggedArg::base_type const&>(x)
+              , static_cast<_base_type const&>(*this)
+            );
+        }
+    };
+}}} // namespace boost::parameter::aux
+
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 #include <boost/mpl/iterator_tags.hpp>
 

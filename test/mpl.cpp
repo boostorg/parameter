@@ -1,4 +1,5 @@
 // Copyright David Abrahams 2006.
+// Copyright Cromwell D. Enage 2019.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -13,15 +14,29 @@
 #include <boost/type_traits/add_pointer.hpp>
 #include "basics.hpp"
 
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mp11/list.hpp>
+#include <boost/mp11/map.hpp>
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/mpl.hpp>
 #endif
 
 namespace test {
 
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    template <typename Map>
+    struct assert_in_map
+    {
+        template <typename T>
+        void operator()(T&&)
+        {
+            static_assert(
+                boost::mp11::mp_map_contains<Map,T>::value
+              , "T must be in Map"
+            );
+        }
+    };
+
     template <typename Set>
     struct assert_in_set_0
     {
@@ -49,7 +64,7 @@ namespace test {
     template <typename Expected, typename Args>
     void f_impl(Args const& p BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Expected))
     {
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
         static_assert(
             boost::mp11::mp_size<Expected>::value == boost::mp11::mp_size<
                 Args
@@ -57,8 +72,10 @@ namespace test {
           , "mp_size<Expected>::value == mp_size<Args>::value"
         );
 
-        boost::mp11::mp_for_each<Args>(test::assert_in_set_0<Expected>());
-        boost::mp11::mp_for_each<Expected>(test::assert_in_set_0<Args>());
+        boost::mp11::mp_for_each<boost::mp11::mp_map_keys<Args> >(
+            test::assert_in_set_0<Expected>()
+        );
+        boost::mp11::mp_for_each<Expected>(test::assert_in_map<Args>());
 #endif
 
         BOOST_MPL_ASSERT_RELATION(
@@ -128,7 +145,7 @@ namespace test {
         typedef test::tag::value value_;
         typedef test::tag::index index_;
 
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
         test::f<
             boost::mp11::mp_list<tester_,name_,value_,index_>
         >(1, 2, 3, 4);

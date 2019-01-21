@@ -24,5 +24,15 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #endif
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename TaggedArg>
+    struct tagged_argument_list_of_1;
+}}} // namespace boost::parameter::aux
+
+#endif
 #endif  // include guard
 
