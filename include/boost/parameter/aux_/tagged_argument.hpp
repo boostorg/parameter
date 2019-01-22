@@ -219,6 +219,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif
         };
 
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
         template <typename Keyword2, typename Arg2>
@@ -226,7 +227,7 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::tagged_argument<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
-            > 
+            >
         >
             operator,(
                 ::boost::parameter::aux
@@ -237,7 +238,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::tagged_argument<Keyword,Arg>
               , ::boost::parameter::aux::arg_list<
                     ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
-                > 
+                >
             >(
                 *this
               , ::boost::parameter::aux::arg_list<
@@ -251,7 +252,7 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::tagged_argument<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
-            > 
+            >
         >
             operator,(
                 ::boost::parameter::aux
@@ -262,7 +263,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::tagged_argument<Keyword,Arg>
               , boost::parameter::aux::arg_list<
                     boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
-                > 
+                >
             >(
                 *this
               , ::boost::parameter::aux::arg_list<
@@ -271,6 +272,7 @@ namespace boost { namespace parameter { namespace aux {
                 >(x, ::boost::parameter::aux::empty_arg_list())
             );
         }
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
         // Accessor interface.
         inline BOOST_CONSTEXPR reference get_value() const
@@ -428,6 +430,7 @@ namespace boost { namespace parameter { namespace aux {
 #endif
         };
 
+#if !defined(BOOST_PARAMETER_CAN_USE_MP11)
         // Comma operator to compose argument list without using parameters<>.
         // Useful for argument lists with undetermined length.
         template <typename Keyword2, typename Arg2>
@@ -435,7 +438,7 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
-            > 
+            >
         >
             operator,(
                 ::boost::parameter::aux
@@ -446,7 +449,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
               , ::boost::parameter::aux::arg_list<
                     ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
-                > 
+                >
             >(
                 *this
               , ::boost::parameter::aux::arg_list<
@@ -460,7 +463,7 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::tagged_argument_rref<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument_rref<Keyword2,Arg2>
-            > 
+            >
         >
             operator,(
                 ::boost::parameter::aux
@@ -472,7 +475,7 @@ namespace boost { namespace parameter { namespace aux {
               , ::boost::parameter::aux::arg_list<
                     ::boost::parameter::aux
                     ::tagged_argument_rref<Keyword2,Arg2>
-                > 
+                >
             >(
                 *this
               , ::boost::parameter::aux::arg_list<
@@ -483,6 +486,7 @@ namespace boost { namespace parameter { namespace aux {
                 >(x, ::boost::parameter::aux::empty_arg_list())
             );
         }
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
         // Accessor interface.
         inline BOOST_CONSTEXPR reference get_value() const
@@ -568,10 +572,8 @@ namespace boost { namespace parameter { namespace aux {
 
         // MPL sequence support
         // Convenience for users
-        typedef ::boost::parameter::aux::tagged_argument_rref<
-            Keyword
-          , Arg
-        > type;
+        typedef ::boost::parameter::aux
+        ::tagged_argument_rref<Keyword,Arg> type;
         // For the benefit of iterators
         typedef ::boost::parameter::aux::empty_arg_list tail_type;
         // For dispatching to sequence intrinsics
@@ -833,5 +835,60 @@ namespace boost { namespace parameter { namespace aux {
 }}} // namespace boost::parameter::aux
 
 #endif  // BOOST_PARAMETER_HAS_PERFECT_FORWARDING
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+
+namespace boost { namespace parameter { namespace aux {
+
+    template <typename TaggedArg>
+    struct tagged_argument_list_of_1 : public TaggedArg
+    {
+        using base_type = TaggedArg;
+
+        inline explicit BOOST_CONSTEXPR tagged_argument_list_of_1(
+            typename base_type::reference x
+        ) : base_type(static_cast<typename base_type::reference>(x))
+        {
+        }
+
+        inline BOOST_CONSTEXPR tagged_argument_list_of_1(
+            tagged_argument_list_of_1 const& copy
+        ) : base_type(static_cast<base_type const&>(copy))
+        {
+        }
+
+        using base_type::operator[];
+        using base_type::satisfies;
+
+        template <typename TA2>
+        inline BOOST_CONSTEXPR ::boost::parameter::aux::flat_like_arg_list<
+            ::boost::parameter::aux
+            ::flat_like_arg_tuple<typename TaggedArg::key_type,TaggedArg>
+          , ::boost::parameter::aux::flat_like_arg_tuple<
+                typename TA2::base_type::key_type
+              , typename TA2::base_type
+            >
+        >
+            operator,(TA2 const& x) const
+        {
+            return boost::parameter::aux::flat_like_arg_list<
+                ::boost::parameter::aux
+                ::flat_like_arg_tuple<typename TaggedArg::key_type,TaggedArg>
+              , ::boost::parameter::aux::flat_like_arg_tuple<
+                    typename TA2::base_type::key_type
+                  , typename TA2::base_type
+                >
+            >(
+                static_cast<base_type const&>(*this)
+              , ::boost::parameter::aux::arg_list<typename TA2::base_type>(
+                    static_cast<typename TA2::base_type const&>(x)
+                  , ::boost::parameter::aux::empty_arg_list()
+                )
+            );
+        }
+    };
+}}} // namespace boost::parameter::aux
+
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 #endif  // include guard
 

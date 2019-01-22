@@ -1,4 +1,5 @@
 // Copyright David Abrahams, Daniel Wallin 2003.
+// Copyright Cromwell D. Enage 2018.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -49,6 +50,21 @@ namespace boost { namespace parameter { namespace aux {
 #endif
 
 namespace boost { namespace parameter { namespace aux {
+
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    template <typename ArgumentPack, typename TaggedArg, typename EmitsErrors>
+    struct append_to_make_arg_list
+    {
+        using type = ::boost::mp11::mp_push_front<
+            ArgumentPack
+          , ::boost::parameter::aux::flat_like_arg_tuple<
+                typename TaggedArg::key_type
+              , TaggedArg
+              , EmitsErrors
+            >
+        >;
+    };
+#endif
 
     // Borland needs the insane extra-indirection workaround below so that
     // it doesn't magically drop the const qualifier from the argument type.
@@ -238,12 +254,12 @@ namespace boost { namespace parameter { namespace aux {
 #endif
 
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
-        using _argument_pack = ::boost::mp11::mp_if<
+        using _argument_pack = typename ::boost::mp11::mp_if<
             ::std::is_same<_tagged,::boost::parameter::void_>
-          , ArgumentPack
+          , ::boost::mp11::mp_identity<ArgumentPack>
           , ::boost::parameter::aux
-            ::arg_list<_tagged,ArgumentPack,EmitsErrors>
-        >;
+            ::append_to_make_arg_list<ArgumentPack,_tagged,EmitsErrors>
+        >::type;
 #else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
         typedef typename ::boost::mpl::if_<
             ::boost::is_same<_tagged,::boost::parameter::void_>
@@ -402,7 +418,11 @@ namespace boost { namespace parameter { namespace aux {
           , ::boost::mpl::true_
 #endif
           , ::boost::parameter::aux::set0
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+          , ::boost::parameter::aux::flat_like_arg_list<>
+#else
           , ::boost::parameter::aux::empty_arg_list
+#endif
           , ::boost::parameter::void_
           , EmitsErrors
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)

@@ -36,7 +36,7 @@ namespace param {
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
 #include <boost/mp11/list.hpp>
 #include <boost/mp11/map.hpp>
 #include <type_traits>
@@ -58,7 +58,7 @@ namespace test {
         template <typename ArgPack>
         A(ArgPack const& args) : i(args[param::a0]), j(args[param::a1])
         {
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
             static_assert(
                 boost::mp11::mp_map_contains<ArgPack,param::tag::a0>::value
               , "param::tag::a0 must be in ArgPack"
@@ -248,7 +248,7 @@ namespace test {
           , j(args[param::_lr])
           , k(args[param::_lrc])
         {
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
             static_assert(
                 boost::mp11::mp_map_contains<ArgPack,param::tag::lrc>::value
               , "param::tag::lrc must be in ArgPack"
@@ -453,7 +453,7 @@ namespace test {
           , j(args[param::_lr])
           , k(args[param::_lrc])
         {
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
             static_assert(
                 boost::mp11::mp_map_contains<ArgPack,param::tag::lrc>::value
               , "param::tag::lrc must be in ArgPack"
@@ -470,7 +470,7 @@ namespace test {
               , "param::tag::lrc must be found in ArgPack"
             );
             static_assert(
-                std::is_same<
+                !std::is_same<
                     boost::mp11::mp_map_find<ArgPack,param::tag::lr>
                   , void
                 >::value

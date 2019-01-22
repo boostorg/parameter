@@ -10,7 +10,8 @@
 #include <boost/parameter/config.hpp>
 #include "basics.hpp"
 
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/mp11/map.hpp>
 #include <boost/mp11/algorithm.hpp>
 #else
 #include <boost/mpl/bool.hpp>
@@ -43,7 +44,7 @@ namespace test {
         template <typename T>
         static bool check_not_present(T const&)
         {
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
             static_assert(
                 std::is_same<T,test::not_present_tag>::value
               , "T == test::not_present_tag"
@@ -75,7 +76,7 @@ namespace test {
         }
 
         template <typename K>
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
         void operator()(K&&) const
 #else
         void operator()(K) const
@@ -90,8 +91,10 @@ namespace test {
     template <typename E, typename A>
     void check0(E const& e, A const& args)
     {
-#if 0//defined(BOOST_PARAMETER_CAN_USE_MP11)
-        boost::mp11::mp_for_each<E>(test::assert_expected<E,A>(e, args));
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+        boost::mp11::mp_for_each<boost::mp11::mp_map_keys<E> >(
+            test::assert_expected<E,A>(e, args)
+        );
 #else
         boost::mpl::for_each<E>(test::assert_expected<E,A>(e, args));
 #endif
