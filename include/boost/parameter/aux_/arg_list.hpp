@@ -98,7 +98,7 @@ namespace boost { namespace parameter { namespace aux {
 
         // Terminator for has_key, indicating that the keyword is unique.
         template <typename KW>
-        static BOOST_CONSTEXPR ::boost::parameter::aux::no_tag has_key(KW*);
+        static ::boost::parameter::aux::no_tag has_key(KW*);
 
         // If either of these operators are called, it means there is no
         // argument in the list that matches the supplied keyword.  Just
@@ -133,7 +133,7 @@ namespace boost { namespace parameter { namespace aux {
         // has a default, we indicate that the actual arguments don't
         // match the function's requirements.
         template <typename ParameterRequirements, typename ArgPack>
-        static BOOST_CONSTEXPR typename ParameterRequirements::has_default
+        static typename ParameterRequirements::has_default
             satisfies(ParameterRequirements*, ArgPack*);
 
         // MPL sequence support
@@ -480,7 +480,7 @@ namespace boost { namespace parameter { namespace aux {
         // satisfied by TaggedArg.  Used only for compile-time computation
         // and never really called, so a declaration is enough.
         template <typename HasDefault, typename Predicate, typename ArgPack>
-        static BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
+        static typename ::boost::lazy_enable_if<
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
             ::boost::mp11::mp_if<
                 EmitsErrors
@@ -597,7 +597,7 @@ namespace boost { namespace parameter { namespace aux {
 
         // Terminator for has_key, indicating that the keyword is unique.
         template <typename KW>
-        static BOOST_CONSTEXPR ::boost::parameter::aux::no_tag has_key(KW*);
+        static ::boost::parameter::aux::no_tag has_key(KW*);
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
         // The overload set technique doesn't work with these older compilers,
@@ -641,7 +641,7 @@ namespace boost { namespace parameter { namespace aux {
         // has a default, we indicate that the actual arguments don't
         // match the function's requirements.
         template <typename ParameterRequirements, typename ArgPack>
-        static BOOST_CONSTEXPR typename ParameterRequirements::has_default
+        static typename ParameterRequirements::has_default
             satisfies(ParameterRequirements*, ArgPack*);
 
         // MPL sequence support
@@ -967,7 +967,7 @@ namespace boost { namespace parameter { namespace aux {
         // satisfied by TaggedArg.  Used only for compile-time computation
         // and never really called, so a declaration is enough.
         template <typename HasDefault, typename Predicate, typename ArgPack>
-        static BOOST_CONSTEXPR typename
+        static typename
 #if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
         ::boost::lazy_enable_if<
             typename ::boost::mpl::if_<
