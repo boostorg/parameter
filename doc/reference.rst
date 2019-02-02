@@ -1408,7 +1408,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result\_ ## __LINE__ ## **name**
     {
         typedef **result** type;
@@ -1580,6 +1587,15 @@ Approximate expansion:
           , *argument name* ## **m** ## _type&& *argument name* ## **m**
         )
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 .. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
@@ -1866,7 +1882,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result\_ ## __LINE__ ## **name**
     {
         typedef **result** type;
@@ -2000,6 +2023,15 @@ Approximate expansion:
           , *argument name* ## **m** ## _type&& *argument name* ## **m**
         )
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 .. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
@@ -2286,7 +2318,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result_const\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result_const\_ ## __LINE__ ## **name**
     {
         typedef **result** type;
@@ -2422,6 +2461,15 @@ Approximate expansion:
           , *argument name* ## **m** ## _type&& *argument name* ## **m**
         ) const
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 .. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
@@ -2603,7 +2651,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result\_ ## __LINE__ ## operator = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result\_ ## __LINE__ ## operator
     {
         typedef **result** type;
@@ -2737,6 +2792,15 @@ Approximate expansion:
           , *argument name* ## **m** ## _type&& *argument name* ## **m**
         )
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 .. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
@@ -3027,7 +3091,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result_const\_ ## __LINE__ ## operator = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result_const\_ ## __LINE__ ## operator
     {
         typedef **result** type;
@@ -3163,6 +3234,15 @@ Approximate expansion:
           , *argument name* ## **m** ## _type&& *argument name* ## **m**
         ) const
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 .. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
@@ -3647,7 +3727,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result\_ ## __LINE__ ## **name**
     {
         typedef **result** type;
@@ -3710,6 +3797,15 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 
 ``BOOST_PARAMETER_BASIC_MEMBER_FUNCTION(result, name, tag_ns, arguments)``
@@ -3987,7 +4083,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result\_ ## __LINE__ ## **name**
     {
         typedef **result** type;
@@ -4046,6 +4149,15 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 
 ``BOOST_PARAMETER_BASIC_CONST_MEMBER_FUNCTION(result, name, tag_ns, args)``
@@ -4326,7 +4438,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result_const\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result_const\_ ## __LINE__ ## **name**
     {
         typedef **result** type;
@@ -4385,6 +4504,15 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 
 ``BOOST_PARAMETER_BASIC_FUNCTION_CALL_OPERATOR(result, tag_ns, arguments)``
@@ -4552,7 +4680,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result\_ ## __LINE__ ## operator = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result\_ ## __LINE__ ## operator
     {
         typedef **result** type;
@@ -4611,6 +4746,15 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function call operator body.
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 
 ``BOOST_PARAMETER_BASIC_CONST_FUNCTION_CALL_OPERATOR(result, tag_ns, args)``
@@ -4888,7 +5032,14 @@ Approximate expansion:
 
 .. parsed-literal::
 
-    template <typename T>
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename Args>
+    using boost_param_result_const\_ ## __LINE__ ## operator = **result**;
+
+    // If **result** is a simple return type:
+    template <typename Args>
     struct boost_param_result_const\_ ## __LINE__ ## operator
     {
         typedef **result** type;
@@ -4947,6 +5098,15 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function call operator body.
 
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
 .. _`forward`: http\://en.cppreference.com/w/cpp/utility/forward
 
 ``BOOST_PARAMETER_NO_SPEC_FUNCTION(result, name)``
@@ -5104,6 +5264,13 @@ None.
 Approximate expansion:
 .. parsed-literal::
 
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    using boost_param_no_spec_result\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
     template <typename TaggedArg0, typename ...TaggedArgs>
     struct boost_param_no_spec_result\_ ## __LINE__ ## **name**
     {
@@ -5149,8 +5316,16 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
-.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
 .. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
+.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
 ``BOOST_PARAMETER_NO_SPEC_MEMBER_FUNCTION(result, name)``
 ---------------------------------------------------------
@@ -5308,6 +5483,13 @@ None.
 Approximate expansion:
 .. parsed-literal::
 
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    using boost_param_no_spec_result\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
     template <typename TaggedArg0, typename ...TaggedArgs>
     struct boost_param_no_spec_result\_ ## __LINE__ ## **name**
     {
@@ -5346,8 +5528,16 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
-.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
 .. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
+.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
 ``BOOST_PARAMETER_NO_SPEC_CONST_MEMBER_FUNCTION(result, name)``
 ---------------------------------------------------------------
@@ -5515,6 +5705,13 @@ None.
 Approximate expansion:
 .. parsed-literal::
 
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    using boost_param_no_spec_result_const\_ ## __LINE__ ## **name** = **result**;
+
+    // If **result** is a simple return type:
     template <typename TaggedArg0, typename ...TaggedArgs>
     struct boost_param_no_spec_result_const\_ ## __LINE__ ## **name**
     {
@@ -5553,8 +5750,16 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
-.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
 .. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
+.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
 ``BOOST_PARAMETER_NO_SPEC_FUNCTION_CALL_OPERATOR(result)``
 ----------------------------------------------------------
@@ -5708,6 +5913,13 @@ None.
 Approximate expansion:
 .. parsed-literal::
 
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    using boost_param_no_spec_result\_ ## __LINE__ ## operator = **result**;
+
+    // If **result** is a simple return type:
     template <typename TaggedArg0, typename ...TaggedArgs>
     struct boost_param_no_spec_result\_ ## __LINE__ ## operator
     {
@@ -5746,8 +5958,16 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
-.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
 .. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
+.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
 ``BOOST_PARAMETER_NO_SPEC_CONST_FUNCTION_CALL_OPERATOR(result)``
 ----------------------------------------------------------------
@@ -5914,6 +6134,13 @@ None.
 Approximate expansion:
 .. parsed-literal::
 
+    // If **result** is a template instantiation of `enable_if`_, `enable_if_c`_,
+    // `lazy_enable_if`_, `lazy_enable_if_c`_, `disable_if`_, `disable_if_c`_,
+    // `lazy_disable_if`_, `lazy_disable_if_c`_, or `std_enable_if`_:
+    template <typename TaggedArg0, typename ...TaggedArgs>
+    using boost_param_no_spec_result_const\_ ## __LINE__ ## operator = **result**;
+
+    // If **result** is a simple return type:
     template <typename TaggedArg0, typename ...TaggedArgs>
     struct boost_param_no_spec_result_const\_ ## __LINE__ ## operator
     {
@@ -5955,8 +6182,16 @@ Approximate expansion:
 Only the |ArgumentPack|_ type ``Args`` and its object instance ``args`` are
 available for use within the function body.
 
-.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
+.. _`enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`enable_if_c`: ../../../core/doc/html/core/enable_if.html
 .. _`lazy_enable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_enable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if`: ../../../core/doc/html/core/enable_if.html
+.. _`lazy_disable_if_c`: ../../../core/doc/html/core/enable_if.html
+.. _`std_enable_if`: http\://en.cppreference.com/w/cpp/types/enable_if
+.. _`nullptr`: http\://en.cppreference.com/w/cpp/language/nullptr
 
 ``BOOST_PARAMETER_NO_SPEC_CONSTRUCTOR(cls, impl)``
 --------------------------------------------------

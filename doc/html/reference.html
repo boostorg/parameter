@@ -2326,7 +2326,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_ ## __LINE__ ## <strong>name</strong> = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_ ## __LINE__ ## <strong>name</strong>
 {
     typedef <strong>result</strong> type;
@@ -2920,7 +2941,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_ ## __LINE__ ## <strong>name</strong> = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_ ## __LINE__ ## <strong>name</strong>
 {
     typedef <strong>result</strong> type;
@@ -3470,7 +3512,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_const_ ## __LINE__ ## <strong>name</strong> = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_const_ ## __LINE__ ## <strong>name</strong>
 {
     typedef <strong>result</strong> type;
@@ -3892,7 +3955,27 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_ ## __LINE__ ## operator = <strong>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_ ## __LINE__ ## operator
 {
     typedef <strong>result</strong> type;
@@ -4439,7 +4522,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_const_ ## __LINE__ ## operator = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_const_ ## __LINE__ ## operator
 {
     typedef <strong>result</strong> type;
@@ -5253,7 +5357,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_ ## __LINE__ ## <strong>name</strong> = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_ ## __LINE__ ## <strong>name</strong>
 {
     typedef <strong>result</strong> type;
@@ -5693,7 +5818,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_ ## __LINE__ ## <strong>name</strong> = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_ ## __LINE__ ## <strong>name</strong>
 {
     typedef <strong>result</strong> type;
@@ -6130,7 +6276,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_const_ ## __LINE__ ## <strong>name</strong> = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_const_ ## __LINE__ ## <strong>name</strong>
 {
     typedef <strong>result</strong> type;
@@ -6435,7 +6602,27 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_ ## __LINE__ ## operator = <strong>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_ ## __LINE__ ## operator
 {
     typedef <strong>result</strong> type;
@@ -6861,7 +7048,28 @@ determined from <tt class="docutils literal">arguments</tt>.</li>
 determined from <tt class="docutils literal">arguments</tt>.</li>
 </ul>
 <pre class="last literal-block">
-template &lt;typename T&gt;
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename Args&gt;
+using boost_param_result_const_ ## __LINE__ ## operator = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
+template &lt;typename Args&gt;
 struct boost_param_result_const_ ## __LINE__ ## operator
 {
     typedef <strong>result</strong> type;
@@ -7143,6 +7351,27 @@ it determines the name of the generated implementation function.</li>
 <dt>Approximate expansion:</dt>
 <dd>
 <pre class="last literal-block">
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
+using boost_param_no_spec_result_ ## __LINE__ ## <strong
+>name</strong> = <strong>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 struct boost_param_no_spec_result_ ## __LINE__ ## <strong>name</strong>
 {
@@ -7384,6 +7613,27 @@ and its helpers as not associated with any object of the enclosing type.</li>
 <dt>Approximate expansion:</dt>
 <dd>
 <pre class="last literal-block">
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
+using boost_param_no_spec_result_ ## __LINE__ ## <strong
+>name</strong> = <strong>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 struct boost_param_no_spec_result_ ## __LINE__ ## <strong>name</strong>
 {
@@ -7657,6 +7907,27 @@ it determines the name of the generated implementation function.</li>
 <dt>Approximate expansion:</dt>
 <dd>
 <pre class="last literal-block">
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
+using boost_param_no_spec_result_const_ ## __LINE__ ## <strong
+>name</strong> = <strong>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 struct boost_param_no_spec_result_const_ ## __LINE__ ## <strong>name</strong>
 {
@@ -7888,6 +8159,27 @@ of the function call operator.</li>
 <dt>Approximate expansion:</dt>
 <dd>
 <pre class="last literal-block">
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
+using boost_param_no_spec_result_ ## __LINE__ ## operator = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 struct boost_param_no_spec_result_ ## __LINE__ ## operator
 {
@@ -8156,6 +8448,27 @@ of the function call operator.</li>
 <dt>Approximate expansion:</dt>
 <dd>
 <pre class="last literal-block">
+// If <strong>result</strong> is a template instantiation of <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>enable_if</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_enable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_enable_if_c</a>, <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>disable_if_c</a>,
+// <a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">lazy_disable_if</a>, <a
+class="reference external" href="../../../core/doc/html/core/enable_if.html"
+>lazy_disable_if_c</a>, or <a class="reference external"
+href="http://en.cppreference.com/w/cpp/types/enable_if">std::enable_if</a>:
+template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
+using boost_param_no_spec_result_const_ ## __LINE__ ## operator = <strong
+>result</strong>;
+
+// If <strong>result</strong> is a simple return type:
 template &lt;typename TaggedArg0, typename ...TaggedArgs&gt;
 struct boost_param_no_spec_result_const_ ## __LINE__ ## operator
 {

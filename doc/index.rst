@@ -1374,6 +1374,88 @@ demonstrate additional usage of deduced parameter support.
 .. |deduced_dependent_predicate| replace:: deduced_dependent_predicate.cpp
 .. _deduced_dependent_predicate: ../../test/deduced_dependent_predicate.cpp
 
+Parameter-Dependent Return Types
+--------------------------------
+
+For some algorithms, the return type depends on at least one of the argument
+types.  However, there is one gotcha to avoid when encoding this return type
+while using ``BOOST_PARAMETER_FUNCTION`` or other code generation macros.  As
+an example, given the following definitions::
+
+    BOOST_PARAMETER_NAME(x)
+    BOOST_PARAMETER_NAME(y)
+    BOOST_PARAMETER_NAME(z)
+
+.. @ignore()
+
+Let our algorithm simply return one of its arguments.  If we naïvely implement
+its return type in terms of ``parameter::value_type``::
+
+    BOOST_PARAMETER_FUNCTION(
+        (typename parameter::value_type<Args,tag::y>::type), return_y, tag,
+        (deduced
+            (required
+                (x, (std::map<char const\*,std::string>))
+                (y, (char const\*))
+            )
+            (optional
+                (z, (int), 4)
+            )
+        )
+    )
+    {
+        return y;
+    }
+
+.. @ignore()
+
+Then using ``return_y`` in any manner other than with positional arguments
+will result in a compiler error::
+
+    std::map<char const\*,std::string> k2s;
+    assert("foo" == return_y(2, k2s, "foo"));  // error!
+
+.. @ignore()
+
+The problem is that even though ``y`` is a required parameter,
+``BOOST_PARAMETER_FUNCTION`` will generate certain overloads for which the
+argument pack type ``Args`` does not actually contain the keyword tag type
+``tag::y``.  The solution is to use SFINAE to preclude generation of those
+overloads.  Since ``parameter::value_type`` is a metafunction, our tool for
+the job is ``lazy_enable_if``::
+
+    BOOST_PARAMETER_FUNCTION(
+        (
+            // Whenever using 'enable_if', 'disable_if', and so on,
+            // do not add the 'typename' keyword in front.
+            boost::lazy_enable_if<
+                typename mpl::has_key<Args,tag::y>::type
+              , parameter::value_type<Args,tag::y>
+            >
+            // Whenever using 'enable_if', 'disable_if', and so on,
+            // do not add '::type' here.
+        ), return_y, tag,
+        (deduced
+            (required
+                (x, (std::map<char const*,std::string>))
+                (y, (char const*))
+            )
+            (optional
+                (z, (int), 4)
+            )
+        )
+    )
+    {
+        return y;
+    }
+
+.. @ignore()
+
+For a working demonstration, see |preprocessor_deduced_cpp|_.
+
+.. |preprocessor_deduced_cpp| replace:: preprocessor_deduced.cpp
+.. _preprocessor_deduced_cpp: ../../test/preprocessor_deduced.cpp
+
 ----------------------------------
 Parameter-Enabled Member Functions
 ----------------------------------
