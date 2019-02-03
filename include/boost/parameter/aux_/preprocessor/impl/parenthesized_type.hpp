@@ -6,7 +6,7 @@
 #ifndef BOOST_PARAMETER_AUX_PREPROCESSOR_IMPL_PARENTHESIZED_TYPE_HPP
 #define BOOST_PARAMETER_AUX_PREPROCESSOR_IMPL_PARENTHESIZED_TYPE_HPP
 
-namespace boost { namespace parameter { namespace aux { 
+namespace boost { namespace parameter { namespace aux {
 
     // A metafunction that transforms void(*)(T) -> T
     template <typename UnaryFunctionPointer>
