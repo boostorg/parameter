@@ -30,8 +30,7 @@
     )
 /**/
 
-#include \
-<boost/parameter/aux_/preprocessor/impl/parenthesized_return_type.hpp>
+#include <boost/parameter/aux_/preprocessor/impl/parenthesized_return_type.hpp>
 #include <boost/parameter/config.hpp>
 
 // Expands to the result metafunction and the parameters specialization.
