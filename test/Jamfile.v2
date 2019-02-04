@@ -248,6 +248,14 @@ alias parameter_standard_tests
         :
             evaluate_category_fail
     ]
+    [ compile-fail preprocessor_deduced.cpp
+        :
+            <define>BOOST_PARAMETER_MAX_ARITY=4
+            <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=5
+            <define>LIBS_PARAMETER_TEST_COMPILE_FAILURE
+        :
+            preprocessor_deduced_fail
+    ]
     [ compile-fail deduced.cpp
         :
             <define>BOOST_PARAMETER_MAX_ARITY=4

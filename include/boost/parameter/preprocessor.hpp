@@ -30,18 +30,29 @@
     )
 /**/
 
-#include <boost/parameter/aux_/preprocessor/impl/parenthesized_type.hpp>
+#include <boost/parameter/aux_/preprocessor/impl/parenthesized_return_type.hpp>
+#include <boost/parameter/config.hpp>
 
 // Expands to the result metafunction and the parameters specialization.
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#define BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_ns, args, is_const)  \
+    template <typename Args>                                                 \
+    using BOOST_PARAMETER_FUNCTION_RESULT_NAME(name, is_const)               \
+    = typename BOOST_PARAMETER_PARENTHESIZED_RETURN_TYPE(result);            \
+    BOOST_PARAMETER_SPECIFICATION(tag_ns, name, args, is_const)              \
+        BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(name, is_const);
+/**/
+#else
 #define BOOST_PARAMETER_FUNCTION_HEAD(result, name, tag_ns, args, is_const)  \
     template <typename Args>                                                 \
     struct BOOST_PARAMETER_FUNCTION_RESULT_NAME(name, is_const)              \
+      : BOOST_PARAMETER_PARENTHESIZED_RETURN_TYPE(result)                    \
     {                                                                        \
-        typedef typename BOOST_PARAMETER_PARENTHESIZED_TYPE(result) type;    \
     };                                                                       \
     BOOST_PARAMETER_SPECIFICATION(tag_ns, name, args, is_const)              \
         BOOST_PARAMETER_FUNCTION_SPECIFICATION_NAME(name, is_const);
 /**/
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 // Helper macro for BOOST_PARAMETER_BASIC_FUNCTION.
 #define BOOST_PARAMETER_BASIC_FUNCTION_AUX(result, name, tag_ns, args)       \
