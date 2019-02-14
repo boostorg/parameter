@@ -65,8 +65,11 @@
 #define BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY 0
 #endif
 #if !defined(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
-#if BOOST_WORKAROUND(BOOST_MSVC, < 1800)
-// Some tests cause MSVC-11.0 and earlier to run out of heap space
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1800) || ( \
+        defined(__MINGW32__) && (__GNUC__ < 6) \
+    )
+// Some tests cause MSVC-11.0 and earlier to run out of heap space, while
+// some other tests cause MinGW with GCC 5 and earlier to do the same,
 // if the value is set any higher. -- Cromwell D. Enage
 #define BOOST_PARAMETER_COMPOSE_MAX_ARITY 20
 #else
