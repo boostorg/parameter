@@ -12,6 +12,8 @@
 #include "basics.hpp"
 
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#include <boost/parameter/value_type.hpp>
+#include <boost/mp11/map.hpp>
 #include <boost/core/enable_if.hpp>
 #include <type_traits>
 #else
@@ -19,6 +21,8 @@
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #if !defined(BOOST_NO_SFINAE)
+#include <boost/parameter/value_type.hpp>
+#include <boost/mpl/has_key.hpp>
 #include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 #endif
@@ -261,7 +265,71 @@ namespace test {
         )
     };
 #endif  // MSVC-11.0-
+
+    // Test Boost.Parameter-enabled functions
+    // with parameter-dependent return types.
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+    BOOST_PARAMETER_FUNCTION(
+        (
+            boost::lazy_enable_if<
+                boost::mp11::mp_map_contains<Args,test::tag::y>
+              , boost::parameter::value_type<Args,test::tag::y>
+            >
+        ), return_y, test::tag,
+        (deduced
+            (required
+                (x, (std::map<char const*,std::string>))
+                (y, (char const*))
+            )
+            (optional
+                (z, (int), 4)
+            )
+        )
+    )
+#else   // !defined(BOOST_PARAMETER_CAN_USE_MP11)
+    BOOST_PARAMETER_FUNCTION(
+        (
+            boost::lazy_enable_if<
+                typename boost::mpl::has_key<Args,test::tag::y>::type
+              , boost::parameter::value_type<Args,test::tag::y>
+            >
+        ), return_y, test::tag,
+        (deduced
+            (required
+                (x, (std::map<char const*,std::string>))
+                (y, (char const*))
+            )
+            (optional
+                (z, (int), 4)
+            )
+        )
+    )
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
+    {
+        return y;
+    }
+#endif  // LIBS_PARAMETER_TEST_COMPILE_FAILURE
 #endif  // BOOST_NO_SFINAE
+
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
+    BOOST_PARAMETER_FUNCTION(
+        (typename boost::parameter::value_type<Args,test::tag::y>::type),
+        return_y, test::tag,
+        (deduced
+            (required
+                (x, (std::map<char const*,std::string>))
+                (y, (char const*))
+            )
+            (optional
+                (z, (int), 4)
+            )
+        )
+    )
+    {
+        return y;
+    }
+#endif  // defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
 } // namespace test
 
 #include <boost/core/lightweight_test.hpp>
@@ -341,13 +409,13 @@ int main()
       , test::_y = std::string("foo")
     );
 
+    std::map<char const*,std::string> k2s;
 #if !defined(BOOST_NO_SFINAE)
     char const* keys[] = {"foo", "bar", "baz"};
     BOOST_TEST_EQ(1, test::sfinae(keys[0]));
     BOOST_TEST_EQ(0, test::sfinae(0));
 #if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE_VENDOR_SPECIFIC) || \
     !BOOST_WORKAROUND(BOOST_MSVC, < 1800)
-    std::map<char const*,std::string> k2s;
     k2s[keys[0]] = std::string("qux");
     k2s[keys[1]] = std::string("wmb");
     k2s[keys[2]] = std::string("zxc");
@@ -361,7 +429,14 @@ int main()
     BOOST_TEST_EQ('c', (r(k2s, true)));
     BOOST_TEST_EQ('z', (r(k2s, false)));
 #endif  // MSVC-11.0-
+#if !defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
+    BOOST_TEST_EQ(keys[1], test::return_y(2, k2s, keys[1]));
+#endif
 #endif  // BOOST_NO_SFINAE
+
+#if defined(LIBS_PARAMETER_TEST_COMPILE_FAILURE)
+    BOOST_TEST_EQ(keys[1], test::return_y(2, k2s, keys[1]));
+#endif
 
     return boost::report_errors();
 }

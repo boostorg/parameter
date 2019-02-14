@@ -21,19 +21,28 @@
 
 #if defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
-#include <boost/parameter/aux_/preprocessor/impl/parenthesized_type.hpp>
+#include <boost/parameter/aux_/preprocessor/impl/parenthesized_return_type.hpp>
 
 // Expands to the result metafunction for the specified no-spec function.
+#if defined(BOOST_PARAMETER_CAN_USE_MP11)
+#define BOOST_PARAMETER_NO_SPEC_FUNCTION_HEAD(result, name, is_const)        \
+    template <typename TaggedArg0, typename ...TaggedArgs>                   \
+    using BOOST_PARAMETER_NO_SPEC_FUNCTION_RESULT_NAME(name, is_const)       \
+    = typename BOOST_PARAMETER_PARENTHESIZED_RETURN_TYPE(result);
+/**/
+#else
 #define BOOST_PARAMETER_NO_SPEC_FUNCTION_HEAD(result, name, is_const)        \
     template <typename TaggedArg0, typename ...TaggedArgs>                   \
     struct BOOST_PARAMETER_NO_SPEC_FUNCTION_RESULT_NAME(name, is_const)      \
+      : BOOST_PARAMETER_PARENTHESIZED_RETURN_TYPE(result)                    \
     {                                                                        \
-        typedef typename BOOST_PARAMETER_PARENTHESIZED_TYPE(result) type;    \
     };
 /**/
+#endif  // BOOST_PARAMETER_CAN_USE_MP11
 
 #include <boost/parameter/compose.hpp>
 #include <boost/parameter/are_tagged_arguments.hpp>
+#include <boost/parameter/aux_/preprocessor/impl/parenthesized_type.hpp>
 #include <boost/core/enable_if.hpp>
 
 // Exapnds to a variadic constructor that is enabled if and only if all its
@@ -108,7 +117,7 @@
 #else   // !defined(BOOST_PARAMETER_HAS_PERFECT_FORWARDING)
 
 #include <boost/parameter/aux_/void.hpp>
-#include <boost/parameter/aux_/preprocessor/impl/parenthesized_type.hpp>
+#include <boost/parameter/aux_/preprocessor/impl/parenthesized_return_type.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 
@@ -122,12 +131,13 @@
         )                                                                    \
     >                                                                        \
     struct BOOST_PARAMETER_NO_SPEC_FUNCTION_RESULT_NAME(name, is_const)      \
+      : BOOST_PARAMETER_PARENTHESIZED_RETURN_TYPE(result)                    \
     {                                                                        \
-        typedef typename BOOST_PARAMETER_PARENTHESIZED_TYPE(result) type;    \
     };
 /**/
 
 #include <boost/parameter/compose.hpp>
+#include <boost/parameter/aux_/preprocessor/impl/parenthesized_type.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
 #include <boost/preprocessor/control/expr_if.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
