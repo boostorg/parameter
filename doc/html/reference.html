@@ -109,6 +109,9 @@ src="../../../../boost.png" /></a></p>
 <li><a class="reference internal" href="#is-argument-pack" id="id50"
 >5.5&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
 >is_argument_pack</tt></a></li>
+<li><a class="reference internal" href="#result-of-compose" id="id51"
+>5.6&nbsp;&nbsp;&nbsp;<tt class="docutils literal"
+>result_of::compose</tt></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#function-templates" id="id53"
@@ -1604,7 +1607,7 @@ default</a>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field">
-<th class="field-name">Defined n:</th>
+<th class="field-name">Defined in:</th>
 <td class="field-body"><a class="reference external"
 href="../../../../boost/parameter/value_type.hpp"
 >boost/parameter/value_type.hpp</a></td>
@@ -1832,6 +1835,68 @@ href="../../../type_traits/doc/html/boost_typetraits/is_convertible.html"
 </tbody>
 </table>
 </div>
+<div class="section" id="result-of-compose">
+<h2><a class="toc-backref" href="#id51">5.6&nbsp;&nbsp;&nbsp;<tt
+class="docutils literal">result_of::compose</tt></a></h2>
+<p>Returns the result type of the <a class="reference internal"
+href="#compose">compose()</a> function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Defined in:</th>
+<td class="field-body"><a class="reference external"
+href="../../../../boost/parameter/compose.hpp"
+>boost/parameter/compose.hpp</a></td>
+</tr>
+</tbody>
+</table>
+<pre class="literal-block">
+namespace boost { namespace parameter { namespace result_of {
+
+template &lt;typename ...TaggedArgs&gt;
+struct compose
+  : boost::<a class="reference external"
+href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
+        <a class="reference internal" href="#are-tagged-arguments"
+>are_tagged_arguments</a>&lt;T0,Pack...&gt;
+      , <a class="reference internal" href="#argumentpack"><span
+class="concept">ArgumentPack</span></a>
+    &gt;
+{
+};
+
+template &lt;&gt;
+struct compose&lt;&gt;
+{
+    typedef <em>empty</em> <a class="reference internal" href="#argumentpack"
+><span class="concept">ArgumentPack</span></a> type;
+};
+}}}
+</pre>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field">
+<th class="field-name">Requires:</th>
+<td class="field-body">
+<p class="first">All elements in <tt class="docutils literal">TaggedArgs</tt>
+must be <a class="reference internal" href="#tagged-reference">tagged
+reference</a> types, if specified.</p>
+</td>
+</tr>
+<tr class="field">
+<th class="field-name">Returns:</th>
+<td class="field-body">
+<p class="last">the result type of the <a class="reference internal"
+href="#compose">compose()</a> function.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <hr class="docutils" />
 <div class="section" id="function-templates">
@@ -1853,18 +1918,10 @@ href="../../../../boost/parameter/compose.hpp"
 </tbody>
 </table>
 <pre class="literal-block">
-constexpr <em>empty</em> <a class="reference internal" href="#argumentpack"
-><span class="concept">ArgumentPack</span></a> compose();
-
-template &lt;typename T0, typename ...Pack&gt;
-constexpr typename boost::<a class="reference external"
-href="../../../core/doc/html/core/enable_if.html">enable_if</a>&lt;
-    <a class="reference internal" href="#are-tagged-arguments"
->are_tagged_arguments</a>&lt;T0,Pack...&gt;
-  , <a class="reference internal" href="#argumentpack"><span
-class="concept">ArgumentPack</span></a>
-&gt;::type
-    compose(T0 const&amp; t0, Pack const&amp;... args);
+template &lt;typename ...Pack&gt;
+constexpr typename <a class="reference internal" href="#result-of-compose"
+>result_of::compose</a>&lt;Pack...&gt;::type
+    compose(Pack const&amp;... args);
 </pre>
 <p>This function facilitates easier variadic argument composition.  It is used
 by the <a class="reference internal"
@@ -1909,17 +1966,16 @@ for compilers that do not support perfect forwarding.</p>
 <tr class="field">
 <th class="field-name">Requires:</th>
 <td class="field-body">
-<p class="first"><tt class="docutils literal">t0</tt> and all elements in <tt
-class="docutils literal">args</tt> must be <a class="reference internal"
-href="#tagged-reference">tagged reference</a> objects, if specified.</p>
+<p class="first">All elements in <tt class="docutils literal">args</tt> must
+be <a class="reference internal" href="#tagged-reference">tagged reference</a>
+objects, if specified.</p>
 </td>
 </tr>
 <tr class="field">
 <th class="field-name">Returns:</th>
 <td class="field-body">
 <p class="first">An <a class="reference internal" href="#argumentpack"><span
-class="concept">ArgumentPack</span></a> containing <tt
-class="docutils literal">t0</tt> and all elements in <tt
+class="concept">ArgumentPack</span></a> containing all elements in <tt
 class="docutils literal">args</tt>, if specified; an empty <a
 class="reference internal" href="#argumentpack"><span class="concept"
 >ArgumentPack</span></a> otherwise.</p>
