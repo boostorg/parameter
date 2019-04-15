@@ -8,6 +8,8 @@
 cmake_minimum_required( VERSION 3.5 )
 project( BoostParameter LANGUAGES CXX)
 
+option(BOOST_PARAMETER_INCLUDE_TESTS OFF "Include Boost.Parameter tests")
+
 add_library( boost_parameter INTERFACE )
 add_library( Boost::parameter ALIAS boost_parameter )
 
@@ -28,3 +30,7 @@ target_link_libraries( boost_parameter
         Boost::utility
 )
 
+if(BOOST_PARAMETER_INCLUDE_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()
