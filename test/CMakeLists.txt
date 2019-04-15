@@ -19,8 +19,8 @@ foreach(file IN LISTS test_files)
     set(test_name test_boost_parameter_${core_name})
 
     add_executable(${test_name} ${file})
-    # add Boost.Parameter and any libraries that are only needed by the tests
-    target_link_libraries(${test_name} Boost::parameter Boost::core)
+    # add Boost.Parameter and any libraries that are only needed by the tests (none at the moment)
+    target_link_libraries(${test_name} Boost::parameter)
 
     add_test(NAME ${test_name} COMMAND ${test_name})
 
