@@ -1051,6 +1051,37 @@ in conjunction with ``enable_if``.
 
 .. _`is_convertible`: ../../../type_traits/doc/html/boost_typetraits/is_convertible.html
 
+``result_of::compose``
+----------------------
+
+Returns the result type of the |compose|_ function.
+
+:Defined in: `boost/parameter/compose.hpp`__
+
+__ ../../../../boost/parameter/compose.hpp
+
+.. parsed-literal::
+
+    template <typename ...TaggedArgs>
+    struct compose
+      : boost::`enable_if`_<
+            |are_tagged_arguments|_<T0,Pack...>
+          , |ArgumentPack|_
+        >
+    {
+    };
+
+    template <>
+    struct compose<>
+    {
+        typedef *empty* |ArgumentPack|_ type;
+    };
+
+:Requires: All elements in ``TaggedArgs`` must be |tagged reference| types, if
+specified.
+
+:Returns: the result type of the |compose|_ function.
+
 //////////////////////////////////////////////////////////////////////////////
 
 Function Templates
@@ -1065,14 +1096,9 @@ __ ../../../../boost/parameter/compose.hpp
 
 .. parsed-literal::
 
-    constexpr *empty* |ArgumentPack|_ compose();
-
-    template <typename T0, typename ...Pack>
-    constexpr typename boost::`enable_if`_<
-        |are_tagged_arguments|_<T0,Pack...>
-      , |ArgumentPack|_
-    >::type
-        compose(T0 const& t0, Pack const&... args);
+    template <typename ...Pack>
+    constexpr typename |result_of::compose|_<Pack...>::type
+        compose(Pack const&... args);
 
 This function facilitates easier variadic argument composition.  It is used by
 the |BOOST_PARAMETER_NO_SPEC_FUNCTION|,
@@ -1092,11 +1118,11 @@ resulting |ArgumentPack|, while the ``compose()`` function cannot take in more
 than |BOOST_PARAMETER_COMPOSE_MAX_ARITY| arguments for compilers that do not
 support perfect forwarding.
 
-:Requires: ``t0`` and all elements in ``args`` must be |tagged reference|
-objects, if specified.
+:Requires: All elements in ``args`` must be |tagged reference| objects, if
+specified.
 
-:Returns: an |ArgumentPack|_ containing ``t0`` and all elements in ``args``,
-if specified; an empty |ArgumentPack|_ otherwise.
+:Returns: an |ArgumentPack|_ containing all elements in ``args``, if
+specified; an empty |ArgumentPack|_ otherwise.
 
 :Example usage:
 .. parsed-literal::
