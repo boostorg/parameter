@@ -931,6 +931,30 @@ exists, returns ``D``.  Equivalent to::
 
 .. _remove_reference: ../../../type_traits/doc/html/boost_typetraits/remove_reference.html
 
+``lazy_value_type``
+-------------------
+
+Returns the result type of indexing an argument pack with a
+|tagged lazy default|.
+
+:Defined in: `boost/parameter/value_type.hpp`__
+
+__ ../../../../boost/parameter/value_type.hpp
+
+.. parsed-literal::
+
+    template <typename A, typename K, typename F>
+    struct lazy_value_type
+    {
+        typedef … type;
+    };
+
+:Requires: ``A`` must be a model of |ArgumentPack|_.
+
+:Returns: the (possibly const-qualified) type of the |tagged reference| in
+``A`` having |keyword tag type| ``K``, if any.  If no such |tagged reference|
+exists, returns ``boost::``\ |result_of|_\ ``<F()>::type``. [#no_result_of]_
+
 ``are_tagged_arguments``
 ------------------------
 
