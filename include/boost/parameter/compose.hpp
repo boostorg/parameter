@@ -58,14 +58,29 @@ namespace boost { namespace parameter { namespace aux {
 #include <boost/parameter/are_tagged_arguments.hpp>
 #include <boost/core/enable_if.hpp>
 
+namespace boost { namespace parameter { namespace result_of {
+
+    template <typename ...TaggedArgs>
+    struct compose
+      : ::boost::lazy_enable_if<
+            ::boost::parameter::are_tagged_arguments<TaggedArgs...>
+          , ::boost::parameter::aux::compose_arg_list<TaggedArgs...>
+        >
+    {
+    };
+
+    template <>
+    struct compose<>
+    {
+        typedef ::boost::parameter::aux::empty_arg_list type;
+    };
+}}} // namespace boost::parameter::result_of
+
 namespace boost { namespace parameter {
 
     template <typename TaggedArg0, typename ...TaggedArgs>
-    inline BOOST_CONSTEXPR typename ::boost::lazy_enable_if<
-        ::boost::parameter::are_tagged_arguments<TaggedArg0,TaggedArgs...>
-      , ::boost::parameter::aux
-        ::compose_arg_list<TaggedArg0,TaggedArgs...>
-    >::type
+    inline BOOST_CONSTEXPR typename ::boost::parameter::result_of
+    ::compose<TaggedArg0,TaggedArgs...>::type
         compose(TaggedArg0 const& arg0, TaggedArgs const&... args)
     {
         return typename ::boost::parameter::aux
@@ -100,6 +115,7 @@ namespace boost { namespace parameter {
 /**/
 
 #include <boost/parameter/aux_/void.hpp>
+#include <boost/preprocessor/arithmetic/inc.hpp>
 #include <boost/preprocessor/arithmetic/sub.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
@@ -126,13 +142,40 @@ namespace boost { namespace parameter {
 #include <boost/parameter/are_tagged_arguments.hpp>
 #include <boost/core/enable_if.hpp>
 
+namespace boost { namespace parameter { namespace result_of {
+
+    template <
+        BOOST_PP_ENUM_BINARY_PARAMS(
+            BOOST_PP_INC(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
+          , typename TaggedArg
+          , = void BOOST_PP_INTERCEPT
+        )
+    >
+    struct compose;
+
+    template <>
+    struct compose<>
+    {
+        typedef ::boost::parameter::aux::empty_arg_list type;
+    };
+}}} // namespace boost::parameter::result_of
+
 #define BOOST_PARAMETER_compose_arg_list_function_overload(z, n, prefix)     \
+namespace boost { namespace parameter { namespace result_of {                \
     template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename prefix)>                 \
-    inline BOOST_CONSTEXPR typename ::boost::enable_if<                      \
-        ::boost::parameter                                                   \
-        ::are_tagged_arguments<BOOST_PP_ENUM_PARAMS_Z(z, n, prefix)>         \
-      , BOOST_PARAMETER_compose_arg_list_type(z, n, prefix)                  \
-    >::type                                                                  \
+    struct compose<BOOST_PP_ENUM_PARAMS_Z(z, n, prefix)>                     \
+      : ::boost::enable_if<                                                  \
+            ::boost::parameter                                               \
+            ::are_tagged_arguments<BOOST_PP_ENUM_PARAMS_Z(z, n, prefix)>     \
+          , BOOST_PARAMETER_compose_arg_list_type(z, n, prefix)              \
+        >                                                                    \
+    {                                                                        \
+    };                                                                       \
+}}}                                                                          \
+namespace boost { namespace parameter {                                      \
+    template <BOOST_PP_ENUM_PARAMS_Z(z, n, typename prefix)>                 \
+    inline BOOST_CONSTEXPR typename ::boost::parameter::result_of            \
+    ::compose<BOOST_PP_ENUM_PARAMS_Z(z, n, prefix)>::type                    \
         compose(BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, prefix, const& a))       \
     {                                                                        \
         return BOOST_PARAMETER_compose_arg_list_type(z, n, prefix)(          \
@@ -143,22 +186,19 @@ namespace boost { namespace parameter {
               , ::boost::parameter::aux::void_reference() BOOST_PP_INTERCEPT \
             )                                                                \
         );                                                                   \
-    }
+    }                                                                        \
+}}
 /**/
 #endif  // BOOST_NO_SFINAE
 
-#include <boost/preprocessor/arithmetic/inc.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 
-namespace boost { namespace parameter {
-
-    BOOST_PP_REPEAT_FROM_TO(
-        1
-      , BOOST_PP_INC(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
-      , BOOST_PARAMETER_compose_arg_list_function_overload
-      , TaggedArg
-    )
-}} // namespace boost::parameter
+BOOST_PP_REPEAT_FROM_TO(
+    1
+  , BOOST_PP_INC(BOOST_PARAMETER_COMPOSE_MAX_ARITY)
+  , BOOST_PARAMETER_compose_arg_list_function_overload
+  , TaggedArg
+)
 
 #undef BOOST_PARAMETER_compose_arg_list_function_overload
 #undef BOOST_PARAMETER_compose_arg_list_type
