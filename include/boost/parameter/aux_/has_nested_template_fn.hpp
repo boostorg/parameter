@@ -36,11 +36,11 @@ namespace boost { namespace parameter { namespace aux {
     class has_nested_template_fn_impl
     {
         template <typename U>
-        static BOOST_CONSTEXPR ::boost::parameter::aux::no_tag _check(...);
+        static ::boost::parameter::aux::no_tag _check(...);
 
 #if defined(BOOST_PARAMETER_CAN_USE_MP11)
         template <typename U>
-        static BOOST_CONSTEXPR ::boost::parameter::aux::yes_tag
+        static ::boost::parameter::aux::yes_tag
             _check(
                 ::boost::mp11::mp_identity<U> const volatile*
               , ::boost::parameter::aux::has_nested_template_fn_variadic<
