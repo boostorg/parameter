@@ -21,8 +21,6 @@ target_link_libraries( boost_parameter
         Boost::core
         Boost::function
         Boost::fusion
-        # TODO: we only need mp11 or mpl
-        Boost::mp11
         Boost::mpl
         Boost::optional
         Boost::preprocessor
