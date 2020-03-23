@@ -295,6 +295,15 @@ namespace boost { namespace parameter { namespace aux {
             return this->get_value();
         }
 
+        template <typename Default>
+        inline BOOST_CONSTEXPR reference
+            operator[](
+                ::boost::parameter::aux::default_r_<key_type,Default> const&
+            ) const
+        {
+            return this->get_value();
+        }
+
         template <typename F>
         inline BOOST_CONSTEXPR reference
             operator[](
@@ -662,7 +671,7 @@ namespace boost { namespace parameter { namespace aux {
             ::boost::parameter::aux::tagged_argument<Keyword,Arg>
           , ::boost::parameter::aux::arg_list<
                 ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
-            > 
+            >
         >
             operator,(
                 ::boost::parameter::aux
@@ -673,7 +682,7 @@ namespace boost { namespace parameter { namespace aux {
                 ::boost::parameter::aux::tagged_argument<Keyword,Arg>
               , ::boost::parameter::aux::arg_list<
                     ::boost::parameter::aux::tagged_argument<Keyword2,Arg2>
-                > 
+                >
             >(
                 *this
               , ::boost::parameter::aux::arg_list<
