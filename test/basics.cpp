@@ -97,7 +97,7 @@ int main()
       , test::_name = std::string("foo")
     );
 
-#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#if !BOOST_WORKAROUND(BOOST_BORLANDC, BOOST_TESTED_AT(0x564))
     x = 56;
     test::f_list((
         test::_tester = test::values(std::string("foo"), 666.222, 56)

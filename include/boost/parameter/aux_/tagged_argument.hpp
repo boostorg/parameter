@@ -704,7 +704,7 @@ namespace boost { namespace parameter { namespace aux {
         }
 
 #if defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING) || \
-    BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+    BOOST_WORKAROUND(BOOST_BORLANDC, BOOST_TESTED_AT(0x564))
         template <typename KW, typename Default>
         inline BOOST_CONSTEXPR Default&
             get_with_default(
