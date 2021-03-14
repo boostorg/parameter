@@ -92,9 +92,10 @@ namespace boost { namespace parameter { namespace aux {
         }
 
 #if BOOST_WORKAROUND(BOOST_MSVC, < 1910)
-        // MSVC 2015 misscompiles moves for classes containing RValue refs
+        // MSVC 2015 miscompiles moves for classes containing rvalue ref members
         // using the default generated move constructor
         // when moving into a function
+        // https://github.com/boostorg/parameter/pull/109
         inline BOOST_CONSTEXPR default_r_(default_r_&& x)
           : value(::std::forward<Value>(x.value))
         {
