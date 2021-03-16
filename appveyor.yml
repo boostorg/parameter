@@ -29,7 +29,7 @@ environment:
       PATH: C:\cygwin\bin;%PATH%
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     - ARGS: toolset=gcc address-model=64 cxxstd=03,11,14,1z
-      PATH: C:\cygwin63\bin;%PATH%
+      PATH: C:\cygwin64\bin;%PATH%
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     - ARGS: toolset=gcc address-model=32 cxxstd=03,11 linkflags=-Wl,-allow-multiple-definition
       PATH: C:\MinGW\bin;%PATH%
