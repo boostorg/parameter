@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/parameter.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include "basics.hpp"
 
 namespace test {
