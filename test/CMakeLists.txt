@@ -16,7 +16,7 @@ list(FILTER test_files EXCLUDE REGEX
 foreach(file IN LISTS test_files)
 
     get_filename_component(core_name ${file} NAME_WE)
-    set(test_name test_boost_parameter_${core_name})
+    set(test_name boost_parameter-test-${core_name})
 
     add_executable(${test_name} ${file})
     # add Boost.Parameter and any libraries that are only needed by the tests (none at the moment)
