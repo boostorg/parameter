@@ -27,13 +27,9 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     - ARGS: toolset=gcc address-model=32 cxxstd=03,11,14,1z
       PATH: C:\cygwin\bin;%PATH%
-      # Cygwin does not have python headers installed, the compiler picks up Win32 headers in C:\Python27\Include and fails
-      BOOST_PARAMETER_TEST_WITHOUT_PYTHON_TESTS: 1
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     - ARGS: toolset=gcc address-model=64 cxxstd=03,11,14,1z
       PATH: C:\cygwin64\bin;%PATH%
-      # Cygwin64 does not have python headers installed, the compiler picks up Win32 headers in C:\Python27\Include and fails
-      BOOST_PARAMETER_TEST_WITHOUT_PYTHON_TESTS: 1
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     - ARGS: toolset=gcc address-model=32 cxxstd=03,11 linkflags=-Wl,-allow-multiple-definition
       PATH: C:\MinGW\bin;%PATH%
@@ -60,12 +56,11 @@ install:
   - git submodule init tools/boost_install
   - git submodule init libs/headers
   - git submodule init libs/config
-  - git submodule init libs/parameter_python
   - git submodule update --jobs %GIT_FETCH_JOBS%
   - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\parameter
   - python tools/boostdep/depinst/depinst.py --git_args "--jobs %GIT_FETCH_JOBS%" parameter
   - cmd /c bootstrap
-  - b2 headers
+  - b2 -d0 headers
 
 build: off
 

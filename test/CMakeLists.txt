@@ -12,7 +12,7 @@ file(GLOB test_files *.cpp)
 # special requirements
 # TODO: enable more tests
 list(FILTER test_files EXCLUDE REGEX
-    efficiency|deduced_unmatched_arg|python_test|duplicates)
+    efficiency|deduced_unmatched_arg|duplicates)
 
 # Attach all our tests to the `tests` target, to enable
 # `cmake --build . --target tests`

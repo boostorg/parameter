@@ -15,8 +15,6 @@ project boost/parameter
         <warnings>off
     ;
 
-import python ;
-
 alias parameter_standard_tests
     :
     [ run maybe.cpp : : : : : <preserve-target-tests>off ]
@@ -493,76 +491,6 @@ alias parameter_literate_tests
     ]
     ;
 
-if ! [ os.environ BOOST_PARAMETER_TEST_WITHOUT_PYTHON_TESTS ]
-{
-    alias parameter_python_test
-        :
-        :
-            # Python fails for clang on linux with cxxstd set to 14
-            <target-os>linux
-            <toolset>clang
-            <cxxstd>14
-        ;
-
-    alias parameter_python_test
-        :
-        :
-            # Python fails for clang on linux with cxxstd set to 1z
-            <target-os>linux
-            <toolset>clang
-            <cxxstd>1z
-        ;
-
-    alias parameter_python_test
-        :
-        :
-            # Python fails for xcode 8.3.0 on osx
-            # so we turn off this test for this compiler completely for now
-            <target-os>darwin
-            # TODO: Differentiate by xcode version or by clang version
-        ;
-
-    alias parameter_python_test
-        :
-        :
-            # Python fails for mingw compilers with cxxstd set to 11 or higher
-            # because of a Python header problem
-            # so we turn off this test for this compiler completely
-            <target-os>windows
-            <toolset>gcc
-            <address-model>32
-        ;
-
-    alias parameter_python_test
-        :
-        :
-            # Python fails for clang-linux compilers with cxxstd set to 11 or higher
-            # because of a Python header problem
-            # so we turn off this test for this compiler completely
-            <target-os>windows
-            <toolset>clang-linux
-            <address-model>32
-        ;
-
-    alias parameter_python_test
-        :
-        :
-            # Python fails for windows compilers with 64-bit addressing set
-            # because of a Python header problem
-            <target-os>windows
-            <address-model>64
-        ;
-
-    alias parameter_python_test
-        :
-        [ bpl-test python_test ]
-        ;
-}
-else
-{
-    alias parameter_python_test ;
-}
-
 alias parameter_macros_eval_category
     :
     :
@@ -950,6 +878,5 @@ test-suite "parameter"
         parameter_preprocessor_eval_cat_fail
         parameter_standard_tests
         parameter_literate_tests
-        parameter_python_test
         parameter_vendor_specific_fail_tests
     ;
