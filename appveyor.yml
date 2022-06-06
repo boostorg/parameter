@@ -1,6 +1,6 @@
 # Copyright 2017 Edward Diener
 # Copyright 2017 Cromwell D. Enage
-# Copyright 2021 Andrey Semashev
+# Copyright 2021-2022 Andrey Semashev
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://boost.org/LICENSE_1_0.txt)
@@ -23,8 +23,12 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
     - ARGS: toolset=msvc-14.1 address-model=32,64 cxxstd=14,17,latest
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    - ARGS: toolset=msvc-14.2 address-model=32,64 cxxstd=14,17,latest
+    - ARGS: toolset=msvc-14.2 address-model=32,64 cxxstd=14,17,20,latest
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - ARGS: toolset=msvc-14.3 address-model=32,64 cxxstd=14,17,20,latest
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ARGS: toolset=clang-win address-model=32,64 cxxstd=14,17,latest
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     - ARGS: toolset=gcc address-model=32 cxxstd=03,11,14,1z
       PATH: C:\cygwin\bin;%PATH%
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
