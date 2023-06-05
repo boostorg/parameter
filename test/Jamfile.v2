@@ -13,6 +13,7 @@ project boost/parameter
     :
         default-build
         <warnings>off
+        <include>.
     ;
 
 alias parameter_standard_tests
