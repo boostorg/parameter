@@ -40,7 +40,7 @@ namespace test {
     //      or other processes and even device hardware interrupts may
     //      interfere by causing caches to be flushed.
 
-    // Accumulator function object with plain C++ interface 
+    // Accumulator function object with plain C++ interface
     template <typename T>
     struct plain_weight_running_total
     {

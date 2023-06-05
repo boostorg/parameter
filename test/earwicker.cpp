@@ -91,14 +91,14 @@ namespace test {
     BOOST_PARAMETER_FUN(int, f, 1, 4, f_parameters)
 #else
     BOOST_PARAMETER_FUN(void, f, 1, 4, f_parameters)
-#endif 
+#endif
     {
         BOOST_TEST_EQ(p[test::_w][0], p[test::_x | -1]);
         BOOST_TEST_EQ(p[test::_w][1], p[test::_y | -2]);
         BOOST_TEST_EQ(p[test::_w][2], p[test::_z | -3]);
 #if defined(BOOST_NO_VOID_RETURNS)
         return 0;
-#endif 
+#endif
     }
 } // namespace test
 

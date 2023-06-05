@@ -44,7 +44,7 @@ class timer
   // where std::clock_t overflows or resets at surprising values.
   {
     return (double((std::numeric_limits<std::clock_t>::max)())
-       - double(_start_time)) / double(CLOCKS_PER_SEC); 
+       - double(_start_time)) / double(CLOCKS_PER_SEC);
   }
 
   double elapsed_min() const            // return minimum value for elapsed()

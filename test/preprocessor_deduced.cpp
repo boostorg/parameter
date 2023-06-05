@@ -99,7 +99,7 @@ namespace test {
         return 1;
     }
 
-    struct X 
+    struct X
     {
         X(int x_ = -1) : x(x_)
         {
