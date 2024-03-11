@@ -304,6 +304,7 @@ alias parameter_literate_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
+            <source>/boost/graph//boost_graph
         :
         :
             <preserve-target-tests>off
@@ -426,6 +427,7 @@ alias parameter_literate_tests
         :
             <define>BOOST_PARAMETER_MAX_ARITY=5
             <define>BOOST_PARAMETER_EXPONENTIAL_OVERLOAD_THRESHOLD_ARITY=6
+            <source>/boost/graph//boost_graph
         :
         :
             <preserve-target-tests>off
