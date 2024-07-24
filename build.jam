@@ -5,25 +5,28 @@
 
 require-b2 5.2 ;
 
+constant boost_dependencies :
+    /boost/config//boost_config
+    /boost/core//boost_core
+    /boost/function//boost_function
+    /boost/fusion//boost_fusion
+    /boost/mp11//boost_mp11
+    /boost/mpl//boost_mpl
+    /boost/optional//boost_optional
+    /boost/preprocessor//boost_preprocessor
+    /boost/type_traits//boost_type_traits
+    /boost/utility//boost_utility ;
+
 project /boost/parameter
     : common-requirements
-        <library>/boost/config//boost_config
-        <library>/boost/core//boost_core
-        <library>/boost/function//boost_function
-        <library>/boost/fusion//boost_fusion
-        <library>/boost/mp11//boost_mp11
-        <library>/boost/mpl//boost_mpl
-        <library>/boost/optional//boost_optional
-        <library>/boost/preprocessor//boost_preprocessor
-        <library>/boost/type_traits//boost_type_traits
-        <library>/boost/utility//boost_utility
         <include>include
     ;
 
 explicit
-    [ alias boost_parameter ]
+    [ alias boost_parameter : : : : <library>$(boost_dependencies) ]
     [ alias all : boost_parameter test ]
     ;
 
 call-if : boost-library parameter
     ;
+
