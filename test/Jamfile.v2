@@ -11,7 +11,8 @@ import testing ;
 
 project
     :
-        default-build
+        requirements
+        <library>/boost/parameter//boost_parameter
         <warnings>off
         <include>.
     ;
