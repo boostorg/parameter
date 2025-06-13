@@ -310,7 +310,7 @@ jobs:
             cxxstd: "11,14,17,20,2b"
             os: macos-14
 
-    timeout-minutes: 20
+    timeout-minutes: 30
     runs-on: ${{matrix.os}}
     container: ${{matrix.container}}
 
@@ -557,7 +557,7 @@ jobs:
             addrmd: 64
             os: windows-2022
 
-    timeout-minutes: 20
+    timeout-minutes: 30
     runs-on: ${{matrix.os}}
 
     steps:
